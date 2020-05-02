@@ -1,0 +1,6 @@
+name: Prison
+main: org.runaway.Main
+version: 1.2
+author: _RunAway_
+softdepend:
+- HolographicDisplays

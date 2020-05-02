@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RecodedPrison">
+    <output-path>D:/Prison Recoded/plugins</output-path>
+    <root id="archive" name="RecodedPrison.jar">
+      <element id="module-output" name="RecodedPrison" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/plugin.yml" />
+    </root>
+  </artifact>
+</component>
