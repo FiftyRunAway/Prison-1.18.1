@@ -104,6 +104,7 @@ public class BlockBreak implements Listener {
                 return;
             }
             if (isLocation(event.getBlock().getLocation(), "forest")) {
+                AutoSell(event, false);
                 if (Math.random() < (0.002 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     player.getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
@@ -115,7 +116,7 @@ public class BlockBreak implements Listener {
                     add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + ".LOG_2-0");
                 }
                 String ret = String.valueOf(new BigDecimal(add).setScale(2, RoundingMode.UP).doubleValue());
-                EConfig.BLOCKS.getConfig().set(player.getName() + ".LOG_2-0", ret);
+                EConfig.BLOCKS.getConfig().set(player.getName() + ".LOG_2-0", Double.valueOf(ret));
                 EConfig.BLOCKS.saveConfig();
                 gamer.setStatistics(EStat.BLOCKS, (double)gamer.getStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
                 block.setTypeIdAndData(Material.WOOD.getId(), (byte)1, true);
@@ -124,7 +125,6 @@ public class BlockBreak implements Listener {
                     block.setType(Material.LOG_2);
                     block.setData((byte)1);
                 }, 250L);
-                AutoSell(event, false);
             }
         }
     }//normal random for key - 0.001
