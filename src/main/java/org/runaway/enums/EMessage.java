@@ -104,7 +104,7 @@ public enum  EMessage {
     ERRORELEMENT("ErrorOfElement", "&cС этим элементом возникла проблема. Пожалуйста, сообщите об этом &4администрации &cсервера!"),
     SECONDLEVEL("SecondLevel", "&cПриходите сюда на втором уровне, а пока что надо копать &4дерево"),
     ONEAUCTION("OneOnAuction", "&cНам не выгодно с вами играть, ведь на сервере совсем пусто..."),
-    AUCTIONTIMES("TimesAuction", "&fАукцион проходит в&e%time%");
+    AUCTIONTIMES("TimesAuction", "&fАукцион проходит в &e%time%");
 
     private String config, defaults;
     public static HashMap<String, String> messages = new HashMap<>();

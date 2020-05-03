@@ -67,7 +67,7 @@ public class Spawner {
         this.current = null;
         this.deathTime = System.currentTimeMillis() + this.interval * 1000L;
         if (!this.type.isMultispawn()) {
-            (this.hologram = HologramsAPI.createHologram(Main.getInstance(), this.location.clone().add(0.0, 2.5, 0.0))).setAllowPlaceholders(true);
+            (this.hologram = HologramsAPI.createHologram(Main.getInstance(), this.location.clone().add(0.5, 2.5, 0.5))).setAllowPlaceholders(true);
             this.hologram.getVisibilityManager().setVisibleByDefault(true);
             this.holoTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> {
                 this.updateHolo();

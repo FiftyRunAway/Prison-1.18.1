@@ -79,6 +79,7 @@ public enum Privs {
 
     public Object getValue(IFeature feature) {
         if (player != null) {
+            if (current.equals(Privs.DEFAULT)) return null;
             AtomicReference<Object> object = new AtomicReference<>(null);
             Arrays.stream(current.getFeatures()).forEach(fets -> {
                 if (feature.getCode() == fets.getCode()) {

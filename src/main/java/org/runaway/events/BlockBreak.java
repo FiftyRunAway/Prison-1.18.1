@@ -104,7 +104,6 @@ public class BlockBreak implements Listener {
                 return;
             }
             if (isLocation(event.getBlock().getLocation(), "forest")) {
-                AutoSell(event, false);
                 if (Math.random() < (0.002 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     player.getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
@@ -112,10 +111,11 @@ public class BlockBreak implements Listener {
                     gamer.setStatistics(EStat.KEYS, (int)gamer.getStatistics(EStat.KEYS) + 1);
                 }
                 double add = gamer.getBoosterBlocks();
-                if (EConfig.BLOCKS.getConfig().contains(player.getName() + ".WOOD-0")) {
-                    add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + ".WOOD-0");
+                if (EConfig.BLOCKS.getConfig().contains(player.getName() + ".LOG_2-0")) {
+                    add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + ".LOG_2-0");
                 }
-                EConfig.BLOCKS.getConfig().set(player.getName() + ".WOOD-0", add);
+                String ret = String.valueOf(new BigDecimal(add).setScale(2, RoundingMode.UP).doubleValue());
+                EConfig.BLOCKS.getConfig().set(player.getName() + ".LOG_2-0", ret);
                 EConfig.BLOCKS.saveConfig();
                 gamer.setStatistics(EStat.BLOCKS, (double)gamer.getStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
                 block.setTypeIdAndData(Material.WOOD.getId(), (byte)1, true);
@@ -124,7 +124,7 @@ public class BlockBreak implements Listener {
                     block.setType(Material.LOG_2);
                     block.setData((byte)1);
                 }, 250L);
-                event.setCancelled(true);
+                AutoSell(event, false);
             }
         }
     }//normal random for key - 0.001

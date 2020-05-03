@@ -42,6 +42,7 @@ public class GiftCommand extends CommandManager {
             owner.sendMessage(Utils.colored(EMessage.ACCEPTEDGIFT.getMessage()));
             consumer.getPlayer().closeInventory();
             Utils.getGifters().remove(consumer.getName());
+            Utils.getGifts().remove(consumer.getName());
         } else {
             owner.getInventory().addItem(Utils.getGifts().get(consumer.getName()));
             Utils.getGifters().remove(consumer.getName());
@@ -105,7 +106,7 @@ public class GiftCommand extends CommandManager {
             gamer.sendMessage(EMessage.SENDGIFT);
             cons.sendMessage(EMessage.GIFTYOU.getMessage().replaceAll("%player%", p.getName()));
             cons.playSound(cons.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
-            BukkitTask scheduler = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                 if (Utils.getGifts().containsKey(args[0])) {
                     if (gamer.isInventory() && Utils.getPlayers().contains(gamer.getGamer())) {
                         p.getInventory().addItem(Utils.getGifts().get(cons.getName()));

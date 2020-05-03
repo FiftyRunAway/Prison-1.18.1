@@ -43,10 +43,15 @@ public class FractionCommand extends CommandManager {
                 int mon = EConfig.CONFIG.getConfig().getInt("costs.FractionLeave") * (int)gamer.getStatistics(EStat.LEVEL);
                 int discount = 0;
                 Object obj = gamer.getPrivilege().getValue(new FLeaveDiscount());
-                if (obj != null) discount += Integer.parseInt(obj.toString());
-                gamer.getPlayer().sendMessage(EMessage.FLEAVECONFIRM.getMessage().
-                        replace("%money%", mon + " " + MoneyType.RUBLES.getShortName()).
-                        replace("%discount%", discount == 0 ? "" : "(Скидка -" + discount + "%)"));
+                if (obj != null) {
+                    discount += Integer.parseInt(obj.toString());
+                    gamer.getPlayer().sendMessage(EMessage.FLEAVECONFIRM.getMessage().
+                            replace("%money%", -(discount / 100) * mon + mon + " " + MoneyType.RUBLES.getShortName()).
+                            replace("%discount%", discount == 0 ? "" : "(Скидка -" + discount + "%)"));
+                } else {
+                    gamer.getPlayer().sendMessage(EMessage.FLEAVECONFIRM.getMessage().
+                            replace("%money%", mon + " " + MoneyType.RUBLES.getShortName()));
+                }
                 Bukkit.getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
                     if (toLeave.contains(name)) {
                         toLeave.remove(name);

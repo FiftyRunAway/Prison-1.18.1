@@ -7,6 +7,7 @@ import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.auction.TrashAuction;
+import org.runaway.boosters.Booster;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
@@ -18,6 +19,9 @@ import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainMenu implements IMenus {
 
@@ -90,7 +94,13 @@ public class MainMenu implements IMenus {
                             .addString("&7>> Открыть меню активации")
                             .addString("&7<< Открыть меню активных").build()).build().item())
                     .setSlot(39);
-            boosters.setClickEvent(event -> new BoosterMenu(event.getWhoClicked()));
+            boosters.setClickEvent(event -> {
+                if (event.getClickType().equals(ClickType.LEFT)) {
+                    new BoostersMenu(event.getWhoClicked());
+                } else {
+                    new BoosterMenu(event.getWhoClicked());
+                }
+            });
             menu.addButton(boosters);
 
             IMenuButton blocks = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.SIGN)
@@ -110,11 +120,15 @@ public class MainMenu implements IMenus {
                             .addString("&7<< Подробнее").build()).build().item())
                     .setSlot(0);
             trash.setClickEvent(event -> {
+                event.getWhoClicked().closeInventory();
                 if (event.getClickType().equals(ClickType.LEFT)) {
                     StringBuilder times = new StringBuilder();
-                    TrashAuction.times.forEach(integer -> times.append(" " + integer + ":00,"));
-                    times.deleteCharAt(times.length());
-                    event.getWhoClicked().sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString())));
+                    AtomicInteger i = new AtomicInteger(0);
+                    TrashAuction.times.forEach(integer -> {
+                        times.append(integer);
+                        if (TrashAuction.times.size() != i.getAndIncrement() + 1) times.append(", ");
+                    });
+                    event.getWhoClicked().sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
                 } else {
                     Main.gamers.get(event.getWhoClicked().getUniqueId()).teleportTrashAuction();
                 }

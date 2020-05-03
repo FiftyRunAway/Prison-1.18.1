@@ -228,7 +228,6 @@ public class Main extends JavaPlugin {
                 AtomicInteger i = new AtomicInteger();
                 EConfig.CASES.getConfig().getStringList(st + ".drop").forEach(s -> {
                     String[] strings = s.split(":");
-                    MenuButton button;
                     switch (strings[0].toLowerCase()) {
                         case "config": {
                             ItemStack is = UpgradeMisc.buildItem(strings[1], false, null, false);
@@ -438,6 +437,7 @@ public class Main extends JavaPlugin {
             HashMap<String, Long> level = new HashMap<>();
             HashMap<String, Long> rats = new HashMap<>();
             HashMap<String, Long> rebirth = new HashMap<>();
+            HashMap<String, Long> keys = new HashMap<>();
             for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
                 if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
                     money.put(name, (long) (int) EStat.MONEY.getFromConfig(name));
@@ -452,12 +452,14 @@ public class Main extends JavaPlugin {
                 level.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
                 rats.put(name, (long) (int)EStat.RATS.getFromConfig(name));
                 rebirth.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
+                keys.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
             }
             Main.tops.put("деньги", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10));
             Main.tops.put("блоки", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10));
             Main.tops.put("уровни", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10));
             Main.tops.put("крысы", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10));
             Main.tops.put("перерождения", new TopPlayers(Utils.getLocation("rebirthtop"), rats, "&7Топ игроков по перерождениям", 10));
+            Main.tops.put("ключи", new TopPlayers(Utils.getLocation("keystop"), rats, "&7Топ игроков по ключам", 10));
             Bukkit.getScheduler().runTaskTimer(this, () -> {
                 EConfig.STATISTICS.saveConfig();
                 HashMap<String, Long> money1 = new HashMap<>();
@@ -465,6 +467,7 @@ public class Main extends JavaPlugin {
                 HashMap<String, Long> level1 = new HashMap<>();
                 HashMap<String, Long> rats1 = new HashMap<>();
                 HashMap<String, Long> rebirth1 = new HashMap<>();
+                HashMap<String, Long> keys1 = new HashMap<>();
 
                 for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
                     if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
@@ -480,6 +483,7 @@ public class Main extends JavaPlugin {
                     level1.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
                     rats1.put(name, (long) (int)EStat.RATS.getFromConfig(name));
                     rebirth1.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
+                    keys1.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
                 }
                 if (!Main.tops.keySet().iterator().hasNext()) return;
                 tops.keySet().forEach(s -> {
@@ -493,6 +497,8 @@ public class Main extends JavaPlugin {
                         Main.tops.get(s).setTopValues(rats1);
                     } else if ("перерождения".equals(s)) {
                         Main.tops.get(s).setTopValues(rebirth1);
+                    } else if ("ключи".equals(s)) {
+                        Main.tops.get(s).setTopValues(keys1);
                     }
                     Main.tops.get(s).recreate();
                 });

@@ -52,7 +52,7 @@ public class PayCommand extends CommandManager {
             get.depositMoney(send);
             pl.sendMessage(EMessage.GETMONEY.getMessage().replaceAll("%money%", send + " " + MoneyType.RUBLES.getShortName()).replaceAll("%player%", gamer.getGamer()));
         } else {
-            p.sendMessage(Utils.colored("&cИспользуйте: /pay <Игрок> <Сумма>"));
+            p.sendMessage(Utils.colored("&cИспользуйте: /" + cmdName + " <Игрок> <Сумма>"));
         }
     }
 
