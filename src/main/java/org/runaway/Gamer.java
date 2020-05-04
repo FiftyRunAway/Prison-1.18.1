@@ -277,7 +277,9 @@ public class Gamer {
 
     public void setExpProgress() {
         int needblocks = EConfig.CONFIG.getConfig().getInt("levels." + ((int)getStatistics(EStat.LEVEL) + 1) + ".blocks");
-        if (Math.round((double)getStatistics(EStat.BLOCKS)) <= needblocks) getPlayer().setExp((float)((double)getStatistics(EStat.BLOCKS) / needblocks));
+        float toSet = (float)((double)getStatistics(EStat.BLOCKS) / needblocks);
+        if (toSet > 1) toSet = 1;
+        if (Math.round((double)getStatistics(EStat.BLOCKS)) <= needblocks) getPlayer().setExp(toSet);
     }
 
     public void teleport(Location location) {
@@ -314,7 +316,11 @@ public class Gamer {
     }
 
     public void depositMoney(double money) {
-        setStatistics(EStat.MONEY, new BigDecimal(money + (double)getStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+        if (getStatistics(EStat.MONEY) instanceof Integer) {
+            setStatistics(EStat.MONEY, new BigDecimal(money + (int)getStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+        } else {
+            setStatistics(EStat.MONEY, new BigDecimal(money + (double)getStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+        }
         sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
         double m = (double)getStatistics(EStat.MONEY);
         if (m >= 15) Achievement.GET_15.get(getPlayer(), false);

@@ -113,6 +113,7 @@ public class GiftCommand extends CommandManager {
                         gamer.sendMessage(EMessage.RETURNITEM);
                     }
                     Utils.getGifts().remove(cons.getName());
+                    Utils.getGifters().remove(cons.getName());
                     cons.sendMessage(EMessage.GIFTLEFTTIME.getMessage().replaceAll("%player%", p.getName()));
                     gamer.sendMessage(EMessage.TIMELEFTOWNER);
                 }

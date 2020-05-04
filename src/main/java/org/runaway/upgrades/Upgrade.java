@@ -89,7 +89,7 @@ public class Upgrade {
                 return String.valueOf(gamer.getStatistics(EStat.KILLS));
             }
             case WOOD: {
-                return String.valueOf(gamer.getCurrentBlocks("WOOD"));
+                return String.valueOf(gamer.getCurrentBlocks("LOG_2"));
             }
             case BLOCKS: {
                 return String.valueOf(Math.round((Double) gamer.getStatistics(EStat.BLOCKS)));

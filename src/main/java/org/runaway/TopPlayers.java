@@ -55,7 +55,6 @@ public class TopPlayers {
         }
         for (int f = h; f >= 0; --f) {
             try {
-                if (values.keySet().toArray()[h3 - h + f].equals("_RunAway_") || values.keySet().toArray()[h3 - h + f].equals("AttempGame")) return;
                 hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&',  values.keySet().toArray()[h3 - h + f] + " &7&l• &a" + values.get(values.keySet().toArray()[h3 - h + f])));
             }
             catch (Exception e) { e.printStackTrace(); }
@@ -68,7 +67,10 @@ public class TopPlayers {
         list.sort(Comparator.comparing(Map.Entry::getValue));
         LinkedHashMap<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
+            if (!entry.getKey().equals("_RunAway_") &&
+                    !entry.getKey().equals("AttempGame")) {
+                result.put(entry.getKey(), entry.getValue());
+            }
         }
         return result;
     }

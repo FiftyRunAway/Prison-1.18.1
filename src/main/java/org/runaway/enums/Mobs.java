@@ -7,13 +7,15 @@ import org.runaway.entity.CustomEntity;
 import org.runaway.entity.bosses.Blaze;
 import org.runaway.entity.bosses.Spider;
 import org.runaway.entity.mobs.Rat;
+import org.runaway.entity.mobs.Zombie;
 
 import java.util.Arrays;
 
 public enum Mobs {
     RAT(60, "rat", Rat.class, true, null),
     SPIDER(52, "spider", Spider.class, false, Material.SPIDER_EYE),
-    BLAZE(61, "blaze", Blaze.class, false, Material.BLAZE_POWDER);
+    BLAZE(61, "blaze", Blaze.class, false, Material.BLAZE_POWDER),
+    ZOMBIE(54, "zombie", Zombie.class, true, null);
 
     String name;
     int id;

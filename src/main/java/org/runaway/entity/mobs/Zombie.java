@@ -17,7 +17,7 @@ import org.runaway.enums.EStat;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Rat extends EntityMonster {
+public class Zombie extends EntityMonster {
 
     private Spawner spawner;
     private double health;
@@ -25,22 +25,15 @@ public class Rat extends EntityMonster {
     private int hpDelay;
     private double speed;
 
-    public Rat(Spawner spawner) {
+    public Zombie(Spawner spawner) {
         super(((CraftWorld)spawner.getSpawnLocation().getWorld()).getHandle());
-        ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("rat");
+        ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("zombie");
         this.health = section.getDouble("health");
         this.hpDelay = 20;
         this.speed = section.getDouble("speed");
         double damage = section.getDouble("damage");
         this.name = section.getString("name");
         this.setCustomName(Utils.colored(this.name));
-        if (Math.random() < 0.04) {
-            this.glowing = true;
-            damage += 1;
-            this.health *= 1.5;
-            this.speed += this.speed / 2;
-            this.setCustomName(Utils.colored(this.name.concat(" &7(&dРедкая&7)")));
-        }
         this.getAttributeInstance(GenericAttributes.FOLLOW_RANGE).setValue(128.0);
         this.getAttributeInstance(GenericAttributes.maxHealth).setValue(this.health);
         this.getAttributeInstance(GenericAttributes.c).setValue(-1);
@@ -111,16 +104,11 @@ public class Rat extends EntityMonster {
             if (this.killer != null && this.killer instanceof EntityPlayer) {
                 if (this.spawner != null) {
                     Gamer gamer = Main.gamers.get(Bukkit.getPlayer(killer.getName()).getUniqueId());
-                    double money = (10.0 + ThreadLocalRandom.current().nextInt(15)) / 100.0;
-                    int rats = 1;
-                    if (this.glowing) {
-                        money++; rats++;
-                        Achievement.RARE_RAT.get(Bukkit.getPlayer(this.killer.getName()), false);
-                    }
+                    double money = (10.0 + ThreadLocalRandom.current().nextInt(15)) / 10.0;
                     gamer.depositMoney(money);
-                    gamer.setStatistics(EStat.RATS, (int)gamer.getStatistics(EStat.RATS) + rats);
-                    if ((int)gamer.getStatistics(EStat.RATS) == 15) {
-                        Achievement.FIFTEEN_RATS.get(gamer.getPlayer(), false);
+                    gamer.setStatistics(EStat.ZOMBIES, (int)gamer.getStatistics(EStat.ZOMBIES) + 1);
+                    if ((int)gamer.getStatistics(EStat.ZOMBIES) == 15) {
+                        Achievement.FIFTEEN_ZOMBIES.get(gamer.getPlayer(), false);
                     }
                 }
             }

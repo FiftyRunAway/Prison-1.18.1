@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Item;
 import org.runaway.Main;
+import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Vars;
 import org.runaway.enums.BoosterType;
 import org.runaway.enums.EConfig;
@@ -28,11 +29,11 @@ public enum Achievement {
     FIVE_LEVEL("&aПолучить 5 уровень","Начинающий зэк", new Reward[]{
             new ItemReward().setReward(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").build().item()) }, true),
     TEN_LEVEL("&aПолучить 10 уровень","Опытный зэк", new Reward[]{
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(4).name("&7Ключ к обычному сундуку").build().item()),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 1800, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 1800, false)}, true),
     FIRST_TREASURE("&aНайти свой первый клад","Сыщик I", new Reward[]{
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(4).name("&7Ключ к обычному сундуку").build().item()) }, false),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     SPIDER_KILL("&aВы убили матку впервые", "Ведьмак", new Reward[]{
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.4, 900, false),
             new MoneyReward().setReward(50) }, false),
@@ -40,34 +41,37 @@ public enum Achievement {
             new MoneyReward().setReward(75) }, true),
     FIFTEEN_RATS("&aВы убили 15 крыс", "Крысолов I", new Reward[]{
             new MoneyReward().setReward(10),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(10).name("&7Ключ к обычному сундуку").build().item()) }, false),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(10).build().item()) }, false),
+    FIFTEEN_ZOMBIES("&aВы убили 15 зомби", "Зомболов I", new Reward[]{
+            new MoneyReward().setReward(50),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(20).build().item()) }, false),
     FIRST_TRAINER("&aПрокачаться у тренера", "Хороший ученик", new Reward[]{
             new MoneyReward().setReward(150) }, false),
     KILL_ADMIN("&cУбить администратора", "Самоубийца", new Reward[]{
             new MoneyReward().setReward(50),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(16).name("&7Ключ к обычному сундуку").build().item()) }, true),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(16).build().item()) }, true),
     EMPTY_SERVER("&aЗайти на пустой сервер", "Одиночество", new Reward[]{
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(8).name("&7Ключ к обычному сундуку").build().item()) }, true),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(8).build().item()) }, true),
     RARE_RAT("&aВы убили редкую крысу", "Супер крысолов", new Reward[]{
             new MoneyReward().setReward(15),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(4).name("&7Ключ к обычному сундуку").build().item()) }, false),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     FIRST_UPGRADE("&aУлучшите один инструмент", "Освоение I", new Reward[]{
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(4).name("&7Ключ к обычному сундуку").build().item()) }, false),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     GET_15("&aЗаработать 15 руб.", "Копатель онлайн", new Reward[]{
             new MoneyReward().setReward(2),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(1).name("&7Ключ к обычному сундуку").build().item()) }, false),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(1).build().item()) }, false),
     GET_100("&aЗаработать 100 руб.", "Повелитель мыла", new Reward[]{
             new MoneyReward().setReward(10),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(12).name("&7Ключ к обычному сундуку").build().item()) }, true),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(12).build().item()) }, true),
     GET_1000("&aЗаработать 1,500 руб.", "Блоковый магистр", new Reward[]{
             new MoneyReward().setReward(150),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(24).name("&7Ключ к обычному сундуку").build().item()) }, true),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(24).build().item()) }, true),
     GET_15000("&aЗаработать 15,000 руб.", "Да что ты вообще творишь?", new Reward[]{
             new MoneyReward().setReward(1500),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(48).name("&7Ключ к обычному сундуку").build().item()) }, true),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(48).build().item()) }, true),
     GET_100000("&aЗаработать 100,000 руб.", "Что? Повтори", new Reward[]{
             new MoneyReward().setReward(10000),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(64).name("&7Ключ к обычному сундуку").build().item()) }, true),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(64).build().item()) }, true),
     DEAD_5("&aУмереть 5 раз", "Как же так...", new Reward[]{
             new MoneyReward().setReward(10) }, false),
     DEAD_100("&aУмереть 100 раз", "Что с вами не так?", new Reward[]{
@@ -86,7 +90,9 @@ public enum Achievement {
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.5, 1800, true) }, true),
     KILL_ARROW("&aУбить себя из лука", "Хмм.. Молодец)", new Reward[]{
             new BoosterReward().setReward(BoosterType.MONEY, 1.4, 600, false),
-            new ItemReward().setReward(new Item.Builder(Material.GHAST_TEAR).amount(12).name("&7Ключ к обычному сундуку").build().item()) }, true);
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(12).build().item()) }, true),
+    FIRST_LOCATION("&aОткрыть новую локацию", "Крупно повезло", new Reward[]{
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(16).build().item()) }, false);
 
     String name;
     String title;

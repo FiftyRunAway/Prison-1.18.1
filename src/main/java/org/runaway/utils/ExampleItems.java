@@ -9,12 +9,23 @@ import java.util.Collections;
 
 public class ExampleItems {
 
+    private static Item.Builder key = new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку");
+    private static Item.Builder nether_star = new Item.Builder(Material.NETHER_STAR).name("&aЗвезда ада");
+
     public static ItemStack glass(int data, String name) {
         return new Item.Builder(Material.STAINED_GLASS_PANE).data((short) data).name(name).build().item();
     }
 
     public static ItemStack glass(int data) {
         return glass(data, " ");
+    }
+
+    public static Item.Builder getKeyBuilder() {
+        return key;
+    }
+
+    public static Item.Builder getNetherStarBuilder() {
+        return nether_star;
     }
 
     public static ItemStack unserializerString(String s) {

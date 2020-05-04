@@ -5,18 +5,18 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.*;
 import net.minecraft.server.v1_12_R1.*;
 import com.gmail.filoghost.holographicdisplays.api.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.*;
 import java.util.*;
 import org.bukkit.configuration.*;
 import org.bukkit.*;
-import org.runaway.Gamer;
+import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.BossNotify;
-import org.runaway.donate.features.FLeaveDiscount;
 import org.runaway.menu.button.DefaultButtons;
+import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.utils.Items;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
@@ -94,6 +94,12 @@ public class Spawner {
 
         line.setTouchHandler(player -> {
             boolean has = false;
+
+            IMenuButton reset = DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND).name("&aЗаспавнить сейчас").build().item());
+            reset.setClickEvent(event -> spawn());
+            reset.setSlot(0);
+            if (player.hasPermission("prison.admin")) menu.addButton(reset);
+
             Object obj = Privs.DEFAULT.getPrivilege(player).getValue(new BossNotify());
             if (obj != null) has = true;
             if (has) {

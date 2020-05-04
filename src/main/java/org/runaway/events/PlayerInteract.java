@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.achievements.Achievement;
 import org.runaway.inventories.MainMenu;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
@@ -44,9 +45,9 @@ public class PlayerInteract implements Listener {
         }
 
         // Локации
-        addLocation(player, "&aПодвал", "prison.vault");
-        addLocation(player, "&bЛедяная шахта", "prison.ice");
-        addLocation(player, "&eГладиаторская арена", "prison.glad");
+        addLocation(player, "Подвал", "prison.vault");
+        addLocation(player, "Ледяная шахта", "prison.ice");
+        addLocation(player, "Гладиаторская арена", "prison.glad");
 
         if (block == null) return;
         Main.cases.forEach(aCase -> aCase.open(event));
@@ -83,20 +84,21 @@ public class PlayerInteract implements Listener {
 
     private void addLocation(Player player, String name, String perm) {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
-        if (player.getInventory().getItemInMainHand().getType().equals(Material.AIR) || player.getInventory().getItemInMainHand().getItemMeta().getLore() == null) {
-            return;
-        }
-        if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(name)) {
-            if (!player.hasPermission(perm)) {
-                if (Main.usePermissionsEx) {
-                    PermissionsEx.getUser(player.getName()).addPermission(perm);
-                    gamer.sendMessage(EMessage.ACTIVATELOCATION);
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+        try {
+            if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains(name)) {
+                if (!player.hasPermission(perm)) {
+                    if (Main.usePermissionsEx) {
+                        PermissionsEx.getUser(player.getName()).addPermission(perm);
+                        gamer.sendMessage(EMessage.ACTIVATELOCATION);
+                        player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                        Achievement.FIRST_LOCATION.get(player, false);
+                    }
+                } else {
+                    gamer.sendMessage(EMessage.ALREADYHAVE);
                 }
-            } else {
-                gamer.sendMessage(EMessage.ALREADYHAVE);
             }
-        }
+        } catch (Exception ex) { }
     }
 
     //Продажа предметов

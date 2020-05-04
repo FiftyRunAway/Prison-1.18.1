@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
@@ -25,8 +26,11 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
+import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -95,7 +99,9 @@ public class Blaze extends EntityMonster {
         }
         if (a == 0) return false;
         if (source.getEntity() != null && source.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
-            Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.i()).getBukkitEntity().getName());
+            Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.getEntity().getBukkitEntity()).getName());
+            if (pAttacker == null) return false;
+
             Main.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
             if (!this.attackers.containsKey(pAttacker.getName())) {
                 this.attackers.put(pAttacker.getName(), (int)a);
@@ -186,6 +192,9 @@ public class Blaze extends EntityMonster {
     public void die() {
         if (!Main.bosses.contains(this.getUniqueID())) return;
         if (this.spawner != null) {
+            World world = this.spawner.getSpawnLocation().getWorld();
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(1) + 1).build().item());
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(12).build().item());
             this.spawner.dead();
         }
         if (this.killer != null) {
@@ -195,8 +204,8 @@ public class Blaze extends EntityMonster {
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {
                 Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
-                double money = percents.get(key) * this.money;
-                if (money < 0.0) money = 0.0;
+                double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();
+                if (money < 0) money = 0;
                 if (gamer.getPlayer() != null) {
                     gamer.depositMoney(money);
                     Achievement.BLAZE_KILL.get(gamer.getPlayer(), false);

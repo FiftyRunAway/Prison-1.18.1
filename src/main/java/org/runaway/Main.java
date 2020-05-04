@@ -412,12 +412,12 @@ public class Main extends JavaPlugin {
                 if (Utils.getPlayers().isEmpty()) return;
                 Utils.getPlayers().forEach(s -> {
                     Gamer gamer = gamers.get(Bukkit.getPlayer(s).getUniqueId());
-                    int get = (int) gamer.getStatistics(EStat.PLAYEDTIME);
-                    gamer.setStatistics(EStat.PLAYEDTIME, get + 1);
-                    if (get + 1 == 30) Achievement.TIME_30.get(gamer.getPlayer(), false);
-                    if (get + 1 == 90) Achievement.TIME_90.get(gamer.getPlayer(), false);
-                    if (get + 1 == 240) Achievement.TIME_4H.get(gamer.getPlayer(), false);
-                    if (get + 1 == 600) Achievement.TIME_10H.get(gamer.getPlayer(), false);
+                    int get = (int) gamer.getStatistics(EStat.PLAYEDTIME) + 1;
+                    gamer.setStatistics(EStat.PLAYEDTIME, get);
+                    if (get == 30) Achievement.TIME_30.get(gamer.getPlayer(), false);
+                    if (get == 90) Achievement.TIME_90.get(gamer.getPlayer(), false);
+                    if (get == 240) Achievement.TIME_4H.get(gamer.getPlayer(), false);
+                    if (get == 600) Achievement.TIME_10H.get(gamer.getPlayer(), false);
                 });
             }, 100, 1200);
         } catch (Exception ex) {
@@ -454,12 +454,13 @@ public class Main extends JavaPlugin {
                 rebirth.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
                 keys.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
             }
-            Main.tops.put("деньги", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10));
-            Main.tops.put("блоки", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10));
-            Main.tops.put("уровни", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10));
-            Main.tops.put("крысы", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10));
-            Main.tops.put("перерождения", new TopPlayers(Utils.getLocation("rebirthtop"), rats, "&7Топ игроков по перерождениям", 10));
-            Main.tops.put("ключи", new TopPlayers(Utils.getLocation("keystop"), rats, "&7Топ игроков по ключам", 10));
+            tops.put("деньги", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10));
+            tops.put("блоки", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10));
+            tops.put("уровни", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10));
+            tops.put("крысы", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10));
+            tops.put("перерождения", new TopPlayers(Utils.getLocation("rebirthtop"), rebirth, "&7Топ игроков по перерождениям", 10));
+            tops.put("ключи", new TopPlayers(Utils.getLocation("keystop"), keys, "&7Топ игроков по ключам", 10));
+
             Bukkit.getScheduler().runTaskTimer(this, () -> {
                 EConfig.STATISTICS.saveConfig();
                 HashMap<String, Long> money1 = new HashMap<>();

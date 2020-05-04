@@ -48,6 +48,22 @@ public class BlockBreak implements Listener {
             String name = player.getInventory().getItemInMainHand().getType().toString();
             if ((name.contains("AXE") || name.contains("SHOVEL") || name.contains("PICKAXE") || name.contains("SHEARS") || name.contains("SPADE"))) {
                 Block block = event.getBlock();
+
+                if (!player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
+                    if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
+                    int al = to_break.get(player.getName());
+                    if (al == damage_per) {
+                        to_break.put(player.getName(), 0);
+                        ItemStack item = player.getInventory().getItemInMainHand();
+                        item.setDurability((short) (item.getDurability() + 1));
+                        if (item.getDurability() <= 0) {
+                            item.setAmount(0);
+                        }
+                    } else {
+                        to_break.put(player.getName(), to_break.get(player.getName()) + 1);
+                    }
+                }
+
                 if ((block.getType().equals(Material.SAND) ||
                         block.getType().equals(Material.GRAVEL) ||
                         block.getType().equals(Material.DIRT)) && (int)gamer.getStatistics(EStat.LEVEL) < 2) {
@@ -63,7 +79,7 @@ public class BlockBreak implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                if (Math.random() < (0.002 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer()));
@@ -93,6 +109,21 @@ public class BlockBreak implements Listener {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         Block block = event.getBlock();
         if (block.getType().equals(Material.LOG_2) && block.getData() == 1) {
+            if (!player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
+                if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
+                int al = to_break.get(player.getName());
+                if (al == damage_per) {
+                    to_break.put(player.getName(), 0);
+                    ItemStack item = player.getInventory().getItemInMainHand();
+                    item.setDurability((short) (item.getDurability() + 1));
+                    if (item.getDurability() <= 0) {
+                        item.setAmount(0);
+                    }
+                } else {
+                    to_break.put(player.getName(), to_break.get(player.getName()) + 1);
+                }
+            }
+
             if ((int) gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                 event.setCancelled(true);
                 player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
@@ -105,7 +136,7 @@ public class BlockBreak implements Listener {
             }
             if (isLocation(event.getBlock().getLocation(), "forest")) {
                 AutoSell(event, false);
-                if (Math.random() < (0.002 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     player.getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(player));
@@ -167,20 +198,6 @@ public class BlockBreak implements Listener {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         Block block = event.getBlock();
         event.setCancelled(true);
-        if (!player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
-            if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
-            int al = to_break.get(player.getName());
-            if (al == damage_per) {
-                to_break.put(player.getName(), 0);
-                ItemStack item = player.getInventory().getItemInMainHand();
-                item.setDurability((short) (item.getDurability() + 1));
-                if (item.getDurability() <= 0) {
-                    item.setAmount(0);
-                }
-            } else {
-                to_break.put(player.getName(), to_break.get(player.getName()) + 1);
-            }
-        }
         if (gamer.getStatistics(EStat.AUTOSELL).equals(true)) {
             if (!chest) {
                 if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)) {

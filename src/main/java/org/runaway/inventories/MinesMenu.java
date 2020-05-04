@@ -51,11 +51,12 @@ public class MinesMenu implements IMenus {
             menu.addButton(bt);
         });
         ConfigurationSection levels = EConfig.CONFIG.getConfig().getConfigurationSection("levels");
-        int maxLevel = levels.getInt(levels.getKeys(false).size() - 1 + ".min_level") - 1;
+        int maxLevel = levels.getKeys(false).size();
         for (int s = 0; s < maxLevel; s++) {
             if (menu.getInventory().getItem(s) == null) {
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.COAL_BLOCK)
-                .name("&cСкоро").lore(new Lore.BuilderLore()
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.STAINED_GLASS_PANE)
+                        .data((short) 12)
+                        .name("&cСкоро").lore(new Lore.BuilderLore()
                                 .addString("&7Совсем скоро эта шахта появится")
                                 .addString("&7на сервере!").build()).build().item()).setSlot(s));
             }

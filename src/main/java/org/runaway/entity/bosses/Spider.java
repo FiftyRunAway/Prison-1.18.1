@@ -5,21 +5,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.runaway.Gamer;
+import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.EStat;
+import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Utils;
 import org.runaway.achievements.Achievement;
 import org.runaway.entity.Spawner;
@@ -27,8 +28,11 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.MoneyType;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Spider extends EntityMonster {
 
@@ -104,7 +108,8 @@ public class Spider extends EntityMonster {
         }
         if (a == 0) return false;
         if (source.getEntity() != null && source.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
-            Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.i()).getBukkitEntity().getName());
+            Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.getEntity().getBukkitEntity()).getName());
+            if (pAttacker == null) return false;
             if (Math.random() < 0.3) {
                 Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).damage(1);
             }
@@ -159,6 +164,8 @@ public class Spider extends EntityMonster {
     public void die() {
         if (!Main.bosses.contains(this.getUniqueID())) return;
         if (this.spawner != null) {
+            World world = this.spawner.getSpawnLocation().getWorld();
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(12).build().item());
             this.spawner.dead();
         }
         if (this.killer != null) {
@@ -168,10 +175,11 @@ public class Spider extends EntityMonster {
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {
                 Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
-                double money = percents.get(key) * this.money;
-                if (money < 0.0) money = 0.0;
+                double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();
+                Bukkit.getConsoleSender().sendMessage(percents.get(key) * this.money + " = " + money);
+                if (money < 0) money = 0;
                 if (gamer.getPlayer() != null) {
-                    gamer.depositMoney(Double.valueOf(money));
+                    gamer.depositMoney((double) money);
                     Achievement.SPIDER_KILL.get(gamer.getPlayer(), false);
                     gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
                 }
