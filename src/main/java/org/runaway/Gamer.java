@@ -1,6 +1,5 @@
 package org.runaway;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import com.nametagedit.plugin.NametagEdit;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -16,13 +15,13 @@ import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
 import org.runaway.donate.features.FLeaveDiscount;
 import org.runaway.enums.*;
-import org.runaway.events.PlayerJoin;
 import org.runaway.inventories.FractionMenu;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
+import us.myles.ViaVersion.api.Via;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
@@ -30,7 +29,6 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 /*
  * Created by _RunAway_ on 16.1.2019
@@ -88,14 +86,14 @@ public class Gamer {
 
     public void teleportTrashAuction() {
         getPlayer().closeInventory();
-        if (ProtocolLibrary.getProtocolManager().getProtocolVersion(getPlayer()) >= 340) {
+        if (is1_15_2()) {
             if (TrashAuction.auctions.size() > 0) {
                 teleport(TrashAuction.auction_spawn);
             } else {
                 sendMessage(EMessage.NOAUCTION);
             }
         } else {
-            sendTitle("&cТолько", "&c1.15.2");
+            sendTitle("&cТолько", "&c1.15.2+");
         }
     }
 
@@ -328,6 +326,17 @@ public class Gamer {
         if (m >= 1000) Achievement.GET_1000.get(getPlayer(), false);
         if (m >= 15000) Achievement.GET_15000.get(getPlayer(), false);
         if (m >= 100000) Achievement.GET_100000.get(getPlayer(), false);
+    }
+
+    public int getVerison() {
+        if (Main.useViaVersion) {
+            return Via.getAPI().getPlayerVersion(this.uuid);
+        }
+        return 1000;
+    }
+
+    public boolean is1_15_2() {
+        return getVerison() >= 578;
     }
 
     public void withdrawMoney(double money) {

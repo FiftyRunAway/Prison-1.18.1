@@ -4,7 +4,6 @@ import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -17,7 +16,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.achievements.Achievement;
@@ -31,7 +29,6 @@ import org.runaway.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -199,7 +196,7 @@ public class Blaze extends EntityMonster {
         }
         if (this.killer != null) {
             Bukkit.broadcastMessage(Utils.colored(EMessage.BLAZEDEAD.getMessage()
-                    .replaceAll("%player%", ChatColor.RESET + Objects.requireNonNull(this.getLastDamager()).getName())
+                    .replaceAll("%player%", ChatColor.RESET + this.killer.getName())
             ));
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {

@@ -7,7 +7,6 @@ import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.auction.TrashAuction;
-import org.runaway.boosters.Booster;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
@@ -21,7 +20,6 @@ import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MainMenu implements IMenus {
 
@@ -121,6 +119,7 @@ public class MainMenu implements IMenus {
                     .setSlot(0);
             trash.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
+                Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
                 if (event.getClickType().equals(ClickType.LEFT)) {
                     StringBuilder times = new StringBuilder();
                     AtomicInteger i = new AtomicInteger(0);
@@ -130,7 +129,7 @@ public class MainMenu implements IMenus {
                     });
                     event.getWhoClicked().sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
                 } else {
-                    Main.gamers.get(event.getWhoClicked().getUniqueId()).teleportTrashAuction();
+                    gamer.teleportTrashAuction();
                 }
             });
             menu.addButton(trash);

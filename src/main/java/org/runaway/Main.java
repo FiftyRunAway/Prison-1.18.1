@@ -2,17 +2,15 @@ package org.runaway;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,16 +28,21 @@ import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
 import org.runaway.google.TWOFA;
-import org.runaway.inventories.*;
+import org.runaway.inventories.BlockShopMenu;
+import org.runaway.inventories.MainMenu;
+import org.runaway.inventories.ShopMenu;
+import org.runaway.inventories.UpItemsMenu;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
-import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
-import org.runaway.utils.*;
+import org.runaway.utils.ExampleItems;
+import org.runaway.utils.Lore;
+import org.runaway.utils.Utils;
+import org.runaway.utils.Vars;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,6 +75,7 @@ public class Main extends JavaPlugin {
     public static boolean usePermissionsEx;
     public static boolean useNametagEdit;
     public static boolean useAuctionHouse;
+    public static boolean useViaVersion;
 
     //Событие
     public static String event = null;
@@ -138,6 +142,7 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.nametag")) loadNametagEdit();
         if (loader.getBoolean("loader.2fa")) loadTwoFA();
         if (loader.getBoolean("loader.auctionhouse")) loadTwoFA();
+        if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
         if (loader.getBoolean("register.mobs")) registerMobs();
 
@@ -332,6 +337,16 @@ public class Main extends JavaPlugin {
         } else {
             Vars.sendSystemMessage(TypeMessage.INFO, "NametagEdit has not been installed yet");
         }
+    }
+
+    //Привязка ViaVersion
+    private void loadViaVersion() {
+        useViaVersion = Bukkit.getPluginManager().isPluginEnabled("ViaVersion");
+        if (useViaVersion) {
+            Vars.sendSystemMessage(TypeMessage.SUCCESS, "ViaVersion was successfully connected");
+            return;
+        }
+        Vars.sendSystemMessage(TypeMessage.INFO, "ViaVersion has not been installed yet");
     }
 
     //Подгрузка статуса сервера
