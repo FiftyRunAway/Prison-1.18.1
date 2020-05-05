@@ -3,9 +3,11 @@ package org.runaway.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
+import org.runaway.enums.EStat;
 import org.runaway.inventories.UpgradeMenu;
 import org.runaway.upgrades.UpgradeMisc;
 
@@ -27,12 +29,15 @@ public class UpgradeCommand extends CommandManager {
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         if (args.length == 0) {
-            if (!confirm.contains(p.getName())) {
-                confirm.add(p.getName());
-                Main.gamers.get(p.getUniqueId()).sendMessage(EMessage.UPGRADEATTENTION);
-                return;
+            Gamer gamer = Main.gamers.get(p.getUniqueId());
+            if (gamer.getLevelItem() > (int)gamer.getStatistics(EStat.LEVEL)) {
+                if (!confirm.contains(p.getName())) {
+                    confirm.add(p.getName());
+                    gamer.sendMessage(EMessage.UPGRADEATTENTION);
+                    return;
+                }
+                confirm.remove(p.getName());
             }
-            confirm.remove(p.getName());
             new UpgradeMenu(p);
         } else if (args.length == 1 && p.isOp()) {
             String item = String.valueOf(args[0]);

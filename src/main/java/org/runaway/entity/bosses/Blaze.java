@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
@@ -134,11 +135,34 @@ public class Blaze extends EntityMonster {
                     ent.sendMessage(Utils.colored("&eЗадание &7>> Нанесите все вместе 70 урона Огненному стражу"));
                 }
             }
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (event) {
+                        for (Entity e : Blaze.this.getBukkitEntity().getNearbyEntities(10.0, 8.0, 10.0)) {
+                            if (e.getType() == EntityType.PLAYER) {
+                                LivingEntity p = (LivingEntity)e;
+                                p.teleport(spawner.getSpawnLocation());
+                                p.sendMessage(Utils.colored(Blaze.this.name + " &7>> &cЛадненько... вернусь сам!"));
+                            }
+                        }
+                        Blaze.this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(Blaze.this.speed);
+                        Blaze.this.getBukkitEntity().teleport(Blaze.this.spawner.getSpawnLocation());
+                        event = false;
+                        cancel();
+                    }
+                }
+            }.runTaskLater(Main.getInstance(), 600);
+
             this.getBukkitEntity().teleport(cotel_boss);
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (dopDamage >= 70) {
+                        if (!event) {
+                            cancel();
+                            return;
+                        }
                         for (Entity e : Blaze.this.getBukkitEntity().getNearbyEntities(10.0, 8.0, 10.0)) {
                             if (e.getType() == EntityType.PLAYER) {
                                 LivingEntity p = (LivingEntity)e;
@@ -153,12 +177,12 @@ public class Blaze extends EntityMonster {
                         for (Entity e : Blaze.this.getBukkitEntity().getNearbyEntities(10.0, 8.0, 10.0)) {
                             if (e.getType() == EntityType.PLAYER) {
                                 LivingEntity p = (LivingEntity)e;
-                                p.setHealth(p.getMaxHealth());
+                                p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
                             }
                         }
                     }
                 }
-            }.runTaskTimer(Main.getInstance(), 20L, 20L);
+            }.runTaskTimer(Main.getInstance(), 0L, 15L);
         }
         if (event) dopDamage += a;
         return super.damageEntity(source, a);
@@ -200,20 +224,22 @@ public class Blaze extends EntityMonster {
             ));
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
                 double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();
                 if (money < 0) money = 0;
-                if (gamer.getPlayer() != null) {
-                    gamer.depositMoney(money);
-                    Achievement.BLAZE_KILL.get(gamer.getPlayer(), false);
-                    gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
+                if (!Utils.getPlayers().contains(key)) {
+                    EStat.MONEY.setInConfig(key, (double)EStat.MONEY.getFromConfig(key) + money);
+                    continue;
                 }
-                if (gamer.getPlayer() != null) {
-                    gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()
-                            .replaceAll("%boss%", ChatColor.RESET + name)
-                            .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName())
-                    ));
-                }
+                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
+
+                gamer.depositMoney(money);
+                Achievement.BLAZE_KILL.get(gamer.getPlayer(), false);
+                gamer.setStatistics(EStat.BOSSES, (int) gamer.getStatistics(EStat.BOSSES) + 1);
+
+                gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()
+                        .replaceAll("%boss%", ChatColor.RESET + name)
+                        .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName())
+                ));
             }
         }
         super.die();

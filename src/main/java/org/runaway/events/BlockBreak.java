@@ -10,7 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.*;
+import org.bukkit.inventory.PlayerInventory;
+import org.runaway.Gamer;
+import org.runaway.Item;
+import org.runaway.Main;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
 import org.runaway.events.custom.BreakWoodEvent;
@@ -20,7 +23,10 @@ import org.runaway.utils.Vars;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 /*
  * Created by _RunAway_ on 17.1.2019
@@ -48,22 +54,6 @@ public class BlockBreak implements Listener {
             String name = player.getInventory().getItemInMainHand().getType().toString();
             if ((name.contains("AXE") || name.contains("SHOVEL") || name.contains("PICKAXE") || name.contains("SHEARS") || name.contains("SPADE"))) {
                 Block block = event.getBlock();
-
-                if (!player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
-                    if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
-                    int al = to_break.get(player.getName());
-                    if (al == damage_per) {
-                        to_break.put(player.getName(), 0);
-                        ItemStack item = player.getInventory().getItemInMainHand();
-                        item.setDurability((short) (item.getDurability() + 1));
-                        if (item.getDurability() <= 0) {
-                            item.setAmount(0);
-                        }
-                    } else {
-                        to_break.put(player.getName(), to_break.get(player.getName()) + 1);
-                    }
-                }
-
                 if ((block.getType().equals(Material.SAND) ||
                         block.getType().equals(Material.GRAVEL) ||
                         block.getType().equals(Material.DIRT)) && (int)gamer.getStatistics(EStat.LEVEL) < 2) {
@@ -116,8 +106,8 @@ public class BlockBreak implements Listener {
                     to_break.put(player.getName(), 0);
                     ItemStack item = player.getInventory().getItemInMainHand();
                     item.setDurability((short) (item.getDurability() + 1));
-                    if (item.getDurability() <= 0) {
-                        item.setAmount(0);
+                    if (item.getDurability() - item.getType().getMaxDurability() >= 0) {
+                        player.getInventory().getItemInMainHand().setType(Material.AIR);
                     }
                 } else {
                     to_break.put(player.getName(), to_break.get(player.getName()) + 1);
@@ -198,35 +188,43 @@ public class BlockBreak implements Listener {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         Block block = event.getBlock();
         event.setCancelled(true);
-        if (gamer.getStatistics(EStat.AUTOSELL).equals(true)) {
-            if (!chest) {
-                if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)) {
-                    ArrayList<ItemStack> i = new ArrayList<>();
-                    i.add(new ItemStack(block.getType()));
-                    sell(i, gamer);
-                    block.setType(Material.AIR);
-                    return;
+        PlayerInventory inventory = player.getInventory();
+
+        if (!inventory.getItemInMainHand().getItemMeta().isUnbreakable()) {
+            if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
+            int al = to_break.get(player.getName());
+            if (al == damage_per - 1) {
+                to_break.put(player.getName(), 0);
+                ItemStack item = inventory.getItemInMainHand();
+                item.setDurability((short) (item.getDurability() + 1));
+                if (item.getDurability() - item.getType().getMaxDurability() >= 0) {
+                    inventory.getItemInMainHand().setAmount(0);
                 }
-                sell(block.getDrops(), gamer);
-                block.setType(Material.AIR);
-                return;
+            } else {
+                to_break.put(player.getName(), to_break.get(player.getName()) + 1);
             }
+        }
+
+        if (chest) {
             block.setType(Material.CHEST);
+            return;
+        }
+
+        ArrayList<ItemStack> i = new ArrayList<>();
+        if (!inventory.getItemInMainHand().getType().equals(Material.AIR) && inventory.getItemInMainHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)) {
+            i.add(new ItemStack(block.getType(), 1, block.getData()));
         } else {
+            block.getDrops().forEach(itemStack -> i.add(new ItemStack(itemStack.getType(), 1, itemStack.getDurability())));
+        }
+        block.setType(Material.AIR);
+
+        if (gamer.getStatistics(EStat.AUTOSELL).equals(false)) {
             if (!gamer.isInventory()) {
                 gamer.sendMessage(EMessage.NOINVENTORY);
             }
-            if (!chest) {
-                if (player.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)) {
-                    player.getInventory().addItem(new ItemStack(block.getType()));
-                    block.setType(Material.AIR);
-                    return;
-                }
-                block.getDrops().forEach(itemStack -> player.getInventory().addItem(itemStack));
-                block.setType(Material.AIR);
-                return;
-            }
-            block.setType(Material.CHEST);
+            i.forEach(itemStack -> player.getInventory().addItem(itemStack));
+        } else {
+            sell(i, gamer);
         }
     }
 
@@ -243,7 +241,7 @@ public class BlockBreak implements Listener {
                 }
             }
         }
-        if (price == 0.0) {
+        if (price == 0) {
             for (ItemStack itemStack : items) {
                 player.getInventory().addItem(itemStack);
             }

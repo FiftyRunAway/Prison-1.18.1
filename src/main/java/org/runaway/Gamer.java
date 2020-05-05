@@ -4,6 +4,7 @@ import com.nametagedit.plugin.NametagEdit;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -69,6 +70,7 @@ public class Gamer {
 
     public void setHearts() {
         getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(19 + (int)getStatistics(EStat.LEVEL));
+        getPlayer().setHealth(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
     }
 
     public void setNametag() {
@@ -180,20 +182,35 @@ public class Gamer {
     public void rebirth () {
         setStatistics(EStat.REBIRTH, (int)getStatistics(EStat.REBIRTH) + 1);
         setStatistics(EStat.REBIRTH_SCORE, (int)getStatistics(EStat.REBIRTH_SCORE) + 1);
-        Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replaceAll("%player%", getPlayer().getName()).replaceAll("%rebirth%", getDisplayRebirth()));
+        Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replaceAll("%player%", getPlayer().getName()).replaceAll("%rebirth%", ChatColor.YELLOW + getDisplayRebirth()));
 
-        Arrays.stream(player.getInventory().getContents()).forEach(itemStack -> itemStack.setAmount(0));
-        Arrays.stream(getPlayer().getEnderChest().getContents()).forEach(itemStack -> itemStack.setAmount(0));
+        Inventory inventory = getPlayer().getInventory();
+        Inventory ec = getPlayer().getEnderChest();
+
+        Arrays.stream(inventory.getContents()).forEach(inventory::remove);
+        Arrays.stream(ec.getContents()).forEach(ec::remove);
+
         getPlayer().teleport(Main.SPAWN);
-
         annulateStat();
+        setNametag();
+
+        setHearts();
+        getPlayer().setFoodLevel(20);
+        getPlayer().setExp(0);
+        getPlayer().setLevel(0);
+
+        Achievement.JOIN.get(player, false);
 
         ItemStack is = new Item.Builder(Material.PAPER).name("&aМеню").lore(new Lore.BuilderLore().addSpace().addString("&7>> &bОткрыть").build()).build().item();
         if (!player.getInventory().contains(is)) {
-            player.getInventory().addItem(is);
+            player.getInventory().setItem(8, is);
         }
         player.getInventory().addItem(UpgradeMisc.buildItem("waxe0", false, player, false));
         player.getInventory().addItem(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").amount(8).build().item());
+    }
+
+    private void resetQuests() {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "questadmin reset " + getGamer());
     }
 
     private void annulateStat() {
@@ -210,6 +227,9 @@ public class Gamer {
                 setStatistics(stat, stat.getDefualt());
             }
         });
+        EConfig.BLOCKS.getConfig().set(getGamer(), null);
+        Achievement.removeAll(getPlayer());
+        resetQuests();
     }
 
     public boolean needRebirth() {

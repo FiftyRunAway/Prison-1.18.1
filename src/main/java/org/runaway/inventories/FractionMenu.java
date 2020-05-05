@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
+import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
+import org.runaway.enums.FactionType;
+import org.runaway.enums.MoneyType;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.enums.EConfig;
-import org.runaway.enums.FactionType;
-import org.runaway.enums.MoneyType;
 import org.runaway.utils.Lore;
 
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class FractionMenu implements IMenus {
                             .addSpace()
                             .addString("&fЦена &7• &a" + cost + " " + MoneyType.RUBLES.getShortName())
                             .build()).build().item()).setSlot(i.getAndIncrement());
-            button.setClickEvent(event -> Main.gamers.get(event.getWhoClicked()).inFraction(factionType, false));
+            button.setClickEvent(event -> Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false));
             menu.addButton(button);
         });
         player.openInventory(menu.build());

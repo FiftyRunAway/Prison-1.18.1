@@ -76,7 +76,7 @@ public class MainMenu implements IMenus {
             donate.setClickEvent(event -> new DonateMenu(event.getWhoClicked()));
             menu.addButton(donate);
 
-            IMenuButton mines = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIRT)
+            IMenuButton mines = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GRASS)
                     .name("&aСписок шахт")
                     .lore(new Lore.BuilderLore()
                             .addSpace()

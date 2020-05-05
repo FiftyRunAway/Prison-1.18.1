@@ -188,7 +188,7 @@ public class Main extends JavaPlugin {
                     new TrainerCommand(), new RebirthCommand(), new GiftCommand(),
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
-                    new BaseCommand()).forEach(CommandManager::register);
+                    new BaseCommand(), new TrashCommand()).forEach(CommandManager::register);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());

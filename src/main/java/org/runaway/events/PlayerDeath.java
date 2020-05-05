@@ -7,13 +7,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
 import org.runaway.Main;
-import org.runaway.utils.Utils;
 import org.runaway.achievements.Achievement;
 import org.runaway.board.Board;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.utils.Utils;
 
 /*
  * Created by _RunAway_ on 27.1.2019
@@ -35,11 +37,14 @@ public class PlayerDeath implements Listener {
                 player.getInventory().remove(itemStack);
             }
         });
-
+        boolean givenot = false;
         int money = (int)gamer.getStatistics(EStat.LEVEL);
         if ((double)gamer.getStatistics(EStat.MONEY) >= money) {
             gamer.withdrawMoney(money);
-        } else gamer.setStatistics(EStat.MONEY, 0);
+        } else {
+            givenot = true;
+            gamer.setStatistics(EStat.MONEY, 0);
+        }
 
         player.sendMessage(Utils.colored(EMessage.DIEDPLAYER.getMessage()).replace("%money%", Board.FormatMoney(money)));
         gamer.setStatistics(EStat.DEATHES, (int)gamer.getStatistics(EStat.DEATHES) + 1);
@@ -50,10 +55,10 @@ public class PlayerDeath implements Listener {
             gamerKiller.setStatistics(EStat.KILLS, (int)gamerKiller.getStatistics(EStat.KILLS) + 1);
             if ((int)gamerKiller.getStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer(), false);
             if ((int)gamerKiller.getStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer(), false);
-
+            if (givenot) return;
             gamerKiller.depositMoney(money);
             gamerKiller.getPlayer().sendMessage(Utils.colored(EMessage.KILLPLAYER.getMessage()).replace("%player%", gamer.getGamer()).replace("%money%", Board.FormatMoney(money)));
-            if (player.hasPermission("*")) Achievement.KILL_ADMIN.get(player, false);
+            if (gamerKiller.getPlayer().hasPermission("*")) Achievement.KILL_ADMIN.get(gamerKiller.getPlayer(), false);
         } else if (event.getEntity() instanceof Projectile && ((Projectile)event.getEntity()).getShooter() instanceof Player) {
             if (event.getEntity().getKiller().getName().equals(event.getEntity().getName())) Achievement.KILL_ARROW.get(player, false);
             Gamer gamerKiller = Main.gamers.get(event.getEntity().getKiller().getUniqueId());
@@ -64,5 +69,7 @@ public class PlayerDeath implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         event.setRespawnLocation(Main.SPAWN);
+        Player player = event.getPlayer();
+        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
     }
 }

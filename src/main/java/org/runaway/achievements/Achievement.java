@@ -1,27 +1,23 @@
 package org.runaway.achievements;
 
-import com.mysql.fabric.xmlrpc.base.Array;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Item;
 import org.runaway.Main;
-import org.runaway.utils.ExampleItems;
-import org.runaway.utils.Vars;
 import org.runaway.enums.BoosterType;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
+import org.runaway.utils.ExampleItems;
+import org.runaway.utils.Vars;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public enum Achievement {
     JOIN("&cВы попали в тюрьму", "Приговор вынесен", new Reward[]{
@@ -174,6 +170,17 @@ public enum Achievement {
         Arrays.stream(getReward()).forEach(rew -> rew.giveReward(player));
         Main.gamers.get(player.getUniqueId()).sendAchievementTitle(getName());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
+    }
+
+    public static void removeAll(Player player) {
+        Arrays.stream(values()).forEach(achievement -> {
+            List<String> list = EConfig.ACHIEVEMENTS.getConfig().getStringList(achievement.toString());
+            if (list.contains(player.getName())) {
+                list.remove(player.getName());
+                EConfig.ACHIEVEMENTS.getConfig().set(achievement.toString(), list);
+            }
+        });
+        EConfig.ACHIEVEMENTS.saveConfig();
     }
 
     public ItemStack getIcon(boolean opened) {

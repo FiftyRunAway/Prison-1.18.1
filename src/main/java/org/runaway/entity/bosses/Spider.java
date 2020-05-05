@@ -162,7 +162,7 @@ public class Spider extends EntityMonster {
         if (!Main.bosses.contains(this.getUniqueID())) return;
         if (this.spawner != null) {
             World world = this.spawner.getSpawnLocation().getWorld();
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(12).build().item());
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(8).build().item());
             this.spawner.dead();
         }
         if (this.killer != null) {
@@ -171,20 +171,22 @@ public class Spider extends EntityMonster {
             ));
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
                 double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();
                 if (money < 0) money = 0;
-                if (gamer.getPlayer() != null) {
-                    gamer.depositMoney(money);
-                    Achievement.SPIDER_KILL.get(gamer.getPlayer(), false);
-                    gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
+                if (!Utils.getPlayers().contains(key)) {
+                    EStat.MONEY.setInConfig(key, (double)EStat.MONEY.getFromConfig(key) + money);
+                    continue;
                 }
-                if (gamer.getPlayer() != null) {
-                    gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()
-                                    .replaceAll("%boss%", ChatColor.RESET + name)
-                                    .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName())
-                    ));
-                }
+                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
+
+                gamer.depositMoney(money);
+                Achievement.SPIDER_KILL.get(gamer.getPlayer(), false);
+                gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
+
+                gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()
+                        .replaceAll("%boss%", ChatColor.RESET + name)
+                        .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName())
+                ));
             }
         }
         super.die();
