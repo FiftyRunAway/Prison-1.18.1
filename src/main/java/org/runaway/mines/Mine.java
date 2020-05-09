@@ -18,12 +18,11 @@ import org.runaway.events.BlockBreak;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.utils.Items;
 import org.runaway.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Random;
 
 /*
  * Created by _RunAway_ on 24.5.2019
@@ -242,11 +241,11 @@ public class Mine {
         return this.y;
     }
 
-    private int getDiametr() {
+    public int getDiametr() {
         return this.diametr;
     }
 
-    private int getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
@@ -259,6 +258,6 @@ public class Mine {
     }
 
     public Location getMineLocation() {
-        return new Location(world, this.tpx, this.tpy, this.tpz);
+        return new Location(world, this.x, this.y, this.z);
     }
 }

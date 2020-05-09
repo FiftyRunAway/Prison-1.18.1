@@ -1,6 +1,6 @@
 package org.runaway.utils;
 
-import net.minecraft.server.v1_12_R1.*;
+import net.minecraft.server.v1_12_R1.EnumChatFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,7 +14,10 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerQuit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /*
  * Created by _RunAway_ on 14.1.2019
@@ -48,6 +51,10 @@ public class Utils {
     private static HashMap<String, Integer> scrolls = new HashMap<>();
     private static HashMap<String, Integer> rebirthScores = new HashMap<>();
 
+    // Battle pass
+    private static HashMap<String, Integer> bpScores = new HashMap<>();
+    private static HashMap<String, Integer> bpLevel = new HashMap<>();
+
     private static HashMap<String, String> auth_code = new HashMap<>();
 
     //Квесты
@@ -77,9 +84,6 @@ public class Utils {
     //Списки, связанные с подарками
     private static HashMap<String, ItemStack> gift = new HashMap<>();
     private static HashMap<String, String> gift_owners = new HashMap<>();
-
-    //Те, кто находятся в процессе телепортации
-    public static ArrayList<String> tpQueue = new ArrayList<>();
 
     public static String getMessage(EMessage message) {
         return colored(message.getMessage());
@@ -342,6 +346,14 @@ public class Utils {
 
     public static HashMap<String, Integer> getRebirthScores() {
         return rebirthScores;
+    }
+
+    public static HashMap<String, Integer> getBattlePassScores() {
+        return bpScores;
+    }
+
+    public static HashMap<String, Integer> getBattlePassLevel() {
+        return bpLevel;
     }
 
     public static HashMap<String, String> getDailyQuests() {

@@ -16,6 +16,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
 import org.runaway.auction.TrashAuction;
+import org.runaway.battlepass.BattlePass;
+import org.runaway.battlepass.missions.KeyFarm;
+import org.runaway.battlepass.missions.WoodFarm;
 import org.runaway.board.Board;
 import org.runaway.boosters.GBlocks;
 import org.runaway.boosters.GMoney;
@@ -44,7 +47,10 @@ import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
@@ -98,6 +104,9 @@ public class Main extends JavaPlugin {
     // Список норм боссов
     public static ArrayList<UUID> bosses = new ArrayList<>();
 
+    // Список шахт
+    public static ArrayList<Mine> mines = new ArrayList<>();
+
     public void onEnable() {
         instance = this;
         loader();
@@ -144,6 +153,8 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.auctionhouse")) loadTwoFA();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
+        if (loader.getBoolean("loader.battlepass")) BattlePass.load();
+
         if (loader.getBoolean("register.mobs")) registerMobs();
 
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
@@ -171,6 +182,10 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new PlayerAttack());
 
             new Utils().RegisterEvent(new TWOFA());
+
+            // Missions events
+            new Utils().RegisterEvent(new KeyFarm());
+            new Utils().RegisterEvent(new WoodFarm());
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering events!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -553,7 +568,7 @@ public class Main extends JavaPlugin {
                         Utils.unserializeLocation(file.getString("holo")),
                         file.getBoolean("tpSpawn"),
                         surface);
-                ((LinkedList)Prison.MINES.getObject()).add(mine);
+                mines.add(mine);
 
                 Mine.updateMine(mine);
             });

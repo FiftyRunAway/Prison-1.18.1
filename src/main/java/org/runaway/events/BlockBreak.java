@@ -58,6 +58,7 @@ public class BlockBreak implements Listener {
                         block.getType().equals(Material.GRAVEL) ||
                         block.getType().equals(Material.DIRT)) && (int)gamer.getStatistics(EStat.LEVEL) < 2) {
                     gamer.sendMessage(EMessage.SECONDLEVEL);
+                    event.setCancelled(true);
                     return;
                 }
                 if ((int)gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
@@ -69,10 +70,10 @@ public class BlockBreak implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.5 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
-                    Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer()));
+                    Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
                     gamer.setStatistics(EStat.KEYS, (int)gamer.getStatistics(EStat.KEYS) + 1);
                 }
                 double add = gamer.getBoosterBlocks();
@@ -129,7 +130,7 @@ public class BlockBreak implements Listener {
                 if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     player.getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
-                    Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(player));
+                    Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(player, event.getBlock()));
                     gamer.setStatistics(EStat.KEYS, (int)gamer.getStatistics(EStat.KEYS) + 1);
                 }
                 double add = gamer.getBoosterBlocks();
@@ -148,7 +149,7 @@ public class BlockBreak implements Listener {
                 }, 250L);
             }
         }
-    }//normal random for key - 0.001
+    }//normal random for key - 0.005
 
     //normal random for treasure - 0.00015
     private boolean FindChest(BlockBreakEvent event) {

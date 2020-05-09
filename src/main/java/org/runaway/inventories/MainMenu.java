@@ -179,6 +179,15 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(quests);
 
+            IMenuButton bp = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.TNT)
+                    .name("&eБоевой пропуск &d(НОВИНКА!)")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть").build()).build().item())
+                    .setSlot(30);
+            bp.setClickEvent(event -> new BattlePassMenu(event.getWhoClicked()));
+            menu.addButton(bp);
+
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load profile menu!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());

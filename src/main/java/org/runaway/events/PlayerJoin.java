@@ -5,14 +5,18 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.*;
+import org.runaway.Gamer;
+import org.runaway.Item;
+import org.runaway.Main;
 import org.runaway.achievements.Achievement;
+import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
 import org.runaway.commands.SetStatCommand;
 import org.runaway.enums.*;
@@ -39,13 +43,13 @@ public class PlayerJoin implements Listener {
         CreateInConfig(event); // Add in config file
         Utils.getPlayers().add(player.getName());
         if (isAccess(event)) {
-
             Gamer gamer = Main.gamers.get(player.getUniqueId());
             Board.sendBoard(player); // Set up scoreboard to player
             gamer.setLevelBar();
             gamer.setExpProgress();
             addBar(player); // Add boss bar with boosters
             addPaper(player); // Add menu paper item
+            addToMissions(gamer); // Add to missions of battle pass
             if (Main.useNametagEdit) gamer.setNametag(); // Add nametag
             //if (TWOFA.authlocked != null) twoFA(gamer); // Google Authenticator
             if (!player.hasPlayedBefore()) {
@@ -57,6 +61,17 @@ public class PlayerJoin implements Listener {
                 if (Utils.getPlayers().size() == 1) Achievement.EMPTY_SERVER.get(player, false); // Achievement
             }
         }
+    }
+
+    private void addToMissions(Gamer gamer) {
+        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
+            ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
+            if (section.contains(gamer.getGamer())) {
+                mission.getValues().put(gamer.getGamer(), section.getInt(gamer.getGamer()));
+            } else {
+                mission.getValues().put(gamer.getGamer(), 0);
+            }
+        }));
     }
 
     private void twoFA(Gamer gamer) {

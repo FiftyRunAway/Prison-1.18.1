@@ -7,7 +7,6 @@ import java.util.LinkedList;
  */
 
 public enum Prison {
-    MINES(new LinkedList<>()),
     BOSSES(new LinkedList<>()),
     DONATE(new LinkedList<>());
 

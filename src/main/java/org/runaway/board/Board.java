@@ -8,9 +8,10 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.battlepass.BattlePass;
+import org.runaway.enums.*;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
-import org.runaway.enums.*;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -115,9 +116,11 @@ public class Board {
                 if (scoreboard != null) {
                     if (scoreboard.getObjective(DisplaySlot.SIDEBAR) == null) return;
                     if (Main.event != null) {
-                        scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()) + Utils.colored(" &7| " + Main.event));
+                        scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
+                                .replace(Utils.colored(" &7| " + Main.event), "")) + Utils.colored(" &7| " + Main.event));
                     } else {
-                        scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()));
+                        scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
+                                .replace(Utils.colored(" &7| &b" + BattlePass.season + " СЕЗОН"), "")) + Utils.colored(" &7| &b" + BattlePass.season + " СЕЗОН"));
                     }
                 }
             });

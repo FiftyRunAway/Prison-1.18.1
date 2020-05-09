@@ -38,7 +38,9 @@ public enum EStat {
     DAILYSTREAK("quests.daily", "default", StatType.STRING, Utils.getDailyQuests()),
     DAILYSTART("quests.dailystart", 0, StatType.INTEGER, Utils.getDailyStart()),
     TWOFA_CODE("auth.code", "default", StatType.STRING, Utils.getAuthCode()),
-    REBIRTH_SCORE("rebirth.score", 0, StatType.INTEGER, Utils.getRebirthScores());
+    REBIRTH_SCORE("rebirth.score", 0, StatType.INTEGER, Utils.getRebirthScores()),
+    BATTLEPASS_SCORE("battlepass.score", 0, StatType.INTEGER, Utils.getBattlePassScores()),
+    BATTLEPASS_LEVEL("battlepass.level", 0, StatType.INTEGER, Utils.getBattlePassLevel());
 
     private String title;
     private Object defualt;

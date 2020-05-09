@@ -11,12 +11,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.Requires;
-import org.runaway.utils.Utils;
 import org.runaway.achievements.Achievement;
-import org.runaway.boosters.*;
+import org.runaway.boosters.LBlocks;
+import org.runaway.boosters.LMoney;
+import org.runaway.boosters.Serializer;
 import org.runaway.enums.*;
 import org.runaway.upgrades.Upgrade;
 import org.runaway.upgrades.UpgradeMisc;
+import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -176,7 +178,8 @@ public class PlayerInventoryClick implements Listener {
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Магазин блоков") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Аукцион") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Уведомления") ||
-                    event.getInventory().getName().contains("Просмотр")) {
+                    event.getInventory().getName().contains("Просмотр") ||
+                    event.getInventory().getName().contains("Боевой пропуск")) {
                 event.setCancelled(true);
             }
         } catch (Exception ignored) {  }

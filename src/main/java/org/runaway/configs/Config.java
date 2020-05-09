@@ -3,11 +3,11 @@ package org.runaway.configs;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.runaway.Main;
-import org.runaway.utils.Utils;
-import org.runaway.utils.Vars;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
+import org.runaway.utils.Utils;
+import org.runaway.utils.Vars;
 
 import java.io.File;
 import java.util.Arrays;
@@ -19,24 +19,23 @@ import java.util.Arrays;
 public class Config {
 
     public static FileConfiguration statistics, upgrade, blocks, boss, donate, shop,
-            talants, log, standart, boosters, messages, mines, mobs, modules, cases, achievs, trainer;
+            talants, log, standart, boosters, messages, mines, mobs, modules, cases, achievs, trainer,
+            bp, bpData;
     public static File statisticsFile, upgradeFile, blocksFile, bossFile, donateFile, shopFile,
             talantsFile, logFile, standartFile, boostersFile, messagesFile, minesFile, mobsFile, modulesFile, casesFile,
-            achievsFile, trainerFile;
+            achievsFile, trainerFile, bpFile, bpDataFile;
 
     public void loadConfigs() {
         try {
             Arrays.stream(EConfig.values()).forEach(config -> {
                 CreateConfig(config.getConfigName(), config);
                 Vars.sendSystemMessage(TypeMessage.INFO, "'" + Utils.upCurLetter(config.getConfigName(), 1) + ".yml' config was loaded");
+                if (config.getHeader() != null) {
+                    config.getConfig().options().header(config.getHeader()).copyHeader();
+                    config.saveConfig();
+                }
             });
-            EConfig.CONFIG.getConfig().options().header("Server status: NORMAL, ZBT, PREVENTIVEWORKS, HACKED, ERROR, WIPE." +
-                    "\n----------------------------------------------------------" +
-                    "\nLocations:" +
-                    "\n- Forest has format 'x1 y1 z1 x2 y2 z2 WORLD'" +
-                    "\n- Case has format 'x y z WORLD'" +
-                    "\n- Spawn has format 'x y z WORLD'");
-            EConfig.CONFIG.getConfig().options().copyHeader(true);
+
             Vars.sendSystemMessage(TypeMessage.SUCCESS, EConfig.values().length + " configs was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading configs!");

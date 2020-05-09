@@ -68,6 +68,10 @@ public class Gamer {
         return (double)getStatistics(EStat.MONEY) >= money;
     }
 
+    public boolean hasBattlePass() {
+        return getPlayer().hasPermission("prison.battlepass");
+    }
+
     public void setHearts() {
         getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(19 + (int)getStatistics(EStat.LEVEL));
         getPlayer().setHealth(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());

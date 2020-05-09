@@ -2,15 +2,17 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.runaway.Gamer;
 import org.runaway.Main;
-import org.runaway.utils.Utils;
+import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
+import org.runaway.utils.Utils;
 
 import java.util.Arrays;
 
@@ -24,6 +26,7 @@ public class PlayerQuit implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
         Player player = event.getPlayer();
+        removeMissions(player);
         SavePlayer(player.getName());
         Utils.getPlayers().remove(player.getName());
         removeBar(player);
@@ -33,6 +36,14 @@ public class PlayerQuit implements Listener {
         Gamer.tp.remove(player.getUniqueId());
         Main.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
+    }
+
+    private void removeMissions(Player player) {
+        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
+            ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
+            section.set(player.getName(), mission.getValues().get(player.getName()));
+        }));
+        EConfig.BATTLEPASS_DATA.saveConfig();
     }
 
     private void removeBar(Player player) {
