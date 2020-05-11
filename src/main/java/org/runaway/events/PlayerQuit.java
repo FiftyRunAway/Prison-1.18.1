@@ -12,6 +12,7 @@ import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
+import org.runaway.inventories.BattlePassMenu;
 import org.runaway.utils.Utils;
 
 import java.util.Arrays;
@@ -36,12 +37,15 @@ public class PlayerQuit implements Listener {
         Gamer.tp.remove(player.getUniqueId());
         Main.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
+        BattlePassMenu.data.remove(player.getName());
     }
 
     private void removeMissions(Player player) {
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
             ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
             section.set(player.getName(), mission.getValues().get(player.getName()));
+
+            mission.getValues().remove(player.getName());
         }));
         EConfig.BATTLEPASS_DATA.saveConfig();
     }

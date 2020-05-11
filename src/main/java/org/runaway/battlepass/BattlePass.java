@@ -1,5 +1,6 @@
 package org.runaway.battlepass;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -140,11 +141,12 @@ public class BattlePass {
                         slot = pos.get() + 18;
                     }
                 }
+                Bukkit.getConsoleSender().sendMessage(level + " - " + slot);
                 BattlePass.slots.put(reward, slot);
             });
             if (pos.getAndIncrement() - startPage.get() == 8) {
-                pos.getAndAdd(45);
-                startPage.getAndAdd(45);
+                pos.addAndGet(45);
+                startPage.set(pos.get());
             }
         });
         BattlePassMenu.load();

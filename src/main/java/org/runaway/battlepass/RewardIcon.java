@@ -6,6 +6,8 @@ import org.runaway.Item;
 import org.runaway.utils.Items;
 import org.runaway.utils.Lore;
 
+import java.util.ArrayList;
+
 public class RewardIcon extends Items {
 
     private final IReward reward;
@@ -30,12 +32,20 @@ public class RewardIcon extends Items {
     }
 
     public ItemStack getIcon() {
+        boolean is = this.reward.getValue() > 0;
+        ArrayList<String> adding = new ArrayList<>();
+        if (is) {
+            adding.add(" ");
+            adding.add("&7Количество • &e" + this.reward.getValue());
+        }
         return new Item.Builder(this.reward.getType())
-                .name(ChatColor.GREEN + this.reward.getName())
-                .amount(this.reward.getValue() > 0 ? this.reward.getValue() : 1)
+                .name("&bНаграда: " + ChatColor.GREEN + this.reward.getName())
+                .amount(is ? this.reward.getValue() : 1)
                 .lore(new Lore.BuilderLore()
                         .addSpace()
+                        .addString("&7Описание награды:")
                         .addString(ChatColor.GRAY + this.reward.getDescription())
+                        .addList(adding)
                         .build())
                 .build().item();
     }
