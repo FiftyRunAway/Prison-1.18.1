@@ -1,6 +1,5 @@
 package org.runaway.battlepass;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -8,8 +7,10 @@ import org.runaway.Gamer;
 import org.runaway.battlepass.missions.EMissions;
 import org.runaway.battlepass.rewards.ERewards;
 import org.runaway.enums.EConfig;
+import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.BattlePassMenu;
+import org.runaway.utils.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -38,14 +39,48 @@ public class BattlePass {
 
     private static void levelUp(Gamer gamer) {
         Player player = gamer.getPlayer();
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERDRAGON_DEATH, 10, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 1);
 
-        gamer.sendTitle("&eБоевой пропуск", "&eПовышен");
+        gamer.sendTitle("&bБоевой пропуск", "&eПовышен!");
 
         gamer.setStatistics(EStat.BATTLEPASS_LEVEL, (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + 1);
         gamer.setStatistics(EStat.BATTLEPASS_SCORE, (int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) % level);
 
         level_rewards.get((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL)).forEach(reward -> reward.get(gamer));
+
+        // Getting rewards
+        StringBuilder get = new StringBuilder();
+        StringBuilder can = new StringBuilder();
+        AtomicInteger i = new AtomicInteger();
+        AtomicInteger j = new AtomicInteger();
+
+        ArrayList<IReward> rews = new ArrayList<>(level_rewards.get((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL)));
+
+        rews.forEach(reward -> {
+            if (gamer.hasBattlePass() || reward.isFree()) {
+                reward.get(gamer); // Get reward
+
+                get.append(reward.getName());
+                if (reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                if (reward.isFree()) get.append(" &7[&eБесплатная награда&7]");
+                get.append(", ");
+                i.incrementAndGet();
+            } else {
+                can.append(reward.getName()).append(", ");
+                if (reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                j.incrementAndGet();
+            }
+        });
+        if (i.get() > 0) {
+            get.delete(get.length() - 2, get.length());
+            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPREWARDGET.getMessage().replace("%reward%",
+                    get.append('.').toString())));
+        }
+        if (j.get() > 0) {
+            can.delete(can.length() - 2, can.length());
+            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPREWARDCAN.getMessage().replace("%reward%",
+                    can.append('.').toString())));
+        }
     }
 
     public static void load() {
@@ -141,7 +176,6 @@ public class BattlePass {
                         slot = pos.get() + 18;
                     }
                 }
-                Bukkit.getConsoleSender().sendMessage(level + " - " + slot);
                 BattlePass.slots.put(reward, slot);
             });
             if (pos.getAndIncrement() - startPage.get() == 8) {

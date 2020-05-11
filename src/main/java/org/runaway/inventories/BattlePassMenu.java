@@ -188,7 +188,6 @@ public class BattlePassMenu implements IMenus {
 
         // Pre-loading paged rewards
         for (int i = 0; i <= pages; i++) {
-            Bukkit.getConsoleSender().sendMessage(i + " page!");
             preLoadingMenuButtons(i);
         }
     }

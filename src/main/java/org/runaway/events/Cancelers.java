@@ -38,7 +38,7 @@ public class Cancelers implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDrop(PlayerDropItemEvent event) {
-        if (event.getItemDrop().getItemStack().getItemMeta().getDisplayName() != null) {
+        if (event.getItemDrop().getItemStack().getItemMeta().getLore() != null) {
             event.setCancelled(true);
         }
     }

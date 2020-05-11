@@ -106,8 +106,8 @@ public enum  EMessage {
     ONEAUCTION("OneOnAuction", "&cНам не выгодно с вами играть, ведь на сервере совсем пусто..."),
     AUCTIONTIMES("TimesAuction", "&fАукцион проходит в &e%time%"),
     BPMISSION("MissionComplete", "&aВы выполнили миссию &e%name%. &aПродолжайте в том же духе!"),
-    BPREWARDPAID("RewardPaid", "&aНаграда за повышение уровня боевого пропуска: %reward%"),
-    BPREWARDFREE("RewardFree", "&aИмея боевой пропуск, вы могли бы получить в награду за повышение уровня: %reward%");
+    BPREWARDGET("RewardGet", "&aВы получили следующие награды за повышение уровня боевого пропуска: %reward%"),
+    BPREWARDCAN("RewardCanGet", "&aВы бы могли получить эти награды, имея боевой пропуск: %reward%");
 
     private String config, defaults;
     public static HashMap<String, String> messages = new HashMap<>();

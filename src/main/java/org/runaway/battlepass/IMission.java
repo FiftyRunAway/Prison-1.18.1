@@ -110,6 +110,11 @@ public abstract class IMission {
      * @return a Hashcode of mission
      */
     public int getHashCode() {
-        return getLenghtArguments() + getName().length() + getValue() + getDescription().length() + getExperience() + getClass().getSimpleName().length();
+        return getLenghtArguments() +
+                getName().length() +
+                getValue() +
+                getDescription().length() +
+                getExperience() +
+                getClass().getSimpleName().length();
     }
 }

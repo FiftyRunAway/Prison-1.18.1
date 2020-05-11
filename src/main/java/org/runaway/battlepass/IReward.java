@@ -2,8 +2,6 @@ package org.runaway.battlepass;
 
 import org.bukkit.Material;
 import org.runaway.Gamer;
-import org.runaway.enums.EMessage;
-import org.runaway.utils.Utils;
 
 public abstract class IReward {
 
@@ -53,12 +51,7 @@ public abstract class IReward {
     }
 
     public void get(Gamer gamer) {
-        if (gamer.hasBattlePass() || this.isFree()) {
-            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPREWARDPAID.getMessage().replace("%reward%", getName())));
-            this.getReward(gamer);
-        } else {
-            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPREWARDFREE.getMessage().replace("%reward%", getName())));
-        }
+        this.getReward(gamer);
     }
 
     protected abstract Material getType();
