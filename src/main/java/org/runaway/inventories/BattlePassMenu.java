@@ -1,6 +1,5 @@
 package org.runaway.inventories;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,18 +46,19 @@ public class BattlePassMenu implements IMenus {
                 .build().item()).setSlot(49);
         menu.addButton(exp);
 
-        openPage(0, gamer);
+        openStartPage(gamer);
 
-        if (pages > 1) {
+        /*if (pages > 1) {
             IMenuButton next = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aВперёд").build().item()).setSlot(53);
             next.setClickEvent(event -> openPage(1, Main.gamers.get(event.getWhoClicked().getUniqueId())));
             menu.addButton(next);
         }
-        player.openInventory(menu.build());
+        player.openInventory(menu.build());*/
     }
 
     private static void openPage(int page, Gamer gamer) {
         StandardMenu menu = main;
+        menu.setTitle(ChatColor.YELLOW + "Боевой пропуск (" + (page + 1) + "/" + Math.round(Math.ceil(pages)) + ")");
         for (int i = 0; i < 36; i++) {
             menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new ItemStack(Material.AIR)).setSlot(i));
         }
@@ -78,21 +78,29 @@ public class BattlePassMenu implements IMenus {
                 int level = page * 9 + (i - 9);
                 if (hasMaxLevel && level > max_level) break;
                 if (pass && player_level < level) pass = false;
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(glass(pass, level)).setSlot(i));
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(glass(pass, level, gamer)).setSlot(i));
             }
         } else {
             for (int i = 10; i < 18; i++) {
                 if (hasMaxLevel && i - 9 > max_level) break;
                 if (pass && player_level < i - 9) pass = false;
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(glass(pass, i - 9)).setSlot(i));
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(glass(pass, i - 9, gamer)).setSlot(i));
             }
         }
 
         gamer.getPlayer().openInventory(menu.build());
     }
 
-    private static ItemStack glass(boolean opened, int level) {
-        return ExampleItems.glass(opened ? 5 : 14, ChatColor.GRAY + "" + level + " Уровень");
+    private static void openStartPage(Gamer gamer) {
+        int level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
+        int page = 0;
+        if (gamer.hasBattlePass() && max_level > 8 && level >= 8) page = (level + 1) / 9;
+
+        openPage(page >= Math.ceil(pages) ? page - 1 : page, gamer);
+    }
+
+    private static ItemStack glass(boolean opened, int level, Gamer gamer) {
+        return ExampleItems.glass(opened ? 5 : ((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + 1 == level ? 4 : 14), ChatColor.GRAY + "" + level + " Уровень");
     }
 
     private static void preLoadingMenuButtons(int page) {
@@ -100,9 +108,7 @@ public class BattlePassMenu implements IMenus {
 
         BattlePass.slots.forEach((reward, slot) -> {
             if (slot >= page * 54 && slot < (page + 1) * 54) {
-                if (page == 2) Bukkit.getConsoleSender().sendMessage("page 2 " + slot);
                 int sl;
-
                 if (page > 0) {
                     sl = slot - (page * 54);
                 } else sl = slot;
@@ -132,8 +138,7 @@ public class BattlePassMenu implements IMenus {
             btns.add(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(11)).setSlot(9));
             btns.add(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(11)).setSlot(27));
         }
-
-        if (page < pages) {
+        if (page < Math.ceil(pages - 1)) {
             IMenuButton next = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aВперёд").build().item()).setSlot(53);
             next.setClickEvent(event -> {
                 Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
@@ -160,7 +165,7 @@ public class BattlePassMenu implements IMenus {
         max_level = EConfig.BATTLEPASS.getConfig().getConfigurationSection("levels").getKeys(false).size();
         pages = (Double.parseDouble(String.valueOf(BattlePass.glass_slots.size())) + 1) / 9;
 
-        main = StandardMenu.create(6, ChatColor.YELLOW +  "Боевой пропуск");
+        main = StandardMenu.create(6, ChatColor.YELLOW + "Боевой пропуск");
         missionsMenu = StandardMenu.create(6, ChatColor.YELLOW +  "Боевой пропуск &7• &eИспытания");
         main.addChild(ChatColor.YELLOW +  "Боевой пропуск &7• &eИспытания", missionsMenu);
 
@@ -187,7 +192,7 @@ public class BattlePassMenu implements IMenus {
         main.addButton(desc);
 
         // Pre-loading paged rewards
-        for (int i = 0; i <= pages; i++) {
+        for (int i = 0; i < Math.ceil(pages); i++) {
             preLoadingMenuButtons(i);
         }
     }
@@ -204,6 +209,8 @@ public class BattlePassMenu implements IMenus {
                     .build().item()).setSlot(i.getAndIncrement());
             btn.setClickEvent(e -> openTasksMenu(Main.gamers.get(e.getWhoClicked().getUniqueId()), wm));
             menu.addButton(btn);
+
+            if (i.get() == 26) i.set(28);
         });
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(53);

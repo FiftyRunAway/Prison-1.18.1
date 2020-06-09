@@ -185,7 +185,7 @@ public class Gamer {
 
     public void rebirth () {
         setStatistics(EStat.REBIRTH, (int)getStatistics(EStat.REBIRTH) + 1);
-        setStatistics(EStat.REBIRTH_SCORE, (int)getStatistics(EStat.REBIRTH_SCORE) + 1);
+        setStatistics(EStat.REBIRTH_SCORE, (int)getStatistics(EStat.REBIRTH_SCORE) + 2);
         Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replaceAll("%player%", getPlayer().getName()).replaceAll("%rebirth%", ChatColor.YELLOW + getDisplayRebirth()));
 
         Inventory inventory = getPlayer().getInventory();
@@ -352,7 +352,7 @@ public class Gamer {
         if (m >= 100000) Achievement.GET_100000.get(getPlayer(), false);
     }
 
-    public int getVerison() {
+    private int getVerison() {
         if (Main.useViaVersion) {
             return Via.getAPI().getPlayerVersion(this.uuid);
         }

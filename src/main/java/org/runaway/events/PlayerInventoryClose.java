@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.enums.EStat;
+import org.runaway.inventories.Confirmation;
 import org.runaway.inventories.ModeMenu;
 
 /*
@@ -24,6 +25,7 @@ public class PlayerInventoryClose implements Listener {
             if (event.getInventory().getName().equalsIgnoreCase(ChatColor.YELLOW + "Выбор сложности") && gamer.getStatistics(EStat.MODE).equals("default")) {
                 new ModeMenu();
             }
+            Confirmation.inMenu.remove(player.getName());
         }
     }
 }

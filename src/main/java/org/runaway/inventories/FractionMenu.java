@@ -31,7 +31,9 @@ public class FractionMenu implements IMenus {
                 .addSpace()
                 .addString("&fЦена &7• &aБесплатно")
                 .build()).build().item()).setSlot(8);
-        btn.setClickEvent(event -> Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(FactionType.DEFAULT, true));
+        btn.setClickEvent(event ->
+                new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
+                    Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(FactionType.DEFAULT, true)));
         menu.addButton(btn);
         int cost = EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * (int) gamer.getStatistics(EStat.LEVEL);
         AtomicInteger i = new AtomicInteger();
@@ -43,7 +45,9 @@ public class FractionMenu implements IMenus {
                             .addSpace()
                             .addString("&fЦена &7• &a" + cost + " " + MoneyType.RUBLES.getShortName())
                             .build()).build().item()).setSlot(i.getAndIncrement());
-            button.setClickEvent(event -> Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false));
+            button.setClickEvent(event ->
+                    new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
+                        Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false)));
             menu.addButton(button);
         });
         player.openInventory(menu.build());

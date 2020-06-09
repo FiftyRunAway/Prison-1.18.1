@@ -1,8 +1,10 @@
 package org.runaway.battlepass;
 
 import org.runaway.Gamer;
+import org.runaway.Main;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.mines.Mine;
 import org.runaway.utils.Utils;
 
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public abstract class IMission {
      * Give a name of mission
      */
     public String getName() {
-        return String.valueOf(getDescriptionDetails()[getLenghtArguments() - 1]);
+        return String.valueOf(getDescriptionDetails()[getLenghtArguments() - 1]).replace("_", " ");
     }
 
     /**
@@ -59,6 +61,10 @@ public abstract class IMission {
         int result = (int)getValues().get(gamer.getGamer()) + 1;
         getValues().put(gamer.getGamer(), result);
 
+        checkLevel(gamer);
+    }
+
+    protected void checkLevel(Gamer gamer) {
         if (isCompleted(gamer)) {
             gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", Utils.upCurLetter(getName().toLowerCase(), 1))));
             gamer.sendActionbar(Utils.colored("&dПолучено " + getExperience() + " опыта"));
@@ -96,7 +102,9 @@ public abstract class IMission {
      * @return a Value of status mission
      */
     public boolean isCompleted(Gamer gamer) {
-        return (int)getValues().get(gamer.getGamer()) >= getValue();
+        return !getValues().containsKey(gamer.getGamer()) ||
+                (getValues().containsKey(gamer.getGamer()) &&
+                        (int)getValues().get(gamer.getGamer()) >= getValue());
     }
 
     /**
@@ -116,5 +124,26 @@ public abstract class IMission {
                 getDescription().length() +
                 getExperience() +
                 getClass().getSimpleName().length();
+    }
+
+    protected void addAllValues(Gamer gamer) {
+        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
+            if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
+                if (!mission.isCompleted(gamer)) {
+                    mission.addValue(gamer);
+                }
+            }
+        }));
+    }
+
+    protected Mine getMineString(String string) {
+        if (!string.toLowerCase().equals("none") && !string.toLowerCase().equals("null")) {
+            for (Mine m : Main.mines) {
+                if (m.getMaterial().toString().toLowerCase().equals(string.toLowerCase())) {
+                    return m;
+                }
+            }
+        }
+        return null;
     }
 }

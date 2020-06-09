@@ -15,7 +15,7 @@ import org.runaway.utils.Utils;
 public class KeyFarm extends IMission implements Listener {
 
     private String mine_name;
-    private String techName;
+    private Mine mine;
 
     @EventHandler
     private void onDropKey(DropKeyEvent event) {
@@ -25,29 +25,18 @@ public class KeyFarm extends IMission implements Listener {
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
             if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
                 if (!mission.isCompleted(gamer)) {
-                    Mine mine = null;
                     KeyFarm kf = (KeyFarm) mission;
-                    for (Mine m : Main.mines) {
-                        if (m.getMaterial().toString().toLowerCase().equals(kf.techName.toLowerCase())) {
-                            mine = m;
-                            break;
-                        }
-                    }
-                    if (mine != null && event.fromMine(mine)) kf.addValue(gamer);
+                    if (kf.mine != null && event.fromMine(kf.mine)) kf.addValue(gamer);
                 }
             }
         }));
     }
 
+    // Get mine_name from main material of mine which set in config.yml
     @Override
     protected void init() {
-        this.techName = this.getDescriptionDetails()[1].toString().toLowerCase();
-
-        Main.mines.forEach(mine -> {
-            if (mine.getMaterial().toString().toLowerCase().equals(this.techName)) {
-                this.mine_name = ChatColor.GRAY + ChatColor.stripColor(Utils.colored(mine.getName().toLowerCase()));
-            }
-        });
+        this.mine = getMineString(this.getDescriptionDetails()[1].toString());
+        if (this.mine != null) this.mine_name = ChatColor.GRAY + ChatColor.stripColor(Utils.colored(Utils.upCurLetter(this.mine.getName(), 1)));
     }
 
     @Override

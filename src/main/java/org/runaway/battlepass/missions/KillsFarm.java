@@ -6,12 +6,12 @@ import org.bukkit.event.Listener;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.IMission;
-import org.runaway.events.custom.BreakWoodEvent;
+import org.runaway.events.custom.PlayerKillEvent;
 
-public class WoodFarm extends IMission implements Listener {
+public class KillsFarm extends IMission implements Listener {
 
     @EventHandler
-    private void onBreakWood(BreakWoodEvent event) {
+    public void onKillPlayer(PlayerKillEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
@@ -25,12 +25,12 @@ public class WoodFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Добудьте дерева в лесу";
+        return "Совершите несколько убийств";
     }
 
     @Override
     public String getArgumentsString() {
-        return "wood_value";
+        return "kills_value";
     }
 
     @Override

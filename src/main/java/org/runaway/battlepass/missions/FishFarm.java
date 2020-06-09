@@ -1,17 +1,17 @@
 package org.runaway.battlepass.missions;
 
+import com.warring.fishing.events.FishCatchEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.IMission;
-import org.runaway.events.custom.BreakWoodEvent;
 
-public class WoodFarm extends IMission implements Listener {
+public class FishFarm extends IMission implements Listener {
 
     @EventHandler
-    private void onBreakWood(BreakWoodEvent event) {
+    public void onPlayerFish(FishCatchEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
@@ -25,12 +25,12 @@ public class WoodFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Добудьте дерева в лесу";
+        return "Поймайте несколько рыбёшек в пруду";
     }
 
     @Override
     public String getArgumentsString() {
-        return "wood_value";
+        return "fish_value";
     }
 
     @Override

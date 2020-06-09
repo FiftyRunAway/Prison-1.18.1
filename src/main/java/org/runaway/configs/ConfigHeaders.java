@@ -1,7 +1,9 @@
 package org.runaway.configs;
 
 import org.runaway.battlepass.IMission;
+import org.runaway.battlepass.IReward;
 import org.runaway.battlepass.missions.EMissions;
+import org.runaway.battlepass.rewards.ERewards;
 import org.runaway.enums.ServerStatus;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,13 +27,27 @@ public class ConfigHeaders {
         Arrays.stream(EMissions.values()).forEach(mission -> {
             try {
                 IMission c = mission.getMissionClass().getDeclaredConstructor().newInstance();
-                sb.append("\n- ").append(c.getClass().getSimpleName().toLowerCase()).append(":").append(c.getArgumentsString()).append(" name");
+                sb.append("\n- ").append(c.getClass().getSimpleName().toLowerCase()).append(":\"").append(c.getArgumentsString()).append(" name\"");
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         });
         sb.append("\n=================================");
         sb.append("\nmine_name you can take from Config.yml mines.material");
+        sb.append("\n=================================");
+
+        sb.append("\nBattlePass Rewards: \n- free|paid:");
+        sb.append("\n--------------------------------");
+        Arrays.stream(ERewards.values()).forEach(reward -> {
+            try {
+                IReward r = reward.getRewardClass().getDeclaredConstructor().newInstance();
+                sb.append("\n- ").append(reward.toString().toLowerCase()).append(" \"").append(r.getArgumentsString()).append("\"");
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
+        sb.append("\n=================================");
+        sb.append("\nblock_pattern has appearance: block-sub-id#name");
         sb.append("\n=================================");
 
         return sb.toString();

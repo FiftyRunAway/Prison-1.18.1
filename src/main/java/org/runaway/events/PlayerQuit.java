@@ -42,6 +42,7 @@ public class PlayerQuit implements Listener {
 
     private void removeMissions(Player player) {
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
+            if (!mission.getValues().containsKey(player.getName())) return;
             ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
             section.set(player.getName(), mission.getValues().get(player.getName()));
 

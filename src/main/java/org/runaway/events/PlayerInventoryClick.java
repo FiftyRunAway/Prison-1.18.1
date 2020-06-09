@@ -165,6 +165,7 @@ public class PlayerInventoryClick implements Listener {
                     }
                 }
             }
+            //if (event.getClickedInventory().getTitle() != null) event.setCancelled(true);
             if (event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши достижения") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Вскопанные блоки") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Меню доната") ||
@@ -179,7 +180,8 @@ public class PlayerInventoryClick implements Listener {
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Аукцион") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Уведомления") ||
                     event.getInventory().getName().contains("Просмотр") ||
-                    event.getInventory().getName().contains("Боевой пропуск")) {
+                    event.getInventory().getName().contains("Боевой пропуск") ||
+                    event.getInventory().getName().contains("Вы уверены?")) {
                 event.setCancelled(true);
             }
         } catch (Exception ignored) {  }

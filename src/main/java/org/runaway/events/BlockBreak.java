@@ -18,6 +18,8 @@ import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
 import org.runaway.events.custom.BreakWoodEvent;
 import org.runaway.events.custom.DropKeyEvent;
+import org.runaway.events.custom.PlayerBlockBreakEvent;
+import org.runaway.events.custom.TreasureFindEvent;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
@@ -76,6 +78,7 @@ public class BlockBreak implements Listener {
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
                     gamer.setStatistics(EStat.KEYS, (int)gamer.getStatistics(EStat.KEYS) + 1);
                 }
+                Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
                 if (blocktolog.contains(block.getType())) {
                     if (EConfig.BLOCKS.getConfig().contains(player.getName() + "." + block.getType().toString() + "-" + block.getType().getMaxDurability())) {
@@ -165,6 +168,7 @@ public class BlockBreak implements Listener {
             gamer.sendTitle (ChatColor.RED + "Да ты везунчик!", ChatColor.RED + "Вы откопали клад (" + LeftChest + " сек)");
             chests.put(player.getName(), block.getLocation());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
+            Bukkit.getServer().getPluginManager().callEvent(new TreasureFindEvent(player));
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                 if (chests.containsKey(player.getName())) {
                     block.setType(Material.AIR);

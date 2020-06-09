@@ -65,12 +65,15 @@ public class PlayerJoin implements Listener {
 
     private void addToMissions(Gamer gamer) {
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
+
             ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
             if (section.contains(gamer.getGamer())) {
                 mission.getValues().put(gamer.getGamer(), section.getInt(gamer.getGamer()));
             } else {
                 mission.getValues().put(gamer.getGamer(), 0);
             }
+
+            if (mission.isCompleted(gamer)) mission.getValues().remove(gamer.getGamer());
         }));
     }
 

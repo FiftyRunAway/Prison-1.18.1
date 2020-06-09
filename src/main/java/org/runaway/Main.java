@@ -17,8 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
 import org.runaway.auction.TrashAuction;
 import org.runaway.battlepass.BattlePass;
-import org.runaway.battlepass.missions.KeyFarm;
-import org.runaway.battlepass.missions.WoodFarm;
+import org.runaway.battlepass.missions.*;
 import org.runaway.board.Board;
 import org.runaway.boosters.GBlocks;
 import org.runaway.boosters.GMoney;
@@ -31,10 +30,7 @@ import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
 import org.runaway.google.TWOFA;
-import org.runaway.inventories.BlockShopMenu;
-import org.runaway.inventories.MainMenu;
-import org.runaway.inventories.ShopMenu;
-import org.runaway.inventories.UpItemsMenu;
+import org.runaway.inventories.*;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
@@ -80,7 +76,6 @@ public class Main extends JavaPlugin {
     public static boolean useHolographicDisplays;
     public static boolean usePermissionsEx;
     public static boolean useNametagEdit;
-    public static boolean useAuctionHouse;
     public static boolean useViaVersion;
 
     //Событие
@@ -186,6 +181,11 @@ public class Main extends JavaPlugin {
             // Missions events
             new Utils().RegisterEvent(new KeyFarm());
             new Utils().RegisterEvent(new WoodFarm());
+            new Utils().RegisterEvent(new BlocksFarm());
+            new Utils().RegisterEvent(new FishFarm());
+            new Utils().RegisterEvent(new KillsFarm());
+            new Utils().RegisterEvent(new TreasureFarm());
+
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering events!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -195,7 +195,7 @@ public class Main extends JavaPlugin {
     }
 
     //Регистрация команд
-    private static void registerCommands() {
+    private void registerCommands() {
         try {
             Arrays.asList(new SetStatCommand(), new AutosellCommand(), new BoosterCommand(),
                     new LevelCommand(), new BoostersCommand(), new FractionCommand(), new RestartCommand(),
@@ -204,6 +204,7 @@ public class Main extends JavaPlugin {
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
                     new BaseCommand(), new TrashCommand()).forEach(CommandManager::register);
+
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -309,6 +310,7 @@ public class Main extends JavaPlugin {
         try {
             new BlockShopMenu(null).load();
             new ShopMenu(null).load();
+            Confirmation.load();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in creating inventories!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -641,5 +643,4 @@ public class Main extends JavaPlugin {
     public ServerStatus getStatus() {
         return status;
     }
-
 }

@@ -1,5 +1,6 @@
 package org.runaway.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -15,6 +16,7 @@ import org.runaway.achievements.Achievement;
 import org.runaway.board.Board;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.events.custom.PlayerKillEvent;
 import org.runaway.utils.Utils;
 
 /*
@@ -56,6 +58,9 @@ public class PlayerDeath implements Listener {
             if ((int)gamerKiller.getStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer(), false);
             if ((int)gamerKiller.getStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer(), false);
             if (givenot) return;
+
+            Bukkit.getServer().getPluginManager().callEvent(new PlayerKillEvent(player));
+
             gamerKiller.depositMoney(money);
             gamerKiller.getPlayer().sendMessage(Utils.colored(EMessage.KILLPLAYER.getMessage()).replace("%player%", gamer.getGamer()).replace("%money%", Board.FormatMoney(money)));
             if (gamerKiller.getPlayer().hasPermission("*")) Achievement.KILL_ADMIN.get(gamerKiller.getPlayer(), false);
