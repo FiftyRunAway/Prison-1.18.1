@@ -19,11 +19,6 @@ public class TreasureFarm extends IMission implements Listener {
     }
 
     @Override
-    protected void init() {
-        // None
-    }
-
-    @Override
     public String getDescription() {
         return "Найдите несколько кладов в шахтах";
     }

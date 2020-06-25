@@ -3,7 +3,8 @@ package org.runaway.battlepass.rewards;
 import org.runaway.battlepass.IReward;
 
 public enum ERewards {
-    KEYS(KeysReward.class);
+    KEYS(KeysReward.class),
+    MONEY(MoneyReward.class);
 
     private Class<? extends IReward> reward;
 

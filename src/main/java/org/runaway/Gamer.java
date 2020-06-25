@@ -72,9 +72,15 @@ public class Gamer {
         return getPlayer().hasPermission("prison.battlepass");
     }
 
+    public void addExperienceBP(int experience) {
+        setStatistics(EStat.BATTLEPASS_SCORE, (int)getStatistics(EStat.BATTLEPASS_SCORE) + experience);
+        sendActionbar(Utils.colored("&dПолучено " + experience + " опыта"));
+    }
+
     public void setHearts() {
-        getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(19 + (int)getStatistics(EStat.LEVEL));
-        getPlayer().setHealth(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        int res = 19 + (int)getStatistics(EStat.LEVEL);
+        getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(res);
+        getPlayer().setHealth(res);
     }
 
     public void setNametag() {
@@ -237,10 +243,7 @@ public class Gamer {
     }
 
     public boolean needRebirth() {
-        if ((int)getStatistics(EStat.LEVEL) % toRebirth == 0) {
-            return true;
-        }
-        return false;
+        return (int)getStatistics(EStat.LEVEL) % toRebirth == 0;
     }
 
     public void inFraction(FactionType type, boolean isRandom) {

@@ -1,5 +1,6 @@
 package org.runaway.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -13,6 +14,7 @@ import org.runaway.Main;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
+import org.runaway.events.custom.PlayerDamageEvent;
 import org.runaway.utils.Utils;
 
 public class PlayerAttack implements Listener {
@@ -27,6 +29,8 @@ public class PlayerAttack implements Listener {
             if (!canAttack(damager, (Player)event.getEntity())) {
                 Main.gamers.get(damager.getUniqueId()).sendMessage(EMessage.FRIENDATTACK);
                 event.setCancelled(true);
+            } else {
+                Bukkit.getServer().getPluginManager().callEvent(new PlayerDamageEvent(damager, (Player)event.getEntity()));
             }
         }
         if (event.getDamager() instanceof Player) {

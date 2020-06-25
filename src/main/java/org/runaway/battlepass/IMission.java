@@ -3,7 +3,6 @@ package org.runaway.battlepass;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.enums.EMessage;
-import org.runaway.enums.EStat;
 import org.runaway.mines.Mine;
 import org.runaway.utils.Utils;
 
@@ -14,7 +13,9 @@ public abstract class IMission {
     private HashMap<String, Object> values;
     private Object[] descDetails;
 
-    protected abstract void init();
+    public void init() {
+
+    }
 
     /**
      * @return a Maximum value of mission
@@ -67,8 +68,7 @@ public abstract class IMission {
     protected void checkLevel(Gamer gamer) {
         if (isCompleted(gamer)) {
             gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", Utils.upCurLetter(getName().toLowerCase(), 1))));
-            gamer.sendActionbar(Utils.colored("&dПолучено " + getExperience() + " опыта"));
-            gamer.setStatistics(EStat.BATTLEPASS_SCORE, (int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) + getExperience());
+            gamer.addExperienceBP(getExperience());
 
             BattlePass.checkLevelUp(gamer);
         }

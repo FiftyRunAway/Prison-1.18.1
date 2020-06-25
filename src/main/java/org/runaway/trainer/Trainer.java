@@ -1,5 +1,6 @@
 package org.runaway.trainer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,13 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
 import org.runaway.Main;
-import org.runaway.utils.Lore;
-import org.runaway.utils.Utils;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
+import org.runaway.events.custom.TrainerUpEvent;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.upgrades.Upgrade;
+import org.runaway.utils.Lore;
+import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,6 +106,8 @@ public class Trainer {
                 g.setStatistics(type.getValue(),  (int) g.getStatistics(type.getValue()) + 1);
                 Achievement.FIRST_TRAINER.get(p, false);
                 p.closeInventory();
+
+                Bukkit.getServer().getPluginManager().callEvent(new TrainerUpEvent(p, type));
             } else {
                 g.sendMessage(EMessage.TRAINERNEED);
                 p.closeInventory();

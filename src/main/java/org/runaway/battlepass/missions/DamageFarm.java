@@ -6,13 +6,13 @@ import org.bukkit.event.Listener;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.IMission;
-import org.runaway.events.custom.PlayerKillEvent;
+import org.runaway.events.custom.PlayerDamageEvent;
 
-public class KillsFarm extends IMission implements Listener {
+public class DamageFarm extends IMission implements Listener {
 
     @EventHandler
-    public void onKillPlayer(PlayerKillEvent event) {
-        Player player = event.getPlayer();
+    private void onDamagePlayer(PlayerDamageEvent event) {
+        Player player = event.getPlayerDamaged();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
         addAllValues(gamer);
@@ -20,12 +20,12 @@ public class KillsFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Убивайте игроков";
+        return "Наносите урон игрокам";
     }
 
     @Override
     public String getArgumentsString() {
-        return "kills_value";
+        return "damage_value";
     }
 
     @Override

@@ -8,7 +8,11 @@ public enum EMissions {
     BLOCKSFARM(BlocksFarm.class),
     FISHFARM(FishFarm.class),
     KILLSFARM(KillsFarm.class),
-    TREASUREFARM(TreasureFarm.class);
+    TREASUREFARM(TreasureFarm.class),
+    DAMAGEFARM(DamageFarm.class),
+    RATSFARM(RatsFarm.class),
+    TRAINERFARM(TrainerFarm.class),
+    UPGRADESFARM(UpgradesFarm.class);
 
     private Class<? extends IMission> mission;
 

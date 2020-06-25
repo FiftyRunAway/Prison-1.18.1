@@ -19,11 +19,6 @@ public class WoodFarm extends IMission implements Listener {
     }
 
     @Override
-    protected void init() {
-        // None
-    }
-
-    @Override
     public String getDescription() {
         return "Добудьте дерева в лесу";
     }

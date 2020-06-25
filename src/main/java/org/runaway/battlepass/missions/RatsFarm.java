@@ -1,6 +1,5 @@
 package org.runaway.battlepass.missions;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,45 +7,47 @@ import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
-import org.runaway.events.custom.DropKeyEvent;
-import org.runaway.mines.Mine;
-import org.runaway.utils.Utils;
+import org.runaway.enums.TypeMessage;
+import org.runaway.events.custom.KillRatsEvent;
+import org.runaway.utils.Vars;
 
-public class KeyFarm extends IMission implements Listener {
+public class RatsFarm extends IMission implements Listener {
 
-    private String mine_name;
-    private Mine mine;
+    private boolean isRare;
 
     @EventHandler
-    private void onDropKey(DropKeyEvent event) {
+    private void onRatKill(KillRatsEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
             if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
                 if (!mission.isCompleted(gamer)) {
-                    KeyFarm kf = (KeyFarm) mission;
-                    if (kf.mine != null && event.fromMine(kf.mine)) kf.addValue(gamer);
+                    RatsFarm rf = (RatsFarm) mission;
+                    if (!rf.isRare || event.isRare())
+                        rf.addValue(gamer);
                 }
             }
         }));
+
+        addAllValues(gamer);
     }
 
-    // Get mine_name from main material of mine which set in config.yml
     @Override
     public void init() {
-        this.mine = getMineString(this.getDescriptionDetails()[1].toString());
-        if (this.mine != null) this.mine_name = ChatColor.GRAY + ChatColor.stripColor(Utils.colored(Utils.upCurLetter(this.mine.getName(), 1)));
+        try {
+            this.isRare = Boolean.getBoolean(this.getDescriptionDetails()[1].toString().toLowerCase());
+        } catch (Exception ex) { Vars.sendSystemMessage(TypeMessage.ERROR, "Error with kill rats event"); }
     }
 
     @Override
     public String getDescription() {
-        return "Добудьте ключей на шахте " + this.mine_name;
+        return "Убивайте" + (this.isRare ? " редких" : "") + " крыс";
     }
 
     @Override
     public String getArgumentsString() {
-        return "keys_value mine_name";
+        return "rats_value isRare_boolean";
     }
 
     @Override

@@ -58,7 +58,7 @@ public class BlocksFarm extends IMission implements Listener {
     }
 
     @Override
-    protected void init() {
+    public void init() {
         String block_string = this.getDescriptionDetails()[1].toString().toLowerCase();
 
         this.block = null;

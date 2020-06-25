@@ -8,13 +8,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.runaway.Gamer;
 import org.runaway.Main;
-import org.runaway.utils.Utils;
 import org.runaway.achievements.Achievement;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
+import org.runaway.events.custom.KillRatsEvent;
+import org.runaway.utils.Utils;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Rat extends EntityMonster {
@@ -118,6 +118,7 @@ public class Rat extends EntityMonster {
                         Achievement.RARE_RAT.get(Bukkit.getPlayer(this.killer.getName()), false);
                     }
                     gamer.depositMoney(money);
+                    Bukkit.getServer().getPluginManager().callEvent(new KillRatsEvent(gamer.getPlayer()));
                     gamer.setStatistics(EStat.RATS, (int)gamer.getStatistics(EStat.RATS) + rats);
                     if ((int)gamer.getStatistics(EStat.RATS) == 15) {
                         Achievement.FIFTEEN_RATS.get(gamer.getPlayer(), false);

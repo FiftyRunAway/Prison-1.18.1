@@ -96,6 +96,7 @@ public class BattlePass {
             ConfigurationSection section = EConfig.BATTLEPASS.getConfig().getConfigurationSection("missions." + s);
             ArrayList<IMission> list = new ArrayList<>();
 
+            //Loading data
             Date date = null;
             try {
                 date = new SimpleDateFormat(data_format).parse(section.getString("date"));

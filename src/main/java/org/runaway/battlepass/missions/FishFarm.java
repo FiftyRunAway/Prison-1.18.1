@@ -19,11 +19,6 @@ public class FishFarm extends IMission implements Listener {
     }
 
     @Override
-    protected void init() {
-        // None
-    }
-
-    @Override
     public String getDescription() {
         return "Поймайте несколько рыбёшек в пруду";
     }

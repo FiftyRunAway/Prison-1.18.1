@@ -1,5 +1,6 @@
 package org.runaway.configs;
 
+import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
 import org.runaway.battlepass.IReward;
 import org.runaway.battlepass.missions.EMissions;
@@ -33,7 +34,7 @@ public class ConfigHeaders {
             }
         });
         sb.append("\n=================================");
-        sb.append("\nmine_name you can take from Config.yml mines.material");
+        sb.append("\nmine_name you can take from Config.yml mines-material");
         sb.append("\n=================================");
 
         sb.append("\nBattlePass Rewards: \n- free|paid:");
@@ -48,6 +49,8 @@ public class ConfigHeaders {
         });
         sb.append("\n=================================");
         sb.append("\nblock_pattern has appearance: block-sub-id#name");
+        sb.append("\n=================================");
+        sb.append("\nDate format: " + BattlePass.data_format);
         sb.append("\n=================================");
 
         return sb.toString();
