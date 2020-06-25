@@ -19,6 +19,7 @@ import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -200,14 +201,40 @@ public class BattlePassMenu implements IMenus {
     private static void openMissionsMenu(Player player, StandardMenu menu) {
         AtomicInteger i = new AtomicInteger(19);
         BattlePass.missions.forEach(wm -> {
+
+            ArrayList<String> lore = new ArrayList<>();
+            Date now = new Date();
+
+            boolean opened = false;
+            if (wm.getDate().getTime() < now.getTime()) opened = true;
+
+            if (!opened) {
+                long diff = new Date(wm.getDate().getTime() - now.getTime()).getTime();
+
+                if (diff > 86400000) {
+                    lore.add("&7>> Откроется через: &b" + diff / 86400000 + " дн.");
+                } else {
+                    lore.add("&7>> Откроется через: &b" + diff / 3600000 + " часов по МСК");
+                }
+
+            } else {
+                lore.add("&7>> Посмотреть задания");
+            }
+
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.PAPER)
                     .name("&e" + wm.getName())
                     .lore(new Lore.BuilderLore()
                             .addSpace()
-                            .addString("&7>> Посмотреть задания")
+                            .addList(lore)
                             .build())
                     .build().item()).setSlot(i.getAndIncrement());
-            btn.setClickEvent(e -> openTasksMenu(Main.gamers.get(e.getWhoClicked().getUniqueId()), wm));
+
+            boolean finalOpened = opened;
+            btn.setClickEvent(e -> {
+                if (finalOpened) {
+                    openTasksMenu(Main.gamers.get(e.getWhoClicked().getUniqueId()), wm);
+                }
+            });
             menu.addButton(btn);
 
             if (i.get() == 26) i.set(28);
@@ -237,7 +264,7 @@ public class BattlePassMenu implements IMenus {
     }
 
     private static void openTasksMenu(Gamer gamer, WeeklyMission missions) {
-        StandardMenu menu = StandardMenu.create(4, ChatColor.YELLOW +  "Боевой пропуск &7• &eИспытания &7• &e" + missions.getName());
+        StandardMenu menu = StandardMenu.create(4, ChatColor.YELLOW +  "Боевой пропуск &7• " + missions.getName());
         AtomicInteger i = new AtomicInteger(10);
         missions.getMissions().forEach(mission -> {
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(mission.getIcon().getIcon(gamer)).setSlot(i.getAndIncrement());

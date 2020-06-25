@@ -24,7 +24,7 @@ public class Confirmation {
 
     private static StandardMenu confirmed, closed;
 
-    Confirmation(Player player, Inventory startMenu, Inventory redirectMenu, Runnable runnable) {
+    public Confirmation(Player player, Inventory startMenu, Inventory redirectMenu, Runnable runnable) {
         StandardMenu menu = StandardMenu.create(5, ChatColor.YELLOW + "" + ChatColor.ITALIC + "Вы уверены?");
 
         // Closing confirmation

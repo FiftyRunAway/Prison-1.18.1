@@ -155,8 +155,7 @@ public class PlayerInventoryClick implements Listener {
                 }
                 switch (event.getCurrentItem().getData().getData()) {
                     case 5: {
-                        Upgrade.upgrade(player);
-                        player.closeInventory();
+                        Upgrade.upgrade(player, false);
                         break;
                     }
                     case 14: {
@@ -165,7 +164,6 @@ public class PlayerInventoryClick implements Listener {
                     }
                 }
             }
-            //if (event.getClickedInventory().getTitle() != null) event.setCancelled(true);
             if (event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши достижения") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Вскопанные блоки") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Меню доната") ||

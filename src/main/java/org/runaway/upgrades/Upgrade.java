@@ -4,13 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Main;
-import org.runaway.utils.Utils;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.UpgradeProperty;
+import org.runaway.inventories.Confirmation;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
+import org.runaway.utils.Utils;
 
 import java.util.HashMap;
 
@@ -20,25 +21,34 @@ import java.util.HashMap;
 
 public class Upgrade {
 
-    public static void upgrade(Player player) {
+    public static void upgrade(Player player, boolean fastGet) {
         try {
             if (player.isOnline()) {
                 Gamer gamer = Main.gamers.get(player.getUniqueId());
                 String next = UpgradeMisc.getNext(UpgradeMisc.getSection(player));
+
                 HashMap<UpgradeProperty, String> data = Upgrade.getData(gamer);
                 HashMap<UpgradeProperty, String> itemdata = UpgradeMisc.getProperties(next);
                 for (UpgradeProperty prop : itemdata.keySet()) {
                     if (Double.parseDouble(data.get(prop)) < Double.parseDouble(itemdata.get(prop))) {
                         player.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage()).replaceAll("%property%", prop.getForMessage()));
+                        player.closeInventory();
                         return;
                     }
+                }
+                ItemStack save = UpgradeMisc.buildItem(next, false, player, false);
+                if (!fastGet && gamer.getLevelItem(save) > (int)gamer.getStatistics(EStat.LEVEL)) {
+                    new Confirmation(player, null, null, () -> {
+                        Upgrade.upgrade(player, true);
+                        player.closeInventory();
+                    });
+                    return;
                 }
                 for (UpgradeProperty prop : itemdata.keySet()) {
                     if (prop.isTaken()) {
                         Upgrade.take(prop, Integer.parseInt(itemdata.get(prop)), player);
                     }
                 }
-                ItemStack save = UpgradeMisc.buildItem(next, false, player, false);
                 player.getInventory().setItemInMainHand(save);
                 gamer.sendMessage(EMessage.SUCCESSFULUPGRADE);
                 Achievement.FIRST_UPGRADE.get(player, false);

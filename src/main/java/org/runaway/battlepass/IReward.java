@@ -76,4 +76,8 @@ public abstract class IReward {
     public void setLevel(int level) {
         this.level = level;
     }
+
+    public int getValue(int argument) {
+        return Integer.parseInt(this.getDetails()[argument].toString());
+    }
 }

@@ -3,9 +3,9 @@ package org.runaway.battlepass.rewards;
 import org.bukkit.Material;
 import org.runaway.Gamer;
 import org.runaway.battlepass.IReward;
-import org.runaway.utils.ExampleItems;
+import org.runaway.enums.EStat;
 
-public class KeysReward extends IReward {
+public class MoneyReward extends IReward {
 
     private int value;
 
@@ -17,26 +17,26 @@ public class KeysReward extends IReward {
 
     @Override
     protected void getReward(Gamer gamer) {
-        gamer.getPlayer().getInventory().addItem(ExampleItems.getKeyBuilder().amount(this.value).build().item());
+        gamer.setStatistics(EStat.DONATEMONEY, (int)gamer.getStatistics(EStat.DONATEMONEY) + this.value);
     }
 
     @Override
     protected String getName() {
-        return "&7Ключ для обычного сундука";
+        return "&eДеньги";
     }
 
     @Override
     protected String getDescription() {
-        return "Вы сможете открыть обычный сундук на спавне";
+        return "Можно потратить на новый боевой пропуск";
     }
 
     @Override
     protected Material getType() {
-        return Material.GHAST_TEAR;
+        return Material.DOUBLE_PLANT;
     }
 
     @Override
     public String getArgumentsString() {
-        return "keys_value";
+        return "money_value";
     }
 }

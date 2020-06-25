@@ -3,6 +3,7 @@ package org.runaway.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.enums.EConfig;
@@ -34,6 +35,15 @@ public class UpgradeCommand extends CommandManager {
                 if (!confirm.contains(p.getName())) {
                     confirm.add(p.getName());
                     gamer.sendMessage(EMessage.UPGRADEATTENTION);
+
+                    // Remove from confirm data
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            confirm.remove(p.getName());
+                        }
+                    }.runTaskLater(Main.getInstance(), 100L);
+
                     return;
                 }
                 confirm.remove(p.getName());

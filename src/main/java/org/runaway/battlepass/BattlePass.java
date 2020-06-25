@@ -9,14 +9,15 @@ import org.runaway.battlepass.rewards.ERewards;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.enums.TypeMessage;
 import org.runaway.inventories.BattlePassMenu;
 import org.runaway.utils.Utils;
+import org.runaway.utils.Vars;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +31,10 @@ public class BattlePass {
     public static int season;
 
     public static int level = 80000;
+
+    public final static String data_format = "dd/MM/yyyy";
+    private final static int MILLISEC_IN_HOUR = 3600000;
+    private final static int openingIn = 9;
 
     static void checkLevelUp(Gamer gamer) {
         if ((int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) / level >= 1) {
@@ -91,6 +96,15 @@ public class BattlePass {
             ConfigurationSection section = EConfig.BATTLEPASS.getConfig().getConfigurationSection("missions." + s);
             ArrayList<IMission> list = new ArrayList<>();
 
+            Date date = null;
+            try {
+                date = new SimpleDateFormat(data_format).parse(section.getString("date"));
+                date.setTime(date.getTime() + (MILLISEC_IN_HOUR * openingIn));
+            } catch (ParseException e) {
+                Vars.sendSystemMessage(TypeMessage.ERROR, "Invalid data format. Use: " + data_format);
+                e.printStackTrace();
+            }
+
             section.getStringList("missions").forEach(mission -> {
                 String[] splitter = mission.split(":");
                 StringBuilder sb = new StringBuilder();
@@ -114,7 +128,7 @@ public class BattlePass {
                 list.add(m);
             });
 
-            missions.add(new WeeklyMission(section.getString("name"), list));
+            missions.add(new WeeklyMission(section.getString("name"), list, date));
         });
         EConfig.BATTLEPASS_DATA.saveConfig();
         // Load rewards
