@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
-import org.runaway.auction.TrashAuction;
+import org.runaway.auctions.TrashAuction;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
@@ -62,10 +62,31 @@ public class MainMenu implements IMenus {
                 if (!gamer.needRebirth()) {
                     new LevelMenu(event.getWhoClicked());
                 } else {
-                    gamer.rebirth();
+                    event.getWhoClicked().openInventory(RebirthMenu.getMenu(event.getWhoClicked()));
                 }
             });
             menu.addButton(exp);
+
+            IMenuButton ah = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.ENDER_CHEST)
+                    .name("&aАукционы")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
+                    .setSlot(12);
+            ah.setClickEvent(event -> {
+                event.getWhoClicked().closeInventory();
+                event.getWhoClicked().performCommand("ah");
+            });
+            menu.addButton(ah);
+
+            IMenuButton rebirth = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.EYE_OF_ENDER)
+                    .name("&aМеню переождения")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
+                    .setSlot(49);
+            rebirth.setClickEvent(event -> event.getWhoClicked().openInventory(RebirthMenu.getMenu(event.getWhoClicked())));
+            menu.addButton(rebirth);
 
             IMenuButton donate = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND)
                     .name("&aПожертвования")
@@ -186,7 +207,7 @@ public class MainMenu implements IMenus {
                             .addString("&7>> Открыть").build()).build().item())
                     .setSlot(30);
             bp.setClickEvent(event -> new BattlePassMenu(event.getWhoClicked()));
-            menu.addButton(bp);
+            //menu.addButton(bp);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load profile menu!");

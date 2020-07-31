@@ -10,7 +10,7 @@ import java.util.Collections;
 public class ExampleItems {
 
     private static Item.Builder key = new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку");
-    private static Item.Builder nether_star = new Item.Builder(Material.NETHER_STAR).name("&aЗвезда ада");
+    private static Item.Builder nether_star = new Item.Builder(Material.NETHER_STAR).name("&aЗвёздочка");
 
     public static ItemStack glass(int data, String name) {
         return new Item.Builder(Material.STAINED_GLASS_PANE).data((short) data).name(name).build().item();

@@ -41,7 +41,7 @@ public class KeyFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Добудьте ключей на шахте " + this.mine_name;
+        return "Добудьте ключей на " + (this.mine == null ? "любой шахте" : this.mine_name);
     }
 
     @Override

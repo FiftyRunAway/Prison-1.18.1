@@ -1,18 +1,10 @@
 package org.runaway.donate.features;
 
-public class BossNotify implements IFeature {
-
-    private boolean notify;
-
-    @Override
-    public IFeature setValue(Object value) {
-        notify = Boolean.parseBoolean(value.toString());
-        return this;
-    }
+public class BossNotify extends IFeature {
 
     @Override
     public Object getValue() {
-        return this.notify;
+        return Boolean.parseBoolean(this.value.toString());
     }
 
     @Override

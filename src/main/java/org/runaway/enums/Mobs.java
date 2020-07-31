@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.entity.CustomEntity;
 import org.runaway.entity.bosses.Blaze;
+import org.runaway.entity.bosses.Golem;
+import org.runaway.entity.bosses.Slime;
 import org.runaway.entity.bosses.Spider;
 import org.runaway.entity.mobs.Rat;
 import org.runaway.entity.mobs.Zombie;
@@ -15,6 +17,8 @@ public enum Mobs {
     RAT(60, "rat", Rat.class, true, null),
     SPIDER(52, "spider", Spider.class, false, Material.SPIDER_EYE),
     BLAZE(61, "blaze", Blaze.class, false, Material.BLAZE_POWDER),
+    GOLEM(99, "golem", Golem.class, false, Material.IRON_INGOT),
+    SLIME(55, "slime", Slime.class, false, Material.SLIME_BALL),
     ZOMBIE(54, "zombie", Zombie.class, true, null);
 
     String name;

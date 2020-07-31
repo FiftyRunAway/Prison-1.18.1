@@ -35,6 +35,10 @@ public enum Achievement {
             new MoneyReward().setReward(50) }, false),
     BLAZE_KILL("&aВы убили огненного стража", "Ведьмак II", new Reward[]{
             new MoneyReward().setReward(75) }, true),
+    GOLEM_KILL("&aВы убили голема", "Ведьмак III", new Reward[]{
+            new MoneyReward().setReward(100) }, true),
+    SLIME_KILL("&aВы убили древнего слизняка", "Ведьмак IV", new Reward[]{
+            new MoneyReward().setReward(100) }, true),
     FIFTEEN_RATS("&aВы убили 15 крыс", "Крысолов I", new Reward[]{
             new MoneyReward().setReward(10),
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(10).build().item()) }, false),

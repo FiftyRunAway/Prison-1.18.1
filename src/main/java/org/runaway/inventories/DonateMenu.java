@@ -3,7 +3,8 @@ package org.runaway.inventories;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.runaway.*;
+import org.runaway.Item;
+import org.runaway.Main;
 import org.runaway.donate.Donate;
 import org.runaway.enums.MoneyType;
 import org.runaway.menu.button.DefaultButtons;
@@ -32,6 +33,10 @@ public class DonateMenu implements IMenus {
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
+
+        IMenuButton privs = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.DIAMOND).name("&aДонат-группы").build().item()).setSlot(40);
+        privs.setClickEvent(event -> new PrivilageMenu(event.getWhoClicked()));
+        menu.addButton(privs);
 
         player.openInventory(menu.build());
     }

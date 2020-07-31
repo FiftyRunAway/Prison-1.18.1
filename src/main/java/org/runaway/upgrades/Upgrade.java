@@ -61,7 +61,6 @@ public class Upgrade {
                         if (tr.getType() != TypeTrainings.UPGRADE) return;
                         if (UpgradeMisc.getSection(player) == null) return;
                         if (Math.random() < tr.getValue(player)) {
-                            System.out.println(save.getItemMeta());
                             if (save.getItemMeta().equals(player.getInventory().getItemInMainHand().getItemMeta())) {
                                 String next2 = UpgradeMisc.getNext(UpgradeMisc.getSection(player));
                                 player.getInventory().setItemInMainHand(UpgradeMisc.buildItem(next2, false, player, false));

@@ -10,13 +10,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
-import org.runaway.auction.TrashAuction;
+import org.runaway.auctions.TrashAuction;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
 import org.runaway.donate.features.FLeaveDiscount;
 import org.runaway.enums.*;
 import org.runaway.inventories.FractionMenu;
+import org.runaway.rebirth.ESkill;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
@@ -37,20 +38,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Gamer {
 
+    private static final String bp_perm = "prison.battlepass";
+
     public static ArrayList<UUID> tp = new ArrayList<>();
     private static int teleportTimer = 3;
+    public static int toRebirth = 30;
 
     private String gamer;
     private Player player;
     private UUID uuid;
 
+    private boolean isOnline = false;
+
     public Gamer(UUID uuid) {
         this.uuid = uuid;
-        this.player = Bukkit.getPlayer(this.uuid);
-        this.gamer = this.player.getName();
+        if (Utils.getPlayers().contains(Bukkit.getOfflinePlayer(getUUID()).getName()) || Bukkit.getOfflinePlayer(getUUID()).isOnline()) {
+            this.player = Bukkit.getPlayer(this.uuid);
+            this.gamer = this.player.getName();
+            this.isOnline = true;
+        }
     }
 
-    public static int toRebirth = 30;
+    private boolean isOnline() {
+        return this.isOnline;
+    }
 
     public void sendMessage(EMessage message) {
         getPlayer().sendMessage(Utils.colored(message.getMessage()));
@@ -60,8 +71,12 @@ public class Gamer {
         return Privs.DEFAULT.getPrivilege(getPlayer());
     }
 
-    public int saleToMoneyAndBlocks() {
-        return (int)getStatistics(EStat.REBIRTH) * 5;
+    public float rebirthSale() {
+        return (float)(getValueRebirth(ESkill.SALE) / 100);
+    }
+
+    public int getValueRebirth(ESkill skill) {
+        return skill.getSkill().getValue(getGamer());
     }
 
     public boolean hasMoney(double money) {
@@ -69,7 +84,7 @@ public class Gamer {
     }
 
     public boolean hasBattlePass() {
-        return getPlayer().hasPermission("prison.battlepass");
+        return getPlayer().hasPermission(bp_perm);
     }
 
     public void addExperienceBP(int experience) {
@@ -191,7 +206,7 @@ public class Gamer {
 
     public void rebirth () {
         setStatistics(EStat.REBIRTH, (int)getStatistics(EStat.REBIRTH) + 1);
-        setStatistics(EStat.REBIRTH_SCORE, (int)getStatistics(EStat.REBIRTH_SCORE) + 2);
+        setStatistics(EStat.REBIRTH_SCORE, (int)getStatistics(EStat.REBIRTH_SCORE) + 5);
         Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replaceAll("%player%", getPlayer().getName()).replaceAll("%rebirth%", ChatColor.YELLOW + getDisplayRebirth()));
 
         Inventory inventory = getPlayer().getInventory();
@@ -346,13 +361,15 @@ public class Gamer {
         } else {
             setStatistics(EStat.MONEY, new BigDecimal(money + (double)getStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         }
-        sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
-        double m = (double)getStatistics(EStat.MONEY);
-        if (m >= 15) Achievement.GET_15.get(getPlayer(), false);
-        if (m >= 100) Achievement.GET_100.get(getPlayer(), false);
-        if (m >= 1000) Achievement.GET_1000.get(getPlayer(), false);
-        if (m >= 15000) Achievement.GET_15000.get(getPlayer(), false);
-        if (m >= 100000) Achievement.GET_100000.get(getPlayer(), false);
+        if (isOnline()) {
+            sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
+            double m = (double)getStatistics(EStat.MONEY);
+            if (m >= 15) Achievement.GET_15.get(getPlayer(), false);
+            if (m >= 100) Achievement.GET_100.get(getPlayer(), false);
+            if (m >= 1000) Achievement.GET_1000.get(getPlayer(), false);
+            if (m >= 15000) Achievement.GET_15000.get(getPlayer(), false);
+            if (m >= 100000) Achievement.GET_100000.get(getPlayer(), false);
+        }
     }
 
     private int getVerison() {
@@ -368,26 +385,32 @@ public class Gamer {
 
     public void withdrawMoney(double money) {
         setStatistics(EStat.MONEY, (double)getStatistics(EStat.MONEY) - money);
-        sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));
-        if ((int)getStatistics(EStat.CASHBACK_TRAINER) > 0) {
-            Utils.trainer.forEach(trainer -> {
-                Trainer tr = (Trainer) trainer;
-                if (tr.getType() != TypeTrainings.CASHBACK) return;
-                if (Math.random() < tr.getValue(getPlayer())) {
-                    double cashback = Math.round(money / 4);
-                    getPlayer().sendMessage(Utils.colored(EMessage.CASHBACK.getMessage()).replace("%cashback%", cashback + " " + MoneyType.RUBLES.getShortName()).replace("%money%", money + " " + MoneyType.RUBLES.getShortName()));
-                    depositMoney(cashback);
-                }
-            });
+        if (isOnline()) {
+            sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));
+            if ((int)getStatistics(EStat.CASHBACK_TRAINER) > 0) {
+                Utils.trainer.forEach(trainer -> {
+                    Trainer tr = (Trainer) trainer;
+                    if (tr.getType() != TypeTrainings.CASHBACK) return;
+                    if (Math.random() < tr.getValue(getPlayer())) {
+                        double cashback = Math.round(money / 4);
+                        getPlayer().sendMessage(Utils.colored(EMessage.CASHBACK.getMessage()).replace("%cashback%", cashback + " " + MoneyType.RUBLES.getShortName()).replace("%money%", money + " " + MoneyType.RUBLES.getShortName()));
+                        depositMoney(cashback);
+                    }
+                });
+            }
         }
     }
 
     public int getCurrentBlocks(String block, int data) {
-        return (int)EConfig.BLOCKS.getConfig().getDouble(getGamer() + "." + block + "-" + data);
+        try {
+            return (int)EConfig.BLOCKS.getConfig().getDouble(getGamer() + "." + block + "-" + data);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public int getCurrentBlocks(String block) {
-        return (int)EConfig.BLOCKS.getConfig().getDouble(getGamer() + "." + block + "-0");
+        return getCurrentBlocks(block, 0);
     }
 
     public double getBoosterBlocks() {
@@ -430,16 +453,26 @@ public class Gamer {
         return null;
     }
 
-    public Object getStatisticsFromConfig(EStat statistic) {
-        return statistic.getFromConfig(getGamer());
+    public Object getStatisticsFromConfig(EStat statistic, String name) {
+        return statistic.getFromConfig(name);
     }
 
     public Object getStatistics(EStat statistic) {
-        return statistic.getMap().get(getGamer());
+        if (isOnline()) {
+            return statistic.getMap().get(getGamer());
+        } else {
+            System.out.println(Bukkit.getOfflinePlayer(getUUID()).getName());
+            return getStatisticsFromConfig(statistic, Bukkit.getOfflinePlayer(getUUID()).getName());
+        }
     }
 
     public void setStatistics(EStat statistic, Object value) {
-        statistic.getMap().put(getPlayer().getName(), value);
+        if (isOnline()) {
+            statistic.getMap().put(getPlayer().getName(), value);
+        } else {
+            System.out.println(Bukkit.getOfflinePlayer(getUUID()).getName());
+            statistic.setInConfig(Bukkit.getOfflinePlayer(getUUID()).getName(), value);
+        }
     }
 
     public String getGamer() {

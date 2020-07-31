@@ -48,13 +48,6 @@ public class BattlePassMenu implements IMenus {
         menu.addButton(exp);
 
         openStartPage(gamer);
-
-        /*if (pages > 1) {
-            IMenuButton next = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aВперёд").build().item()).setSlot(53);
-            next.setClickEvent(event -> openPage(1, Main.gamers.get(event.getWhoClicked().getUniqueId())));
-            menu.addButton(next);
-        }
-        player.openInventory(menu.build());*/
     }
 
     private static void openPage(int page, Gamer gamer) {
@@ -96,6 +89,7 @@ public class BattlePassMenu implements IMenus {
         int level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
         int page = 0;
         if (gamer.hasBattlePass() && max_level > 8 && level >= 8) page = (level + 1) / 9;
+        if (level > max_level) page = (int) Math.ceil(pages) - 1;
 
         openPage(page >= Math.ceil(pages) ? page - 1 : page, gamer);
     }

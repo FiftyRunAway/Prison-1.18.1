@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
-import org.runaway.auction.TrashAuction;
+import org.runaway.auctions.TrashAuction;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.missions.*;
 import org.runaway.board.Board;
@@ -26,6 +26,7 @@ import org.runaway.commands.*;
 import org.runaway.configs.Config;
 import org.runaway.donate.Donate;
 import org.runaway.donate.DonateIcon;
+import org.runaway.donate.Privs;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
@@ -36,6 +37,7 @@ import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
+import org.runaway.quests.MinesQuest;
 import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.ExampleItems;
@@ -175,6 +177,7 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new MenuListener());
             new Utils().RegisterEvent(new ListPing());
             new Utils().RegisterEvent(new PlayerAttack());
+            new Utils().RegisterEvent(new BossSpawn());
 
             new Utils().RegisterEvent(new TWOFA());
 
@@ -203,7 +206,7 @@ public class Main extends JavaPlugin {
                     new TrainerCommand(), new RebirthCommand(), new GiftCommand(),
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
-                    new BaseCommand(), new TrashCommand()).forEach(CommandManager::register);
+                    new BaseCommand(), new TrashCommand(), new QuestCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
@@ -311,6 +314,9 @@ public class Main extends JavaPlugin {
             new BlockShopMenu(null).load();
             new ShopMenu(null).load();
             Confirmation.load();
+            RebirthMenu.load();
+            MinesQuest.load();
+            Privs.loadIcons();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in creating inventories!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());

@@ -29,7 +29,10 @@ public enum EConfig {
     TRAINER("Trainer", Config.trainer, Config.trainerFile, false, null),
     BATTLEPASS("BattlePass", Config.bp, Config.bpFile, false, ConfigHeaders.bpHeader()),
     BATTLEPASS_DATA("BPData", Config.bpData, Config.bpDataFile, true, null),
-    UPGRADE("Upgrade", Config.upgrade, Config.upgradeFile, false, null);
+    UPGRADE("Upgrade", Config.upgrade, Config.upgradeFile, false, null),
+    REBIRTH_DATA("RData", Config.rebirthData, Config.rebirthDataFile, true, null),
+    MINE_QUESTS("MineQuests", Config.quests, Config.questsFile, false, null),
+    QUESTS_DATA("QuestsData", Config.questsData, Config.questsDataFile, true, null);
 
     private String name;
     private FileConfiguration configuration;

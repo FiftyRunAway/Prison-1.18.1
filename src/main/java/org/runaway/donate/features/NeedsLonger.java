@@ -1,18 +1,10 @@
 package org.runaway.donate.features;
 
-public class NeedsLonger implements IFeature {
-
-    private int value;
-
-    @Override
-    public IFeature setValue(Object value) {
-        this.value = Integer.parseInt(value.toString());
-        return this;
-    }
+public class NeedsLonger extends IFeature {
 
     @Override
     public Object getValue() {
-        return this.value;
+        return Integer.parseInt(value.toString());
     }
 
     @Override

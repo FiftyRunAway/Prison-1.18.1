@@ -72,7 +72,7 @@ public class BlockBreak implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                if (Math.random() < (0.5 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));

@@ -1,18 +1,10 @@
 package org.runaway.donate.features;
 
-public class BoosterMoney implements IFeature {
-
-    private double booster;
-
-    @Override
-    public IFeature setValue(Object value) {
-        booster = Double.parseDouble(value.toString());
-        return this;
-    }
+public class BoosterMoney extends IFeature {
 
     @Override
     public Object getValue() {
-        return this.booster;
+        return Double.parseDouble(this.value.toString());
     }
 
     @Override

@@ -68,6 +68,8 @@ public enum  EMessage {
     BOSSREWARD("BossReward", "&fЗа убийство босса &e%boss% &fвы получаете &a%money%"),
     SPIDERDEAD("SpiderDead", "&cМатка была повержена окончательно, последний удар нанёс %player%"),
     BLAZEDEAD("BlazeDead", "&cОгненный страж был свержен наповал! Последний удар нанёс %player%"),
+    GOLEMDEAD("GolemDead", "&cГолем мёртв! Последний удар нанёс %player%"),
+    SLIMEDEAD("SlimeDead", "&cДревний слизняк погиб в ожесточённом бою! Последний удар нанёс %player%"),
     TRAINERNEED("RequireTrainer", "&cУ вас выполнены не все требования"),
     TRAINERSUCCESS("SuccessTrainer", "&aВы успешно прокачали один из навыков!"),
     CASHBACK("TrainerCashback", "&eПоздравляю! Вы получили кэшбэк в размере %cashback% с суммы %money%"),
@@ -107,7 +109,9 @@ public enum  EMessage {
     AUCTIONTIMES("TimesAuction", "&fАукцион проходит в &e%time%"),
     BPMISSION("MissionComplete", "&aВы выполнили миссию &e%name%. &aПродолжайте в том же духе!"),
     BPREWARDGET("RewardGet", "&aВы получили следующие награды за повышение уровня боевого пропуска: %reward%"),
-    BPREWARDCAN("RewardCanGet", "&aВы бы могли получить эти награды, имея боевой пропуск: %reward%");
+    BPREWARDCAN("RewardCanGet", "&aВы бы могли получить эти награды, имея боевой пропуск: %reward%"),
+    REBIRTHBOUGHT("BoughtRebirth", "&aВы приобрели новый навык за очки перерождения. Поздравляем!"),
+    BOSSNOTIFY("BossNotify", "&bПоявился босс &c%name%&b. Скорее на него!");
 
     private String config, defaults;
     public static HashMap<String, String> messages = new HashMap<>();

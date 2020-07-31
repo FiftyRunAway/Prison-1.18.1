@@ -5,12 +5,10 @@ import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -31,43 +29,45 @@ import org.runaway.utils.Utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Spider extends EntityMonster {
+public class Golem extends EntityMonster {
 
     private String name;
     private int health;
     private double speed;
+    private int toAbility;
+    private int abilityDelay;
     private double money;
-    private int jumpDelay;
-    private int toJump;
     private Spawner spawner;
-    private CraftEntity bukkitEntity;
     private HashMap<String, Integer> attackers;
     private int totalDamage;
     private int hpDelay;
 
-    public Spider(Spawner spawner) {
+    public Golem(Spawner spawner) {
         super(((CraftWorld)spawner.getSpawnLocation().getWorld()).getHandle());
-        ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("spider");
+        ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("golem");
         this.name = section.getString("name");
-        this.health = section.getInt("health"); //350
-        double damage = section.getDouble("damage"); //10
+        this.health = section.getInt("health");
+        double damage = section.getDouble("damage");
         double followRange = 128.0;
         double knobackResistence = -1.0;
-        this.speed = section.getDouble("speed"); //0.03
-        this.money = section.getDouble("money"); //400
-        this.jumpDelay = 400;
-        this.toJump = this.jumpDelay;
+        this.speed = section.getDouble("speed");
+        this.money = section.getDouble("money");
         this.hpDelay = 20;
+        this.abilityDelay = 400;
+        this.toAbility = abilityDelay;
+
+        Bukkit.getServer().getPluginManager().callEvent(new BossSpawnEvent(this.name, this));
+
         this.getAttributeInstance(GenericAttributes.maxHealth).setValue(this.health);
         this.getAttributeInstance(GenericAttributes.FOLLOW_RANGE).setValue(followRange);
         this.getAttributeInstance(GenericAttributes.c).setValue(knobackResistence);
         this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(this.speed);
         this.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(damage);
         this.setHealth((float)this.health);
-
         ((LivingEntity)this.getBukkitEntity()).setRemoveWhenFarAway(false);
         this.goalSelector.a(8, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, (float) followRange));
         this.goalSelector.a(5, new PathfinderGoalMoveTowardsRestriction(this, 10.0));
@@ -76,6 +76,7 @@ public class Spider extends EntityMonster {
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, true));
         this.goalSelector.a(8, new PathfinderGoalLookAtPlayer(this,  EntityHuman.class, (float)(followRange / 2.0)));
         this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, damage, true));
+
         (this.spawner = spawner).register(this);
         this.setCustomName(Utils.colored(this.name));
         this.setCustomNameVisible(true);
@@ -85,24 +86,6 @@ public class Spider extends EntityMonster {
         this.bukkitEntity = this.getBukkitEntity();
         this.attackers = new HashMap<>();
         this.totalDamage = 0;
-
-        Bukkit.getServer().getPluginManager().callEvent(new BossSpawnEvent(this.name, this));
-    }
-
-    private void superJump() {
-        this.getBukkitEntity().getWorld().playEffect(this.getBukkitEntity().getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
-        this.getBukkitEntity().setVelocity(new Vector(0, 1, 0).multiply(1));
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
-            this.getBukkitEntity().getWorld().playSound(this.getBukkitEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-            for (Entity entity : this.getBukkitEntity().getNearbyEntities(7.0, 4.0, 7.0)) {
-                if (entity.getType() == EntityType.PLAYER) {
-                    entity.setVelocity(entity.getVelocity().add(entity.getLocation().getDirection()).multiply(-3));
-                    EntityDamageEvent event = new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.CUSTOM, 5);
-                    Bukkit.getPluginManager().callEvent(event);
-                    if (!event.isCancelled()) ((LivingEntity)entity).damage(5.0, this.bukkitEntity);
-                }
-            }
-        }, 25L);
     }
 
     public boolean damageEntity(DamageSource source, float a) {
@@ -113,9 +96,6 @@ public class Spider extends EntityMonster {
         if (source.getEntity() != null && source.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
             Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.getEntity().getBukkitEntity()).getName());
             if (pAttacker == null) return false;
-            if (ThreadLocalRandom.current().nextFloat() < 0.3) {
-                Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).damage(1);
-            }
             Main.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
             if (!this.attackers.containsKey(pAttacker.getName())) {
                 this.attackers.put(pAttacker.getName(), (int)a);
@@ -123,12 +103,16 @@ public class Spider extends EntityMonster {
                 this.attackers.put(pAttacker.getName(), (int)(this.attackers.get(pAttacker.getName()) + a));
             }
             this.totalDamage += (int)a;
-        }
-        if (this.random.nextFloat() < 0.1) {
-            for (org.bukkit.entity.Entity e : this.getBukkitEntity().getNearbyEntities(10.0, 5.0, 10.0)) {
-                if (e.getType() == EntityType.PLAYER) {
-                    ((LivingEntity)e).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 0));
-                }
+            if (ThreadLocalRandom.current().nextFloat() < 0.06) {
+                pAttacker.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 200, 0, true, false));
+                pAttacker.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 255, true, false));
+                pAttacker.getLocation().getWorld().playEffect(pAttacker.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+                pAttacker.sendMessage(ChatColor.RED + "Вы попали в капкан!");
+            }
+            if (ThreadLocalRandom.current().nextFloat() < 0.08) {
+                pAttacker.setVelocity(new Vector(0.0, 1.075, 0.0));
+                pAttacker.getLocation().getWorld().playEffect(pAttacker.getLocation(), Effect.ENDER_SIGNAL, 1);
+                pAttacker.sendMessage(ChatColor.RED + "Вы ощутили ярость железа!");
             }
         }
         return super.damageEntity(source, a);
@@ -140,16 +124,16 @@ public class Spider extends EntityMonster {
         }
         if (this.hpDelay-- <= 0) {
             if (this.getHealth() < this.health) {
-                this.heal(2.0f, EntityRegainHealthEvent.RegainReason.REGEN);
+                this.heal(2.5f, EntityRegainHealthEvent.RegainReason.REGEN);
             }
             this.hpDelay = 20;
         }
         if (this.getGoalTarget() != null) {
             if (this.passengers.isEmpty()) {
-                --this.toJump;
-                if (this.toJump <= 0) {
-                    this.toJump = this.jumpDelay;
-                    this.superJump();
+                toAbility--;
+                if (toAbility <= 0) {
+                    toAbility = abilityDelay;
+                    this.forcePower();
                 }
             } else {
                 boolean isSameWorld = this.getBukkitEntity().getLocation().getWorld() == this.getGoalTarget().getBukkitEntity().getLocation().getWorld();
@@ -164,20 +148,41 @@ public class Spider extends EntityMonster {
         super.n();
     }
 
+    private void forcePower() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+            List near = this.getBukkitEntity().getNearbyEntities(10.0, 10.0, 10.0);
+            if (near.size() > 0) {
+                for (int t = 0; t < 5; ++t) {
+                    this.getBukkitEntity().getLocation().getWorld().playEffect(this.getBukkitEntity().getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+                }
+                this.getBukkitEntity().getLocation().getWorld().playSound(this.getBukkitEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+                this.getBukkitEntity().setVelocity(new Vector(0.0, 1.05, 0.0));
+
+                for (Entity entity : this.getBukkitEntity().getNearbyEntities(10.0, 10.0, 10.0)) {
+                    if (entity.getType() == EntityType.PLAYER) {
+                        Vector direction = ((Player) entity).getEyeLocation().getDirection().normalize();
+                        direction.multiply(-3);
+                        entity.setVelocity(direction);
+                    }
+                }
+            }
+        }, 25L);
+    }
+
     public void die() {
         if (!Main.bosses.contains(this.getUniqueID())) return;
         if (this.spawner != null) {
             if (CustomEntity.monsters.contains(this.name)) {
                 World world = this.spawner.getSpawnLocation().getWorld();
-                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(8).build().item());
-                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(1) + 1).build().item());
+                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(3) + 1).build().item());
+                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(10).build().item());
                 this.spawner.dead();
             } else {
                 CustomEntity.monsters.add(this.name);
             }
         }
         if (this.killer != null) {
-            Bukkit.broadcastMessage(Utils.colored(EMessage.SPIDERDEAD.getMessage()
+            Bukkit.broadcastMessage(Utils.colored(EMessage.GOLEMDEAD.getMessage()
                     .replaceAll("%player%", ChatColor.RESET + this.killer.getName())
             ));
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
@@ -189,9 +194,8 @@ public class Spider extends EntityMonster {
                     continue;
                 }
                 Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
-
                 gamer.depositMoney(money);
-                Achievement.SPIDER_KILL.get(gamer.getPlayer(), false);
+                Achievement.GOLEM_KILL.get(gamer.getPlayer(), false);
                 gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
 
                 gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()

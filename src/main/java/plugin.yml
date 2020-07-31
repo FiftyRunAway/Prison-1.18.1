@@ -1,6 +1,9 @@
 name: Prison
 main: org.runaway.Main
-version: 1.2
+version: 2.0
 author: _RunAway_
 softdepend:
 - HolographicDisplays
+- PermissionsEx
+- NametagEdit
+- ViaVersion

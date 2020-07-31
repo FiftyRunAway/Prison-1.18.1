@@ -20,11 +20,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.achievements.Achievement;
+import org.runaway.entity.CustomEntity;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
+import org.runaway.events.custom.BossSpawnEvent;
 import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Utils;
 
@@ -89,6 +91,8 @@ public class Blaze extends EntityMonster {
         this.attackers = new HashMap<>();
         this.totalDamage = 0;
         this.event = false;
+
+        Bukkit.getServer().getPluginManager().callEvent(new BossSpawnEvent(this.name, this));
     }
 
     public boolean damageEntity(DamageSource source, float a) {
@@ -201,7 +205,7 @@ public class Blaze extends EntityMonster {
         if (this.getGoalTarget() != null) {
             boolean isSameWorld = this.getBukkitEntity().getLocation().getWorld() == this.getGoalTarget().getBukkitEntity().getLocation().getWorld();
             double distance = isSameWorld ? this.getBukkitEntity().getLocation().distance(this.getGoalTarget().getBukkitEntity().getLocation()) : 32.0;
-            if (distance <= 16.0 && this.getGoalTarget() != null) {
+            if (distance <= 16.0) {
                 this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(this.speed);
             } else {
                 this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.0);
@@ -213,10 +217,14 @@ public class Blaze extends EntityMonster {
     public void die() {
         if (!Main.bosses.contains(this.getUniqueID())) return;
         if (this.spawner != null) {
-            World world = this.spawner.getSpawnLocation().getWorld();
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(1) + 1).build().item());
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(12).build().item());
-            this.spawner.dead();
+            if (CustomEntity.monsters.contains(this.name)) {
+                World world = this.spawner.getSpawnLocation().getWorld();
+                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(2) + 1).build().item());
+                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(12).build().item());
+                this.spawner.dead();
+            } else {
+                CustomEntity.monsters.add(this.name);
+            }
         }
         if (this.killer != null) {
             Bukkit.broadcastMessage(Utils.colored(EMessage.BLAZEDEAD.getMessage()

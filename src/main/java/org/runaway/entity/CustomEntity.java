@@ -6,16 +6,17 @@ import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.EntityTypes;
 import net.minecraft.server.v1_12_R1.MinecraftKey;
 import net.minecraft.server.v1_12_R1.RegistryMaterials;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.runaway.Main;
 import org.runaway.enums.Mobs;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomEntity extends RegistryMaterials {
 
@@ -25,6 +26,8 @@ public class CustomEntity extends RegistryMaterials {
     private final BiMap<Class<? extends Entity>, MinecraftKey> customEntityClasses = this.customEntities.inverse();
     private final Map<Class<? extends Entity>, Integer> customEntityIds = new HashMap<>();
     private final RegistryMaterials wrapped;
+
+    public static ArrayList<String> monsters = new ArrayList<>();
 
     private CustomEntity(RegistryMaterials original) {
         this.wrapped = original;

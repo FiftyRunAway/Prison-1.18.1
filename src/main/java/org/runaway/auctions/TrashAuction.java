@@ -1,4 +1,4 @@
-package org.runaway.auction;
+package org.runaway.auctions;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;

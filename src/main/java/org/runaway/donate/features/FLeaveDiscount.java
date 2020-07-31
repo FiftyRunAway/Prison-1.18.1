@@ -1,18 +1,10 @@
 package org.runaway.donate.features;
 
-public class FLeaveDiscount implements IFeature {
-
-    private int discount;
-
-    @Override
-    public IFeature setValue(Object value) {
-        this.discount = Integer.parseInt(value.toString());
-        return this;
-    }
+public class FLeaveDiscount extends IFeature {
 
     @Override
     public Object getValue() {
-        return this.discount;
+        return Integer.parseInt(this.value.toString());
     }
 
     @Override
