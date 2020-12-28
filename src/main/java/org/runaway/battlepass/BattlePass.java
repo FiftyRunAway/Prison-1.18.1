@@ -51,7 +51,7 @@ public class BattlePass {
         gamer.setStatistics(EStat.BATTLEPASS_LEVEL, (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + 1);
         gamer.setStatistics(EStat.BATTLEPASS_SCORE, (int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) % level);
 
-        level_rewards.get((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL)).forEach(reward -> reward.get(gamer));
+        level_rewards.get(gamer.getStatistics(EStat.BATTLEPASS_LEVEL)).forEach(reward -> reward.get(gamer));
 
         // Getting rewards
         StringBuilder get = new StringBuilder();
