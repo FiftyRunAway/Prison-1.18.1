@@ -9,11 +9,13 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.FancyText;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.boosters.Booster;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerQuit;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -64,8 +66,13 @@ public class Utils {
     //бустеры локальные
     private static HashMap<String, Double> lBlocksMultiplier = new  HashMap<>();
     private static HashMap<String, String> lBlocksTime = new  HashMap<>();
+    private static HashMap<String, Long> lBlocksRealTime = new  HashMap<>();
+    private static HashMap<String, Long> lBlocksActivatingTime = new  HashMap<>();
+
     private static HashMap<String, Double> lMoneyMultiplier = new  HashMap<>();
     private static HashMap<String, String> lMoneyTime = new  HashMap<>();
+    private static HashMap<String, Long> lMoneyRealTime = new  HashMap<>();
+    private static HashMap<String, Long> lMoneyActivatingTime = new  HashMap<>();
 
     //Тренер
     private static HashMap<String, Integer> cashback = new HashMap<>();
@@ -120,6 +127,14 @@ public class Utils {
         return Math.random() < chance;
     }
 
+    public static HashMap<String, Long> getlBlocksActivatingTime() {
+        return lBlocksActivatingTime;
+    }
+
+    public static HashMap<String, Long> getlMoneyActivatingTime() {
+        return lMoneyActivatingTime;
+    }
+
     public void RegisterEvent(Listener listener) {
         Bukkit.getPluginManager().registerEvents(listener, Main.getInstance());
     }
@@ -168,6 +183,26 @@ public class Utils {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static void globalBoostersSetter(String booster, Booster boost) {
+        String path = "global." + booster;
+        String path2 = ".information.";
+        EConfig.LOG.getConfig().set(path + ".activity", true);
+        EConfig.LOG.getConfig().set(path + path2 + "owner", boost.getOwner());
+        EConfig.LOG.getConfig().set(path + path2 + "time", boost.getTime());
+        EConfig.LOG.getConfig().set(path + path2 + "multiplier", boost.getMultiplier());
+
+        EConfig.LOG.saveConfig();
+    }
+
+    public static void localBoostersSetter(String name, String boost, long time, double mult, long start) {
+        String path = "local." + name + "." + boost + ".";
+        EConfig.LOG.getConfig().set(path + "time", time);
+        EConfig.LOG.getConfig().set(path + "multiplier", mult);
+        EConfig.LOG.getConfig().set(path + "activated", start);
+
+        EConfig.LOG.saveConfig();
     }
 
     public static String upCurLetter(String word, int LetterNumber) {
@@ -366,5 +401,13 @@ public class Utils {
 
     public static HashMap<String, String> getAuthCode() {
         return auth_code;
+    }
+
+    public static HashMap<String, Long> getlBlocksRealTime() {
+        return lBlocksRealTime;
+    }
+
+    public static HashMap<String, Long> getlMoneyRealTime() {
+        return lMoneyRealTime;
     }
 }

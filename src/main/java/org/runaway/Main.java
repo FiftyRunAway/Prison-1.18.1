@@ -2,6 +2,8 @@ package org.runaway;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import me.bigteddy98.bannerboard.api.BannerBoardAPI;
+import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,7 +12,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,6 +23,8 @@ import org.runaway.battlepass.missions.*;
 import org.runaway.board.Board;
 import org.runaway.boosters.GBlocks;
 import org.runaway.boosters.GMoney;
+import org.runaway.boosters.LBlocks;
+import org.runaway.boosters.LMoney;
 import org.runaway.cases.Case;
 import org.runaway.commands.*;
 import org.runaway.configs.Config;
@@ -30,7 +34,6 @@ import org.runaway.donate.Privs;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
-import org.runaway.google.TWOFA;
 import org.runaway.inventories.*;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
@@ -40,16 +43,11 @@ import org.runaway.mines.Mines;
 import org.runaway.quests.MinesQuest;
 import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
-import org.runaway.utils.ExampleItems;
-import org.runaway.utils.Lore;
-import org.runaway.utils.Utils;
-import org.runaway.utils.Vars;
+import org.runaway.utils.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /*
  * Created by _RunAway_ on 14.1.2019
@@ -79,6 +77,7 @@ public class Main extends JavaPlugin {
     public static boolean usePermissionsEx;
     public static boolean useNametagEdit;
     public static boolean useViaVersion;
+    public static boolean useBannerBoard;
 
     //Событие
     public static String event = null;
@@ -92,7 +91,7 @@ public class Main extends JavaPlugin {
     public static Location SPAWN;
 
     //Топы
-    private static HashMap<String, TopPlayers> tops = new HashMap<>();
+    public static HashMap<String, TopPlayers> tops = new HashMap<>();
 
     // кэш /tip`a
     public static ArrayList<String> THXersBlocks = new ArrayList<>();
@@ -114,6 +113,7 @@ public class Main extends JavaPlugin {
         Utils.DisableKick();
         new Config().unloadConfigs();
         TrashAuction.closeAll();
+        saveBoosters();
 
         Vars.sendSystemMessage(TypeMessage.SUCCESS, "Plugin was successful disabled!");
     }
@@ -146,8 +146,7 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.main_menu")) MainMenu.load();
         if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
         if (loader.getBoolean("loader.nametag")) loadNametagEdit();
-        if (loader.getBoolean("loader.2fa")) loadTwoFA();
-        if (loader.getBoolean("loader.auctionhouse")) loadTwoFA();
+        //if (loader.getBoolean("loader.2fa")) loadTwoFA();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
         if (loader.getBoolean("loader.battlepass")) BattlePass.load();
@@ -157,6 +156,8 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
         SPAWN = Utils.getLocation("spawn");
         Bukkit.getServer().getWorlds().forEach(world -> world.setGameRuleValue("announceAdvancements", "false"));
+
+        loadBoosters();
     }
 
     //Регистрация эвентов
@@ -179,7 +180,7 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new PlayerAttack());
             new Utils().RegisterEvent(new BossSpawn());
 
-            new Utils().RegisterEvent(new TWOFA());
+            //new Utils().RegisterEvent(new TWOFA());
 
             // Missions events
             new Utils().RegisterEvent(new KeyFarm());
@@ -188,6 +189,7 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new FishFarm());
             new Utils().RegisterEvent(new KillsFarm());
             new Utils().RegisterEvent(new TreasureFarm());
+            new Utils().RegisterEvent(new DamageFarm());
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering events!");
@@ -230,7 +232,7 @@ public class Main extends JavaPlugin {
             ex.printStackTrace();
         }
     }
-
+/*
     // Загрузка Google Authenticator
     private static void loadTwoFA() {
         try {
@@ -242,7 +244,7 @@ public class Main extends JavaPlugin {
             ex.printStackTrace();
         }
     }
-
+*/
     //Подгрузка кейсов
     private static void loadCases() {
         try {
@@ -469,7 +471,14 @@ public class Main extends JavaPlugin {
     //Подгрузка топов игроков
     private void loadTops() {
         try {
-            long reload_time = EConfig.CONFIG.getConfig().getInt("reload_top") * 1200;
+            useBannerBoard = Bukkit.getPluginManager().isPluginEnabled("BannerBoard");
+            if (useBannerBoard) {
+                Vars.sendSystemMessage(TypeMessage.SUCCESS, "BannerBoard was successfully connected");
+            } else {
+                Vars.sendSystemMessage(TypeMessage.INFO, "BannerBoard has not been installed yet");
+                return;
+            }
+
             HashMap<String, Long> money = new HashMap<>();
             HashMap<String, Long> blocks = new HashMap<>();
             HashMap<String, Long> level = new HashMap<>();
@@ -492,62 +501,63 @@ public class Main extends JavaPlugin {
                 rebirth.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
                 keys.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
             }
-            tops.put("деньги", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10));
-            tops.put("блоки", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10));
-            tops.put("уровни", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10));
-            tops.put("крысы", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10));
-            tops.put("перерождения", new TopPlayers(Utils.getLocation("rebirthtop"), rebirth, "&7Топ игроков по перерождениям", 10));
-            tops.put("ключи", new TopPlayers(Utils.getLocation("keystop"), keys, "&7Топ игроков по ключам", 10));
+            tops.put("money", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10,  MoneyType.RUBLES.getShortName()));
+            tops.put("blocks", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10, "блоков"));
+            tops.put("levels", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10, "уровень"));
+            tops.put("rats", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10, "крыс"));
+            tops.put("rebirths", new TopPlayers(Utils.getLocation("rebirthtop"), rebirth, "&7Топ игроков по перерождениям", 10, "перерождений"));
+            tops.put("keys", new TopPlayers(Utils.getLocation("keystop"), keys, "&7Топ игроков по ключам", 10, "ключей"));
 
-            Bukkit.getScheduler().runTaskTimer(this, () -> {
-                EConfig.STATISTICS.saveConfig();
-                HashMap<String, Long> money1 = new HashMap<>();
-                HashMap<String, Long> blocks1 = new HashMap<>();
-                HashMap<String, Long> level1 = new HashMap<>();
-                HashMap<String, Long> rats1 = new HashMap<>();
-                HashMap<String, Long> rebirth1 = new HashMap<>();
-                HashMap<String, Long> keys1 = new HashMap<>();
-
-                for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
-                    if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
-                        money1.put(name, (long) (int)EStat.MONEY.getFromConfig(name));
-                    } else {
-                        money1.put(name, Math.round((double)EStat.MONEY.getFromConfig(name)));
-                    }
-                    if (EStat.BLOCKS.getFromConfig(name) instanceof Integer) {
-                        blocks1.put(name, (long) (int)EStat.BLOCKS.getFromConfig(name));
-                    } else {
-                        blocks1.put(name, Math.round((double)EStat.BLOCKS.getFromConfig(name)));
-                    }
-                    level1.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
-                    rats1.put(name, (long) (int)EStat.RATS.getFromConfig(name));
-                    rebirth1.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
-                    keys1.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
-                }
-                if (!Main.tops.keySet().iterator().hasNext()) return;
-                tops.keySet().forEach(s -> {
-                    if ("деньги".equals(s)) {
-                        Main.tops.get(s).setTopValues(money1);
-                    } else if ("блоки".equals(s)) {
-                        Main.tops.get(s).setTopValues(blocks1);
-                    } else if ("уровни".equals(s)) {
-                        Main.tops.get(s).setTopValues(level1);
-                    } else if ("крысы".equals(s)) {
-                        Main.tops.get(s).setTopValues(rats1);
-                    } else if ("перерождения".equals(s)) {
-                        Main.tops.get(s).setTopValues(rebirth1);
-                    } else if ("ключи".equals(s)) {
-                        Main.tops.get(s).setTopValues(keys1);
-                    }
-                    Main.tops.get(s).recreate();
-                });
-            }, 100L, reload_time);
+            BannerBoardAPI api = BannerBoardManager.getAPI();
+            api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading players top!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
             Main.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
+    }
+
+    public static void forceUpdateTop() {
+        HashMap<String, Long> money1 = new HashMap<>();
+        HashMap<String, Long> blocks1 = new HashMap<>();
+        HashMap<String, Long> level1 = new HashMap<>();
+        HashMap<String, Long> rats1 = new HashMap<>();
+        HashMap<String, Long> rebirth1 = new HashMap<>();
+        HashMap<String, Long> keys1 = new HashMap<>();
+
+        for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
+            if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
+                money1.put(name, (long) (int)EStat.MONEY.getFromConfig(name));
+            } else {
+                money1.put(name, Math.round((double)EStat.MONEY.getFromConfig(name)));
+            }
+            if (EStat.BLOCKS.getFromConfig(name) instanceof Integer) {
+                blocks1.put(name, (long) (int)EStat.BLOCKS.getFromConfig(name));
+            } else {
+                blocks1.put(name, Math.round((double)EStat.BLOCKS.getFromConfig(name)));
+            }
+            level1.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
+            rats1.put(name, (long) (int)EStat.RATS.getFromConfig(name));
+            rebirth1.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
+            keys1.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
+        }
+        if (!Main.tops.keySet().iterator().hasNext()) return;
+        tops.keySet().forEach(s -> {
+            if ("money".equals(s)) {
+                Main.tops.get(s).setTopValues(money1);
+            } else if ("blocks".equals(s)) {
+                Main.tops.get(s).setTopValues(blocks1);
+            } else if ("levels".equals(s)) {
+                Main.tops.get(s).setTopValues(level1);
+            } else if ("rats".equals(s)) {
+                Main.tops.get(s).setTopValues(rats1);
+            } else if ("rebirths".equals(s)) {
+                Main.tops.get(s).setTopValues(rebirth1);
+            } else if ("keys".equals(s)) {
+                Main.tops.get(s).setTopValues(keys1);
+            }
+        });
     }
 
     //Подгрузка шахт
@@ -587,6 +597,97 @@ public class Main extends JavaPlugin {
             Main.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
+    }
+
+    //Отгрузка бустеров
+    private void saveBoosters() {
+        //Глобальные бустеры
+        if (Main.gBlocks.isActive()) {
+            Utils.globalBoostersSetter("blocks", Main.gBlocks);
+        }
+        if (Main.gMoney.isActive()) {
+            Utils.globalBoostersSetter("money", Main.gMoney);
+        }
+        //Локальные бустеры
+
+        //Блоков
+        Utils.getlBlocksMultiplier().forEach((player_name, mult) -> {
+            String name = player_name;
+            AtomicLong time = new AtomicLong();
+            Utils.getlBlocksRealTime().forEach((p, times) -> {
+                if (p.equals(name)) {
+                    time.set(times);
+                }
+            });
+            AtomicLong start = new AtomicLong();
+            Utils.getlBlocksActivatingTime().forEach((p, times) -> {
+                if (p.equals(name)) {
+                    start.set(times);
+                }
+            });
+            Utils.localBoostersSetter(name, "blocks", time.get(), mult, start.get());
+        });
+
+        //Денег
+        Utils.getlMoneyMultiplier().forEach((player_name, mult) -> {
+            String name = player_name;
+            AtomicLong time = new AtomicLong();
+            Utils.getlMoneyRealTime().forEach((p, times) -> {
+                if (p.equals(name)) {
+                    time.set(times);
+                }
+            });
+            AtomicLong start = new AtomicLong();
+            Utils.getlMoneyActivatingTime().forEach((p, times) -> {
+                if (p.equals(name)) {
+                    start.set(times);
+                }
+            });
+            Utils.localBoostersSetter(name, "money", time.get(), mult, start.get());
+        });
+
+        //Текщее время
+        EConfig.LOG.getConfig().set("time", System.currentTimeMillis());
+        EConfig.LOG.saveConfig();
+    }
+
+    //Загрузка бустеров
+    private void loadBoosters() {
+        FileConfiguration cfg = EConfig.LOG.getConfig();
+        //Глобальные
+        if (cfg.getBoolean("global.blocks.activity")) {
+            ConfigurationSection section = cfg.getConfigurationSection("global.blocks.information");
+            Main.gBlocks.start(section.getString("owner"), section.getLong("time"), section.getDouble("multiplier"));
+            cfg.set("global.blocks.activity", false);
+            Bukkit.getConsoleSender().sendMessage(Vars.getPrefix() + "Started Global BLOCKS booster from " + section.getString("owner"));
+        }
+        if (cfg.getBoolean("global.money.activity")) {
+            ConfigurationSection section = cfg.getConfigurationSection("global.money.information");
+            Main.gMoney.start(section.getString("owner"), section.getLong("time"), section.getDouble("multiplier"));
+            cfg.set("global.money.activity", false);
+            Bukkit.getConsoleSender().sendMessage(Vars.getPrefix() + "Started Global MONEY booster from " + section.getString("owner"));
+        }
+
+        //Локальные
+        if (cfg.getConfigurationSection("local") != null) {
+            cfg.getConfigurationSection("local").getKeys(true).forEach(s -> {
+                ConfigurationSection section = cfg.getConfigurationSection("local." + s);
+                if (cfg.contains("local." + s + ".blocks")) {
+                    LBlocks blocks = new LBlocks();
+                    long working_time = Math.round((double) (cfg.getLong("time") - section.getLong("blocks.activated")) / 1000);
+                    blocks.start(s, section.getLong("blocks.time") - working_time, section.getDouble("blocks.multiplier"));
+                    Bukkit.getConsoleSender().sendMessage(Vars.getPrefix() + "Started Local Blocks booster for " + s);
+                }
+                if (cfg.contains("local." + s + ".money")) {
+                    LMoney money = new LMoney();
+                    long gone_before_stopping = Math.round((double) (cfg.getLong("time") - section.getLong("money.activated")) / 1000);
+                    money.start(s, section.getLong("money.time") - gone_before_stopping, section.getDouble("money.multiplier"));
+                    Bukkit.getConsoleSender().sendMessage(Vars.getPrefix() + "Started Local Money booster for " + s);
+                }
+            });
+        }
+        cfg.set("local", null);
+        EConfig.LOG.saveConfig();
     }
 
     //Подгрузка шахт
@@ -632,7 +733,11 @@ public class Main extends JavaPlugin {
                     cSpawner.dead();
                 }
             }
-            Bukkit.getWorlds().forEach(world -> world.getEntities().forEach(Entity::remove));
+            Bukkit.getWorlds().forEach(world -> world.getEntities().forEach(e -> {
+                if (e.getType() != EntityType.ITEM_FRAME) {
+                    e.remove();
+                }
+            }));
             Vars.sendSystemMessage(TypeMessage.INFO, "Entities removed");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in delete entities! Please, don`t use /reload. Use /stop or /restart");

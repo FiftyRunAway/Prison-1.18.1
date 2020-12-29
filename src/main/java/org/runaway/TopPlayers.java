@@ -2,6 +2,7 @@ package org.runaway;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -18,12 +19,14 @@ public class TopPlayers {
     private String start;
     private Hologram hologram;
     private int max;
+    private String description;
 
-    TopPlayers(Location location, HashMap<String, Long> values, String start, int max) {
+    TopPlayers(Location location, HashMap<String, Long> values, String start, int max, String description) {
         this.location = location;
         this.topValues = values;
         this.start = start;
         this.max = max;
+        this.description = description;
         this.create();
     }
 
@@ -62,6 +65,29 @@ public class TopPlayers {
         this.hologram = hologram;
     }
 
+    public HashMap<String, Long> getTopValues() {
+        Main.forceUpdateTop();
+
+        return (HashMap<String, Long>) sortByValue(this.topValues);
+    }
+
+    private static <K, V> HashMap<K, V> invert(Map<K, V> map) {
+        HashMap<K, V> inv = new HashMap<>();
+
+        ArrayList<K> keys = new ArrayList<>();
+        ArrayList<V> values = new ArrayList<>();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            keys.add(entry.getKey());
+            values.add(entry.getValue());
+        }
+        for (int i = keys.size(); i > 0; i--) {
+            int pos = keys.size() - i;
+            inv.put(keys.get(pos), values.get(pos));
+        }
+        Bukkit.getConsoleSender().sendMessage(inv.toString());
+        return inv;
+    }
+
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         LinkedList<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
         list.sort(Comparator.comparing(Map.Entry::getValue));
@@ -73,5 +99,9 @@ public class TopPlayers {
             }
         }
         return result;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

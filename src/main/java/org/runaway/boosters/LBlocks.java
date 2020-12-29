@@ -18,33 +18,41 @@ public class LBlocks extends Booster {
 
     @Override
     public void start(String owner, long time, double multiplier) {
-        Gamer gamer = Main.gamers.get(Bukkit.getPlayer(owner).getUniqueId());
+        Gamer gamer = Main.gamers.get(Bukkit.getOfflinePlayer(owner).getUniqueId());
         if (!Utils.getlBlocksTime().containsKey(owner)) {
             Date target = new Date();
             target = DateUtils.addSeconds(target, (int)time);
             Utils.getlBlocksTime().put(owner, Vars.dateFormat.format(target));
+            Utils.getlBlocksRealTime().put(owner, time);
+            Utils.getlBlocksActivatingTime().put(owner, System.currentTimeMillis());
             Utils.getlBlocksMultiplier().put(owner, multiplier);
-            gamer.sendTitle(ChatColor.GREEN + "Вы активировали", ChatColor.GREEN + "бустер блоков " + multiplier + "x");
+            if (Utils.getPlayers().contains(owner)) {
+                gamer.sendTitle(ChatColor.GREEN + "Вы активировали", ChatColor.GREEN + "бустер блоков " + multiplier + "x");
+            }
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                 Utils.getlBlocksMultiplier().remove(owner);
                 Utils.getlBlocksTime().remove(owner);
-                gamer.getPlayer().sendMessage(ChatColor.RED + "Ваш локальный бустер блоков закончился!");
+                Utils.getlBlocksRealTime().remove(owner);
+                Utils.getlBlocksActivatingTime().remove(owner);
+                if (Utils.getPlayers().contains(owner)) {
+                    gamer.getPlayer().sendMessage(ChatColor.RED + "Ваш локальный бустер блоков закончился!");
+                }
             },20 * time);
         }
     }
 
     @Override
-    long getTime() {
+    public long getTime() {
         return 0;
     }
 
     @Override
-    String getOwner() {
+    public String getOwner() {
         return null;
     }
 
     @Override
-    double getMultiplier() {
+    public double getMultiplier() {
         return 0;
     }
 

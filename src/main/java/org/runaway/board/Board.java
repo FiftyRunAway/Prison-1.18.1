@@ -66,7 +66,7 @@ public class Board {
         return ChatColor.GRAY + "" + ChatColor.BOLD + " • " + before;
     }
 
-    private static String FormatBlocks(Gamer gamer) {
+    public static String FormatBlocks(Gamer gamer) {
         double blocks = (double)gamer.getStatistics(EStat.BLOCKS);
         if (blocks >= 1000.0 && blocks < 1000000) {
             return Math.round(blocks / 1000.0 * 100.0) / 100.0 + "K";
@@ -77,11 +77,22 @@ public class Board {
         return String.valueOf(Math.round((double)gamer.getStatistics(EStat.BLOCKS)));
     }
 
+    public static String FormatBlocks(String blks) {
+        double blocks = Double.parseDouble(blks);
+        if (blocks >= 1000.0 && blocks < 1000000) {
+            return Math.round(blocks / 1000.0 * 100.0) / 100.0 + "K";
+        }
+        if (blocks >= 1000000) {
+            return Math.round(blocks / 1000000.0 * 100.0) / 100.0 + "M";
+        }
+        return String.valueOf(Math.round(Float.parseFloat(blks)));
+    }
+
     public static String FormatMoney(Object balance) {
         if (balance instanceof Integer) {
             return balance + " " + MoneyType.RUBLES.getShortName();
         } else if (balance instanceof String) {
-            return "&cСЛОМАЛОСЬ";
+            return "&cСЛОМАЛОСЬ:(";
         } else {
             DecimalFormat decimalFormat = new DecimalFormat("#,##0.0", decimalFormatSymbols);
             String r = decimalFormat.format(balance);
@@ -120,11 +131,11 @@ public class Board {
                                 .replace(Utils.colored(" &7| " + Main.event), "")) + Utils.colored(" &7| " + Main.event));
                     } else {
                         scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
-                                .replace(Utils.colored(" &7| &b" + BattlePass.season + " СЕЗОН"), "")) + Utils.colored(" &7| &b" + BattlePass.season + " СЕЗОН"));
+                                .replace(Utils.colored(" &7| &c" + /*BattlePass.season*/ "ОТКРЫТИЕ"), "")) + Utils.colored(" &7| &c" + /*BattlePass.season + */"ОТКРЫТИЕ"));
                     }
                 }
             });
-        }, 0L, 6L);
+        }, 0L, 4L);
     }
 
     public void loadBoard() {

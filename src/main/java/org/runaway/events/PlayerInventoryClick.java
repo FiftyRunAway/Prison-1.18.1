@@ -100,6 +100,10 @@ public class PlayerInventoryClick implements Listener {
                                 Achievement.FIVE_LEVEL.get(player, false);
                             } else if (newLevel == 10) {
                                 Achievement.TEN_LEVEL.get(player, false);
+                            } else if (newLevel == 15) {
+                                Achievement.FIFTEEN_LEVEL.get(player, false);
+                            } else if (newLevel == 20) {
+                                Achievement.TWENTY_LEVEL.get(player, false);
                             }
                         } else {
                             gamer.sendMessage(EMessage.LEVELNEEDBLOCKS);

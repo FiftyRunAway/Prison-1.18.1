@@ -26,8 +26,19 @@ public enum Achievement {
             new ItemReward().setReward(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").build().item()) }, true),
     TEN_LEVEL("&aПолучить 10 уровень","Опытный зэк", new Reward[]{
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()),
+            new BoosterReward().setReward(BoosterType.MONEY, 2.0, 1200, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 1200, false)}, true),
+    FIFTEEN_LEVEL("&aПолучить 15 уровень","Зэк-ветеран", new Reward[]{
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(16).build().item()),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 1800, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 1800, false)}, true),
+    TWENTY_LEVEL("&aПолучить 20 уровень","Надёжный зэк", new Reward[]{
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(32).build().item()),
+            new BoosterReward().setReward(BoosterType.MONEY, 2.0, 3600, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 3600, false)}, true),
+    REBIRTH("&aПереродитесь впервые","Иисус", new Reward[]{
+            new BoosterReward().setReward(BoosterType.MONEY, 1.5, 10800, true),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.5, 10800, true)}, false),
     FIRST_TREASURE("&aНайти свой первый клад","Сыщик I", new Reward[]{
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     SPIDER_KILL("&aВы убили матку впервые", "Ведьмак", new Reward[]{
@@ -42,6 +53,9 @@ public enum Achievement {
     FIFTEEN_RATS("&aВы убили 15 крыс", "Крысолов I", new Reward[]{
             new MoneyReward().setReward(10),
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(10).build().item()) }, false),
+    RARE_RAT("&aВы убили редкую крысу", "Супер крысолов", new Reward[]{
+            new MoneyReward().setReward(15),
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     FIFTEEN_ZOMBIES("&aВы убили 15 зомби", "Зомболов I", new Reward[]{
             new MoneyReward().setReward(50),
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(20).build().item()) }, false),
@@ -52,9 +66,6 @@ public enum Achievement {
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(16).build().item()) }, true),
     EMPTY_SERVER("&aЗайти на пустой сервер", "Одиночество", new Reward[]{
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(8).build().item()) }, true),
-    RARE_RAT("&aВы убили редкую крысу", "Супер крысолов", new Reward[]{
-            new MoneyReward().setReward(15),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     FIRST_UPGRADE("&aУлучшите один инструмент", "Освоение I", new Reward[]{
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(4).build().item()) }, false),
     GET_15("&aЗаработать 15 руб.", "Копатель онлайн", new Reward[]{
@@ -78,9 +89,9 @@ public enum Achievement {
             new MoneyReward().setReward(150) }, true),
     KILL_5("&aУбить 5 заключённых", "Убийца", new Reward[]{
             new MoneyReward().setReward(10) }, false),
-    KILL_100("&aУбить 100 зэков", "Киллер", new Reward[]{
+    KILL_100("&aУбить сотню зэков", "Киллер", new Reward[]{
             new MoneyReward().setReward(150) }, true),
-    TIME_30("&aСыграть 30 минут", "Только начало огромного пути", new Reward[]{
+    TIME_30("&aСыграть 30 минут", "Это только начало пути", new Reward[]{
             new MoneyReward().setReward(10) }, false),
     TIME_90("&aСыграть полтора часа", "Уже что-то)", new Reward[]{
             new BoosterReward().setReward(BoosterType.MONEY, 1.5, 900, false) }, false),

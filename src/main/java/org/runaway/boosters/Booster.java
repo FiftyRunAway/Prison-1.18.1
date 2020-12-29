@@ -8,11 +8,11 @@ abstract public class Booster {
 
     abstract void start(String owner, long time, double multiplier);
 
-    abstract long getTime();
+    public abstract long getTime();
 
-    abstract String getOwner();
+    public abstract String getOwner();
 
-    abstract double getMultiplier();
+    public abstract double getMultiplier();
 
     abstract boolean isActive();
 }

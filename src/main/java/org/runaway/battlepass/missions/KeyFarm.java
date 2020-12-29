@@ -26,7 +26,11 @@ public class KeyFarm extends IMission implements Listener {
             if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
                 if (!mission.isCompleted(gamer)) {
                     KeyFarm kf = (KeyFarm) mission;
-                    if (kf.mine != null && event.fromMine(kf.mine)) kf.addValue(gamer);
+                    if (kf.mine_name != null) {
+                        if (event.fromMine(kf.mine)) kf.addValue(gamer);
+                    } else {
+                        kf.addValue(gamer);
+                    }
                 }
             }
         }));

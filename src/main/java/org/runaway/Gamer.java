@@ -89,7 +89,7 @@ public class Gamer {
 
     public void addExperienceBP(int experience) {
         setStatistics(EStat.BATTLEPASS_SCORE, (int)getStatistics(EStat.BATTLEPASS_SCORE) + experience);
-        sendActionbar(Utils.colored("&dПолучено " + experience + " опыта"));
+        //sendActionbar(Utils.colored("&dПолучено " + experience + " опыта"));
     }
 
     public void setHearts() {
@@ -117,10 +117,16 @@ public class Gamer {
             if (TrashAuction.auctions.size() > 0) {
                 teleport(TrashAuction.auction_spawn);
             } else {
-                sendMessage(EMessage.NOAUCTION);
+                StringBuilder times = new StringBuilder();
+                AtomicInteger i = new AtomicInteger(0);
+                TrashAuction.times.forEach(integer -> {
+                    times.append(integer);
+                    if (TrashAuction.times.size() != i.getAndIncrement() + 1) times.append(", ");
+                });
+                player.sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
             }
         } else {
-            sendTitle("&cТолько", "&c1.15.2+");
+            sendTitle("&cТолько", "&41.15.2+");
         }
     }
 
@@ -225,6 +231,7 @@ public class Gamer {
         getPlayer().setLevel(0);
 
         Achievement.JOIN.get(player, false);
+        Achievement.REBIRTH.get(player, false);
 
         ItemStack is = new Item.Builder(Material.PAPER).name("&aМеню").lore(new Lore.BuilderLore().addSpace().addString("&7>> &bОткрыть").build()).build().item();
         if (!player.getInventory().contains(is)) {
@@ -379,7 +386,7 @@ public class Gamer {
         return 1000;
     }
 
-    public boolean is1_15_2() {
+    private boolean is1_15_2() {
         return getVerison() >= 578;
     }
 

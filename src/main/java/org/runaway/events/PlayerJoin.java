@@ -1,7 +1,5 @@
 package org.runaway.events;
 
-import com.warrenstrange.googleauth.GoogleAuthenticator;
-import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +18,6 @@ import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
 import org.runaway.commands.SetStatCommand;
 import org.runaway.enums.*;
-import org.runaway.google.TWOFA;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
@@ -76,7 +73,7 @@ public class PlayerJoin implements Listener {
             if (mission.isCompleted(gamer)) mission.getValues().remove(gamer.getGamer());
         }));
     }
-
+/*
     private void twoFA(Gamer gamer) {
         Player player = gamer.getPlayer();
         if (gamer.getStatistics(EStat.TWOFA_CODE).equals("default")) {
@@ -92,7 +89,7 @@ public class PlayerJoin implements Listener {
             player.sendMessage(Utils.colored("&aОткройте приложение Google Authenticator и введите шестизначный пароль."));
         }
     }
-
+*/
     private void addBar(Player player) {
         Main.MoneyBar.addPlayer(player);
         Main.BlocksBar.addPlayer(player);

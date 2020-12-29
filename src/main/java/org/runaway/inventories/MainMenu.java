@@ -6,8 +6,6 @@ import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
-import org.runaway.auctions.TrashAuction;
-import org.runaway.enums.EMessage;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerInteract;
@@ -16,10 +14,7 @@ import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.events.ClickType;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.Lore;
-import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainMenu implements IMenus {
 
@@ -134,24 +129,13 @@ public class MainMenu implements IMenus {
             IMenuButton trash = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.MINECART)
                     .name("&eПеремещение на свалку-аукцион")
                     .lore(new Lore.BuilderLore()
-                            .addString("&cТолько 1.15.2!")
-                            .addString("&7>> Перемещение")
-                            .addString("&7<< Подробнее").build()).build().item())
+                            .addString("&cТолько &41.15.2+!")
+                            .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(0);
             trash.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
                 Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
-                if (event.getClickType().equals(ClickType.LEFT)) {
-                    StringBuilder times = new StringBuilder();
-                    AtomicInteger i = new AtomicInteger(0);
-                    TrashAuction.times.forEach(integer -> {
-                        times.append(integer);
-                        if (TrashAuction.times.size() != i.getAndIncrement() + 1) times.append(", ");
-                    });
-                    event.getWhoClicked().sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
-                } else {
-                    gamer.teleportTrashAuction();
-                }
+                gamer.teleportTrashAuction();
             });
             menu.addButton(trash);
 
@@ -189,7 +173,7 @@ public class MainMenu implements IMenus {
             menu.addButton(sell);
 
             IMenuButton quests = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.COMPASS)
-                    .name("&eКвесты")
+                    .name("&cКвесты")
                     .lore(new Lore.BuilderLore()
                             .addSpace()
                             .addString("&7>> Посмотреть").build()).build().item())
@@ -207,7 +191,7 @@ public class MainMenu implements IMenus {
                             .addString("&7>> Открыть").build()).build().item())
                     .setSlot(30);
             bp.setClickEvent(event -> new BattlePassMenu(event.getWhoClicked()));
-            //menu.addButton(bp);
+            menu.addButton(bp);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load profile menu!");

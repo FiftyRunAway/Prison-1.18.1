@@ -193,11 +193,14 @@ public class TrashAuction {
             }
 
             // Fast buy item
-            IMenuButton fastbuy = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "Приобрести сейчас за " + this.fastbuy + " " + MoneyType.RUBLES.getShortName()));
+            IMenuButton fastbuy = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "Приобрести сейчас за " + ChatColor.YELLOW + this.fastbuy + " " + MoneyType.RUBLES.getShortName()));
             fastbuy.setClickEvent(event -> {
                 Player player = event.getWhoClicked();
                 Gamer gamer = Main.gamers.get(player.getUniqueId());
-
+                if (!gamer.isInventory()) {
+                    gamer.sendMessage(EMessage.NOINVENTORY);
+                    return;
+                }
                 player.closeInventory();
                 if (!bought) {
                     if (gamer.hasMoney(this.fastbuy)) {
@@ -241,7 +244,7 @@ public class TrashAuction {
             this.hologram.appendTextLine(Utils.colored("&fПредмет &7• " + this.itemStack.getItemMeta().getDisplayName()));
             ItemLine item = this.hologram.appendItemLine(this.itemStack);
             item.setTouchHandler(player -> player.openInventory(menu.build()));
-            this.hologram.appendTextLine(Utils.colored("&7(ПКМ по предмету)"));
+            this.hologram.appendTextLine(Utils.colored("&7(&eПКМ&7 по предмету)"));
 
             this.hologram.appendTextLine(Utils.colored("&fКупить сейчас &7• &a" + fastbuy + " " + MoneyType.RUBLES.getShortName()));
             this.hologram.appendTextLine(Utils.colored("&fСтавок &7• &a" + bids));
