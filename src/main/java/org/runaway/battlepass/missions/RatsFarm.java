@@ -20,15 +20,18 @@ public class RatsFarm extends IMission implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
-        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
-            if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                if (!mission.isCompleted(gamer)) {
-                    RatsFarm rf = (RatsFarm) mission;
-                    if (!rf.isRare || event.isRare())
-                        rf.addValue(gamer);
+        BattlePass.missions.forEach(weeklyMission -> {
+            if (!weeklyMission.isStarted()) return;
+            weeklyMission.getMissions().forEach(mission -> {
+                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
+                    if (!mission.isCompleted(gamer)) {
+                        RatsFarm rf = (RatsFarm) mission;
+                        if (!rf.isRare || event.isRare())
+                            rf.addValue(gamer);
+                    }
                 }
-            }
-        }));
+            });
+        });
 
         addAllValues(gamer);
     }

@@ -127,19 +127,22 @@ public abstract class IMission {
     }
 
     protected void addAllValues(Gamer gamer) {
-        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
-            if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                if (!mission.isCompleted(gamer)) {
-                    mission.addValue(gamer);
+        BattlePass.missions.forEach(weeklyMission -> {
+            if (!weeklyMission.isStarted()) return;
+            weeklyMission.getMissions().forEach(mission -> {
+                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
+                    if (!mission.isCompleted(gamer)) {
+                        mission.addValue(gamer);
+                    }
                 }
-            }
-        }));
+            });
+        });
     }
 
     protected Mine getMineString(String string) {
-        if (!string.toLowerCase().equals("none") && !string.toLowerCase().equals("null")) {
+        if (!string.equalsIgnoreCase("none") && !string.equalsIgnoreCase("null")) {
             for (Mine m : Main.mines) {
-                if (m.getMaterial().toString().toLowerCase().equals(string.toLowerCase())) {
+                if (m.getMaterial().toString().equalsIgnoreCase(string)) {
                     return m;
                 }
             }

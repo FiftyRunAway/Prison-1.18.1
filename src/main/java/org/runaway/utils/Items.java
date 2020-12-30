@@ -45,6 +45,7 @@ public abstract class Items {
         }
 
         protected abstract T self();
+
         public abstract Items build();
     }
 
@@ -75,39 +76,4 @@ public abstract class Items {
     public boolean isUnbreakable() {
         return unbreakable;
     }
-
-    //
-//    public ItemStack item() {
-//        ItemStack stack = new ItemStack(this.material, this.amount);
-//        stack.setDurability(this.data);
-//        ItemMeta meta = stack.getItemMeta();
-//        meta.setDisplayName(this.name);
-//        if (this.lore != null) meta.setLore(this.lore.getList());
-//        stack.setItemMeta(meta);
-//        return stack;
-//    }
-//
-//    public static ItemStack glass(int data) {
-//        return glass(data, "");
-//    }
-//
-//    public static ItemStack glass(int data, String name) {
-//        return new BuilderItems(Material.STAINED_GLASS_PANE).data((short) data).name(name).build().item();
-//    }
-//
-//    // APPLE-0-&7Обычное_яблочко-4-/&cЛучший предмет/&5Всея Руси!
-//    public static ItemStack unserializerString(String s) {
-//        String[] split = s.split("-");
-//        ArrayList<String> lores = null;
-//        if (!split[4].equals("null")) {
-//            String[] lore = split[4].split("/");
-//            lores = new ArrayList<>();
-//            Collections.addAll(lores, lore);
-//        }
-//        return new BuilderItems(Material.valueOf(split[0])).
-//                data(Short.parseShort(split[1])).
-//                amount(Integer.parseInt(split[3])).
-//                name(split[2]).lore(new Lore.BuilderLore().addList(lores).build())
-//                .build().item();
-//    }
 }

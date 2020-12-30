@@ -142,7 +142,7 @@ public class Board {
         try {
             titleUpdate();
             Main.event = EConfig.SHOP.getConfig().getString("event");
-            dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm z");
+            dateFormat = new SimpleDateFormat("HH:mm z | dd.MM.yy");
             decimalFormatSymbols.setDecimalSeparator('.');
             decimalFormatSymbols.setGroupingSeparator(',');
             ScoreBoardUpdate.addAll(EConfig.CONFIG.getConfig().getStringList("DisplayName"));

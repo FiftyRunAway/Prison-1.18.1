@@ -8,8 +8,10 @@ import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
+import org.runaway.battlepass.IMission;
 import org.runaway.battlepass.WeeklyMission;
 import org.runaway.enums.EConfig;
+import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
@@ -18,9 +20,8 @@ import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BattlePassMenu implements IMenus {
@@ -79,6 +80,51 @@ public class BattlePassMenu implements IMenus {
                 if (hasMaxLevel && i - 9 > max_level) break;
                 if (pass && player_level < i - 9) pass = false;
                 menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(glass(pass, i - 9, gamer)).setSlot(i));
+            }
+        }
+
+        //Pinned tasks
+        int pinned = BattlePass.getPins(gamer);
+        int pin_slots = 36 + pinned;
+        ArrayList<IMission> missions = BattlePass.getPinnedTasks(gamer);
+        int k = 0;
+        for (int i = 37; i < 44; i++) {
+            if (i <= pin_slots) {
+                IMission mission = missions.get(k);
+
+                Item.Builder ic = mission.getIcon().getIcon(gamer);
+                ArrayList<String> lore = new ArrayList<>(ic.build().getLore().getList());
+                lore.add(" ");
+                lore.add(Utils.colored("&7Нажмите, чтобы &cоткрепить"));
+                IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(ic.lore(new Lore.BuilderLore().addList(lore).build()).build().item())
+                        .setSlot(i);
+
+                int finalK = k;
+                btn.setClickEvent(e -> {
+                    ArrayList<String> in = new ArrayList<>(Arrays.asList(EConfig.BATTLEPASS_DATA.getConfig().getString(e.getWhoClicked().getName()).split(" ")));
+                    EConfig.BATTLEPASS_DATA.getConfig().set(e.getWhoClicked().getName(), null);
+                    Gamer g = Main.gamers.get(e.getWhoClicked().getUniqueId());
+                    in.remove(finalK);
+                    String str = in.toString().replace("[", "").replace("]", "").replace(",", "");
+                    if (str.length() > 1) {
+                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), str);
+                    } else {
+                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), null);
+                    }
+                    EConfig.BATTLEPASS_DATA.saveConfig();
+
+                    new BattlePassMenu(e.getWhoClicked());
+                    gamer.sendMessage(EMessage.UNPIN);
+                });
+                menu.addButton(btn);
+                k++;
+            } else {
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.IRON_FENCE)
+                        .name("&aСвободная ячейка").lore(new Lore.BuilderLore()
+                                .addSpace()
+                                .addString("&7Выберите задания в &eменю")
+                                .addString("&eиспытаний &7для закрепления").build())
+                        .build().item()).setSlot(i));
             }
         }
 
@@ -153,6 +199,7 @@ public class BattlePassMenu implements IMenus {
             btns.add(back);
         }
 
+
         preloaded_icons.put(page, btns);
     }
 
@@ -202,6 +249,7 @@ public class BattlePassMenu implements IMenus {
             boolean opened = false;
             if (wm.getDate().getTime() < now.getTime()) opened = true;
 
+            String name_wm = wm.getName();
             if (!opened) {
                 long diff = new Date(wm.getDate().getTime() - now.getTime()).getTime();
 
@@ -210,13 +258,14 @@ public class BattlePassMenu implements IMenus {
                 } else {
                     lore.add("&7>> Откроется через: &b" + diff / 3600000 + " часов по МСК");
                 }
-
+                name_wm = ChatColor.MAGIC + wm.getName();
             } else {
+                lore.add("&7Начались &b" + new SimpleDateFormat("dd.MM").format(wm.getDate()));
                 lore.add("&7>> Посмотреть задания");
             }
 
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.PAPER)
-                    .name("&e" + wm.getName())
+                    .name("&e" + name_wm)
                     .lore(new Lore.BuilderLore()
                             .addSpace()
                             .addList(lore)
@@ -261,7 +310,32 @@ public class BattlePassMenu implements IMenus {
         StandardMenu menu = StandardMenu.create(4, ChatColor.YELLOW +  "Боевой пропуск &7• " + missions.getName());
         AtomicInteger i = new AtomicInteger(10);
         missions.getMissions().forEach(mission -> {
-            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(mission.getIcon().getIcon(gamer)).setSlot(i.getAndIncrement());
+            Item.Builder ic = mission.getIcon().getIcon(gamer);
+            ArrayList<String> lore = new ArrayList<>(ic.build().getLore().getList());
+            lore.add(" ");
+            lore.add(Utils.colored("&7Нажмите, чтобы &eзакрепить"));
+            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(ic.lore(new Lore.BuilderLore().addList(lore).build()).build().item())
+                    .setSlot(i.getAndIncrement());
+            btn.setClickEvent(e -> {
+                Gamer g = Main.gamers.get(e.getWhoClicked().getUniqueId());
+                int pins = BattlePass.getPins(g);
+                if (pins < 7) {
+                    ArrayList<IMission> pinned = BattlePass.getPinnedTasks(g);
+                    if (pinned != null && pinned.contains(mission)) {
+                        g.sendMessage(EMessage.ALREADYPINNED);
+                        return;
+                    }
+                    if (pins == 0) {
+                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), mission.getHashCode());
+                    } else {
+                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), EConfig.BATTLEPASS_DATA.getConfig().get(gamer.getGamer()) + " " + mission.getHashCode());
+                    }
+                    EConfig.BATTLEPASS_DATA.saveConfig();
+                    g.getPlayer().sendMessage(Utils.colored(EMessage.SETPIN.getMessage().replace("%name%", mission.getName())));
+                } else {
+                    g.sendMessage(EMessage.MANYPINS);
+                }
+            });
             menu.addButton(btn);
             if (i.get() == 16) i.set(19);
         });

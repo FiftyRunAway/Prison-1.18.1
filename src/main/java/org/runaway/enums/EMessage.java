@@ -111,7 +111,11 @@ public enum  EMessage {
     BPREWARDGET("RewardGet", "&aВы получили следующие награды за повышение уровня боевого пропуска: %reward%"),
     BPREWARDCAN("RewardCanGet", "&aВы бы могли получить эти награды, имея боевой пропуск: %reward%"),
     REBIRTHBOUGHT("BoughtRebirth", "&aВы приобрели новый навык за очки перерождения. Поздравляем!"),
-    BOSSNOTIFY("BossNotify", "&bПоявился босс &c%name%&b. Скорее на него!");
+    BOSSNOTIFY("BossNotify", "&bПоявился босс &c%name%&b. Скорее на него!"),
+    MANYPINS("ManyPins", "&cУже слишком много заданий закреплено! Вы можете &4открепить старые."),
+    SETPIN("SetPin", "&aВы успешно закрепили задание &e%name%!"),
+    ALREADYPINNED("AlreadyPinned", "&cЭто задание уже закреплено."),
+    UNPIN("Unpin", "&aВы успешно &cоткрепили задание!");
 
     private String config, defaults;
     public static HashMap<String, String> messages = new HashMap<>();

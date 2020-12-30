@@ -2,7 +2,6 @@ package org.runaway.battlepass;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.utils.Items;
@@ -31,7 +30,7 @@ public class MissionIcon extends Items {
         this.mission = builder.mission;
     }
 
-    public ItemStack getIcon(Gamer gamer) {
+    public Item.Builder getIcon(Gamer gamer) {
         return new Item.Builder(Material.STAINED_GLASS_PANE)
                 .data((short) (this.mission.isCompleted(gamer) ? 4 : 5))
                 .name(ChatColor.GREEN + mission.getName())
@@ -42,7 +41,6 @@ public class MissionIcon extends Items {
                                 (this.mission.isCompleted(gamer) ? mission.getValue() : mission.getValues().get(gamer.getGamer())) + ChatColor.GRAY +
                             " / " + ChatColor.AQUA + mission.getValue())
                         .addString(ChatColor.GRAY + "Опыт • " + ChatColor.GREEN + mission.getExperience())
-                        .build())
-                .build().item();
+                        .build());
     }
 }

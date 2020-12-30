@@ -31,22 +31,25 @@ public class BlocksFarm extends IMission implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
-        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
-            if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                if (!mission.isCompleted(gamer)) {
-                    BlocksFarm bf = (BlocksFarm) mission;
-                    if (bf.block != null) {
-                        if (bf.block.getType().equals(event.getBlock().getType()) && bf.block.getType().getMaxDurability() == event.getBlock().getType().getMaxDurability()) {
+        BattlePass.missions.forEach(weeklyMission -> {
+            if (!weeklyMission.isStarted()) return;
+            weeklyMission.getMissions().forEach(mission -> {
+                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
+                    if (!mission.isCompleted(gamer)) {
+                        BlocksFarm bf = (BlocksFarm) mission;
+                        if (bf.block != null) {
+                            if (bf.block.getType().equals(event.getBlock().getType()) && bf.block.getType().getMaxDurability() == event.getBlock().getType().getMaxDurability()) {
+                                if (bf.mine == null || event.fromMine(bf.mine))
+                                    bf.addValue(gamer);
+                            }
+                        } else {
                             if (bf.mine == null || event.fromMine(bf.mine))
                                 bf.addValue(gamer);
                         }
-                    } else {
-                        if (bf.mine == null || event.fromMine(bf.mine))
-                            bf.addValue(gamer);
                     }
                 }
-            }
-        }));
+            });
+        });
     }
 
     @Override

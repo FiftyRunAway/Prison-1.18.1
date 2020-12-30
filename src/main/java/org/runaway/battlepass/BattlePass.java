@@ -51,7 +51,8 @@ public class BattlePass {
         gamer.setStatistics(EStat.BATTLEPASS_LEVEL, (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + 1);
         gamer.setStatistics(EStat.BATTLEPASS_SCORE, (int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) % level);
 
-        level_rewards.get((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL)).forEach(reward -> reward.get(gamer));
+        int level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
+        level_rewards.get(level).forEach(reward -> reward.get(gamer));
 
         // Getting rewards
         StringBuilder get = new StringBuilder();
@@ -59,7 +60,7 @@ public class BattlePass {
         AtomicInteger i = new AtomicInteger();
         AtomicInteger j = new AtomicInteger();
 
-        ArrayList<IReward> rews = new ArrayList<>(level_rewards.get((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL)));
+        ArrayList<IReward> rews = new ArrayList<>(level_rewards.get(level));
 
         rews.forEach(reward -> {
             if (gamer.hasBattlePass() || reward.isFree()) {
@@ -199,5 +200,21 @@ public class BattlePass {
             }
         });
         BattlePassMenu.load();
+    }
+
+    public static ArrayList<IMission> getPinnedTasks(Gamer gamer) {
+        if (getPins(gamer) == 0) return null;
+        ArrayList<Integer> pins = new ArrayList<>();
+        Arrays.stream(EConfig.BATTLEPASS_DATA.getConfig().getString(gamer.getGamer()).split(" "))
+                .forEach(s -> pins.add(Integer.parseInt(s)));
+        ArrayList<IMission> missions = new ArrayList<>();
+        BattlePass.missions.forEach(wm -> wm.getMissions().forEach(mission -> {
+            if (wm.isStarted() && pins.contains(mission.getHashCode())) missions.add(mission);
+        }));
+        return missions;
+    }
+    public static int getPins(Gamer gamer) {
+        if (!EConfig.BATTLEPASS_DATA.getConfig().contains(gamer.getGamer())) return 0;
+        return EConfig.BATTLEPASS_DATA.getConfig().getString(gamer.getGamer()).split(" ").length;
     }
 }

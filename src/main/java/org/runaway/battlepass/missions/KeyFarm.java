@@ -22,18 +22,21 @@ public class KeyFarm extends IMission implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
 
-        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
-            if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                if (!mission.isCompleted(gamer)) {
-                    KeyFarm kf = (KeyFarm) mission;
-                    if (kf.mine_name != null) {
-                        if (event.fromMine(kf.mine)) kf.addValue(gamer);
-                    } else {
-                        kf.addValue(gamer);
+        BattlePass.missions.forEach(weeklyMission -> {
+            if (!weeklyMission.isStarted()) return;
+            weeklyMission.getMissions().forEach(mission -> {
+                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
+                    if (!mission.isCompleted(gamer)) {
+                        KeyFarm kf = (KeyFarm) mission;
+                        if (kf.mine_name != null) {
+                            if (event.fromMine(kf.mine)) kf.addValue(gamer);
+                        } else {
+                            kf.addValue(gamer);
+                        }
                     }
                 }
-            }
-        }));
+            });
+        });
     }
 
     // Get mine_name from main material of mine which set in config.yml

@@ -20,14 +20,18 @@ public class DamageFarm extends IMission implements Listener {
         double damage = event.getPlayerSource().getLastDamage();
 
         if (damage > 0) return;
-        BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
-            if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                if (!mission.isCompleted(gamer)) {
-                    DamageFarm df = (DamageFarm) mission;
-                    df.addValue(gamer);
+        BattlePass.missions.forEach(weeklyMission -> {
+            if (!weeklyMission.isStarted()) return;
+            weeklyMission.getMissions().forEach(mission -> {
+                if (!weeklyMission.isStarted()) return;
+                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
+                    if (!mission.isCompleted(gamer)) {
+                        DamageFarm df = (DamageFarm) mission;
+                        df.addValue(gamer);
+                    }
                 }
-            }
-        }));
+            });
+        });
     }
 
     @Override

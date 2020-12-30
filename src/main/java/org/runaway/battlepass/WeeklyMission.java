@@ -23,6 +23,10 @@ public class WeeklyMission {
         return this.missions;
     }
 
+    public boolean isStarted() {
+        return this.openDate.getTime() <= System.currentTimeMillis();
+    }
+
     public Date getDate() {
         return openDate;
     }
