@@ -13,6 +13,7 @@ import org.runaway.battlepass.WeeklyMission;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -36,7 +37,7 @@ public class BattlePassMenu implements IMenus {
 
     BattlePassMenu(Player player) {
         StandardMenu menu = main;
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         IMenuButton exp = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.EXP_BOTTLE)
                 .name(ChatColor.AQUA + "" + gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + " &eуровень боевого пропуска")

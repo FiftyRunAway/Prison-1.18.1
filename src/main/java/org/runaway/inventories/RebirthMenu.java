@@ -6,6 +6,7 @@ import org.bukkit.inventory.Inventory;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.EStat;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -30,7 +31,7 @@ public class RebirthMenu implements IMenus {
         skills.forEach(skill -> inventory.addButton(skill.getIcon(player).setSlot(pass[i.getAndIncrement()])));
 
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.KNOWLEDGE_BOOK)
-                .name("&fОчки перерождения: &d" + Main.gamers.get(player.getUniqueId()).getStatistics(EStat.REBIRTH_SCORE) + " ОП")
+                .name("&fОчки перерождения: &d" + GamerManager.getGamer(player).getStatistics(EStat.REBIRTH_SCORE) + " ОП")
                 .build().item()).setSlot(40));
 
         return inventory.build();

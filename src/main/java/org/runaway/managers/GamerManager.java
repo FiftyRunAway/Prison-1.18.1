@@ -13,7 +13,7 @@ public class GamerManager {
     }
 
     public static Gamer getGamer(Player player) {
-        return Main.gamers.get(player.getUniqueId());
+        return getGamer(player.getUniqueId());
     }
 
     public static void createGamer(Player player) {

@@ -7,6 +7,7 @@ import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.inventories.Confirmation;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
@@ -63,7 +64,7 @@ public enum ScrollShop {
 
     public static StandardMenu getMenu(Player player) {
         StandardMenu menu = StandardMenu.create(2, Utils.colored("&eМагазин свитков"));
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         ItemStack main = new Item.Builder(Material.GOLD_INGOT).name("&eИнформация").lore(new Lore.BuilderLore()
                 .addString("&cВнимание: Свитки и посохи можно")
                 .addString("&cиспользовать бесконечно, но")

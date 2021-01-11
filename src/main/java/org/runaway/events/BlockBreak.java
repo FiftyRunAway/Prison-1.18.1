@@ -21,6 +21,7 @@ import org.runaway.events.custom.BreakWoodEvent;
 import org.runaway.events.custom.DropKeyEvent;
 import org.runaway.events.custom.PlayerBlockBreakEvent;
 import org.runaway.events.custom.TreasureFindEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.KeyFirst;
 import org.runaway.passiveperks.perks.KeySecond;
 import org.runaway.utils.Utils;
@@ -54,7 +55,7 @@ public class BlockBreak implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         if (!event.isCancelled()) {
             String name = player.getInventory().getItemInMainHand().getType().toString();
@@ -111,7 +112,7 @@ public class BlockBreak implements Listener {
 
     private void logForest(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         Block block = event.getBlock();
         if (block.getType().equals(Material.LOG_2) && block.getData() == 1) {
             if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().hasItemMeta() && !player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
@@ -170,7 +171,7 @@ public class BlockBreak implements Listener {
     private boolean FindChest(BlockBreakEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         if (Math.random() < 0.00015 && !block.getType().isTransparent()) { // 0.00015
             if (chests.containsKey(player.getName())) {
                 chests.get(player.getName()).getBlock().setType(Material.AIR);
@@ -205,7 +206,7 @@ public class BlockBreak implements Listener {
 
     private void AutoSell(BlockBreakEvent event, boolean chest) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         Block block = event.getBlock();
         event.setCancelled(true);
         PlayerInventory inventory = player.getInventory();

@@ -9,6 +9,7 @@ import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
 import org.runaway.events.custom.DropKeyEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.mines.Mine;
 import org.runaway.utils.Utils;
 
@@ -20,7 +21,7 @@ public class KeyFarm extends IMission implements Listener {
     @EventHandler
     private void onDropKey(DropKeyEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;

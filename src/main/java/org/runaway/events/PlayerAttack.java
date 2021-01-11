@@ -15,6 +15,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
 import org.runaway.events.custom.PlayerDamageEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.Killer;
 import org.runaway.utils.Utils;
 
@@ -36,7 +37,7 @@ public class PlayerAttack implements Listener {
         }
         if (event.getDamager() instanceof Player) {
             Player p = (Player)event.getDamager();
-            Gamer gamer = Main.gamers.get(p.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(p);
             if (p.getInventory().getItemInMainHand().getType().toString().endsWith("SWORD")) {
                 if ((int)gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                     event.setCancelled(true);
@@ -44,7 +45,7 @@ public class PlayerAttack implements Listener {
                     return;
                 }
             }
-            Gamer attacker = Main.gamers.get(p.getUniqueId());
+            Gamer attacker = GamerManager.getGamer(p);
             int boost = 0;
             if (attacker.hasPassivePerk(new Killer())) boost += 1;
             event.setDamage(event.getDamage() + (double) ((int)attacker.getStatistics(EStat.GYM_TRAINER) + boost) * 4 / 100);
@@ -57,7 +58,7 @@ public class PlayerAttack implements Listener {
         if (event.getCaught() instanceof Player) {
             if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
                 if (!canAttack(player, (Player) event.getCaught())) {
-                    Main.gamers.get(player.getUniqueId()).sendMessage(EMessage.FRIENDATTACK);
+                    GamerManager.getGamer(player).sendMessage(EMessage.FRIENDATTACK);
                     event.setCancelled(true);
                 }
             }

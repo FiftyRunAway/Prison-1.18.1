@@ -17,10 +17,8 @@ import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerQuit;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /*
  * Created by _RunAway_ on 14.1.2019
@@ -170,14 +168,14 @@ public class Utils {
 
     public static void sendClickableMessage(Gamer gamer, String message, String command) {
         FancyText text = new FancyText("", EnumChatFormat.AQUA);
-        text.addClickableText(Utils.colored(message + " &b(Подробнее)")).runCommand("/" + command).close();
+        text.addClickableText(Utils.colored(message + " &7[&b&nПодробнее&7]")).runCommand("/" + command).close();
         text.closeText();
         text.sendText(gamer.getPlayer());
     }
 
     public static void sendSiteMessage(Gamer gamer) {
         FancyText text = new FancyText("", EnumChatFormat.AQUA);
-        text.addClickableText(Utils.colored( "&b&nНажмите, чтобы открыть сайт")).openlink(Vars.getSite()).close();
+        text.addClickableText(Utils.colored( "&b&nОткрыть сайт")).openlink(Vars.getSite()).close();
         text.closeText();
         text.sendText(gamer.getPlayer());
     }
@@ -256,6 +254,14 @@ public class Utils {
             }
         }
         return time + " сек";
+    }
+
+    public static String combine(List<String> args, int firstIndex) {
+        return String.join(" ", args.stream().skip(firstIndex).collect(Collectors.toList()));
+    }
+
+    public static String combine(String[] args, int firstIndex) {
+        return String.join(" ", Arrays.stream(args).skip(firstIndex).collect(Collectors.toList()));
     }
 
     public static HashMap<String, Double> getlBlocksMultiplier() {

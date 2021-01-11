@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
@@ -25,7 +26,7 @@ public class AsyncChat implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         event.setCancelled(true);
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         String message = event.getMessage();
         if ((message.contains("&") || message.contains("|")) && !player.hasPermission("prison.moder")) {
             gamer.sendMessage(EMessage.AMPERSAND);

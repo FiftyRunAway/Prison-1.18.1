@@ -9,6 +9,7 @@ import org.runaway.donate.Privs;
 import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
 import org.runaway.inventories.FractionMenu;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class FractionCommand extends CommandManager {
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
         String name = p.getName();
         if (args.length == 1 && args[0].equalsIgnoreCase("leave")) {
             if (gamer.getFaction().equals(FactionType.DEFAULT)) {

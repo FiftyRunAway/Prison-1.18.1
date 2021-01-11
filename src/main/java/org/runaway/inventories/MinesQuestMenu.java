@@ -15,6 +15,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.MoneyType;
 import org.runaway.enums.TypeMessage;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 public class MinesQuestMenu implements IMenus {
 
     public static StandardMenu getMenu(Player p, MinesQuest quest) {
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
         if (quest.getContent().size() * 9 > 54) {
             gamer.sendMessage(EMessage.DISFUNCTION);
             return null;
@@ -92,7 +93,7 @@ public class MinesQuestMenu implements IMenus {
                         int finalAm = am;
                         btn.setClickEvent(event -> {
                             Player player = event.getWhoClicked();
-                            Gamer g = Main.gamers.get(player.getUniqueId());
+                            Gamer g = GamerManager.getGamer(player);
                             if (g.getCurrentBlocks(finalMat.toString(), finalData) < getBlocks(finalAm, quest.getStartBlocks())) {
                                 g.sendMessage(EMessage.LEVELNEEDBLOCKS);
                                 return;

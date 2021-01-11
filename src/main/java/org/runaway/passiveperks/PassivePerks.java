@@ -8,6 +8,7 @@ import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.Confirmation;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.utils.Lore;
@@ -44,7 +45,7 @@ public abstract class PassivePerks {
                         .build().item());
         btn.setClickEvent(event -> {
             Player p = event.getWhoClicked();
-            Gamer g = Main.gamers.get(p.getUniqueId());
+            Gamer g = GamerManager.getGamer(p);
             if ((int)g.getStatistics(EStat.LEVEL) < getLevel()
                     || g.hasPassivePerk(this)
                     || g.hasPassivePerk(getAnotherPerk(getLevel()))) {

@@ -7,13 +7,14 @@ import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.IMission;
 import org.runaway.events.custom.TrainerUpEvent;
+import org.runaway.managers.GamerManager;
 
 public class TrainerFarm extends IMission implements Listener {
 
     @EventHandler
     public void onTrainerUpgrade(TrainerUpEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         addAllValues(gamer);
     }

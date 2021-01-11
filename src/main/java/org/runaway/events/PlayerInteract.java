@@ -1,7 +1,9 @@
 package org.runaway.events;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -13,15 +15,14 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.achievements.Achievement;
-import org.runaway.inventories.MainMenu;
-import org.runaway.jobs.EJobs;
-import org.runaway.jobs.Job;
-import org.runaway.utils.Utils;
-import org.runaway.utils.Vars;
 import org.runaway.board.Board;
 import org.runaway.enums.*;
 import org.runaway.inventories.BlockShopMenu;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
+import org.runaway.inventories.MainMenu;
+import org.runaway.jobs.EJobs;
+import org.runaway.managers.GamerManager;
+import org.runaway.utils.Utils;
+import org.runaway.utils.Vars;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,7 +40,7 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         Block block = event.getClickedBlock();
         if (player.getInventory().getItemInMainHand().getType().equals(Material.PAPER) &&
                 player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains("Меню") &&
@@ -99,7 +100,7 @@ public class PlayerInteract implements Listener {
     }
 
     private void addLocation(Player player, String name, EStat perm) {
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         try {
             if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains(name)) {
                 if (gamer.getStatistics(perm).equals(false)) {
@@ -130,7 +131,7 @@ public class PlayerInteract implements Listener {
                 }
             }
         }
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         if (amount == 0) {
             gamer.sendMessage(EMessage.NOBLOCKSFORSALE);
             return;

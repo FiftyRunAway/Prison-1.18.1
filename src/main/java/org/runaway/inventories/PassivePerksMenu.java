@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -22,7 +23,7 @@ public class PassivePerksMenu implements IMenus {
 
     public static StandardMenu getMenu(Player p) {
         StandardMenu sm = menu;
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
 
         for (EPassivePerk perk : EPassivePerk.values()) {
             sm.addButton(perk.getPerk().getIcon(gamer).setSlot(perk.getPerk().getSlot()));

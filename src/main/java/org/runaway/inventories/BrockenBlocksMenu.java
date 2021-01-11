@@ -8,6 +8,7 @@ import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -19,7 +20,7 @@ public class BrockenBlocksMenu implements IMenus {
 
     BrockenBlocksMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         if (!EConfig.BLOCKS.getConfig().contains(player.getName())) {
             gamer.sendMessage(EMessage.BROCKENBLOCKS);

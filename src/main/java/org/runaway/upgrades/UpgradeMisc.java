@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.UpgradeProperty;
@@ -91,7 +92,7 @@ public class UpgradeMisc {
             lores.add("    ");
             lores.add(ChatColor.GRAY + "Требования:");
             if (!menuItems) {
-                Gamer gamer = Main.gamers.get(player.getUniqueId());
+                Gamer gamer = GamerManager.getGamer(player);
                 HashMap<UpgradeProperty, String> data = Upgrade.getData(gamer);
                 for (UpgradeProperty up : properties.keySet()) {
                     int dat = Integer.parseInt(data.get(up));

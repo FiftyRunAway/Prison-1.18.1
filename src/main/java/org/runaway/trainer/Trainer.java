@@ -12,6 +12,7 @@ import org.runaway.Main;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
 import org.runaway.events.custom.TrainerUpEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.upgrades.Upgrade;
@@ -53,7 +54,7 @@ public class Trainer {
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(this.name);
         Lore.BuilderLore lore = new Lore.BuilderLore().addLore(this.lore).addSpace().addString("&dУровни прокачки:");
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         int plevel = (int) gamer.getStatistics(this.type.getValue());
         ConfigurationSection section = EConfig.TRAINER.getConfig().getConfigurationSection(type.name().toLowerCase());
         AtomicBoolean canget = new AtomicBoolean(true);
@@ -91,7 +92,7 @@ public class Trainer {
         boolean finalCanget = canget.get();
         btn.setClickEvent(event -> {
             Player p = event.getWhoClicked();
-            Gamer g = Main.gamers.get(p.getUniqueId());
+            Gamer g = GamerManager.getGamer(p);
             int l = (int) gamer.getStatistics(this.type.getValue());
             if (l >= section.getStringList("levels").size()) {
                 g.sendMessage(EMessage.TRAINERFULL);
@@ -117,7 +118,7 @@ public class Trainer {
     }
 
     public double getValue(Player player) {
-        return this.values.get((int) Main.gamers.get(player.getUniqueId()).getStatistics(this.type.getValue()));
+        return this.values.get((int) GamerManager.getGamer(player).getStatistics(this.type.getValue()));
     }
 
     private ChatColor getColorLevel(int plevel, int level) {

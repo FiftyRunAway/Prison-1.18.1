@@ -10,6 +10,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class TipCommand extends CommandManager {
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
         int is = 0;
         List<String> owners = new ArrayList<>();
         if (Main.gBlocks.isActive() && !Main.THXersBlocks.contains(p.getName())) {

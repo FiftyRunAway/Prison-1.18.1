@@ -8,6 +8,7 @@ import org.runaway.Main;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ public class PayCommand extends CommandManager {
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         if (args.length == 2) {
-            Gamer gamer = Main.gamers.get(p.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(p);
             if (Bukkit.getPlayer(args[0]) == null) {
                 gamer.sendMessage(EMessage.NOPLAYER);
                 return;

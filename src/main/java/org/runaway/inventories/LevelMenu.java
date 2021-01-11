@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Requires;
 import org.runaway.utils.Lore;
@@ -31,7 +32,7 @@ public class LevelMenu implements IMenus {
         inventory.setItem(0, ExampleItems.glass(7));
         inventory.setItem(4, ExampleItems.glass(7));
 
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         ItemStack level = new Item.Builder(Material.NETHER_STAR).name("&eПовысить уровень:").lore(new Lore.BuilderLore().addList(lore(gamer)).build()).build().item();
         if (hasAccessToNextLevel(gamer)) {
             inventory.setItem(1, ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "МОЖНО"));

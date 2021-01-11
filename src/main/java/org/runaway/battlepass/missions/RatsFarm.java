@@ -9,6 +9,7 @@ import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.custom.KillRatsEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Vars;
 
 public class RatsFarm extends IMission implements Listener {
@@ -18,7 +19,7 @@ public class RatsFarm extends IMission implements Listener {
     @EventHandler
     private void onRatKill(KillRatsEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;

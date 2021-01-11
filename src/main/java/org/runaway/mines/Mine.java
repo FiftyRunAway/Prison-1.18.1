@@ -15,6 +15,7 @@ import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.EMessage;
 import org.runaway.events.BlockBreak;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -179,7 +180,7 @@ public class Mine {
                     if (BlockBreak.isInRegion(loc, endLoc, playerLoc)) {
                         if (mine.tpSpawn) {
                             p.teleport(new Location(mine.world, mine.x, mine.y, mine.z));
-                            Main.gamers.get(p.getUniqueId()).sendMessage(EMessage.MINERESET);
+                            GamerManager.getGamer(p).sendMessage(EMessage.MINERESET);
                             return;
                         }
                         playerLoc.setY(loc.getY() + 1.0);

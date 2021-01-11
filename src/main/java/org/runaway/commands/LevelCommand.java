@@ -8,6 +8,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.LevelMenu;
+import org.runaway.managers.GamerManager;
 
 import java.util.Collections;
 
@@ -23,7 +24,7 @@ public class LevelCommand extends CommandManager {
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
         if (EConfig.CONFIG.getConfig().contains("levels." + ((int)gamer.getStatistics(EStat.LEVEL) + 1)) || Gamer.toRebirth == ((int)gamer.getStatistics(EStat.LEVEL) + 1)) {
             if (gamer.needRebirth()) {
                 gamer.rebirth();

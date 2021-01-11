@@ -13,6 +13,7 @@ import org.runaway.fishing.EFish;
 import org.runaway.fishing.Fish;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -31,10 +32,10 @@ public class FishSellMenu implements IMenus {
         int slot = 0;
         for (EFish fish : EFish.values()) {
             Fish fs = fish.getFish();
-            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(fs.getIcon(Main.gamers.get(player.getUniqueId())).item()).setSlot(slot++);
+            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(fs.getIcon(GamerManager.getGamer(player)).item()).setSlot(slot++);
             btn.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
-                Gamer gamer = Main.gamers.get(p.getUniqueId());
+                Gamer gamer = GamerManager.getGamer(p);
                 double price = 0;
                 int f = 0;
                 for (ItemStack is : p.getInventory().getContents()) {

@@ -11,6 +11,7 @@ import org.runaway.enums.EStat;
 import org.runaway.enums.UpgradeProperty;
 import org.runaway.events.custom.UpgradeEvent;
 import org.runaway.inventories.Confirmation;
+import org.runaway.managers.GamerManager;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
@@ -26,7 +27,7 @@ public class Upgrade {
     public static void upgrade(Player player, boolean fastGet) {
         try {
             if (player.isOnline()) {
-                Gamer gamer = Main.gamers.get(player.getUniqueId());
+                Gamer gamer = GamerManager.getGamer(player);
                 String next = UpgradeMisc.getNext(UpgradeMisc.getSection(player));
 
                 HashMap<UpgradeProperty, String> data = Upgrade.getData(gamer);
@@ -151,7 +152,7 @@ public class Upgrade {
     }
 
     private static void take(UpgradeProperty prop, int p, Player player) {
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         switch (prop) {
             case COST: {
                 gamer.withdrawMoney(p);

@@ -7,13 +7,14 @@ import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.IMission;
 import org.runaway.events.custom.PlayerKillEvent;
+import org.runaway.managers.GamerManager;
 
 public class KillsFarm extends IMission implements Listener {
 
     @EventHandler
     public void onKillPlayer(PlayerKillEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         addAllValues(gamer);
     }

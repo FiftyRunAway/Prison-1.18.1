@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Main;
 import org.runaway.enums.BoosterType;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 public class BoosterReward implements Reward {
@@ -40,7 +41,7 @@ public class BoosterReward implements Reward {
 
     @Override
     public void giveReward(Player player) {
-        Main.gamers.get(player.getUniqueId()).addBooster(type, mult, time, global);
+        GamerManager.getGamer(player).addBooster(type, mult, time, global);
     }
 
     @Override

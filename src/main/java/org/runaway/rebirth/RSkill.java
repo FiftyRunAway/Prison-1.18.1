@@ -11,6 +11,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.Confirmation;
 import org.runaway.inventories.RebirthMenu;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.utils.Lore;
@@ -34,7 +35,7 @@ public abstract class RSkill {
                         .build().item());
         btn.setClickEvent(event -> {
             Player p = event.getWhoClicked();
-            Gamer gamer = Main.gamers.get(p.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(p);
             String name = p.getName();
             if (getLevel(name) + 1 < getMaximumLevel() && (int)gamer.getStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
                 new Confirmation(p, RebirthMenu.getMenu(p), null, () -> {
@@ -57,7 +58,7 @@ public abstract class RSkill {
                     "&7Следующее значение: &e" + getNextValue(name) +
                             (getValueDescription() != null ? (getValueDescription()) : "") + " &7(&b" + getLevel(name) + "&7/&b" + getMaximumLevel() + "&7)");
             l.add("&7Стоимость следующего уровня: &d" + getCost(name) + " ОП");
-            Gamer gamer = Main.gamers.get(player.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(player);
             if ((int)gamer.getStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
                 l.add("&aНажмите, чтобы приобрести данный навык!");
             } else {

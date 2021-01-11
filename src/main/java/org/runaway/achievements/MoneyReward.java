@@ -3,6 +3,7 @@ package org.runaway.achievements;
 import org.bukkit.entity.Player;
 import org.runaway.Main;
 import org.runaway.enums.MoneyType;
+import org.runaway.managers.GamerManager;
 
 public class MoneyReward implements Reward {
 
@@ -26,7 +27,7 @@ public class MoneyReward implements Reward {
 
     @Override
     public void giveReward(Player player) {
-        Main.gamers.get(player.getUniqueId()).depositMoney((int)getReward());
+        GamerManager.getGamer(player).depositMoney((int)getReward());
     }
 
     @Override

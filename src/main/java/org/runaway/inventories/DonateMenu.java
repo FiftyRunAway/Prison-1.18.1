@@ -10,6 +10,7 @@ import org.runaway.Main;
 import org.runaway.donate.Donate;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
@@ -21,7 +22,7 @@ import org.runaway.utils.Vars;
 public class DonateMenu implements IMenus {
 
     private void buy(Donate donate, Player player, Inventory menu) {
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         String d = Donate.getPex(donate.getIcon().getType());
         if (d != null && player.hasPermission(d)) {
             gamer.sendMessage(EMessage.TRANSACTIONTWICE);

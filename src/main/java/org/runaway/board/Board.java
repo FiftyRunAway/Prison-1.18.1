@@ -10,6 +10,7 @@ import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.*;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
@@ -41,7 +42,7 @@ public class Board {
         String oldname = "";
         if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null) oldname = sb.getObjective(DisplaySlot.SIDEBAR).getDisplayName();
         objective.setDisplayName(oldname);
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         replaceScore(objective, 15, ChatColor.GRAY + date());
         replaceScore(objective, 14, " ");
         replaceScore(objective, 13, ChatColor.YELLOW + "Статистика:");

@@ -11,6 +11,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
 import org.runaway.jobs.JobReq;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -43,7 +44,7 @@ public class JobUpgradeMenu implements IMenus {
                 .build().item()).setSlot(11);
         upgrade.setClickEvent(event -> {
             Player player = event.getWhoClicked();
-            Gamer g = Main.gamers.get(player.getUniqueId());
+            Gamer g = GamerManager.getGamer(player);
             for (JobReq jobReq : job.getLevels().get(Job.getLevel(gamer, job))) {
                 if (!Job.hasStatistics(g, jobReq)) {
                     player.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName())));

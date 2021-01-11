@@ -222,7 +222,7 @@ public class Main extends JavaPlugin {
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
                     new BaseCommand(), new TrashCommand(), new QuestCommand(), new FisherCommand(),
-                    new JobCommand()).forEach(CommandManager::register);
+                    new JobCommand(), new MsgCommand(), new ReplyCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");

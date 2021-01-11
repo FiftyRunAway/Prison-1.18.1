@@ -7,6 +7,7 @@ import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.BoosterType;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.boosters.Serializer;
 import org.runaway.enums.EConfig;
@@ -30,7 +31,8 @@ public class BoosterMenu implements IMenus {
         menu.addChild("&eАктивация ускорителя &7• &eУскоритель блоков", blocks);
         menu.addChild("&eАктивация ускорителя &7• &eУскоритель денег", money);
 
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
+
         MenuButton bl = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_BLOCK).name("&eУскорители блоков").build().item(), "&eАктивация ускорителей &7• &eУскорители блоков");
         bl.setSlot(3); bl.setClickEvent(event -> loadMenu(gamer, blocks, BoosterType.BLOCKS));
         menu.addButton(bl);

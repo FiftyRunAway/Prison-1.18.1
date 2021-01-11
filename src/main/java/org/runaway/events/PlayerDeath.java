@@ -17,6 +17,7 @@ import org.runaway.board.Board;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.events.custom.PlayerKillEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.utils.Utils;
 
@@ -32,9 +33,8 @@ public class PlayerDeath implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         event.setDeathMessage(null);
         Player player = event.getEntity();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         event.setKeepInventory(true); event.setKeepLevel(true);
-
         Location loc = player.getLocation();
         event.getDrops().forEach(itemStack -> {
             if (!itemStack.hasItemMeta()) {
@@ -82,7 +82,7 @@ public class PlayerDeath implements Listener {
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
         Arrays.stream(EPassivePerk.values()).forEach(passive -> {
             if (!passive.getPerk().isEffectAction()) return;
-            passive.getPerk().getPerkAction(Main.gamers.get(player.getUniqueId()));
+            passive.getPerk().getPerkAction(GamerManager.getGamer(player));
         });
     }
 }

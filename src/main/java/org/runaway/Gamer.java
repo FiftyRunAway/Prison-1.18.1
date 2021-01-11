@@ -57,6 +57,7 @@ public class Gamer {
     private String gamer;
     private Player player;
     private final UUID uuid;
+    private String replyPlayer;
 
     private boolean isOnline = false;
 
@@ -88,6 +89,14 @@ public class Gamer {
 
     private boolean isOnline() {
         return this.isOnline;
+    }
+
+    public void setReplyPlayer(String replyPlayer) {
+        this.replyPlayer = replyPlayer;
+    }
+
+    public String getReplyPlayer() {
+        return replyPlayer;
     }
 
     public void sendMessage(EMessage message) {

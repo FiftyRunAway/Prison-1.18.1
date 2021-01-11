@@ -11,6 +11,7 @@ import org.runaway.enums.BoosterType;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Vars;
 
@@ -185,7 +186,7 @@ public enum Achievement {
         list.add(player.getName());
         EConfig.ACHIEVEMENTS.getConfig().set(this.toString(), list); EConfig.ACHIEVEMENTS.saveConfig();
         Arrays.stream(getReward()).forEach(rew -> rew.giveReward(player));
-        Main.gamers.get(player.getUniqueId()).sendAchievementTitle(getName());
+        GamerManager.getGamer(player).sendAchievementTitle(getName());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
     }
 

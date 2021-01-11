@@ -12,6 +12,7 @@ import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.custom.PlayerBlockBreakEvent;
+import org.runaway.managers.GamerManager;
 import org.runaway.mines.Mine;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
@@ -29,7 +30,7 @@ public class BlocksFarm extends IMission implements Listener {
     @EventHandler
     private void onBlockFarm(PlayerBlockBreakEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;

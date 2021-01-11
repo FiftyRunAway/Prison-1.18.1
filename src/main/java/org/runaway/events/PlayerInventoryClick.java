@@ -16,6 +16,7 @@ import org.runaway.boosters.LBlocks;
 import org.runaway.boosters.LMoney;
 import org.runaway.boosters.Serializer;
 import org.runaway.enums.*;
+import org.runaway.managers.GamerManager;
 import org.runaway.upgrades.Upgrade;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Utils;
@@ -35,7 +36,7 @@ public class PlayerInventoryClick implements Listener {
             if (event.getInventory().getName().equals(Utils.colored("&eАктивация ускорителей &7• &eУскорители блоков"))) {
                 event.setCancelled(true);
                 if (event.getCurrentItem() != null) {
-                    Gamer gamer = Main.gamers.get(player.getUniqueId());
+                    Gamer gamer = GamerManager.getGamer(player);
                     if (event.getCurrentItem().getType().isBlock()) {
                         if (!Main.gBlocks.isActive()) {
                             String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split(" ");
@@ -59,7 +60,7 @@ public class PlayerInventoryClick implements Listener {
             if (event.getInventory().getName().equals(Utils.colored("&eАктивация ускорителей &7• &eУскорители денег"))) {
                 event.setCancelled(true);
                 if (event.getCurrentItem() != null) {
-                    Gamer gamer = Main.gamers.get(player.getUniqueId());
+                    Gamer gamer = GamerManager.getGamer(player);
                     if (event.getCurrentItem().getType().isBlock()) {
                         if (!Main.gMoney.isActive()) {
                             String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split(" ");
@@ -83,7 +84,7 @@ public class PlayerInventoryClick implements Listener {
             if (event.getInventory().getName().equals(ChatColor.YELLOW + "Повышение уровня")) {
                 event.setCancelled(true);
                 if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
-                    Gamer gamer = Main.gamers.get(player.getUniqueId());
+                    Gamer gamer = GamerManager.getGamer(player);
                     double price = new Requires(gamer).costNextLevel();
                     if ((double)gamer.getStatistics(EStat.MONEY) >= price) {
                         double blocks = new Requires(gamer).blocksNextLevel();
@@ -118,7 +119,7 @@ public class PlayerInventoryClick implements Listener {
             if (event.getInventory().getName().contains(ChatColor.YELLOW +  "Магазин")) {
                 event.setCancelled(true);
                 if (event.getCurrentItem().getItemMeta().hasLore()) {
-                    Gamer gamer = Main.gamers.get(player.getUniqueId());
+                    Gamer gamer = GamerManager.getGamer(player);
                     if (!gamer.isInventory()) {
                         gamer.sendMessage(EMessage.NOINVENTORY);
                         return;

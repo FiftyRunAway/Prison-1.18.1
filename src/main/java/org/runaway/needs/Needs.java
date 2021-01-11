@@ -18,6 +18,7 @@ import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.donate.features.NeedsLonger;
 import org.runaway.enums.EMessage;
+import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.Vaccine;
 import org.runaway.utils.Utils;
 
@@ -38,11 +39,11 @@ public class Needs implements Listener {
             return;
         }
         int cooldown = 10;
-        Object obj = Main.gamers.get(player.getUniqueId()).getPrivilege().getValue(new NeedsLonger());
+        Object obj = GamerManager.getGamer(player).getPrivilege().getValue(new NeedsLonger());
         if (obj != null) {
             cooldown = Integer.parseInt(obj.toString());
         }
-        if (Main.gamers.get(player.getUniqueId()).hasPassivePerk(new Vaccine())) cooldown *= 1.5;
+        if (GamerManager.getGamer(player).hasPassivePerk(new Vaccine())) cooldown *= 1.5;
         tasks.put(player.getName(), Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> {
             if (player.getName() == null || needs.containsKey(player.getName())) return;
             int type = ThreadLocalRandom.current().nextInt(NeedsType.values().length);
@@ -55,7 +56,7 @@ public class Needs implements Listener {
 
     private static void check(Player player) {
         ArrayList<String> list = NeedsType.getProperties(needs.get(player.getName()));
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         gamer.sendTitle(ChatColor.AQUA + list.get(1).split("%")[0], ChatColor.WHITE + list.get(1).split("%")[1]);
         player.sendMessage(Utils.colored(list.get(2)));
     }
@@ -67,7 +68,7 @@ public class Needs implements Listener {
                 (NeedsType.getType(needs.get(event.getPlayer().getName())) == 1)) {
             Material m = player.getLocation().getBlock().getType();
             if ((m.equals(Material.STATIONARY_WATER)) || (m.equals(Material.WATER))) {
-                Gamer gamer = Main.gamers.get(player.getUniqueId());
+                Gamer gamer = GamerManager.getGamer(player);
                 gamer.sendMessage(EMessage.WASHED);
                 needs.remove(player.getName());
                 for (PotionEffect effect : player.getActivePotionEffects()) {
@@ -91,7 +92,7 @@ public class Needs implements Listener {
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                     bed_cd.remove(player.getName());
                 }, 40L);
-                Gamer gamer = Main.gamers.get(player.getUniqueId());
+                Gamer gamer = GamerManager.getGamer(player);
                 gamer.sendMessage(EMessage.STARTSLEEPING);
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                     if (Math.random() > 0.5) {
@@ -110,7 +111,7 @@ public class Needs implements Listener {
         if ((event.getClickedBlock().getType().equals(Material.LEVER)) &&
                 (needs.containsKey(player.getName())) &&
                 (NeedsType.getType(needs.get(event.getPlayer().getName())) == 2)) {
-            Gamer gamer = Main.gamers.get(player.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(player);
             gamer.sendMessage(EMessage.TOILET);
             needs.remove(player.getName());
             for (PotionEffect effect : player.getActivePotionEffects()) {

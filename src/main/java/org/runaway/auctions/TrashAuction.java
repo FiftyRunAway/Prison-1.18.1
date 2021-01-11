@@ -21,6 +21,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
 import org.runaway.events.BlockBreak;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -196,7 +197,7 @@ public class TrashAuction {
             IMenuButton fastbuy = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "Приобрести сейчас за " + ChatColor.YELLOW + this.fastbuy + " " + MoneyType.RUBLES.getShortName()));
             fastbuy.setClickEvent(event -> {
                 Player player = event.getWhoClicked();
-                Gamer gamer = Main.gamers.get(player.getUniqueId());
+                Gamer gamer = GamerManager.getGamer(player);
                 if (!gamer.isInventory()) {
                     gamer.sendMessage(EMessage.NOINVENTORY);
                     return;
@@ -290,7 +291,7 @@ public class TrashAuction {
             Long oldCooldown = CLICK_COOLDOWNS.get(player);
             if (oldCooldown != null) {
                 if (System.currentTimeMillis() < oldCooldown) {
-                    Main.gamers.get(player.getUniqueId()).sendMessage(EMessage.WAIT);
+                    GamerManager.getGamer(player).sendMessage(EMessage.WAIT);
                     return;
                 }
             }
@@ -299,7 +300,7 @@ public class TrashAuction {
             double toAdd = 15;
             if (player.isSneaking()) toAdd = 50;
 
-            Gamer gamer = Main.gamers.get(player.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(player);
             if (!gamer.isInventory()) {
                 gamer.sendMessage(EMessage.FULLINVAUCTION);
                 return;

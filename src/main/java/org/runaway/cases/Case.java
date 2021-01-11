@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuAnimation;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.design.MenuDesigner;
@@ -57,7 +58,7 @@ public class Case {
 
     public boolean open(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
 
         if (event.getClickedBlock().getType().toString().equals(getCase().toString())) {
             if (event.getClickedBlock().getLocation().equals(getLocation())) {

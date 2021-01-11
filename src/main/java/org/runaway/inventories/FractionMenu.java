@@ -12,6 +12,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
 import org.runaway.enums.MoneyType;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FractionMenu implements IMenus {
 
     public FractionMenu(Player player) {
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DOUBLE_PLANT).name("&fФракция • Рандомная").lore(new Lore.BuilderLore()
                 .addSpace()

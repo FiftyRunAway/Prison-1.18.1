@@ -42,7 +42,7 @@ public class PlayerJoin implements Listener {
             GamerManager.createGamer(player); // Add Gamer class to player
             CreateInConfig(event); // Add in config file
             Utils.getPlayers().add(player.getName());
-            Gamer gamer = Main.gamers.get(player.getUniqueId());
+            Gamer gamer = GamerManager.getGamer(player);
             Board.sendBoard(player); // Set up scoreboard to player
             gamer.setLevelBar();
             gamer.setExpProgress();
@@ -95,7 +95,7 @@ public class PlayerJoin implements Listener {
 
     private void CreateInConfig(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         if (!EConfig.STATISTICS.getConfig().contains(player.getName())) {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, player.getName() + " was added in config");
             Arrays.stream(EStat.values()).forEach(stat -> {
