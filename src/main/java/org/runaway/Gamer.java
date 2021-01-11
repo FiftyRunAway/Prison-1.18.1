@@ -60,8 +60,11 @@ public class Gamer {
 
     private boolean isOnline = false;
 
+    private Map<String, Long> cooldowns;
+
     public Gamer(UUID uuid) {
         this.uuid = uuid;
+        this.cooldowns = OfflineValues.getPlayerCooldown(uuid).getCooldowns();
         if (Utils.getPlayers().contains(Bukkit.getOfflinePlayer(getUUID()).getName()) || Bukkit.getOfflinePlayer(getUUID()).isOnline()) {
             this.player = Bukkit.getPlayer(this.uuid);
             this.gamer = this.player.getName();
@@ -69,21 +72,35 @@ public class Gamer {
         }
     }
 
+    public boolean isEndedCooldown(String name) {
+        if(cooldowns == null) return false;
+        boolean ended = !cooldowns.containsKey(name) || cooldowns.get(name) <= System.currentTimeMillis();
+        if (ended) {
+            cooldowns.remove(name);
+        }
+        return ended;
+    }
+
+    public void addCooldown(String name, long cooldown) {
+        if (this.cooldowns.containsKey(name)) return;
+        this.cooldowns.put(name, System.currentTimeMillis() + cooldown);
+    }
+
     private boolean isOnline() {
         return this.isOnline;
     }
 
     public void sendMessage(EMessage message) {
+        sendMessage(message.getMessage());
+    }
+
+    public void sendMessage(String message) {
         // Avoid command spam
-        Long oldCooldown = messages.get(getPlayer());
-        if (oldCooldown != null) {
-            if (System.currentTimeMillis() < oldCooldown) {
-                return;
-            }
+        if(!isEndedCooldown("lastMsg")) {
+            return;
         }
-        messages.put(getPlayer(), System.currentTimeMillis() + 200); // 0.2 seconds cooldown
-        
-        getPlayer().sendMessage(Utils.colored(message.getMessage()));
+        addCooldown("lastMsg", 400);
+        getPlayer().sendMessage(Utils.colored(message));
     }
 
     public Privs getPrivilege() {
@@ -173,7 +190,7 @@ public class Gamer {
                     times.append(integer);
                     if (TrashAuction.times.size() != i.getAndIncrement() + 1) times.append(", ");
                 });
-                player.sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
+                sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
             }
         } else {
             sendTitle("&cТолько", "&41.15.2+");
@@ -336,7 +353,7 @@ public class Gamer {
                 return;
             }
         }
-        getPlayer().sendMessage(Utils.colored(EMessage.FRACTIONSUCCESS.getMessage()).replaceAll("%fraction%", in.getColor() + in.getName()));
+        sendMessage(Utils.colored(EMessage.FRACTIONSUCCESS.getMessage()).replaceAll("%fraction%", in.getColor() + in.getName()));
         setStatistics(EStat.FACTION, in.getConfigName().toUpperCase());
         getPlayer().closeInventory();
     }
@@ -449,7 +466,7 @@ public class Gamer {
                     if (tr.getType() != TypeTrainings.CASHBACK) return;
                     if (Math.random() < tr.getValue(getPlayer())) {
                         double cashback = Math.round(to_withdraw / 4);
-                        getPlayer().sendMessage(Utils.colored(EMessage.CASHBACK.getMessage()).replace("%cashback%", cashback + " " + MoneyType.RUBLES.getShortName()).replace("%money%", money + " " + MoneyType.RUBLES.getShortName()));
+                        sendMessage(Utils.colored(EMessage.CASHBACK.getMessage()).replace("%cashback%", cashback + " " + MoneyType.RUBLES.getShortName()).replace("%money%", money + " " + MoneyType.RUBLES.getShortName()));
                         depositMoney(cashback);
                     }
                 });
