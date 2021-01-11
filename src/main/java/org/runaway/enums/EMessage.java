@@ -145,7 +145,7 @@ public enum  EMessage {
     public String getDefaultMessage() { return defaults; }
 
     public String getMessage() {
-        return Utils.colored("&7[&4&lPrison&7] &r" + messages.get(getConfigName()));
+        return Utils.colored(messages.get(getConfigName()));
     }
 
     public String getMessageConfig() {

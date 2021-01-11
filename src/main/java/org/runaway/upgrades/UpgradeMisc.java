@@ -113,6 +113,9 @@ public class UpgradeMisc {
 
     public static String getSection(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
+        if(item == null) return null;
+        if(!item.hasItemMeta()) return null;
+        if(!item.getItemMeta().hasDisplayName()) return null;
         String type = item.getType().name();
         String name = item.getItemMeta().getDisplayName().replace(" ", "_");
         String enchants = item.getEnchantments().isEmpty() ? "null" : getench(item);

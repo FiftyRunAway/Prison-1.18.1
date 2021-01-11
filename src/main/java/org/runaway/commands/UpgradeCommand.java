@@ -10,6 +10,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.UpgradeMenu;
+import org.runaway.managers.GamerManager;
 import org.runaway.upgrades.UpgradeMisc;
 
 import java.util.ArrayList;
@@ -24,14 +25,19 @@ public class UpgradeCommand extends CommandManager {
     private ArrayList<String> confirm = new ArrayList<>();
 
     public UpgradeCommand() {
-        super("upgrade", "prison.commands", Arrays.asList("upg", "апгрейд"), false);
+        super("upgrade", "prison.commands", Arrays.asList("upg", "апгрейд", "up"), false);
     }
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
+        Gamer gamer = GamerManager.getGamer(p);
         if (args.length == 0) {
-            Gamer gamer = Main.gamers.get(p.getUniqueId());
-            if (gamer.getLevelItem(UpgradeMisc.buildItem(UpgradeMisc.getNext(UpgradeMisc.getSection(p)), false, p, false)) > (int)gamer.getStatistics(EStat.LEVEL)) {
+            String upgradeSection = UpgradeMisc.getSection(p);
+            if(upgradeSection == null) {
+                gamer.sendMessage("&cВы не можете улучшить данный предмет!");
+                return;
+            }
+            if (gamer.getLevelItem(UpgradeMisc.buildItem(UpgradeMisc.getNext(upgradeSection), false, p, false)) > (int)gamer.getStatistics(EStat.LEVEL)) {
                 if (!confirm.contains(p.getName())) {
                     confirm.add(p.getName());
                     gamer.sendMessage(EMessage.UPGRADEATTENTION);
@@ -53,8 +59,8 @@ public class UpgradeCommand extends CommandManager {
             String item = String.valueOf(args[0]);
             if (EConfig.UPGRADE.getConfig().contains("upgrades." + item)) {
                 p.getInventory().addItem(UpgradeMisc.buildItem(item, false, p, false));
-                p.sendMessage(ChatColor.GREEN + "Вы получили " + ChatColor.YELLOW + item + ChatColor.GREEN + "!");
-            } else p.sendMessage(ChatColor.RED + "Такого предмета нет в конфиге Upgrade.yml");
+                gamer.sendMessage(ChatColor.GREEN + "Вы получили " + ChatColor.YELLOW + item + ChatColor.GREEN + "!");
+            } else gamer.sendMessage(ChatColor.RED + "Такого предмета нет в конфиге Upgrade.yml");
         }
     }
 
