@@ -1,12 +1,9 @@
 package org.runaway;
 
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Getter
 public class OfflineValues {
     private static final Map<UUID, OfflineValues> cooldownList = new HashMap();
 

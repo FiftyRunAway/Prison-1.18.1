@@ -2,16 +2,13 @@ package org.runaway.utils;
 
 import org.runaway.Main;
 import org.runaway.enums.EConfig;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class TelegramBot extends TelegramLongPollingBot {
-
+public class TelegramBot /*extends TelegramLongPollingBot*/ {
+/*
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -56,5 +53,5 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return Main.getInstance().bot_token;
-    }
+    }*/
 }

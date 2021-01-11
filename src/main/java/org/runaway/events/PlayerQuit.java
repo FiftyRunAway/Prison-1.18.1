@@ -28,8 +28,8 @@ public class PlayerQuit implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
         Player player = event.getPlayer();
-        removeMissions(player);
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+        removeMissions(player);
         SavePlayer(player.getName());
         Utils.getPlayers().remove(player.getName());
         removeBar(player);

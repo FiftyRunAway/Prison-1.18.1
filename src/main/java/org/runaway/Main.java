@@ -46,9 +46,6 @@ import org.runaway.quests.MinesQuest;
 import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.*;
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -361,13 +358,13 @@ public class Main extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, "TelegramBotsAPI was successfully connected");
             this.bot_username = EConfig.CONFIG.getConfig().getString("telegram.username");
             this.bot_token = EConfig.CONFIG.getConfig().getString("telegram.token");
-            ApiContextInitializer.init();
+            /*ApiContextInitializer.init();
             try {
                 TelegramBotsApi botsApi = new TelegramBotsApi();
                 botsApi.registerBot(new TelegramBot());
             } catch (Exception ex) {
                 ex.printStackTrace();
-            }
+            }*/
             return;
         }
         Vars.sendSystemMessage(TypeMessage.INFO, "TelegramBotsAPI Displays has not been installed yet");
