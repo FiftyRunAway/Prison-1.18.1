@@ -35,7 +35,7 @@ public class LMoney extends Booster {
                 Utils.getlMoneyRealTime().remove(owner);
                 Utils.getlMoneyActivatingTime().remove(owner);
                 if (Utils.getPlayers().contains(owner)) {
-                    gamer.getPlayer().sendMessage(ChatColor.RED + "Ваш локальный бустер денег закончился!");
+                    gamer.sendMessage(ChatColor.RED + "Ваш локальный бустер денег закончился!");
                 }
             },20 * time);
         }

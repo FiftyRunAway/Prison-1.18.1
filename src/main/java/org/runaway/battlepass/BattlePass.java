@@ -79,12 +79,12 @@ public class BattlePass {
         });
         if (i.get() > 0) {
             get.delete(get.length() - 2, get.length());
-            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPREWARDGET.getMessage().replace("%reward%",
+            gamer.sendMessage(Utils.colored(EMessage.BPREWARDGET.getMessage().replace("%reward%",
                     get.append('.').toString())));
         }
         if (j.get() > 0) {
             can.delete(can.length() - 2, can.length());
-            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPREWARDCAN.getMessage().replace("%reward%",
+            gamer.sendMessage(Utils.colored(EMessage.BPREWARDCAN.getMessage().replace("%reward%",
                     can.append('.').toString())));
         }
     }
@@ -249,7 +249,7 @@ public class BattlePass {
                 EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), EConfig.BATTLEPASS_DATA.getConfig().get(g.getGamer()) + " " + mission.hashCode());
             }
             EConfig.BATTLEPASS_DATA.saveConfig();
-            g.getPlayer().sendMessage(Utils.colored(EMessage.SETPIN.getMessage().replace("%name%", mission.getName())));
+            g.sendMessage(Utils.colored(EMessage.SETPIN.getMessage().replace("%name%", mission.getName())));
         } else {
             g.sendMessage(EMessage.MANYPINS);
         }

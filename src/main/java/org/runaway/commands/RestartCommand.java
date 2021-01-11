@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.runaway.AutoRestart;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
 
@@ -23,9 +24,9 @@ public class RestartCommand extends CommandManager {
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
         if (Main.isAutoRestart) {
-            p.sendMessage(Utils.colored("&aДо перезагрузки сервера &e" + (int)(AutoRestart.getTime() / 60) + " ч, " + (int)(AutoRestart.getTime() % 60) + " мин."));
+            gamer.sendMessage(Utils.colored("&aДо перезагрузки сервера &e" + (int)(AutoRestart.getTime() / 60) + " ч, " + (int)(AutoRestart.getTime() % 60) + " мин."));
         } else {
             gamer.sendMessage(EMessage.DISFUNCTION);
         }

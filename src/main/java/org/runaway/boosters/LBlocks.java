@@ -35,7 +35,7 @@ public class LBlocks extends Booster {
                 Utils.getlBlocksRealTime().remove(owner);
                 Utils.getlBlocksActivatingTime().remove(owner);
                 if (Utils.getPlayers().contains(owner)) {
-                    gamer.getPlayer().sendMessage(ChatColor.RED + "Ваш локальный бустер блоков закончился!");
+                    gamer.sendMessage(ChatColor.RED + "Ваш локальный бустер блоков закончился!");
                 }
             },20 * time);
         }

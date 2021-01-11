@@ -18,6 +18,7 @@ import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
 import org.runaway.commands.SetStatCommand;
 import org.runaway.enums.*;
+import org.runaway.managers.GamerManager;
 import org.runaway.needs.Needs;
 import org.runaway.passiveperks.PassivePerks;
 import org.runaway.upgrades.UpgradeMisc;
@@ -38,7 +39,7 @@ public class PlayerJoin implements Listener {
         event.setJoinMessage(null);
         Player player = event.getPlayer();
         if (isAccess(event)) {
-            Main.gamers.put(player.getUniqueId(), new Gamer(player.getUniqueId())); // Add Gamer class to player
+            GamerManager.createGamer(player); // Add Gamer class to player
             CreateInConfig(event); // Add in config file
             Utils.getPlayers().add(player.getName());
             Gamer gamer = Main.gamers.get(player.getUniqueId());
