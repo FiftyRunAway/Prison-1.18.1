@@ -64,13 +64,13 @@ public class Trainer {
             lore.addString(getColorLevel(plevel, (i + 1)) +
                     "- " + tempmas[1].replaceAll("_", " ") + ".");
             if (getColorLevel(plevel, i + 1) == ChatColor.GREEN) {
+                lore.addString(" &7Требования:");
                 if (Integer.parseInt(tempmas[0]) < (double) gamer.getStatistics(EStat.MONEY)) {
-                    lore.addString("  &aЦена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
+                    lore.addString("&a  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
                 } else {
-                    lore.addString("  &cЦена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
+                    lore.addString("&c  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
                     canget.set(false);
                 }
-                lore.addString(" &7Требования:");
                 Arrays.stream(tempmas[2].split("&")).forEach(str -> {
                     UpgradeProperty pr = UpgradeProperty.valueOf(str.split(":")[0].toUpperCase());
                     int need = Integer.parseInt(str.split(":")[1]);

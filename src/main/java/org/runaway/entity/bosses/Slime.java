@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -18,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.achievements.Achievement;
+import org.runaway.donate.features.BossMoney;
 import org.runaway.entity.CustomEntity;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.EConfig;
@@ -56,7 +58,7 @@ public class Slime extends EntityMonster {
         this.name = section.getString("name");
         this.health = section.getInt("health"); //350
         double damage = section.getDouble("damage"); //10
-        double followRange = 24.0;
+        double followRange = 64.0;
         double knobackResistence = -1.0;
         this.speed = section.getDouble("speed"); //0.6
         this.money = section.getDouble("money"); //400
@@ -72,9 +74,6 @@ public class Slime extends EntityMonster {
         this.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(damage);
         this.setHealth((float)this.health);
 
-        ((org.bukkit.entity.Slime)this.getBukkitEntity()).setSize(5); // size slime
-
-        ((LivingEntity)this.getBukkitEntity()).setRemoveWhenFarAway(false);
         this.goalSelector.a(8, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, (float) followRange));
         this.goalSelector.a(5, new PathfinderGoalMoveTowardsRestriction(this, 10.0));
         this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, 1.0));
@@ -177,20 +176,24 @@ public class Slime extends EntityMonster {
 
     public void die() {
         if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (this.getBukkitEntity().getCustomName().equals("toDelete")) {
+            super.die();
+            return;
+        }
         if (this.spawner != null) {
-            if (CustomEntity.monsters.contains(this.name)) {
-                World world = this.spawner.getSpawnLocation().getWorld();
-                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(3) + 1).build().item());
-                this.spawner.dead();
-            } else {
+            if (!CustomEntity.monsters.contains(this.name)) {
                 CustomEntity.monsters.add(this.name);
             }
+            this.spawner.dead();
         }
         if (this.killer != null) {
             Bukkit.broadcastMessage(Utils.colored(EMessage.SLIMEDEAD.getMessage()
                     .replaceAll("%player%", ChatColor.RESET + this.killer.getName())
             ));
-            Bukkit.getServer().getPluginManager().callEvent(new BossSpawnEvent(this.name, this));
+
+            World world = this.spawner.getSpawnLocation().getWorld();
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(3) + 1).build().item());
+
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {
                 double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();
@@ -204,9 +207,13 @@ public class Slime extends EntityMonster {
                 Achievement.SLIME_KILL.get(gamer.getPlayer(), false);
                 gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
 
+                Object obj = gamer.getPrivilege().getValue(new BossMoney());
+                int sale = 0;
+                if (obj != null) sale = Integer.parseInt(obj.toString());
+
                 gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()
                         .replaceAll("%boss%", ChatColor.RESET + name)
-                        .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName())
+                        .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName() + (sale > 0 ? (" &7(&b+" + sale + "% за донат&7)") : ("")))
                 ));
             }
         }

@@ -31,7 +31,7 @@ public class UpgradeCommand extends CommandManager {
     public void runCommand(Player p, String[] args, String cmdName) {
         if (args.length == 0) {
             Gamer gamer = Main.gamers.get(p.getUniqueId());
-            if (gamer.getLevelItem() > (int)gamer.getStatistics(EStat.LEVEL)) {
+            if (gamer.getLevelItem(UpgradeMisc.buildItem(UpgradeMisc.getNext(UpgradeMisc.getSection(p)), false, p, false)) > (int)gamer.getStatistics(EStat.LEVEL)) {
                 if (!confirm.contains(p.getName())) {
                     confirm.add(p.getName());
                     gamer.sendMessage(EMessage.UPGRADEATTENTION);

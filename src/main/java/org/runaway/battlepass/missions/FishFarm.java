@@ -20,7 +20,7 @@ public class FishFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Поймайте несколько рыбёшек в пруду";
+        return "Наловите любых рыб в пруду";
     }
 
     @Override

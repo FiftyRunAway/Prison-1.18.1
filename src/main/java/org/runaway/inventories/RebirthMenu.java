@@ -40,7 +40,7 @@ public class RebirthMenu implements IMenus {
         menu = StandardMenu.create(5, "&eПерерождение");
         pass = new int[] { 10, 12, 14, 16, 28, 30, 32, 34 };
         for (int i = 0; i < 45; i++) {
-            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(7)).setSlot(i));
+            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(8)).setSlot(i));
         }
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));

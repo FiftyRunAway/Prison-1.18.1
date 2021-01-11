@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
+import org.runaway.inventories.Confirmation;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
@@ -85,9 +86,11 @@ public enum ScrollShop {
                             gamer.sendMessage(EMessage.NOINVENTORY);
                             return;
                         }
-                        Arrays.stream(s.drop).forEach(item -> player.getInventory().addItem(item.item()));
-                        gamer.setStatistics(EStat.SCROLLS, (int) gamer.getStatistics(EStat.SCROLLS) - s.price);
-                        gamer.sendMessage(EMessage.SUCCESSFULBUY);
+                        new Confirmation(event.getWhoClicked(), menu.build(), null, () -> {
+                            Arrays.stream(s.drop).forEach(item -> player.getInventory().addItem(item.item()));
+                            gamer.setStatistics(EStat.SCROLLS, (int) gamer.getStatistics(EStat.SCROLLS) - s.price);
+                            gamer.sendMessage(EMessage.SUCCESSFULBUY);
+                        });
                     }
                 } else {
                     gamer.sendMessage(EMessage.NOSCROLLS);

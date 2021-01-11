@@ -12,6 +12,8 @@ import org.runaway.enums.MoneyType;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -109,19 +111,13 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
         if (!this.hasSetting("textOffset")) {
             throw new DisableBannerBoardException("Renderer PRISON_LEADERS did not have valid textOffset parameter, renderer disabled...");
         }
-        try {
-            //Main.forceUpdateTop();
-        } catch (Throwable e) {
-            // no problem
-        }
 
         new BukkitRunnable() {
-
             @Override
             public void run() {
                 updateBoard();
             }
-        }.runTaskTimer(Main.getInstance(), 20 * 15, 20 * 60);
+        }.runTaskTimerAsynchronously(Main.getInstance(), 250, 20 * 120);
     }
 
     //private volatile BufferedImage skinImage;
@@ -133,7 +129,6 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
 
     private void updateBoard() {
         new BukkitRunnable() {
-
             @Override
             public void run() {
                 try {
@@ -145,11 +140,6 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
                         return;
                     }
                     TopsBanner.this.desc = Main.tops.get(type.toLowerCase()).getDescription();
-                    try {
-                        //TopsBanner.this.skinImage = BannerBoardManager.getAPI().fetchImage("");
-                    } catch (RuntimeException e) {
-                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[WARNING] [BannerBoard] Skin could not be retrieved from URL. " + e.getMessage() + ".");
-                    }
                 } finally {
                     synchronized (waitLock) {
                         wait = false;
@@ -204,29 +194,44 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
         Color blurColor = this.decodeColor(this.getSetting("strokeColor").getValue());
         int strokeThickness = Integer.parseInt(this.getSetting("strokeThickness").getValue());
 
-        // the will scale the text to the middle of the image
-
-        /*int imageCenterX = xOffset + (textureSize / 2) - (image.getWidth() / 2);
-        int imageCenterY = yOffset + textureSize - (image.getHeight() / 2);*/
-
         AtomicInteger i = new AtomicInteger(0);
+        AtomicInteger k = new AtomicInteger(0);
         Integer finalYOffset = yOffset;
         Integer finalXOffset = xOffset;
 
+        int s = this.top.keySet().size();
         this.top.forEach((name, score) -> {
-            if (i.get() < 10) {
-                int pos = this.top.size() - i.get();
+            if (i.get() >= (s - 10)) {
+                int pos = 10 - k.get();
                 String score_string = score.toString() + " " + desc;
                 if (this.desc.equalsIgnoreCase("блоков")) {
                     score_string = Board.FormatBlocks(score.toString()) + " " + desc;
                 } else if (this.desc.equalsIgnoreCase(MoneyType.RUBLES.getShortName())) {
-                    score_string = Board.FormatMoney(score);
+                    score_string = FormatMoney(score) + " " + MoneyType.RUBLES.getShortName();
+                } else if (this.desc.equalsIgnoreCase("рублей")) {
+                    score_string = FormatMoney(score) + " ₽";
                 }
                 g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), pos + ". " + name, font, textColor, blurColor, strokeThickness, null, null), finalXOffset - 110,
-                        finalYOffset + (i.get() * 27) - 200 + (i.get() * 2), null);
+                        finalYOffset + (k.get() * 27) - 200 + (k.get() * 2), null);
                 g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), score_string, font, textColor, blurColor, strokeThickness, null, null), finalXOffset + 115,
-                        finalYOffset + (i.get() * 27) - 200 + (i.getAndIncrement() * 2), null);
+                        finalYOffset + (k.get() * 27) - 200 + (k.getAndIncrement() * 2), null);
             }
+            i.getAndIncrement();
         });
+    }
+
+    public static String FormatMoney(Object balance) {
+        if (balance instanceof Integer) {
+            return balance + "";
+        } else if (balance instanceof String) {
+            return "&cСЛОМАЛОСЬ:(";
+        } else {
+            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+            decimalFormatSymbols.setDecimalSeparator('.');
+            decimalFormatSymbols.setGroupingSeparator(',');
+            DecimalFormat decimalFormat = new DecimalFormat("#,##0", decimalFormatSymbols);
+            String r = decimalFormat.format(balance);
+            return r;
+        }
     }
 }

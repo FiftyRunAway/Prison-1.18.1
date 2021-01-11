@@ -76,7 +76,7 @@ public enum  EMessage {
     TRAINERUPGRADE("TrainerUpgrade", "&eПоздравляю! Вы совершили двойной апгрейд, это было почти нереально)"),
     TRAINERUPGRADEDUPE("TrainerUpgradeDupe", "&cПоздравляю! Вы совершили двойной апгрейд... Но подождите-ка, кажется вы пытались совершить противоправные действия. Мы вынуждены отказать вам в этой радости ("),
     FLEAVECONFIRM("FleaveConfirmation", "&eСтоимость выхода из фракции - &a%money% &7%discount%" +
-            "\n&eВведите команду ещё раз для подтверждения операции."),
+            "\n&e&nВведите команду ещё раз для подтверждения операции."),
     ERRORCONFIRMATION("ConfirmationError", "&cВы не успели подтвердить операцию..."),
     TRAINERFULL("FullUpgradeTrainer", "&eВы уже полностью прокачали это умение!"),
     NOSCROLLS("NoScrollsToBuy", "&cНедостаточно свитков для покупки"),
@@ -115,7 +115,20 @@ public enum  EMessage {
     MANYPINS("ManyPins", "&cУже слишком много заданий закреплено! Вы можете &4открепить старые."),
     SETPIN("SetPin", "&aВы успешно закрепили задание &e%name%!"),
     ALREADYPINNED("AlreadyPinned", "&cЭто задание уже закреплено."),
-    UNPIN("Unpin", "&aВы успешно &cоткрепили задание!");
+    UNPIN("Unpin", "&aВы успешно &cоткрепили задание!"),
+    WASHED("Washed", "&aВы полностью отмылись! Возвращайтесь к работе."),
+    STARTSLEEPING("StartSleeping", "&eВы засыпаете..."),
+    STOPSLEEPING("StopSleeping", "&cВас разбудила бродячая собака! Попытайтесь заснуть ещё раз..."),
+    FINISHSLEEPING("FinishSleeping", "&aВы отлично вздремнули! Пора вернуться к своим делам."),
+    TOILET("Toilet", "&aКажется, Вам стало просто прекрасно!"),
+    TRANSACTIONFAILED("TransactionFail", "&cВаша транзакция не прошла успешно."),
+    TRANSACTIONTWICE("TwiceTransaction", "&cВам не нужно покупать эту услугу снова! &eОна уже принадлежит вам"),
+    TRANSACTIONSUCCESS("SuccessfullyTransaction", "&aВы успешно приобрели услугу %donate% &aза &e%money%"),
+    DEPOSITDONATE("DonateDeposit", "&bВы пополнили ваш донат-счёт на &a%money%!"),
+    FISHSELLING("SellFish", "&aВы продали %name% &aна &e%money%"),
+    JOBUPGRADE("JobUpgrade", "&aВы повысили уровень своей работы - &e%job%!"),
+    JOBLEVEL("JobLevel", "&cЭта работа доступна только с &4%level% уровня"),
+    GIFTCHANGING("GiftChanging", "&cИнвентарь отправителя изменился. Не пытайтесь обмануть!");
 
     private String config, defaults;
     public static HashMap<String, String> messages = new HashMap<>();

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Item;
 import org.runaway.donate.features.*;
+import org.runaway.enums.MoneyType;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
@@ -14,46 +15,63 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public enum Privs {
-    DEFAULT("prison.default", null, 1, 0, null, 0),
+    DEFAULT("prison.default", null, 1, 0, null, 0, 0),
     VIP("prison.vip", new IFeature[] {
-            new FLeaveDiscount().setValue(15),
+            new FractionDiscount().setValue(15),
             new BoosterBlocks().setValue(1.2),
-            new BoosterMoney().setValue(1.2)
-    }, 2, 14, "&7Привилегия: &6VIP", 10),
+            new BoosterMoney().setValue(1.2),
+            new NeedsLonger().setValue(13),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(5)
+    }, 2, 14, "&7Привилегия: &6VIP", 10, 100),
     PREMIUM("prison.premium", new IFeature[] {
-            new FLeaveDiscount().setValue(20),
+            new FractionDiscount().setValue(20),
             new BoosterBlocks().setValue(1.3),
             new BoosterMoney().setValue(1.3),
-            new StringFeature().setName("Авто-продажа блоков").setValue("есть")
-    }, 3, 11, "&7Привилегия: &ePremium", 11),
+            new BossMoney().setValue(5),
+            new NeedsLonger().setValue(16),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(6)
+    }, 3, 11, "&7Привилегия: &ePremium", 11, 200),
     CRYSTAL("prison.crystal", new IFeature[] {
-            new FLeaveDiscount().setValue(25),
-            new BossNotify().setValue(true),
+            new FractionDiscount().setValue(25),
             new BoosterBlocks().setValue(1.4),
             new BoosterMoney().setValue(1.4),
-            new StringFeature().setName("Авто-продажа блоков").setValue("есть")
-    }, 4, 12, "&7Привилегия: &bCrystal", 12),
-    LORD("prison.lord", new IFeature[] {
-            new FLeaveDiscount().setValue(30),
+            new BossMoney().setValue(10),
+            new NeedsLonger().setValue(19),
             new BossNotify().setValue(true),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(7)
+    }, 4, 12, "&7Привилегия: &bCrystal", 12, 300),
+    LORD("prison.lord", new IFeature[] {
+            new FractionDiscount().setValue(30),
             new BoosterBlocks().setValue(1.5),
             new BoosterMoney().setValue(1.5),
-            new StringFeature().setName("Авто-продажа блоков").setValue("есть")
-    }, 5, 10, "&7Привилегия: &aLord", 13),
-    MAGMA("prison.magma", new IFeature[] {
-            new FLeaveDiscount().setValue(35),
+            new BossMoney().setValue(15),
+            new NeedsLonger().setValue(21),
             new BossNotify().setValue(true),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(8)
+    }, 5, 10, "&7Привилегия: &aLord", 13, 400),
+    MAGMA("prison.magma", new IFeature[] {
+            new FractionDiscount().setValue(35),
             new BoosterBlocks().setValue(1.6),
             new BoosterMoney().setValue(1.6),
-            new StringFeature().setName("Авто-продажа блоков").setValue("есть")
-    }, 6, 1, "&7Привилегия: &cMagma", 14),
-    JUNIOR("prison.junior", new IFeature[] {
-            new FLeaveDiscount().setValue(40),
+            new BossMoney().setValue(20),
+            new NeedsLonger().setValue(24),
             new BossNotify().setValue(true),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(9)
+    }, 6, 1, "&7Привилегия: &cMagma", 14, 500),
+    JUNIOR("prison.junior", new IFeature[] {
+            new FractionDiscount().setValue(50),
             new BoosterBlocks().setValue(1.8),
             new BoosterMoney().setValue(1.8),
-            new StringFeature().setName("Авто-продажа блоков").setValue("есть")
-    }, 7, 5, "&7Привилегия: &dJunior", 15);
+            new BossMoney().setValue(25),
+            new NeedsLonger().setValue(30),
+            new BossNotify().setValue(true),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(10)
+    }, 7, 5, "&7Привилегия: &dJunior", 15, 600);
 
     public static HashMap<Privs, ItemStack> icons = new HashMap<>();
 
@@ -61,15 +79,17 @@ public enum Privs {
     private IFeature[] features;
     private int priority;
     private int slot;
+    private int price;
 
     private int subid;
     private String name;
 
-    Privs(String perm, IFeature[] features, int priority, int sub_id, String name, int slot) {
+    Privs(String perm, IFeature[] features, int priority, int sub_id, String name, int slot, int price) {
         this.perm = perm;
         this.features = features;
         this.priority = priority;
         this.slot = slot;
+        this.price = price;
 
         this.subid = sub_id;
         this.name = name;
@@ -85,6 +105,10 @@ public enum Privs {
 
     public int getSlot() {
         return slot;
+    }
+
+    public int getPrice() {
+        return price;
     }
 
     private static Privs current;
@@ -106,7 +130,9 @@ public enum Privs {
         return new Item.Builder(Material.INK_SACK)
                 .data((short) priv.subid)
                 .name(Utils.colored(priv.name))
-                .lore(new Lore.BuilderLore().addList(list).build())
+                .lore(new Lore.BuilderLore().addList(list)
+                        .addSpace()
+                        .addString("&fЦена: &l&b&n" + priv.getPrice() + " " + MoneyType.RUBLES.getShortName()).build())
                 .build().item();
     }
 

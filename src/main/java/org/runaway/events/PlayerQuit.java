@@ -12,6 +12,7 @@ import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
+import org.runaway.enums.ServerStatus;
 import org.runaway.inventories.BattlePassMenu;
 import org.runaway.utils.Utils;
 
@@ -28,6 +29,7 @@ public class PlayerQuit implements Listener {
         event.setQuitMessage(null);
         Player player = event.getPlayer();
         removeMissions(player);
+        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         SavePlayer(player.getName());
         Utils.getPlayers().remove(player.getName());
         removeBar(player);
@@ -38,14 +40,13 @@ public class PlayerQuit implements Listener {
         Main.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
         BattlePassMenu.data.remove(player.getName());
+        Gamer.messages.remove(player.getName());
     }
 
     private void removeMissions(Player player) {
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
             if (!mission.getValues().containsKey(player.getName())) return;
-            ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
-            section.set(player.getName(), mission.getValues().get(player.getName()));
-
+            EConfig.BATTLEPASS_DATA.getConfig().set(mission.hashCode() + "." + player.getName(), mission.getValues().get(player.getName()));
             mission.getValues().remove(player.getName());
         }));
         EConfig.BATTLEPASS_DATA.saveConfig();

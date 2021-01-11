@@ -1,6 +1,5 @@
 package org.runaway.events;
 
-import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,6 +14,8 @@ import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.achievements.Achievement;
 import org.runaway.inventories.MainMenu;
+import org.runaway.jobs.EJobs;
+import org.runaway.jobs.Job;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 import org.runaway.board.Board;
@@ -40,14 +41,28 @@ public class PlayerInteract implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         Block block = event.getClickedBlock();
-        if (player.getInventory().getItemInMainHand().getType().equals(Material.PAPER) && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains("Меню")) {
+        if (player.getInventory().getItemInMainHand().getType().equals(Material.PAPER) &&
+                player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains("Меню") &&
+                (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
             new MainMenu(player);
         }
 
         // Локации
-        addLocation(player, "Подвал", "prison.vault");
-        addLocation(player, "Ледяная шахта", "prison.ice");
-        addLocation(player, "Гладиаторская арена", "prison.glad");
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            addLocation(player, "Подвал", EStat.LOCATION_VAULT);
+            //addLocation(player, "Ледяная шахта", EStat.LOCATION_ICE);
+            addLocation(player, "Гладиаторская арена", EStat.LOCATION_GLAD);
+        }
+
+        if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
+            if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
+                if ((int)gamer.getStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
+                    player.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
 
         if (block == null) return;
         Main.cases.forEach(aCase -> aCase.open(event));
@@ -69,7 +84,7 @@ public class PlayerInteract implements Listener {
                 if (!BlockBreak.chests.containsKey(player.getName())) return;
                 if (BlockBreak.chests.get(player.getName()).equals(block.getLocation())) {
                     block.setType(Material.AIR);
-                    int money = ThreadLocalRandom.current().nextInt(10) + 5;
+                    int money = (ThreadLocalRandom.current().nextInt(6) + 5) * (int)gamer.getStatistics(EStat.LEVEL);
                     player.sendMessage(Utils.colored(EMessage.TREASUREOPEN.getMessage()).replace("%reward%", Board.FormatMoney(money)));
                     if (BlockBreak.treasure_holo.containsKey(player.getName())) {
                         BlockBreak.treasure_holo.get(player.getName()).delete();
@@ -77,18 +92,19 @@ public class PlayerInteract implements Listener {
                     }
                     gamer.depositMoney(money);
                     BlockBreak.chests.remove(player.getName());
+                    BlockBreak.chests_tasks.remove(player.getName());
                 }
             } catch (Exception ex) { }
         }
     }
 
-    private void addLocation(Player player, String name, String perm) {
+    private void addLocation(Player player, String name, EStat perm) {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         try {
             if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains(name)) {
-                if (!player.hasPermission(perm)) {
+                if (gamer.getStatistics(perm).equals(false)) {
                     if (Main.usePermissionsEx) {
-                        PermissionsEx.getUser(player.getName()).addPermission(perm);
+                        gamer.setStatistics(perm, true);
                         gamer.sendMessage(EMessage.ACTIVATELOCATION);
                         player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);

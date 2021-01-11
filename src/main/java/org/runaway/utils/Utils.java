@@ -10,6 +10,7 @@ import org.runaway.FancyText;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.boosters.Booster;
+import org.runaway.donate.features.BossMoney;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
@@ -47,11 +48,15 @@ public class Utils {
     private static HashMap<String, Integer> playedtime = new HashMap<>();
     private static HashMap<String, Integer> bosses = new HashMap<>();
     private static HashMap<String, Boolean> autosell = new HashMap<>();
-    private static HashMap<String, Boolean> vault = new HashMap<>();
     private static HashMap<String, Integer> rebith = new HashMap<>();
     private static HashMap<String, Integer> helper = new HashMap<>();
     private static HashMap<String, Integer> scrolls = new HashMap<>();
     private static HashMap<String, Integer> rebirthScores = new HashMap<>();
+
+    //Locations
+    private static HashMap<String, Boolean> gladiator = new HashMap<>();
+    private static HashMap<String, Boolean> vault = new HashMap<>();
+    private static HashMap<String, Boolean> ice = new HashMap<>();
 
     // Battle pass
     private static HashMap<String, Integer> bpScores = new HashMap<>();
@@ -142,7 +147,13 @@ public class Utils {
     public static HashMap<String, Double> calculatePercents(Map<String, Integer> attackers, double damage) {
         HashMap<String, Double> percents = new HashMap<>();
         for (Map.Entry<String, Integer> entry : attackers.entrySet()) {
-            percents.put(entry.getKey(), entry.getValue() / damage);
+            double to_add = 1;
+            if (Utils.getPlayers().contains(entry.getKey())) {
+                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(entry.getKey()).getUniqueId());
+                Object obj = gamer.getPrivilege().getValue(new BossMoney());
+                if (obj != null) to_add += (double) Integer.parseInt(obj.toString()) / 100;
+            }
+            percents.put(entry.getKey(), (entry.getValue() / damage) * to_add);
         }
         return percents;
     }
@@ -409,5 +420,13 @@ public class Utils {
 
     public static HashMap<String, Long> getlMoneyRealTime() {
         return lMoneyRealTime;
+    }
+
+    public static HashMap<String, Boolean> getGladiator() {
+        return gladiator;
+    }
+
+    public static HashMap<String, Boolean> getIce() {
+        return ice;
     }
 }

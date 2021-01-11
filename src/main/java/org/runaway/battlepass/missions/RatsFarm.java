@@ -45,7 +45,7 @@ public class RatsFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Убивайте" + (this.isRare ? " редких" : "") + " крыс";
+        return "Убивайте " + (this.isRare ? "редких" : "") + "крыс";
     }
 
     @Override

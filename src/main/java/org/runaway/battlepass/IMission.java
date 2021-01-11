@@ -2,10 +2,12 @@ package org.runaway.battlepass;
 
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.mines.Mine;
 import org.runaway.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class IMission {
@@ -107,6 +109,23 @@ public abstract class IMission {
                         (int)getValues().get(gamer.getGamer()) >= getValue());
     }
 
+    public boolean isCompletedOffline(Gamer gamer) {
+        if (!EConfig.BATTLEPASS_DATA.getConfig().contains(hashCode() + "." + gamer.getGamer())) return false;
+        return (int)EConfig.BATTLEPASS_DATA.getConfig().get(hashCode() + "." + gamer.getGamer()) >= getValue();
+    }
+
+    /**
+     * @return a Value of pinning
+     */
+    public boolean isPinned(Gamer gamer) {
+        ArrayList<IMission> s = BattlePass.getPinnedTasks(gamer);
+        if (s == null) return false;
+        for (IMission m : s) {
+            if (String.valueOf(this.hashCode()).contains(String.valueOf(m.hashCode()))) return true;
+        }
+        return false;
+    }
+
     /**
      * @return a Value of arguments
      */
@@ -117,13 +136,36 @@ public abstract class IMission {
     /**
      * @return a Hashcode of mission
      */
-    public int getHashCode() {
-        return getLenghtArguments() +
-                getName().length() +
-                getValue() +
-                getDescription().length() +
-                getExperience() +
-                getClass().getSimpleName().length();
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getLenghtArguments();
+        result = prime * result + getName().length();
+        result = prime * result + getValue();
+        result = prime * result + getDescription().length();
+        result = prime * result + getExperience();
+        if (getArgumentsString() != null)
+            result = prime * result + getArgumentsString().length();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        IMission other = (IMission) obj;
+        if (getName() != other.getName())
+            return false;
+        if (getValue() != other.getValue())
+            return false;
+        if (getExperience() != other.getExperience())
+            return false;
+        return true;
     }
 
     protected void addAllValues(Gamer gamer) {

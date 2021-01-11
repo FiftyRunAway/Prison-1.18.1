@@ -2,12 +2,12 @@ package org.runaway.entity;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.EntityTypes;
-import net.minecraft.server.v1_12_R1.MinecraftKey;
-import net.minecraft.server.v1_12_R1.RegistryMaterials;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
+import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.runaway.Main;
 import org.runaway.enums.Mobs;

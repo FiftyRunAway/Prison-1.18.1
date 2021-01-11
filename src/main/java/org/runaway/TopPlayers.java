@@ -22,12 +22,12 @@ public class TopPlayers {
     private String description;
 
     TopPlayers(Location location, HashMap<String, Long> values, String start, int max, String description) {
-        this.location = location;
+       // this.location = location;
         this.topValues = values;
         this.start = start;
         this.max = max;
         this.description = description;
-        this.create();
+        //this.create();
     }
 
     void setTopValues(HashMap<String, Long> map) {
@@ -67,25 +67,7 @@ public class TopPlayers {
 
     public HashMap<String, Long> getTopValues() {
         Main.forceUpdateTop();
-
         return (HashMap<String, Long>) sortByValue(this.topValues);
-    }
-
-    private static <K, V> HashMap<K, V> invert(Map<K, V> map) {
-        HashMap<K, V> inv = new HashMap<>();
-
-        ArrayList<K> keys = new ArrayList<>();
-        ArrayList<V> values = new ArrayList<>();
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            keys.add(entry.getKey());
-            values.add(entry.getValue());
-        }
-        for (int i = keys.size(); i > 0; i--) {
-            int pos = keys.size() - i;
-            inv.put(keys.get(pos), values.get(pos));
-        }
-        Bukkit.getConsoleSender().sendMessage(inv.toString());
-        return inv;
     }
 
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {

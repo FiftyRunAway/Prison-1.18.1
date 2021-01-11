@@ -11,19 +11,15 @@ import org.runaway.events.custom.PlayerDamageEvent;
 
 public class DamageFarm extends IMission implements Listener {
 
-    private double damage;
-
     @EventHandler
     private void onDamagePlayer(PlayerDamageEvent event) {
         Player player = event.getPlayerDamaged();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         double damage = event.getPlayerSource().getLastDamage();
 
-        if (damage > 0) return;
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;
             weeklyMission.getMissions().forEach(mission -> {
-                if (!weeklyMission.isStarted()) return;
                 if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
                     if (!mission.isCompleted(gamer)) {
                         DamageFarm df = (DamageFarm) mission;

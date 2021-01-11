@@ -54,7 +54,9 @@ public class Mine {
     private static BukkitTask mineTask;
     private static BukkitTask holoTask;
 
-    private int mins_left;
+    private int left;
+    private long reseted;
+    private long will_reset;
     private StandardMenu adminMenu;
 
     public Mine(String name, int mlevel, boolean pvp, int height, int diametr, World world, int x, int y, int z, int delay, String types, Material material, int tpx, int tpy, int tpz, Location holo, boolean tpSpawn, Material surface) {
@@ -76,10 +78,10 @@ public class Mine {
         this.holoLoc = holo;
         this.hologram = HologramsAPI.createHologram(Main.getInstance(), holoLoc);
         this.tpSpawn = tpSpawn;
-
         this.surface = surface;
 
-        this.mins_left = delay / 60;
+        this.reseted = System.currentTimeMillis();
+        this.will_reset = this.reseted + this.delay * 1000L;
         setupHolo(this);
 
         this.adminMenu = StandardMenu.create(1, "&eАдмин-панель шахты &7• &e" + this.name);
@@ -102,25 +104,30 @@ public class Mine {
                 player.openInventory(this.adminMenu.build());
             }
         });
-        this.hologram.appendTextLine(Utils.colored("&fОбновится через &7• &a" + mins_left + " мин."));
+        int left = (int) Math.round((double)((mine.will_reset - System.currentTimeMillis()) / 1000));
+        this.hologram.appendTextLine(Utils.colored("&fОбновится через &7• &a" + Math.round(Math.ceil((double) left / 60)) + " мин."));
+        //this.hologram.appendTextLine(Utils.colored("&fБлоков вскопано &7• &a100%"));
         this.hologram.appendTextLine(Utils.colored("&fPVP &7• &a" + (this.pvp ? "Есть" : "&cНет")));
 
-        updateHolo(mine);
+        updateHolo();
     }
 
-    private void updateHolo(Mine mine) {
-        mine.holoTask = new BukkitRunnable() {
+    private void updateHolo() {
+        holoTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if ((mine.mins_left - 1) == 0) {
-                    mine.mins_left = mine.delay / 60;
-                } else {
-                    mine.mins_left--;
-                }
-                mine.hologram.removeLine(2);
-                mine.hologram.insertTextLine(2, Utils.colored("&fОбновится через &7• &a" + mins_left + " мин."));
+                forceUpdateHolo();
             }
         }.runTaskTimer(Main.getInstance(), 0L, 1200L);
+    }
+
+    private void forceUpdateHolo() {
+        int left = (int) Math.round((double)((will_reset - System.currentTimeMillis()) / 1000));
+        hologram.removeLine(2);
+        hologram.insertTextLine(2, Utils.colored("&fОбновится через &7• &a" + Math.round(Math.ceil((double) left / 60)) + " мин."));
+        /*long p = percent();
+        hologram.removeLine(3);
+        hologram.insertTextLine(3, Utils.colored("&fБлоков вскопано &7• &a" + p + "%"));*/
     }
 
     private long percent() {
@@ -143,15 +150,18 @@ public class Mine {
             }
             loc.subtract(0.0, 1.0, 0.0);
         }
+        System.out.println(blocks + " / " + broken);
         int s = blocks - broken;
-
-        return (long) (new BigDecimal(s / blocks).setScale(2, RoundingMode.UP).doubleValue() * 100);
+        double nm = Math.ceil((double) s / blocks);
+        System.out.println(nm);
+        return Math.round(nm) * 100;
     }
 
     private void forceReset(Mine mine) {
         mineTask.cancel();
         holoTask.cancel();
-        mins_left = getDelay() / 60;
+        reseted = System.currentTimeMillis();
+        will_reset = reseted + delay * 1000L;
         setupHolo(mine);
         updateMine(mine);
     }
@@ -176,6 +186,9 @@ public class Mine {
                         p.teleport(playerLoc);
                     }
                 });
+                mine.reseted = System.currentTimeMillis();
+                mine.will_reset = mine.reseted + mine.delay * 1000L;
+                mine.forceUpdateHolo();
                 int highFloor = loc.getBlockY();
                 boolean isSurface = false;
                 if (!mine.surface.equals(Material.AIR)) isSurface = true;

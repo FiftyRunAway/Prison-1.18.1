@@ -45,18 +45,18 @@ public class Board {
         replaceScore(objective, 15, ChatColor.GRAY + date());
         replaceScore(objective, 14, " ");
         replaceScore(objective, 13, ChatColor.YELLOW + "Статистика:");
-        replaceScore(objective, 12, ChatColor.WHITE + "Уровень" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + gamer.getDisplayLevel() + (gamer.getDisplayRebirth().equals("") ? "" : ChatColor.DARK_GRAY + " [" + ChatColor.YELLOW + gamer.getDisplayRebirth() + ChatColor.DARK_GRAY + "]"));
-        replaceScore(objective, 11, ChatColor.WHITE + "Баланс" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + FormatMoney(gamer.getStatistics(EStat.MONEY)));
-        replaceScore(objective, 10, ChatColor.WHITE + "Блоков " + getSplitter(ChatColor.GOLD) + ChatColor.BOLD + FormatBlocks(gamer));
-        replaceScore(objective, 9, ChatColor.WHITE + "Убийств" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.KILLS));
-        replaceScore(objective, 8, ChatColor.WHITE + "Крыс убито" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.RATS));
-        replaceScore(objective, 7, ChatColor.WHITE + "Фракция" + getSplitter(ChatColor.RED) + ChatColor.BOLD + "" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
-        replaceScore(objective, 6, ChatColor.WHITE + "Ключей добыто" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + gamer.getStatistics(EStat.KEYS));
+        replaceScore(objective, 12, ChatColor.WHITE + " Уровень" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + gamer.getDisplayLevel() + (gamer.getDisplayRebirth().equals("") ? "" : ChatColor.DARK_GRAY + " [" + ChatColor.YELLOW + gamer.getDisplayRebirth() + ChatColor.DARK_GRAY + "]"));
+        replaceScore(objective, 11, ChatColor.WHITE + " Баланс" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + FormatMoney(gamer.getStatistics(EStat.MONEY)));
+        replaceScore(objective, 10, ChatColor.WHITE + " Блоков " + getSplitter(ChatColor.GOLD) + ChatColor.BOLD + FormatBlocks(gamer));
+        replaceScore(objective, 9, ChatColor.WHITE + " Убийств" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.KILLS));
+        replaceScore(objective, 8, ChatColor.WHITE + " Крыс убито" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.RATS));
+        replaceScore(objective, 7, ChatColor.WHITE + " Ключей добыто" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.KEYS));
+        replaceScore(objective, 6, ChatColor.WHITE + " Фракция" + getSplitter(ChatColor.RED) + ChatColor.BOLD + "" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
         replaceScore(objective, 5, "  ");
         replaceScore(objective, 4, ChatColor.YELLOW + "Сервер:");
-        replaceScore(objective, 3, ChatColor.WHITE + "Игроков" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + Utils.getPlayers().size());
+        replaceScore(objective, 3, ChatColor.WHITE + " Игроков" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + Utils.getPlayers().size());
         replaceScore(objective, 2, "   ");
-        replaceScore(objective, 1, ChatColor.WHITE + "  " + ChatColor.BOLD + Vars.getSite());
+        replaceScore(objective, 1, ChatColor.WHITE + "     " + ChatColor.BOLD + Vars.getSite());
 
         if(objective.getDisplaySlot() != DisplaySlot.SIDEBAR) objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(score);
@@ -131,7 +131,7 @@ public class Board {
                                 .replace(Utils.colored(" &7| " + Main.event), "")) + Utils.colored(" &7| " + Main.event));
                     } else {
                         scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
-                                .replace(Utils.colored(" &7| &c" + /*BattlePass.season*/ "ОТКРЫТИЕ"), "")) + Utils.colored(" &7| &c" + /*BattlePass.season + */"ОТКРЫТИЕ"));
+                                .replace(Utils.colored(" &7| &c" + /*BattlePass.season +*/ "ОТКРЫТИЕ"), "")) + Utils.colored(" &7| &c" + /*BattlePass.season + */"ОТКРЫТИЕ"));
                     }
                 }
             });
@@ -142,7 +142,7 @@ public class Board {
         try {
             titleUpdate();
             Main.event = EConfig.SHOP.getConfig().getString("event");
-            dateFormat = new SimpleDateFormat("HH:mm z | dd.MM.yy");
+            dateFormat = new SimpleDateFormat("HH:mm МСК | dd.MM.yy");
             decimalFormatSymbols.setDecimalSeparator('.');
             decimalFormatSymbols.setGroupingSeparator(',');
             ScoreBoardUpdate.addAll(EConfig.CONFIG.getConfig().getStringList("DisplayName"));

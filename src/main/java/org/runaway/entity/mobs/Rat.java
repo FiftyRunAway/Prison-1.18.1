@@ -68,7 +68,7 @@ public class Rat extends EntityMonster {
             if (damagesource.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
                 int damage = Math.round(getHealth() - f);
                 if (damage < 0) damage = 0;
-                Main.gamers.get(Bukkit.getPlayer(damagesource.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + damage + "♥",  "&c" + this.name);
+                //Main.gamers.get(Bukkit.getPlayer(damagesource.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + damage + "♥",  "&c" + this.name);
             }
         }
         return super.damageEntity(damagesource, f);

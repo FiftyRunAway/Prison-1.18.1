@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.*;
 import net.minecraft.server.v1_12_R1.*;
 import com.gmail.filoghost.holographicdisplays.api.*;
+import org.bukkit.entity.Slime;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.*;
 import java.util.*;
@@ -40,11 +41,12 @@ public class Spawner {
     private Spawner(Location location, Mobs type, int interval) {
         this.location = location;
         this.current = null;
-        this.deathTime = -1L;
+        this.deathTime = System.currentTimeMillis();
         this.uuid = UUID.randomUUID();
         this.type = type;
         this.interval = interval;
         Spawner.spawners.put(this.uuid, this);
+        createHologram();
     }
 
     private void spawn() {
@@ -60,12 +62,18 @@ public class Spawner {
                     this.hologram = null;
                 }
             }
-        } catch (NullPointerException ex) { }
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void dead() {
         this.current = null;
-        this.deathTime = System.currentTimeMillis() + this.interval * 1000L;
+        this.deathTime = System.currentTimeMillis();
+        createHologram();
+    }
+
+    private void createHologram() {
         if (!this.type.isMultispawn()) {
             (this.hologram = HologramsAPI.createHologram(Main.getInstance(), this.location.clone().add(0.5, 2.5, 0.5))).setAllowPlaceholders(true);
             this.hologram.getVisibilityManager().setVisibleByDefault(true);
@@ -82,10 +90,10 @@ public class Spawner {
         }
         this.hologram.clearLines();
         this.hologram.appendTextLine(Utils.colored("&fБосс &7• " + EConfig.MOBS.getConfig().getString(type.toString().toLowerCase() + ".name")));
-        long ticks = this.deathTime - System.currentTimeMillis();
+        long ticks = (this.interval * 1000) - (System.currentTimeMillis() - this.deathTime);
         long hours = ticks / 3600000; ticks %= 3600000; long minutes = ticks / 60000;
         String time = (hours < 10 ? "0" : "" + hours) + " ч " + (minutes < 10 ? "0" + minutes : minutes) + " мин";
-        if (minutes == 0) time = "< 1 минуты";
+        if (minutes == 0) time = "< 1 мин";
         String format = String.format("&fВозрождение &7• &c%s", time);
         this.hologram.appendTextLine(Utils.colored(format));
         this.hologram.appendTextLine(" ");
@@ -131,7 +139,7 @@ public class Spawner {
 
     private void update() {
         if (this.current == null) {
-            if (System.currentTimeMillis() >= this.deathTime && this.interval > 0) {
+            if ((System.currentTimeMillis() - this.deathTime >= this.interval * 1000) && this.interval > 0) {
                 this.spawn();
             }
         } else if (this.current.getBukkitEntity().getLocation().distance(this.location) > 64.0) this.reset();

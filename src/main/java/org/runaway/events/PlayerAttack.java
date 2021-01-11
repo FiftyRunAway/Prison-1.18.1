@@ -15,6 +15,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
 import org.runaway.events.custom.PlayerDamageEvent;
+import org.runaway.passiveperks.perks.Killer;
 import org.runaway.utils.Utils;
 
 public class PlayerAttack implements Listener {
@@ -44,7 +45,9 @@ public class PlayerAttack implements Listener {
                 }
             }
             Gamer attacker = Main.gamers.get(p.getUniqueId());
-            event.setDamage(event.getDamage() + (int)attacker.getStatistics(EStat.GYM_TRAINER) * 4 / 100);
+            int boost = 0;
+            if (attacker.hasPassivePerk(new Killer())) boost += 1;
+            event.setDamage(event.getDamage() + (double) ((int)attacker.getStatistics(EStat.GYM_TRAINER) + boost) * 4 / 100);
         }
     }
 
@@ -62,7 +65,8 @@ public class PlayerAttack implements Listener {
     }
 
     private boolean canAttack(Player attacker, Player getDamager) {
-        Gamer at = Main.gamers.get(attacker.getUniqueId()); Gamer get = Main.gamers.get(getDamager.getUniqueId());
+        Gamer at = Main.gamers.get(attacker.getUniqueId());
+        Gamer get = Main.gamers.get(getDamager.getUniqueId());
         if (at.getFaction().equals(get.getFaction())) {
             if (!at.getFaction().equals(FactionType.DEFAULT)) {
                 return false;

@@ -10,6 +10,8 @@ import org.runaway.Main;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.jobs.EJobs;
+import org.runaway.jobs.Job;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -31,15 +33,12 @@ public class MinesMenu implements IMenus {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         Mines.icons.forEach((mines, mineIcon) -> {
             IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(mines.getPrisonIcon(gamer)).setSlot(mines.getMinLevel() - 1);
-            if (mines.needPerm()) {
-                bt.setSlot(i.getAndIncrement());
-            }
             bt.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
                 Gamer g = Main.gamers.get(p.getUniqueId());
                 if ((int)g.getStatistics(EStat.LEVEL) >= mines.getMinLevel()) {
                     if (mines.needPerm()) {
-                        if (p.hasPermission(mines.getPerm())) {
+                        if (g.getStatistics(mines.getPerm()).equals(true)) {
                             g.teleport(mines.getSpawn());
                         } else g.sendMessage(EMessage.MINENEEDPERM);
                     } else g.teleport(mines.getSpawn());
@@ -50,6 +49,21 @@ public class MinesMenu implements IMenus {
             });
             menu.addButton(bt);
         });
+        for (EJobs job : EJobs.values()) {
+            Job j = job.getJob();
+            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(j.getButton(gamer).item()).setSlot(j.getLevel() - 1);
+            btn.setClickEvent(event -> {
+                Player p = event.getWhoClicked();
+                Gamer g = Main.gamers.get(p.getUniqueId());
+                if ((int)g.getStatistics(EStat.LEVEL) >= j.getLevel()) {
+                    g.teleport(j.getLocation(j));
+                    p.closeInventory();
+                } else {
+                    p.sendMessage(Utils.colored(EMessage.MINELEVEL.getMessage().replaceAll("%level%", j.getLevel() + "")));
+                }
+            });
+            menu.addButton(btn);
+        }
         ConfigurationSection levels = EConfig.CONFIG.getConfig().getConfigurationSection("levels");
         int maxLevel = levels.getKeys(false).size();
         for (int s = 0; s < maxLevel; s++) {
@@ -57,8 +71,8 @@ public class MinesMenu implements IMenus {
                 menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.STAINED_GLASS_PANE)
                         .data((short) 12)
                         .name("&cСкоро").lore(new Lore.BuilderLore()
-                                .addString("&7Совсем скоро эта шахта появится")
-                                .addString("&7на сервере!").build()).build().item()).setSlot(s));
+                                .addString("&7Совсем скоро эта шахта")
+                                .addString("&7&nпоявится &r&7на сервере!").build()).build().item()).setSlot(s));
             }
         }
 

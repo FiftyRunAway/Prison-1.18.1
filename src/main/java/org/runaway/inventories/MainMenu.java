@@ -37,6 +37,15 @@ public class MainMenu implements IMenus {
             ups.setClickEvent(event -> new UpItemsMenu(event.getWhoClicked()));
             menu.addButton(ups);
 
+            IMenuButton perks = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.REDSTONE)
+                    .name("&aПассивные умения")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
+                    .setSlot(14);
+            perks.setClickEvent(event -> event.getWhoClicked().openInventory(PassivePerksMenu.getMenu(event.getWhoClicked()).build()));
+            menu.addButton(perks);
+
             IMenuButton achievs = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.STORAGE_MINECART)
                     .name("&aДостижения")
                     .lore(new Lore.BuilderLore()
@@ -93,7 +102,7 @@ public class MainMenu implements IMenus {
             menu.addButton(donate);
 
             IMenuButton mines = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GRASS)
-                    .name("&aСписок шахт")
+                    .name("&aЛокации")
                     .lore(new Lore.BuilderLore()
                             .addSpace()
                             .addString("&7>> Открыть меню").build()).build().item())
@@ -105,7 +114,7 @@ public class MainMenu implements IMenus {
                     .name("&aБустеры")
                     .lore(new Lore.BuilderLore()
                             .addSpace()
-                            .addString("&7>> Открыть меню активации")
+                            .addString("&7>> Активировать бустер")
                             .addString("&7<< Открыть меню активных").build()).build().item())
                     .setSlot(39);
             boosters.setClickEvent(event -> {

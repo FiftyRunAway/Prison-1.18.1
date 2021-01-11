@@ -90,41 +90,35 @@ public class BattlePassMenu implements IMenus {
         int k = 0;
         for (int i = 37; i < 44; i++) {
             if (i <= pin_slots) {
-                IMission mission = missions.get(k);
-
+                IMission mission;
+                try {
+                    mission = missions.get(k);
+                } catch (NullPointerException ex) {
+                    continue;
+                }
+                k++;
                 Item.Builder ic = mission.getIcon().getIcon(gamer);
-                ArrayList<String> lore = new ArrayList<>(ic.build().getLore().getList());
+                ArrayList<String> lore = new ArrayList(ic.build().getLore().getList());
                 lore.add(" ");
                 lore.add(Utils.colored("&7Нажмите, чтобы &cоткрепить"));
                 IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(ic.lore(new Lore.BuilderLore().addList(lore).build()).build().item())
                         .setSlot(i);
-
-                int finalK = k;
                 btn.setClickEvent(e -> {
-                    ArrayList<String> in = new ArrayList<>(Arrays.asList(EConfig.BATTLEPASS_DATA.getConfig().getString(e.getWhoClicked().getName()).split(" ")));
-                    EConfig.BATTLEPASS_DATA.getConfig().set(e.getWhoClicked().getName(), null);
-                    Gamer g = Main.gamers.get(e.getWhoClicked().getUniqueId());
-                    in.remove(finalK);
-                    String str = in.toString().replace("[", "").replace("]", "").replace(",", "");
-                    if (str.length() > 1) {
-                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), str);
-                    } else {
-                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), null);
-                    }
-                    EConfig.BATTLEPASS_DATA.saveConfig();
-
+                    BattlePass.unPin(mission, Main.gamers.get(e.getWhoClicked().getUniqueId()));
                     new BattlePassMenu(e.getWhoClicked());
-                    gamer.sendMessage(EMessage.UNPIN);
                 });
                 menu.addButton(btn);
-                k++;
             } else {
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.IRON_FENCE)
+                IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.IRON_FENCE)
                         .name("&aСвободная ячейка").lore(new Lore.BuilderLore()
                                 .addSpace()
                                 .addString("&7Выберите задания в &eменю")
                                 .addString("&eиспытаний &7для закрепления").build())
-                        .build().item()).setSlot(i));
+                        .build().item()).setSlot(i);
+                btn.setClickEvent(event -> {
+                    openMissionsMenu(event.getWhoClicked(), missionsMenu);
+                });
+                menu.addButton(btn);
             }
         }
 
@@ -312,29 +306,26 @@ public class BattlePassMenu implements IMenus {
         missions.getMissions().forEach(mission -> {
             Item.Builder ic = mission.getIcon().getIcon(gamer);
             ArrayList<String> lore = new ArrayList<>(ic.build().getLore().getList());
-            lore.add(" ");
-            lore.add(Utils.colored("&7Нажмите, чтобы &eзакрепить"));
+            if (!mission.isCompleted(gamer)) {
+                lore.add(" ");
+                if (mission.isPinned(gamer)) {
+                    lore.add(Utils.colored("&7Нажмите, чтобы &c&nоткрепить"));
+                } else {
+                    lore.add(Utils.colored("&7Нажмите, чтобы &e&nзакрепить"));
+                }
+            }
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(ic.lore(new Lore.BuilderLore().addList(lore).build()).build().item())
                     .setSlot(i.getAndIncrement());
             btn.setClickEvent(e -> {
                 Gamer g = Main.gamers.get(e.getWhoClicked().getUniqueId());
-                int pins = BattlePass.getPins(g);
-                if (pins < 7) {
-                    ArrayList<IMission> pinned = BattlePass.getPinnedTasks(g);
-                    if (pinned != null && pinned.contains(mission)) {
-                        g.sendMessage(EMessage.ALREADYPINNED);
-                        return;
-                    }
-                    if (pins == 0) {
-                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), mission.getHashCode());
-                    } else {
-                        EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), EConfig.BATTLEPASS_DATA.getConfig().get(gamer.getGamer()) + " " + mission.getHashCode());
-                    }
-                    EConfig.BATTLEPASS_DATA.saveConfig();
-                    g.getPlayer().sendMessage(Utils.colored(EMessage.SETPIN.getMessage().replace("%name%", mission.getName())));
+                if (mission.isCompleted(g))
+                    return;
+                if (mission.isPinned(gamer)) {
+                    BattlePass.unPin(mission, g);
                 } else {
-                    g.sendMessage(EMessage.MANYPINS);
+                    BattlePass.addPin(mission, g);
                 }
+                openTasksMenu(g, missions);
             });
             menu.addButton(btn);
             if (i.get() == 16) i.set(19);

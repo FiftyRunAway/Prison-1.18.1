@@ -1,6 +1,6 @@
 package org.runaway.donate.features;
 
-public class FLeaveDiscount extends IFeature {
+public class BossMoney extends IFeature {
 
     @Override
     public Object getValue() {
@@ -9,11 +9,11 @@ public class FLeaveDiscount extends IFeature {
 
     @Override
     public String getName() {
-        return "&aСкидка на покидание фракции";
+        return "&aПовышенная награда за босса (%)";
     }
 
     @Override
     public int getCode() {
-        return 0;
+        return 6;
     }
 }

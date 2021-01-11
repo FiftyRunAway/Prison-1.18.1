@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PrisonRecoded">
+    <output-path>$PROJECT_DIR$/../../../Prison Recoded/plugins</output-path>
+    <root id="archive" name="PrisonRecoded.jar">
+      <element id="module-output" name="main" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/telegram/telegrambots/4.4.0.1/telegrambots-4.4.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/telegram/telegrambots-meta/4.4.0.1/telegrambots-meta-4.4.0.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

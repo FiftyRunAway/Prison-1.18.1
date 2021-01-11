@@ -40,10 +40,8 @@ public class Upgrade {
                 }
                 ItemStack save = UpgradeMisc.buildItem(next, false, player, false);
                 if (!fastGet && gamer.getLevelItem(save) > (int)gamer.getStatistics(EStat.LEVEL)) {
-                    new Confirmation(player, null, null, () -> {
-                        Upgrade.upgrade(player, true);
-                        player.closeInventory();
-                    });
+                    new Confirmation(player, null, null, () ->
+                            Upgrade.upgrade(player, true));
                     return;
                 }
                 for (UpgradeProperty prop : itemdata.keySet()) {
@@ -54,6 +52,7 @@ public class Upgrade {
                 player.getInventory().setItemInMainHand(save);
                 gamer.sendMessage(EMessage.SUCCESSFULUPGRADE);
                 Bukkit.getServer().getPluginManager().callEvent(new UpgradeEvent(player));
+                player.closeInventory();
                 Achievement.FIRST_UPGRADE.get(player, false);
                 if ((int)gamer.getStatistics(EStat.UPGRADE_TRAINER) > 0) {
                     Utils.trainer.forEach(trainer -> {

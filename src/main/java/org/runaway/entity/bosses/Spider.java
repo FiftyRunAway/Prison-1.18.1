@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.achievements.Achievement;
+import org.runaway.donate.features.BossMoney;
 import org.runaway.entity.CustomEntity;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.EConfig;
@@ -166,21 +167,26 @@ public class Spider extends EntityMonster {
 
     public void die() {
         if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (this.getBukkitEntity().getCustomName().equals("toDelete")) {
+            super.die();
+            return;
+        }
         if (this.spawner != null) {
-            if (CustomEntity.monsters.contains(this.name)) {
-                World world = this.spawner.getSpawnLocation().getWorld();
-                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(8).build().item());
-                world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(1) + 1).build().item());
-                this.spawner.dead();
-            } else {
+            if (!CustomEntity.monsters.contains(this.name)) {
                 CustomEntity.monsters.add(this.name);
             }
+            this.spawner.dead();
         }
         if (this.killer != null) {
             Bukkit.broadcastMessage(Utils.colored(EMessage.SPIDERDEAD.getMessage()
                     .replaceAll("%player%", ChatColor.RESET + this.killer.getName())
             ));
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
+
+            World world = this.spawner.getSpawnLocation().getWorld();
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(8).build().item());
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(1) + 1).build().item());
+
             for (String key : percents.keySet()) {
                 double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();
                 if (money < 0) money = 0;
@@ -194,9 +200,13 @@ public class Spider extends EntityMonster {
                 Achievement.SPIDER_KILL.get(gamer.getPlayer(), false);
                 gamer.setStatistics(EStat.BOSSES, (int)gamer.getStatistics(EStat.BOSSES) + 1);
 
+                Object obj = gamer.getPrivilege().getValue(new BossMoney());
+                int sale = 0;
+                if (obj != null) sale = Integer.parseInt(obj.toString());
+
                 gamer.getPlayer().sendMessage(Utils.colored(EMessage.BOSSREWARD.getMessage()
                         .replaceAll("%boss%", ChatColor.RESET + name)
-                        .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName())
+                        .replaceAll("%money%", Math.round(money) + " " + MoneyType.RUBLES.getShortName() + (sale > 0 ? (" &7(&b+" + sale + "% за донат&7)") : ("")))
                 ));
             }
         }

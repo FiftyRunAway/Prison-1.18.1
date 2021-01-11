@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
@@ -20,15 +21,14 @@ import org.runaway.events.custom.BreakWoodEvent;
 import org.runaway.events.custom.DropKeyEvent;
 import org.runaway.events.custom.PlayerBlockBreakEvent;
 import org.runaway.events.custom.TreasureFindEvent;
+import org.runaway.passiveperks.perks.KeyFirst;
+import org.runaway.passiveperks.perks.KeySecond;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /*
  * Created by _RunAway_ on 17.1.2019
@@ -36,8 +36,9 @@ import java.util.List;
 
 public class BlockBreak implements Listener {
 
-    private static List<Material> blocktolog = new ArrayList<>();
+    private static final List<Material> blocktolog = new ArrayList<>();
     static HashMap<String, Location> chests = new HashMap<>();
+    static HashMap<String, BukkitTask> chests_tasks = new HashMap<>();
 
     private static int LeftChest;
 
@@ -45,7 +46,10 @@ public class BlockBreak implements Listener {
 
     // Ломание предметов с аукциона
     static HashMap<String, Integer> to_break = new HashMap<>();
-    private static int damage_per = 10;
+    private static final int damage_per = 10;
+
+    //Что можно ломать
+    private static HashMap<Material, ArrayList<Material>> canbreak;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -56,6 +60,10 @@ public class BlockBreak implements Listener {
             String name = player.getInventory().getItemInMainHand().getType().toString();
             if ((name.contains("AXE") || name.contains("SHOVEL") || name.contains("PICKAXE") || name.contains("SHEARS") || name.contains("SPADE"))) {
                 Block block = event.getBlock();
+                if (name.contains("PICKAXE") && !canbreak.get(player.getInventory().getItemInMainHand().getType()).contains(block.getType())) {
+                    event.setCancelled(true);
+                    return;
+                }
                 if ((block.getType().equals(Material.SAND) ||
                         block.getType().equals(Material.GRAVEL) ||
                         block.getType().equals(Material.DIRT)) && (int)gamer.getStatistics(EStat.LEVEL) < 2) {
@@ -72,7 +80,10 @@ public class BlockBreak implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                double boost = 1;
+                if (gamer.hasPassivePerk(new KeyFirst())) boost += 1;
+                if (gamer.hasPassivePerk(new KeySecond())) boost += 1;
+                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + boost)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
@@ -81,14 +92,14 @@ public class BlockBreak implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
                 if (blocktolog.contains(block.getType())) {
-                    if (EConfig.BLOCKS.getConfig().contains(player.getName() + "." + block.getType().toString() + "-" + block.getType().getMaxDurability())) {
-                        add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + "." + block.getType().toString() + "-" + block.getType().getMaxDurability());
+                    if (EConfig.BLOCKS.getConfig().contains(player.getName() + "." + block.getType().toString() + "-" + block.getData())) {
+                        add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + "." + block.getType().toString() + "-" + block.getData());
                     }
                     String ret = String.valueOf(new BigDecimal(add).setScale(2, RoundingMode.UP).doubleValue());
-                    EConfig.BLOCKS.getConfig().set(player.getName() + "." + block.getType().toString() + "-" + block.getType().getMaxDurability(), Double.valueOf(ret));
+                    EConfig.BLOCKS.getConfig().set(player.getName() + "." + block.getType().toString() + "-" + block.getData(), Double.valueOf(ret));
                     EConfig.BLOCKS.saveConfig();
                 }
-                gamer.setStatistics(EStat.BLOCKS, new BigDecimal((double)gamer.getStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
+                gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf((double) gamer.getStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
                 AutoSell(event, FindChest(event));
             } else {
@@ -103,7 +114,7 @@ public class BlockBreak implements Listener {
         Gamer gamer = Main.gamers.get(player.getUniqueId());
         Block block = event.getBlock();
         if (block.getType().equals(Material.LOG_2) && block.getData() == 1) {
-            if (!player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
+            if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().hasItemMeta() && !player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
                 if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
                 int al = to_break.get(player.getName());
                 if (al == damage_per) {
@@ -160,23 +171,26 @@ public class BlockBreak implements Listener {
         Block block = event.getBlock();
         Player player = event.getPlayer();
         Gamer gamer = Main.gamers.get(player.getUniqueId());
-        if (Math.random() < 0.00015 && !block.getType().isTransparent()) {
+        if (Math.random() < 0.00015 && !block.getType().isTransparent()) { // 0.00015
             if (chests.containsKey(player.getName())) {
                 chests.get(player.getName()).getBlock().setType(Material.AIR);
                 chests.remove(player.getName());
+                chests_tasks.remove(player.getName());
+                treasure_holo.get(player.getName()).delete();
                 gamer.sendMessage(EMessage.DELETECHEST);
             }
             gamer.sendTitle (ChatColor.RED + "Да ты везунчик!", ChatColor.RED + "Вы откопали клад (" + LeftChest + " сек)");
             chests.put(player.getName(), block.getLocation());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
             Bukkit.getServer().getPluginManager().callEvent(new TreasureFindEvent(player));
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                if (chests.containsKey(player.getName())) {
-                    block.setType(Material.AIR);
-                    chests.remove(player.getName());
-                    player.sendMessage(Utils.colored(EMessage.TIMELEFTCHEST.getMessage().replace("%time%", LeftChest + "")));
-                }
-            }, LeftChest * 20L);
+            chests_tasks.put(player.getName(), Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                if (!chests.containsKey(player.getName())) return;
+                block.setType(Material.AIR);
+                chests.remove(player.getName());
+                treasure_holo.get(player.getName()).delete();
+                //player.sendMessage(Utils.colored(EMessage.TIMELEFTCHEST.getMessage().replace("%time%", LeftChest + "")));
+                chests_tasks.remove(player.getName());
+            }, LeftChest * 20L));
             if (Main.useHolographicDisplays) {
                 Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), block.getLocation().add(0.5, 1.5, 0.5));
                 hologram.appendTextLine(ChatColor.WHITE + "Нашёл " + ChatColor.YELLOW + player.getName());
@@ -264,6 +278,12 @@ public class BlockBreak implements Listener {
         try {
             LeftChest = EConfig.CONFIG.getConfig().getInt("chest_time");
             EConfig.CONFIG.getConfig().getStringList("logger").forEach(s -> blocktolog.add(Material.valueOf(s)));
+
+            canbreak = new HashMap<>();
+            canbreak.put(Material.WOOD_PICKAXE, breakableByPickaxe(Material.WOOD_PICKAXE));
+            canbreak.put(Material.STONE_PICKAXE, breakableByPickaxe(Material.STONE_PICKAXE));
+            canbreak.put(Material.IRON_PICKAXE, breakableByPickaxe(Material.IRON_PICKAXE));
+            canbreak.put(Material.DIAMOND_PICKAXE, breakableByPickaxe(Material.DIAMOND_PICKAXE));
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading log blocks!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -297,5 +317,48 @@ public class BlockBreak implements Listener {
 
     private static boolean isIn(int x1, int y1, int z1, int x2, int y2, int z2, int x, int y, int z) {
         return Math.min(x1, x2) <= x && Math.min(y1, y2) <= y && Math.min(z1, z2) <= z && Math.max(x1, x2) >= x && Math.max(y1, y2) >= y && Math.max(z1, z2) >= z;
+    }
+
+    private static ArrayList<Material> breakableByPickaxe(Material item) {
+        ArrayList<Material> list = new ArrayList<>();
+        switch (item) {
+            case WOOD_PICKAXE: {
+                list.add(Material.STONE);
+                list.add(Material.SMOOTH_BRICK);
+                list.add(Material.COAL_ORE);
+                list.add(Material.PRISMARINE);
+                list.add(Material.STAINED_GLASS);
+                list.add(Material.NETHERRACK);
+                list.add(Material.BRICK);
+                list.add(Material.SANDSTONE);
+                list.add(Material.COAL_BLOCK);
+                break;
+            }
+            case STONE_PICKAXE: {
+                list = breakableByPickaxe(Material.WOOD_PICKAXE);
+                list.add(Material.ENDER_STONE);
+                list.add(Material.END_BRICKS);
+                list.add(Material.QUARTZ);
+                list.add(Material.IRON_ORE);
+                list.add(Material.SMOOTH_BRICK);
+                list.add(Material.LAPIS_BLOCK);
+                break;
+            }
+            case IRON_PICKAXE: {
+                list = breakableByPickaxe(Material.STONE_PICKAXE);
+                list.add(Material.GOLD_ORE);
+                list.add(Material.EMERALD_BLOCK);
+                list.add(Material.IRON_BLOCK);
+                list.add(Material.DIAMOND_BLOCK);
+                list.add(Material.GOLD_BLOCK);
+                break;
+            }
+            case DIAMOND_PICKAXE: {
+                list = breakableByPickaxe(Material.IRON_PICKAXE);
+                list.add(Material.OBSIDIAN);
+                break;
+            }
+        }
+        return list;
     }
 }

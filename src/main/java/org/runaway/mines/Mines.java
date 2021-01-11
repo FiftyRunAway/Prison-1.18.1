@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.enums.EConfig;
+import org.runaway.enums.EStat;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.utils.Utils;
@@ -28,7 +29,7 @@ public class Mines {
     String id;
     String name;
     boolean needPerm;
-    String perm;
+    EStat perm;
     int minLevel;
     Location spawn;
     Material icon;
@@ -38,9 +39,10 @@ public class Mines {
             if (EConfig.MINES.getConfig().getKeys(false).size() > 0) {
                 for (String cRegionString : EConfig.MINES.getConfig().getKeys(false)) {
                     ConfigurationSection cRegion = EConfig.MINES.getConfig().getConfigurationSection(cRegionString);
+                    if (!cRegion.contains("name")) continue;
                     ConfigurationSection cLoc = cRegion.getConfigurationSection("location");
                     Location loc = new Location(Bukkit.getWorld(cLoc.getString("world")), cLoc.getDouble("x"), cLoc.getDouble("y"), cLoc.getDouble("z"));
-                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, Material.getMaterial(cRegion.getString("icon").toUpperCase()), cRegion.getBoolean("needperm", false), cRegion.getString("permission"));
+                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, Material.getMaterial(cRegion.getString("icon").toUpperCase()), cRegion.getBoolean("needperm", false), getStat(cRegion.getString("permission")));
                     MineIcon icon = new MineIcon.Builder(mine).build();
                     Mines.icons.put(mine, icon);
                 }
@@ -53,7 +55,24 @@ public class Mines {
         }
     }
 
-    private Mines(String id, String name, int minLevel, Location spawn, Material icon, boolean needPerm, String perm) {
+    public static EStat getStat(String cfg) {
+        switch (cfg) {
+            case "prison.glad": {
+                return EStat.LOCATION_GLAD;
+            }
+            case "prison.vault": {
+                return EStat.LOCATION_VAULT;
+            }
+            case "prison.ice": {
+                return EStat.LOCATION_ICE;
+            }
+            default: {
+                return null;
+            }
+        }
+    }
+
+    private Mines(String id, String name, int minLevel, Location spawn, Material icon, boolean needPerm, EStat perm) {
         this.id = id;
         this.name = name;
         this.needPerm = needPerm;
@@ -76,7 +95,7 @@ public class Mines {
         return this.needPerm;
     }
 
-    public String getPerm() {
+    public EStat getPerm() {
         return this.perm;
     }
 

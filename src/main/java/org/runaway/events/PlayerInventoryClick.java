@@ -178,14 +178,19 @@ public class PlayerInventoryClick implements Listener {
                     event.getInventory().getName().contains(ChatColor.YELLOW + "Выберите предмет прокачки") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши активные ускорители") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Активация ускорителей") ||
-                    event.getInventory().getName().equals(ChatColor.YELLOW + "Магазин блоков") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Аукцион") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Уведомления") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Перерождение") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Привилегии") ||
                     event.getInventory().getName().contains("Просмотр") ||
                     event.getInventory().getName().contains("Боевой пропуск") ||
-                    event.getInventory().getName().contains("Вы уверены?")) {
+                    event.getInventory().getName().contains("Вы уверены?") ||
+                    event.getInventory().getName().contains("Работа") ||
+                    event.getInventory().getName().contains("Задания шахты:") ||
+                    event.getInventory().getName().contains("Магазин") ||
+                    event.getInventory().getName().equals(ChatColor.YELLOW + "Продажа рыбы") ||
+                    event.getInventory().getName().equals(ChatColor.YELLOW + "Повышение уровня") ||
+                    event.getInventory().getName().equals(ChatColor.YELLOW + "Прокачка предмета")) {
                 event.setCancelled(true);
             }
         } catch (Exception ignored) {  }

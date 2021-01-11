@@ -42,8 +42,8 @@ public class MineIcon extends Items {
 
     private ItemStack getButton(boolean access) {
         ArrayList<String> reqs = new ArrayList<>();
-        reqs.add("&7- " + (access ? ChatColor.GREEN : ChatColor.RED) + "Минимальный уровень • " + mine.getMinLevel());
-        if (mine.needPerm) reqs.add("&7- &dСпециальный доступ &7(Из сундука)");
+        reqs.add("&7• " + (access ? ChatColor.GREEN : ChatColor.RED) + "Минимальный уровень • " + mine.getMinLevel());
+        if (mine.needPerm) reqs.add("&7• &4&nСпециальный доступ");
         return new Item.Builder(mine.icon).name(mine.name).lore(
                 new Lore.BuilderLore()
                         .addSpace()

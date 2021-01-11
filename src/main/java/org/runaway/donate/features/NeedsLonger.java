@@ -9,7 +9,7 @@ public class NeedsLonger extends IFeature {
 
     @Override
     public String getName() {
-        return "&aУменьшение потребностей";
+        return "&aУменьшение потребностей (раз в)";
     }
 
     @Override

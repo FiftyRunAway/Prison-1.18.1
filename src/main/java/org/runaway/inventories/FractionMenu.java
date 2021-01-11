@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
+import org.runaway.donate.Privs;
+import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
@@ -33,21 +35,32 @@ public class FractionMenu implements IMenus {
                 .build()).build().item()).setSlot(8);
         btn.setClickEvent(event ->
                 new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
-                    Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(FactionType.DEFAULT, true)));
+                    Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(FactionType.DEFAULT, true, 0)));
         menu.addButton(btn);
-        int cost = EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * (int) gamer.getStatistics(EStat.LEVEL);
+        //Скидка
+        Object obj = Privs.DEFAULT.getPrivilege(player).getValue(new FractionDiscount());
+        double sale = 0;
+        if (obj != null) sale = 1 - ((double) Integer.parseInt(obj.toString()) / 100);
+        int cost;
+        if (sale > 0) {
+            cost = (int)Math.round(EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * (int) gamer.getStatistics(EStat.LEVEL) * sale);
+        } else {
+            cost = EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * (int) gamer.getStatistics(EStat.LEVEL);
+        }
+
         AtomicInteger i = new AtomicInteger();
 
+        double finalSale = sale;
         Arrays.stream(FactionType.values()).forEach(factionType -> {
             if (factionType.equals(FactionType.DEFAULT)) return;
             IMenuButton button = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(factionType.getIcon()).name("&fФракция &7• " + factionType.getColor() + factionType.getName())
                     .lore(new Lore.BuilderLore()
                             .addSpace()
-                            .addString("&fЦена &7• &a" + cost + " " + MoneyType.RUBLES.getShortName())
+                            .addString("&fЦена &7• &a" + cost + " " + MoneyType.RUBLES.getShortName() + (finalSale > 0 ? (" &7(&bСкидка " + (1 - finalSale) * 100 + "%&7)") : ("")))
                             .build()).build().item()).setSlot(i.getAndIncrement());
             button.setClickEvent(event ->
                     new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
-                        Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false)));
+                        Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false, cost)));
             menu.addButton(button);
         });
         player.openInventory(menu.build());

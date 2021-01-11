@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
 import org.runaway.utils.ExampleItems;
@@ -37,6 +38,19 @@ public class GiftCommand extends CommandManager {
             return;
         }
         if (is) {
+            boolean taken = false;
+            for (int i = 0; i < owner.getInventory().getContents().length; i++) {
+                if (owner.getInventory().getContents()[i].equals(Utils.getGifts().get(consumer.getName()))) {
+                    owner.getInventory().getItem(i).setAmount(0);
+                    taken = true;
+                    break;
+                }
+            }
+            if (!taken) {
+                onCancel(owner, consumer, false);
+                owner.sendMessage(Utils.colored(EMessage.GIFTCHANGING.getMessage()));
+                return;
+            }
             consumer.getPlayer().getInventory().addItem(Utils.getGifts().get(consumer.getName()));
             consumer.sendMessage(EMessage.ACCEPTGIFT.getMessage().replaceAll("%player%", owner.getName()));
             owner.sendMessage(Utils.colored(EMessage.ACCEPTEDGIFT.getMessage()));
@@ -44,14 +58,20 @@ public class GiftCommand extends CommandManager {
             Utils.getGifters().remove(consumer.getName());
             Utils.getGifts().remove(consumer.getName());
         } else {
-            owner.getInventory().addItem(Utils.getGifts().get(consumer.getName()));
-            Utils.getGifters().remove(consumer.getName());
-            Utils.getGifts().remove(consumer.getName());
-            consumer.sendMessage(EMessage.CANCELGIFT.getMessage().replaceAll("%player%", owner.getName()));
-            owner.sendMessage(Utils.colored(EMessage.CANCELEDGIFT.getMessage()));
-            consumer.getPlayer().closeInventory();
+            onCancel(owner, consumer, true);
         }
     }
+
+    private void onCancel(Player owner, Player consumer, boolean msgs) {
+        Utils.getGifters().remove(consumer.getName());
+        Utils.getGifts().remove(consumer.getName());
+        if (msgs) {
+            consumer.sendMessage(EMessage.CANCELGIFT.getMessage().replaceAll("%player%", owner.getName()));
+            owner.sendMessage(Utils.colored(EMessage.CANCELEDGIFT.getMessage()));
+        }
+        consumer.getPlayer().closeInventory();
+    }
+
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
@@ -102,16 +122,11 @@ public class GiftCommand extends CommandManager {
             }
             Utils.getGifters().put(cons.getName(), p.getName());
             Utils.getGifts().put(cons.getName(), p.getInventory().getItemInMainHand().clone());
-            p.getInventory().getItemInMainHand().setAmount(0);
             gamer.sendMessage(EMessage.SENDGIFT);
             cons.sendMessage(EMessage.GIFTYOU.getMessage().replaceAll("%player%", p.getName()));
             cons.playSound(cons.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                 if (Utils.getGifts().containsKey(args[0])) {
-                    if (gamer.isInventory() && Utils.getPlayers().contains(gamer.getGamer())) {
-                        p.getInventory().addItem(Utils.getGifts().get(cons.getName()));
-                        gamer.sendMessage(EMessage.RETURNITEM);
-                    }
                     Utils.getGifts().remove(cons.getName());
                     Utils.getGifters().remove(cons.getName());
                     cons.sendMessage(EMessage.GIFTLEFTTIME.getMessage().replaceAll("%player%", p.getName()));

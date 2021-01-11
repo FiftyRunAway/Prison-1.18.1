@@ -35,12 +35,12 @@ public enum EStat {
     UPGRADE_TRAINER("trainer.upgrade", 0, StatType.INTEGER, Utils.getUpgrade()),
     LUCK_TRAINER("trainer.luck", 0, StatType.INTEGER, Utils.getLuck()),
     GYM_TRAINER("trainer.gym", 0, StatType.INTEGER, Utils.getGym()),
-    DAILYSTREAK("quests.daily", "default", StatType.STRING, Utils.getDailyQuests()),
-    DAILYSTART("quests.dailystart", 0, StatType.INTEGER, Utils.getDailyStart()),
-    TWOFA_CODE("auth.code", "default", StatType.STRING, Utils.getAuthCode()),
     REBIRTH_SCORE("rebirth.score", 0, StatType.INTEGER, Utils.getRebirthScores()),
     BATTLEPASS_SCORE("battlepass.score", 0, StatType.INTEGER, Utils.getBattlePassScores()),
-    BATTLEPASS_LEVEL("battlepass.level", 0, StatType.INTEGER, Utils.getBattlePassLevel());
+    BATTLEPASS_LEVEL("battlepass.level", 0, StatType.INTEGER, Utils.getBattlePassLevel()),
+    LOCATION_GLAD("locations.glad", false, StatType.BOOLEAN, Utils.getGladiator()),
+    LOCATION_VAULT("locations.vault", false, StatType.BOOLEAN, Utils.getVault()),
+    LOCATION_ICE("locations.ice", false, StatType.BOOLEAN, Utils.getIce());
 
     private String title;
     private Object defualt;

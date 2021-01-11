@@ -28,7 +28,7 @@ public class MinesQuestMenu implements IMenus {
 
     public static StandardMenu getMenu(Player p, MinesQuest quest) {
         Gamer gamer = Main.gamers.get(p.getUniqueId());
-        if (quest.getContent().size() * 9 >= 54) {
+        if (quest.getContent().size() * 9 > 54) {
             gamer.sendMessage(EMessage.DISFUNCTION);
             return null;
         }

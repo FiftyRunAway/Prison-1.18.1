@@ -6,9 +6,10 @@ import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Main;
 import org.runaway.donate.Privs;
-import org.runaway.donate.features.FLeaveDiscount;
+import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
 import org.runaway.inventories.FractionMenu;
+import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,15 +43,16 @@ public class FractionCommand extends CommandManager {
                 toLeave.add(name);
                 int mon = EConfig.CONFIG.getConfig().getInt("costs.FractionLeave") * (int)gamer.getStatistics(EStat.LEVEL);
                 int discount = 0;
-                Object obj = gamer.getPrivilege().getValue(new FLeaveDiscount());
+                Object obj = gamer.getPrivilege().getValue(new FractionDiscount());
                 if (obj != null) {
                     discount += Integer.parseInt(obj.toString());
-                    gamer.getPlayer().sendMessage(EMessage.FLEAVECONFIRM.getMessage().
-                            replace("%money%", -(discount / 100) * mon + mon + " " + MoneyType.RUBLES.getShortName()).
-                            replace("%discount%", discount == 0 ? "" : "(Скидка -" + discount + "%)"));
+                    gamer.getPlayer().sendMessage(Utils.colored(EMessage.FLEAVECONFIRM.getMessage().
+                            replace("%money%", (1 - discount / 100) * mon + " " + MoneyType.RUBLES.getShortName()).
+                            replace("%discount%", discount == 0 ? "" : "&7(&bСкидка -" + discount + "%&7)")));
                 } else {
-                    gamer.getPlayer().sendMessage(EMessage.FLEAVECONFIRM.getMessage().
-                            replace("%money%", mon + " " + MoneyType.RUBLES.getShortName()));
+                    gamer.getPlayer().sendMessage(Utils.colored(EMessage.FLEAVECONFIRM.getMessage()
+                            .replace("%money%", mon + " " + MoneyType.RUBLES.getShortName())
+                            .replace("%discount%", "")));
                 }
                 Bukkit.getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
                     if (toLeave.contains(name)) {

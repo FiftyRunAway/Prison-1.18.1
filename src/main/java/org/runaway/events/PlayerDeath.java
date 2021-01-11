@@ -17,7 +17,10 @@ import org.runaway.board.Board;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.events.custom.PlayerKillEvent;
+import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.utils.Utils;
+
+import java.util.Arrays;
 
 /*
  * Created by _RunAway_ on 27.1.2019
@@ -34,13 +37,13 @@ public class PlayerDeath implements Listener {
 
         Location loc = player.getLocation();
         event.getDrops().forEach(itemStack -> {
-            if (itemStack.getItemMeta().getLore() == null) {
+            if (!itemStack.hasItemMeta()) {
                 loc.getWorld().dropItemNaturally(loc, itemStack);
                 player.getInventory().remove(itemStack);
             }
         });
         boolean givenot = false;
-        int money = (int)gamer.getStatistics(EStat.LEVEL);
+        double money = (int)gamer.getStatistics(EStat.LEVEL);
         if ((double)gamer.getStatistics(EStat.MONEY) >= money) {
             gamer.withdrawMoney(money);
         } else {
@@ -52,6 +55,7 @@ public class PlayerDeath implements Listener {
         gamer.setStatistics(EStat.DEATHES, (int)gamer.getStatistics(EStat.DEATHES) + 1);
         if ((int)gamer.getStatistics(EStat.DEATHES) >= 5) Achievement.DEAD_5.get(player, false);
         if ((int)gamer.getStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player, false);
+        gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
         if (event.getEntity().getKiller() != null) {
             Gamer gamerKiller = Main.gamers.get(event.getEntity().getKiller().getUniqueId());
             gamerKiller.setStatistics(EStat.KILLS, (int)gamerKiller.getStatistics(EStat.KILLS) + 1);
@@ -76,5 +80,9 @@ public class PlayerDeath implements Listener {
         event.setRespawnLocation(Main.SPAWN);
         Player player = event.getPlayer();
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
+        Arrays.stream(EPassivePerk.values()).forEach(passive -> {
+            if (!passive.getPerk().isEffectAction()) return;
+            passive.getPerk().getPerkAction(Main.gamers.get(player.getUniqueId()));
+        });
     }
 }

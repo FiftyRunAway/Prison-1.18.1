@@ -4,6 +4,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
+import org.runaway.Main;
 import org.runaway.battlepass.missions.EMissions;
 import org.runaway.battlepass.rewards.ERewards;
 import org.runaway.enums.EConfig;
@@ -52,7 +53,6 @@ public class BattlePass {
         gamer.setStatistics(EStat.BATTLEPASS_SCORE, (int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) % level);
 
         int level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
-        level_rewards.get(level).forEach(reward -> reward.get(gamer));
 
         // Getting rewards
         StringBuilder get = new StringBuilder();
@@ -63,17 +63,17 @@ public class BattlePass {
         ArrayList<IReward> rews = new ArrayList<>(level_rewards.get(level));
 
         rews.forEach(reward -> {
-            if (gamer.hasBattlePass() || reward.isFree()) {
-                reward.get(gamer); // Get reward
-
+            if (reward.isFree() || gamer.hasBattlePass()) {
                 get.append(reward.getName());
                 if (reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
                 if (reward.isFree()) get.append(" &7[&eБесплатная награда&7]");
                 get.append(", ");
                 i.incrementAndGet();
+                reward.get(gamer);
             } else {
-                can.append(reward.getName()).append(", ");
+                can.append(reward.getName());
                 if (reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                can.append(", ");
                 j.incrementAndGet();
             }
         });
@@ -126,7 +126,7 @@ public class BattlePass {
                 m.setDescriptionDetails(objects.toArray());
                 m.init();
 
-                EConfig.BATTLEPASS_DATA.getConfig().set(m.getHashCode() + ".none", 0);
+                EConfig.BATTLEPASS_DATA.getConfig().set(m.hashCode() + ".none", 0);
                 list.add(m);
             });
 
@@ -209,10 +209,52 @@ public class BattlePass {
                 .forEach(s -> pins.add(Integer.parseInt(s)));
         ArrayList<IMission> missions = new ArrayList<>();
         BattlePass.missions.forEach(wm -> wm.getMissions().forEach(mission -> {
-            if (wm.isStarted() && pins.contains(mission.getHashCode())) missions.add(mission);
+            if (wm.isStarted() && pins.contains(mission.hashCode())) missions.add(mission);
         }));
         return missions;
     }
+
+    public static void unPin(IMission mission, Gamer g) {
+        unPin(String.valueOf(mission.hashCode()), g);
+    }
+
+    public static void unPin(String hashCode, Gamer g) {
+        Player player = g.getPlayer();
+        ArrayList<String> in = new ArrayList<>(Arrays.asList(EConfig.BATTLEPASS_DATA.getConfig().getString(player.getName()).split(" ")));
+        EConfig.BATTLEPASS_DATA.getConfig().set(player.getName(), null);
+        for (int i = 0; i < in.size(); i++) {
+            if (in.get(i).contains(String.valueOf(hashCode))) in.remove(i);
+        }
+        String str = in.toString().replace("[", "").replace("]", "").replace(",", "");
+        if (str.length() > 1) {
+            EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), str);
+        } else {
+            EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), null);
+        }
+        EConfig.BATTLEPASS_DATA.saveConfig();
+        g.sendMessage(EMessage.UNPIN);
+    }
+
+    public static void addPin(IMission mission, Gamer g) {
+        int pins = BattlePass.getPins(g);
+        if (pins < 7) {
+            ArrayList<IMission> pinned = BattlePass.getPinnedTasks(g);
+            if (pinned != null && pinned.contains(mission)) {
+                g.sendMessage(EMessage.ALREADYPINNED);
+                return;
+            }
+            if (pins == 0) {
+                EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), mission.hashCode());
+            } else {
+                EConfig.BATTLEPASS_DATA.getConfig().set(g.getGamer(), EConfig.BATTLEPASS_DATA.getConfig().get(g.getGamer()) + " " + mission.hashCode());
+            }
+            EConfig.BATTLEPASS_DATA.saveConfig();
+            g.getPlayer().sendMessage(Utils.colored(EMessage.SETPIN.getMessage().replace("%name%", mission.getName())));
+        } else {
+            g.sendMessage(EMessage.MANYPINS);
+        }
+    }
+
     public static int getPins(Gamer gamer) {
         if (!EConfig.BATTLEPASS_DATA.getConfig().contains(gamer.getGamer())) return 0;
         return EConfig.BATTLEPASS_DATA.getConfig().getString(gamer.getGamer()).split(" ").length;

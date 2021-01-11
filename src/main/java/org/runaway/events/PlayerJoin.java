@@ -18,6 +18,8 @@ import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
 import org.runaway.commands.SetStatCommand;
 import org.runaway.enums.*;
+import org.runaway.needs.Needs;
+import org.runaway.passiveperks.PassivePerks;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
@@ -35,11 +37,10 @@ public class PlayerJoin implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
         Player player = event.getPlayer();
-        Main.gamers.put(player.getUniqueId(), new Gamer(player.getUniqueId())); // Add Gamer class to player
-
-        CreateInConfig(event); // Add in config file
-        Utils.getPlayers().add(player.getName());
         if (isAccess(event)) {
+            Main.gamers.put(player.getUniqueId(), new Gamer(player.getUniqueId())); // Add Gamer class to player
+            CreateInConfig(event); // Add in config file
+            Utils.getPlayers().add(player.getName());
             Gamer gamer = Main.gamers.get(player.getUniqueId());
             Board.sendBoard(player); // Set up scoreboard to player
             gamer.setLevelBar();
@@ -48,6 +49,8 @@ public class PlayerJoin implements Listener {
             addPaper(player); // Add menu paper item
             addToMissions(gamer); // Add to missions of battle pass
             if (Main.useNametagEdit) gamer.setNametag(); // Add nametag
+            Needs.onJoin(event);
+            PassivePerks.onJoin(gamer);
             //if (TWOFA.authlocked != null) twoFA(gamer); // Google Authenticator
             if (!player.hasPlayedBefore()) {
                 Achievement.JOIN.get(player, false); // Achievement
@@ -62,34 +65,16 @@ public class PlayerJoin implements Listener {
 
     private void addToMissions(Gamer gamer) {
         BattlePass.missions.forEach(weeklyMission -> weeklyMission.getMissions().forEach(mission -> {
-
-            ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.getHashCode()));
+            if (mission.isCompletedOffline(gamer)) return;
+            ConfigurationSection section = EConfig.BATTLEPASS_DATA.getConfig().getConfigurationSection(String.valueOf(mission.hashCode()));
             if (section.contains(gamer.getGamer())) {
                 mission.getValues().put(gamer.getGamer(), section.getInt(gamer.getGamer()));
             } else {
                 mission.getValues().put(gamer.getGamer(), 0);
             }
-
-            if (mission.isCompleted(gamer)) mission.getValues().remove(gamer.getGamer());
         }));
     }
-/*
-    private void twoFA(Gamer gamer) {
-        Player player = gamer.getPlayer();
-        if (gamer.getStatistics(EStat.TWOFA_CODE).equals("default")) {
-            GoogleAuthenticator gAuth = new GoogleAuthenticator();
-            final GoogleAuthenticatorKey key = gAuth.createCredentials();
 
-            player.sendMessage(Utils.colored("&aТвой &bGoogle Auth &aкод: &b" + key.getKey()));
-            player.sendMessage(Utils.colored("&7Тебе нужно ввести этот код в приложении &eGoogle Authenticator!"));
-
-            gamer.setStatistics(EStat.TWOFA_CODE, key.getKey());
-        } else {
-            TWOFA.authlocked.add(player.getUniqueId());
-            player.sendMessage(Utils.colored("&aОткройте приложение Google Authenticator и введите шестизначный пароль."));
-        }
-    }
-*/
     private void addBar(Player player) {
         Main.MoneyBar.addPlayer(player);
         Main.BlocksBar.addPlayer(player);
@@ -145,15 +130,14 @@ public class PlayerJoin implements Listener {
 
     private boolean isAccess(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (player.isOp()) return true;
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        if (player.isOp() || Main.getInstance().getStatus().equals(ServerStatus.NORMAL)) return true;
         ServerStatus now = Main.getInstance().getStatus();
         if (ServerStatus.PREVENTIVEWORKS.equals(now)) {
             player.kickPlayer(Utils.colored("&cСервер в данный момент находится на профилактических работах." +
                     "\n&cЗайдите позже..."));
             return false;
         } else if (ServerStatus.ZBT.equals(now)) {
-            if (gamer.getStatistics(EStat.ZBT).equals(false)) {
+            if (EStat.ZBT.getFromConfig(player.getName()).equals(false)) {
                 player.kickPlayer(Utils.colored("&cСервер находится на стадии ЗБТ!" +
                         "\n&cПриобрести доступ можно на: &4" + Vars.getSite()));
                 return false;

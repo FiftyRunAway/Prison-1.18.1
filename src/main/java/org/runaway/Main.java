@@ -7,12 +7,13 @@ import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,10 +41,14 @@ import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
+import org.runaway.needs.Needs;
 import org.runaway.quests.MinesQuest;
 import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.*;
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -78,6 +83,11 @@ public class Main extends JavaPlugin {
     public static boolean useNametagEdit;
     public static boolean useViaVersion;
     public static boolean useBannerBoard;
+    public static boolean useTelegramBots;
+
+    //Telegram
+    public String bot_username;
+    public String bot_token;
 
     //Событие
     public static String event = null;
@@ -114,6 +124,7 @@ public class Main extends JavaPlugin {
         new Config().unloadConfigs();
         TrashAuction.closeAll();
         saveBoosters();
+        removeEntities();
 
         Vars.sendSystemMessage(TypeMessage.SUCCESS, "Plugin was successful disabled!");
     }
@@ -146,7 +157,7 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.main_menu")) MainMenu.load();
         if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
         if (loader.getBoolean("loader.nametag")) loadNametagEdit();
-        //if (loader.getBoolean("loader.2fa")) loadTwoFA();
+        if (loader.getBoolean("loader.telegram")) loadTelegramBotsAPI();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
         if (loader.getBoolean("loader.battlepass")) BattlePass.load();
@@ -181,6 +192,8 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new BossSpawn());
 
             //new Utils().RegisterEvent(new TWOFA());
+            new Utils().RegisterEvent(new Needs());
+            new Utils().RegisterEvent(new FishCatch());
 
             // Missions events
             new Utils().RegisterEvent(new KeyFarm());
@@ -190,6 +203,9 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new KillsFarm());
             new Utils().RegisterEvent(new TreasureFarm());
             new Utils().RegisterEvent(new DamageFarm());
+            new Utils().RegisterEvent(new RatsFarm());
+            new Utils().RegisterEvent(new TrainerFarm());
+            new Utils().RegisterEvent(new UpgradesFarm());
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering events!");
@@ -208,7 +224,8 @@ public class Main extends JavaPlugin {
                     new TrainerCommand(), new RebirthCommand(), new GiftCommand(),
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
-                    new BaseCommand(), new TrashCommand(), new QuestCommand()).forEach(CommandManager::register);
+                    new BaseCommand(), new TrashCommand(), new QuestCommand(), new FisherCommand(),
+                    new JobCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
@@ -224,7 +241,8 @@ public class Main extends JavaPlugin {
             Mobs.registerMobs();
             Spawner.SpawnerUtils.init();
             new Spawner.SpawnerUpdater().runTaskTimer(getInstance(), 20L, 600L);
-            removeEntities();
+
+            //removeEntities();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering mobs!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -232,19 +250,7 @@ public class Main extends JavaPlugin {
             ex.printStackTrace();
         }
     }
-/*
-    // Загрузка Google Authenticator
-    private static void loadTwoFA() {
-        try {
-            new TWOFA();
-        } catch (Exception ex) {
-            Vars.sendSystemMessage(TypeMessage.ERROR, "Error with setting up 2-FA!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
-            ex.printStackTrace();
-        }
-    }
-*/
+
     //Подгрузка кейсов
     private static void loadCases() {
         try {
@@ -319,6 +325,7 @@ public class Main extends JavaPlugin {
             RebirthMenu.load();
             MinesQuest.load();
             Privs.loadIcons();
+            PassivePerksMenu.load();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in creating inventories!");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
@@ -345,6 +352,25 @@ public class Main extends JavaPlugin {
             return;
         }
         Vars.sendSystemMessage(TypeMessage.INFO, "PermissionsEx Displays has not been installed yet");
+    }
+
+    //Привязка TelegramBotsAPI
+    private void loadTelegramBotsAPI() {
+        useTelegramBots = Bukkit.getPluginManager().isPluginEnabled("TelegramBotsAPIPlugin");
+        if (useTelegramBots) {
+            Vars.sendSystemMessage(TypeMessage.SUCCESS, "TelegramBotsAPI was successfully connected");
+            this.bot_username = EConfig.CONFIG.getConfig().getString("telegram.username");
+            this.bot_token = EConfig.CONFIG.getConfig().getString("telegram.token");
+            ApiContextInitializer.init();
+            try {
+                TelegramBotsApi botsApi = new TelegramBotsApi();
+                botsApi.registerBot(new TelegramBot());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return;
+        }
+        Vars.sendSystemMessage(TypeMessage.INFO, "TelegramBotsAPI Displays has not been installed yet");
     }
 
     //Привязка NametagEdit
@@ -485,6 +511,7 @@ public class Main extends JavaPlugin {
             HashMap<String, Long> rats = new HashMap<>();
             HashMap<String, Long> rebirth = new HashMap<>();
             HashMap<String, Long> keys = new HashMap<>();
+            HashMap<String, Long> dm = new HashMap<>();
             for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
                 if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
                     money.put(name, (long) (int) EStat.MONEY.getFromConfig(name));
@@ -500,6 +527,7 @@ public class Main extends JavaPlugin {
                 rats.put(name, (long) (int)EStat.RATS.getFromConfig(name));
                 rebirth.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
                 keys.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
+                dm.put(name, (long) Donate.getTotalDonateMoney(name));
             }
             tops.put("money", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10,  MoneyType.RUBLES.getShortName()));
             tops.put("blocks", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10, "блоков"));
@@ -507,6 +535,7 @@ public class Main extends JavaPlugin {
             tops.put("rats", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10, "крыс"));
             tops.put("rebirths", new TopPlayers(Utils.getLocation("rebirthtop"), rebirth, "&7Топ игроков по перерождениям", 10, "перерождений"));
             tops.put("keys", new TopPlayers(Utils.getLocation("keystop"), keys, "&7Топ игроков по ключам", 10, "ключей"));
+            tops.put("donate", new TopPlayers(Utils.getLocation("keystop"), dm, "&7Топ игроков по донату", 10, "рублей"));
 
             BannerBoardAPI api = BannerBoardManager.getAPI();
             api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
@@ -525,22 +554,42 @@ public class Main extends JavaPlugin {
         HashMap<String, Long> rats1 = new HashMap<>();
         HashMap<String, Long> rebirth1 = new HashMap<>();
         HashMap<String, Long> keys1 = new HashMap<>();
+        HashMap<String, Long> dm1 = new HashMap<>();
 
         for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
-            if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
-                money1.put(name, (long) (int)EStat.MONEY.getFromConfig(name));
+            if (!Utils.getPlayers().contains(name)) {
+                if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
+                    money1.put(name, (long) (int)EStat.MONEY.getFromConfig(name));
+                } else {
+                    money1.put(name, Math.round((double)EStat.MONEY.getFromConfig(name)));
+                }
+                if (EStat.BLOCKS.getFromConfig(name) instanceof Integer) {
+                    blocks1.put(name, (long) (int)EStat.BLOCKS.getFromConfig(name));
+                } else {
+                    blocks1.put(name, Math.round((double)EStat.BLOCKS.getFromConfig(name)));
+                }
+                level1.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
+                rats1.put(name, (long) (int)EStat.RATS.getFromConfig(name));
+                //rebirth1.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
+                keys1.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
             } else {
-                money1.put(name, Math.round((double)EStat.MONEY.getFromConfig(name)));
+                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(name).getUniqueId());
+                if (gamer.getStatistics(EStat.MONEY) instanceof Integer) {
+                    money1.put(name, (long) (int)gamer.getStatistics(EStat.MONEY));
+                } else {
+                    money1.put(name, Math.round((double)gamer.getStatistics(EStat.MONEY)));
+                }
+                if (gamer.getStatistics(EStat.BLOCKS) instanceof Integer) {
+                    blocks1.put(name, (long) (int)gamer.getStatistics(EStat.BLOCKS));
+                } else {
+                    blocks1.put(name, Math.round((double)gamer.getStatistics(EStat.BLOCKS)));
+                }
+                level1.put(name, (long) (int)gamer.getStatistics(EStat.LEVEL));
+                rats1.put(name, (long) (int)gamer.getStatistics(EStat.RATS));
+                //rebirth1.put(name, (long) (int)gamer.getStatistics(EStat.REBIRTH));
+                keys1.put(name, (long) (int)gamer.getStatistics(EStat.KEYS));
             }
-            if (EStat.BLOCKS.getFromConfig(name) instanceof Integer) {
-                blocks1.put(name, (long) (int)EStat.BLOCKS.getFromConfig(name));
-            } else {
-                blocks1.put(name, Math.round((double)EStat.BLOCKS.getFromConfig(name)));
-            }
-            level1.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
-            rats1.put(name, (long) (int)EStat.RATS.getFromConfig(name));
-            rebirth1.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
-            keys1.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
+            dm1.put(name, (long) Donate.getTotalDonateMoney(name));
         }
         if (!Main.tops.keySet().iterator().hasNext()) return;
         tops.keySet().forEach(s -> {
@@ -553,9 +602,11 @@ public class Main extends JavaPlugin {
             } else if ("rats".equals(s)) {
                 Main.tops.get(s).setTopValues(rats1);
             } else if ("rebirths".equals(s)) {
-                Main.tops.get(s).setTopValues(rebirth1);
+                //Main.tops.get(s).setTopValues(rebirth1);
             } else if ("keys".equals(s)) {
                 Main.tops.get(s).setTopValues(keys1);
+            } else if ("donate".equals(s)) {
+                Main.tops.get(s).setTopValues(dm1);
             }
         });
     }
@@ -696,7 +747,7 @@ public class Main extends JavaPlugin {
             Main.value_donate = EConfig.CONFIG.getConfig().getInt("values.donate");
             for (int i = 0; i < value_donate; i++) {
                 ConfigurationSection file = EConfig.DONATE.getFileConfigurationConfig().getConfigurationSection("donate." + (i + 1));
-                Donate n = new Donate(file.getString("name"), Material.valueOf(file.getString("icon").toUpperCase()), file.getInt("amount"), file.getInt("price"), file.getBoolean("temporary"), new Lore.BuilderLore().addList(file.getStringList("lore")).build(), file.getInt("slot"));
+                Donate n = new Donate(file.getString("name"), Material.valueOf(file.getString("icon").toUpperCase()), file.getInt("amount"), file.getInt("price"), file.getBoolean("temporary"), new Lore.BuilderLore().addList(file.getStringList("lore")).build(), file.getInt("slot"), file.getInt("sale"));
                 Utils.donate.add(n);
                 Donate.icons.put(n, (DonateIcon) new DonateIcon.Builder(n).build());
             }
@@ -727,23 +778,23 @@ public class Main extends JavaPlugin {
     //Удаление мобов
     private static void removeEntities() {
         try {
-            for (Spawner cSpawner : Spawner.spawners.values()) {
-                if (cSpawner.getCurrent() != null) {
-                    cSpawner.getCurrent().getBukkitEntity().remove();
-                    cSpawner.dead();
+            for (World w : Bukkit.getWorlds()) {
+                for (Entity e : w.getEntities()) {
+                    if (!(e instanceof ArmorStand) &&
+                            !(e instanceof org.bukkit.entity.Item) &&
+                            !(e instanceof Player) &&
+                            !(e instanceof ItemFrame)) {
+                        e.setCustomName("toDelete");
+                        e.remove();
+                    }
                 }
             }
-            Bukkit.getWorlds().forEach(world -> world.getEntities().forEach(e -> {
-                if (e.getType() != EntityType.ITEM_FRAME) {
-                    e.remove();
-                }
-            }));
             Vars.sendSystemMessage(TypeMessage.INFO, "Entities removed");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in delete entities! Please, don`t use /reload. Use /stop or /restart");
             //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
             //Main.getInstance().setStatus(ServerStatus.ERROR);
-            //ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
