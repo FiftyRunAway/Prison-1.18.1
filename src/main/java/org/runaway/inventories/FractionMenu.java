@@ -44,9 +44,9 @@ public class FractionMenu implements IMenus {
         if (obj != null) sale = 1 - ((double) Integer.parseInt(obj.toString()) / 100);
         int cost;
         if (sale > 0) {
-            cost = (int)Math.round(EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * (int) gamer.getStatistics(EStat.LEVEL) * sale);
+            cost = (int)Math.round(EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * gamer.getIntStatistics(EStat.LEVEL) * sale);
         } else {
-            cost = EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * (int) gamer.getStatistics(EStat.LEVEL);
+            cost = EConfig.CONFIG.getConfig().getInt("costs.SelectFraction") * gamer.getIntStatistics(EStat.LEVEL);
         }
 
         AtomicInteger i = new AtomicInteger();

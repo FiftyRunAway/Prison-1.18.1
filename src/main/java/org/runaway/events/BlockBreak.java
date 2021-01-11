@@ -67,12 +67,12 @@ public class BlockBreak implements Listener {
                 }
                 if ((block.getType().equals(Material.SAND) ||
                         block.getType().equals(Material.GRAVEL) ||
-                        block.getType().equals(Material.DIRT)) && (int)gamer.getStatistics(EStat.LEVEL) < 2) {
+                        block.getType().equals(Material.DIRT)) && gamer.getIntStatistics(EStat.LEVEL) < 2) {
                     gamer.sendMessage(EMessage.SECONDLEVEL);
                     event.setCancelled(true);
                     return;
                 }
-                if ((int)gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
+                if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                     event.setCancelled(true);
                     player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
                     return;
@@ -84,11 +84,11 @@ public class BlockBreak implements Listener {
                 double boost = 1;
                 if (gamer.hasPassivePerk(new KeyFirst())) boost += 1;
                 if (gamer.hasPassivePerk(new KeySecond())) boost += 1;
-                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + boost)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * (gamer.getIntStatistics(EStat.LUCK_TRAINER) + boost)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
-                    gamer.setStatistics(EStat.KEYS, (int)gamer.getStatistics(EStat.KEYS) + 1);
+                    gamer.setStatistics(EStat.KEYS, gamer.getIntStatistics(EStat.KEYS) + 1);
                 }
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
@@ -100,7 +100,7 @@ public class BlockBreak implements Listener {
                     EConfig.BLOCKS.getConfig().set(player.getName() + "." + block.getType().toString() + "-" + block.getData(), Double.valueOf(ret));
                     EConfig.BLOCKS.saveConfig();
                 }
-                gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf((double) gamer.getStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
+                gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf(gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
                 AutoSell(event, FindChest(event));
             } else {
@@ -130,7 +130,7 @@ public class BlockBreak implements Listener {
                 }
             }
 
-            if ((int) gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
+            if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                 event.setCancelled(true);
                 player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
                 return;
@@ -142,12 +142,12 @@ public class BlockBreak implements Listener {
             }
             if (isLocation(event.getBlock().getLocation(), "forest")) {
                 AutoSell(event, false);
-                if (Math.random() < (0.005 * ((int)gamer.getStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * (gamer.getIntStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
 
                     player.getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(player, event.getBlock()));
-                    gamer.setStatistics(EStat.KEYS, (int)gamer.getStatistics(EStat.KEYS) + 1);
+                    gamer.increaseIntStatistics(EStat.KEYS);
                 }
                 double add = gamer.getBoosterBlocks();
                 if (EConfig.BLOCKS.getConfig().contains(player.getName() + ".LOG_2-0")) {
@@ -156,7 +156,7 @@ public class BlockBreak implements Listener {
                 String ret = String.valueOf(new BigDecimal(add).setScale(2, RoundingMode.UP).doubleValue());
                 EConfig.BLOCKS.getConfig().set(player.getName() + ".LOG_2-0", Double.valueOf(ret));
                 EConfig.BLOCKS.saveConfig();
-                gamer.setStatistics(EStat.BLOCKS, (double)gamer.getStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
+                gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
                 block.setTypeIdAndData(Material.WOOD.getId(), (byte)1, true);
                 Bukkit.getServer().getPluginManager().callEvent(new BreakWoodEvent(player));
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {

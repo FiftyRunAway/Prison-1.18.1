@@ -11,8 +11,7 @@ public class ListPing implements Listener {
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         if (Main.getInstance().getStatus() != null) {
-            event.setMotd(Utils.colored("&ePrison Minecraft &7[&a1.12.2 - 1.15.2&7] " +
-                    "\n&7[" + Main.getInstance().getStatus().getStatus() + "&7] &n&cОткрытие в ближайшее время!"));
+            event.setMotd(Utils.colored("&6&lStreamCraft &4&lPrison"));
         }
     }
 }

@@ -38,7 +38,7 @@ public class BattlePass {
     private final static int openingIn = 9;
 
     static void checkLevelUp(Gamer gamer) {
-        if ((int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) / level >= 1) {
+        if (gamer.getIntStatistics(EStat.BATTLEPASS_SCORE) / level >= 1) {
             levelUp(gamer);
         }
     }
@@ -49,10 +49,10 @@ public class BattlePass {
 
         gamer.sendTitle("&bБоевой пропуск", "&eПовышен!");
 
-        gamer.setStatistics(EStat.BATTLEPASS_LEVEL, (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + 1);
-        gamer.setStatistics(EStat.BATTLEPASS_SCORE, (int)gamer.getStatistics(EStat.BATTLEPASS_SCORE) % level);
+        gamer.increaseIntStatistics(EStat.BATTLEPASS_LEVEL);
+        gamer.setStatistics(EStat.BATTLEPASS_SCORE, gamer.getIntStatistics(EStat.BATTLEPASS_SCORE) % level);
 
-        int level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
+        int level = gamer.getIntStatistics(EStat.BATTLEPASS_LEVEL);
 
         // Getting rewards
         StringBuilder get = new StringBuilder();

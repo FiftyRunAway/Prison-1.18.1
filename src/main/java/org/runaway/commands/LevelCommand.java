@@ -25,7 +25,7 @@ public class LevelCommand extends CommandManager {
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         Gamer gamer = GamerManager.getGamer(p);
-        if (EConfig.CONFIG.getConfig().contains("levels." + ((int)gamer.getStatistics(EStat.LEVEL) + 1)) || Gamer.toRebirth == ((int)gamer.getStatistics(EStat.LEVEL) + 1)) {
+        if (EConfig.CONFIG.getConfig().contains("levels." + (gamer.getIntStatistics(EStat.LEVEL) + 1)) || Gamer.toRebirth == (gamer.getIntStatistics(EStat.LEVEL) + 1)) {
             if (gamer.needRebirth()) {
                 gamer.rebirth();
                 return;

@@ -53,7 +53,7 @@ public class MineIcon extends Items {
     }
 
     public ItemStack acessButton(Gamer gamer) {
-        if ((int)gamer.getStatistics(EStat.LEVEL) >= mine.getMinLevel()) {
+        if (gamer.getIntStatistics(EStat.LEVEL) >= mine.getMinLevel()) {
             return getYesAccess();
         }
         return getNoAccess();

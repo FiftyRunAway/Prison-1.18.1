@@ -71,7 +71,7 @@ public enum ScrollShop {
                 .addString("&cодновременно можно использовать")
                 .addString("&cтолько ОДИН свиток!")
                 .addSpace()
-                .addString("&fУ вас свитков &7• &e" + (int) gamer.getStatistics(EStat.SCROLLS)).build()).build().item();
+                .addString("&fУ вас свитков &7• &e" + gamer.getIntStatistics(EStat.SCROLLS)).build()).build().item();
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(main).setSlot(4));
         Arrays.stream(values()).forEach(s -> {
             Lore lore = new Lore.BuilderLore()
@@ -81,7 +81,7 @@ public enum ScrollShop {
                     .addString("&fЦена &7• &f" + s.price + " свитков").build();
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(s.icon).name(s.name).lore(lore).build().item()).setSlot(s.slot);
             btn.setClickEvent(event -> {
-                if ((int)gamer.getStatistics(EStat.SCROLLS) >= s.price) {
+                if (gamer.getIntStatistics(EStat.SCROLLS) >= s.price) {
                     if (s.type.equalsIgnoreCase("scroll")) {
                         if (!gamer.isInventory()) {
                             gamer.sendMessage(EMessage.NOINVENTORY);
@@ -89,7 +89,7 @@ public enum ScrollShop {
                         }
                         new Confirmation(event.getWhoClicked(), menu.build(), null, () -> {
                             Arrays.stream(s.drop).forEach(item -> player.getInventory().addItem(item.item()));
-                            gamer.setStatistics(EStat.SCROLLS, (int) gamer.getStatistics(EStat.SCROLLS) - s.price);
+                            gamer.setStatistics(EStat.SCROLLS, gamer.getIntStatistics(EStat.SCROLLS) - s.price);
                             gamer.sendMessage(EMessage.SUCCESSFULBUY);
                         });
                     }

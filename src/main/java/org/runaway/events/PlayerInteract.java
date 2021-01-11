@@ -57,7 +57,7 @@ public class PlayerInteract implements Listener {
 
         if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
             if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
-                if ((int)gamer.getStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
+                if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
                     player.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
                     event.setCancelled(true);
                     return;
@@ -85,7 +85,7 @@ public class PlayerInteract implements Listener {
                 if (!BlockBreak.chests.containsKey(player.getName())) return;
                 if (BlockBreak.chests.get(player.getName()).equals(block.getLocation())) {
                     block.setType(Material.AIR);
-                    int money = (ThreadLocalRandom.current().nextInt(6) + 5) * (int)gamer.getStatistics(EStat.LEVEL);
+                    int money = (ThreadLocalRandom.current().nextInt(6) + 5) * gamer.getIntStatistics(EStat.LEVEL);
                     player.sendMessage(Utils.colored(EMessage.TREASUREOPEN.getMessage()).replace("%reward%", Board.FormatMoney(money)));
                     if (BlockBreak.treasure_holo.containsKey(player.getName())) {
                         BlockBreak.treasure_holo.get(player.getName()).delete();

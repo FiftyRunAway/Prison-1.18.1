@@ -68,14 +68,14 @@ public class Board {
     }
 
     public static String FormatBlocks(Gamer gamer) {
-        double blocks = (double)gamer.getStatistics(EStat.BLOCKS);
+        double blocks = gamer.getDoubleStatistics(EStat.BLOCKS);
         if (blocks >= 1000.0 && blocks < 1000000) {
             return Math.round(blocks / 1000.0 * 100.0) / 100.0 + "K";
         }
         if (blocks >= 1000000) {
             return Math.round(blocks / 1000000.0 * 100.0) / 100.0 + "M";
         }
-        return String.valueOf(Math.round((double)gamer.getStatistics(EStat.BLOCKS)));
+        return String.valueOf(Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)));
     }
 
     public static String FormatBlocks(String blks) {

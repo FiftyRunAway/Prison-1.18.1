@@ -19,6 +19,7 @@ import org.runaway.enums.EStat;
 import org.runaway.events.custom.PlayerKillEvent;
 import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.EPassivePerk;
+import org.runaway.tasks.SyncTask;
 import org.runaway.utils.Utils;
 
 import java.util.Arrays;
@@ -43,8 +44,8 @@ public class PlayerDeath implements Listener {
             }
         });
         boolean givenot = false;
-        double money = (int)gamer.getStatistics(EStat.LEVEL);
-        if ((double)gamer.getStatistics(EStat.MONEY) >= money) {
+        double money = gamer.getIntStatistics(EStat.LEVEL);
+        if (gamer.getDoubleStatistics(EStat.MONEY) >= money) {
             gamer.withdrawMoney(money);
         } else {
             givenot = true;
@@ -52,15 +53,15 @@ public class PlayerDeath implements Listener {
         }
 
         player.sendMessage(Utils.colored(EMessage.DIEDPLAYER.getMessage()).replace("%money%", Board.FormatMoney(money)));
-        gamer.setStatistics(EStat.DEATHES, (int)gamer.getStatistics(EStat.DEATHES) + 1);
-        if ((int)gamer.getStatistics(EStat.DEATHES) >= 5) Achievement.DEAD_5.get(player, false);
-        if ((int)gamer.getStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player, false);
+        gamer.increaseIntStatistics(EStat.DEATHES);
+        if (gamer.getIntStatistics(EStat.DEATHES) >= 5) Achievement.DEAD_5.get(player, false);
+        if (gamer.getIntStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player, false);
         gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
         if (event.getEntity().getKiller() != null) {
             Gamer gamerKiller = Main.gamers.get(event.getEntity().getKiller().getUniqueId());
-            gamerKiller.setStatistics(EStat.KILLS, (int)gamerKiller.getStatistics(EStat.KILLS) + 1);
-            if ((int)gamerKiller.getStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer(), false);
-            if ((int)gamerKiller.getStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer(), false);
+            gamerKiller.increaseDoubleStatistics(EStat.KILLS);
+            if (gamerKiller.getIntStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer(), false);
+            if (gamerKiller.getIntStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer(), false);
             if (givenot) return;
 
             Bukkit.getServer().getPluginManager().callEvent(new PlayerKillEvent(player));
@@ -71,7 +72,7 @@ public class PlayerDeath implements Listener {
         } else if (event.getEntity() instanceof Projectile && ((Projectile)event.getEntity()).getShooter() instanceof Player) {
             if (event.getEntity().getKiller().getName().equals(event.getEntity().getName())) Achievement.KILL_ARROW.get(player, false);
             Gamer gamerKiller = Main.gamers.get(event.getEntity().getKiller().getUniqueId());
-            gamerKiller.setStatistics(EStat.BOW_KILL, (int)gamerKiller.getStatistics(EStat.BOW_KILL) + 1);
+            gamerKiller.increaseIntStatistics(EStat.BOW_KILL);
         }
     }
 
@@ -80,9 +81,12 @@ public class PlayerDeath implements Listener {
         event.setRespawnLocation(Main.SPAWN);
         Player player = event.getPlayer();
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
-        Arrays.stream(EPassivePerk.values()).forEach(passive -> {
-            if (!passive.getPerk().isEffectAction()) return;
-            passive.getPerk().getPerkAction(GamerManager.getGamer(player));
-        });
+        Gamer gamer = GamerManager.getGamer(player);
+        new SyncTask(() -> {
+            gamer.getPassivePerks().forEach(passive -> {
+                if (!passive.isEffectAction()) return;
+                passive.getPerkAction(gamer);
+            });
+        }, 10);
     }
 }

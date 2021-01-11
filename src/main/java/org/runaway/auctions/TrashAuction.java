@@ -61,7 +61,7 @@ public class TrashAuction {
     }
 
     private static void startAuction() {
-        if (auctions.size() > 0) closeAll();
+        if (!auctions.isEmpty()) closeAll();
         HashMap<ItemStack, Double> already = new HashMap<>(items);
         for (int i = 0; i < locs.size(); i++) {
             Object[] crunchifyKeys = already.keySet().toArray();
@@ -241,7 +241,6 @@ public class TrashAuction {
                 return;
             }
             this.hologram.clearLines();
-
             this.hologram.appendTextLine(Utils.colored("&fПредмет &7• " + this.itemStack.getItemMeta().getDisplayName()));
             ItemLine item = this.hologram.appendItemLine(this.itemStack);
             item.setTouchHandler(player -> player.openInventory(menu.build()));
@@ -318,7 +317,7 @@ public class TrashAuction {
                 return;
             }
             if (bought) return;
-            if ((double)gamer.getStatistics(EStat.MONEY) >= now + toAdd) {
+            if (gamer.getDoubleStatistics(EStat.MONEY) >= now + toAdd) {
                 if (!started) start();
                 inauc.add(player.getName());
                 inauc.remove(last);

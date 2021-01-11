@@ -46,7 +46,7 @@ public abstract class PassivePerks {
         btn.setClickEvent(event -> {
             Player p = event.getWhoClicked();
             Gamer g = GamerManager.getGamer(p);
-            if ((int)g.getStatistics(EStat.LEVEL) < getLevel()
+            if (g.getIntStatistics(EStat.LEVEL) < getLevel()
                     || g.hasPassivePerk(this)
                     || g.hasPassivePerk(getAnotherPerk(getLevel()))) {
                 return;
@@ -63,7 +63,7 @@ public abstract class PassivePerks {
 
     private Lore lore(Gamer gamer) {
         StringBuilder sb = new StringBuilder();
-        if ((int)gamer.getStatistics(EStat.LEVEL) < getLevel()) {
+        if (gamer.getIntStatistics(EStat.LEVEL) < getLevel()) {
             sb.append("&cВы не достигли данного уровня");
         } else {
             if (gamer.hasPassivePerk(this)) {
@@ -85,7 +85,7 @@ public abstract class PassivePerks {
     }
 
     private int data(Gamer gamer) {
-        if ((int)gamer.getStatistics(EStat.LEVEL) < getLevel()) {
+        if (gamer.getIntStatistics(EStat.LEVEL) < getLevel()) {
             return 14;
         } else {
             if (gamer.hasPassivePerk(this)) {

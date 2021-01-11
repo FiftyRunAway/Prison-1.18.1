@@ -55,7 +55,7 @@ public class Trainer {
         meta.setDisplayName(this.name);
         Lore.BuilderLore lore = new Lore.BuilderLore().addLore(this.lore).addSpace().addString("&dУровни прокачки:");
         Gamer gamer = GamerManager.getGamer(player);
-        int plevel = (int) gamer.getStatistics(this.type.getValue());
+        int plevel = gamer.getIntStatistics(this.type.getValue());
         ConfigurationSection section = EConfig.TRAINER.getConfig().getConfigurationSection(type.name().toLowerCase());
         AtomicBoolean canget = new AtomicBoolean(true);
         HashMap<UpgradeProperty, Integer> map = new HashMap<>();
@@ -66,7 +66,7 @@ public class Trainer {
                     "- " + tempmas[1].replaceAll("_", " ") + ".");
             if (getColorLevel(plevel, i + 1) == ChatColor.GREEN) {
                 lore.addString(" &7Требования:");
-                if (Integer.parseInt(tempmas[0]) < (double) gamer.getStatistics(EStat.MONEY)) {
+                if (Integer.parseInt(tempmas[0]) < gamer.getDoubleStatistics(EStat.MONEY)) {
                     lore.addString("&a  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
                 } else {
                     lore.addString("&c  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
@@ -93,7 +93,7 @@ public class Trainer {
         btn.setClickEvent(event -> {
             Player p = event.getWhoClicked();
             Gamer g = GamerManager.getGamer(p);
-            int l = (int) gamer.getStatistics(this.type.getValue());
+            int l = gamer.getIntStatistics(this.type.getValue());
             if (l >= section.getStringList("levels").size()) {
                 g.sendMessage(EMessage.TRAINERFULL);
                 p.closeInventory();
@@ -104,7 +104,7 @@ public class Trainer {
                 String[] tempmas = lvl.split(" ");
                 g.withdrawMoney(Integer.parseInt(tempmas[0]));
                 g.sendMessage(EMessage.TRAINERSUCCESS);
-                g.setStatistics(type.getValue(),  (int) g.getStatistics(type.getValue()) + 1);
+                g.setStatistics(type.getValue(),  g.getIntStatistics(type.getValue()) + 1);
                 Achievement.FIRST_TRAINER.get(p, false);
                 p.closeInventory();
 

@@ -42,7 +42,7 @@ public class FractionCommand extends CommandManager {
                 gamer.leaveFraction();
             } else {
                 toLeave.add(name);
-                int mon = EConfig.CONFIG.getConfig().getInt("costs.FractionLeave") * (int)gamer.getStatistics(EStat.LEVEL);
+                int mon = EConfig.CONFIG.getConfig().getInt("costs.FractionLeave") * gamer.getIntStatistics(EStat.LEVEL);
                 int discount = 0;
                 Object obj = gamer.getPrivilege().getValue(new FractionDiscount());
                 if (obj != null) {
@@ -67,7 +67,7 @@ public class FractionCommand extends CommandManager {
                 gamer.sendMessage(EMessage.FRACTIONALREADY);
                 return;
             }
-            if ((int)gamer.getStatistics(EStat.LEVEL) < 5) {
+            if (gamer.getIntStatistics(EStat.LEVEL) < 5) {
                 gamer.sendMessage(EMessage.FRACTIONLEVEL);
                 return;
             }

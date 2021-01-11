@@ -37,10 +37,10 @@ public abstract class RSkill {
             Player p = event.getWhoClicked();
             Gamer gamer = GamerManager.getGamer(p);
             String name = p.getName();
-            if (getLevel(name) + 1 < getMaximumLevel() && (int)gamer.getStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
+            if (getLevel(name) + 1 < getMaximumLevel() && gamer.getIntStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
                 new Confirmation(p, RebirthMenu.getMenu(p), null, () -> {
                     levelUp(name);
-                    gamer.setStatistics(EStat.REBIRTH_SCORE, (int)gamer.getStatistics(EStat.REBIRTH_SCORE) - getCost(name));
+                    gamer.setStatistics(EStat.REBIRTH_SCORE, gamer.getIntStatistics(EStat.REBIRTH_SCORE) - getCost(name));
                     p.closeInventory();
                     gamer.sendMessage(EMessage.REBIRTHBOUGHT);
                 });
@@ -59,7 +59,7 @@ public abstract class RSkill {
                             (getValueDescription() != null ? (getValueDescription()) : "") + " &7(&b" + getLevel(name) + "&7/&b" + getMaximumLevel() + "&7)");
             l.add("&7Стоимость следующего уровня: &d" + getCost(name) + " ОП");
             Gamer gamer = GamerManager.getGamer(player);
-            if ((int)gamer.getStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
+            if (gamer.getIntStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
                 l.add("&aНажмите, чтобы приобрести данный навык!");
             } else {
                 l.add("&cУ вас недостаточно очков перерождения...");

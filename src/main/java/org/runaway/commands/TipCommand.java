@@ -46,7 +46,7 @@ public class TipCommand extends CommandManager {
             int money = 5;
             for (String owns : owners) {
                 if (Utils.getPlayers().contains(owns)) {
-                    Main.gamers.get(Bukkit.getPlayer(owns).getUniqueId()).depositMoney((int)gamer.getStatistics(EStat.LEVEL) * money);
+                    Main.gamers.get(Bukkit.getPlayer(owns).getUniqueId()).depositMoney(gamer.getIntStatistics(EStat.LEVEL) * money);
                 } else {
                     EStat.MONEY.setInConfig(owns, (double)EStat.MONEY.getFromConfig(owns) + (money * (int)EStat.LEVEL.getFromConfig(owns)));
                 }

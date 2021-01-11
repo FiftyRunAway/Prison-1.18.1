@@ -36,7 +36,7 @@ public class AsyncChat implements Listener {
         String rebirth = "";
         String prefix = "";
         if (!gamer.getFaction().equals(FactionType.DEFAULT)) faction = Utils.colored("&7[" + gamer.getFaction().getColor() + gamer.getFaction().getName() + "&7] &f");
-        if ((int)gamer.getStatistics(EStat.REBIRTH) > 0) rebirth = ChatColor.YELLOW + gamer.getDisplayRebirth() + " " + ChatColor.GRAY;
+        if (gamer.getIntStatistics(EStat.REBIRTH) > 0) rebirth = ChatColor.YELLOW + gamer.getDisplayRebirth() + " " + ChatColor.GRAY;
         String level = Utils.colored("&7[" + gamer.getLevelColor() + "" + gamer.getDisplayLevel() + "&7] ");
         if (Main.usePermissionsEx) prefix = Utils.colored(PermissionsEx.getUser(player).getPrefix());
 

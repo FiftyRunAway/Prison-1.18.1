@@ -248,7 +248,7 @@ public class Blaze extends EntityMonster {
 
                 gamer.depositMoney(money);
                 Achievement.BLAZE_KILL.get(gamer.getPlayer(), false);
-                gamer.setStatistics(EStat.BOSSES, (int) gamer.getStatistics(EStat.BOSSES) + 1);
+                gamer.setStatistics(EStat.BOSSES, gamer.getIntStatistics(EStat.BOSSES) + 1);
 
                 Object obj = gamer.getPrivilege().getValue(new BossMoney());
                 int sale = 0;

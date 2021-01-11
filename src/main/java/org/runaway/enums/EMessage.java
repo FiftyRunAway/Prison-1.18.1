@@ -23,14 +23,14 @@ public enum  EMessage {
     TREASUREOPEN("OpenTreasure", "&aВ этом тайнике вы нашли %reward%"),
     NOBLOCKSFORSALE("NoBlocksForSale", "&cУ вас нет предметов для продажи!"),
     ACTIONBARSELL("ActionBarSell", "&aВы продали &e%amount% &aпредметов на &e%money% руб! &7[&e%booster%x&7]"),
-    BOOSTERALREADYACTIVE("BoosterAlreadyActive", "&cЭтот вид бустер уже активен!"),
+    BOOSTERALREADYACTIVE("BoosterAlreadyActive", "&cЭтот вид бустера уже активен!"),
     NOBOOSTERS("NoBoosters", "&cУ вас нет ни одного бустера"),
-    LEVELNEEDBLOCKS("LevelBlocksNeed", "&cПодкопай-ка ещё немного блоков и попробуй снова"),
+    LEVELNEEDBLOCKS("LevelBlocksNeed", "&cПодкопайте ещё немного блоков и попробуйте снова"),
     MONEYNEEDS("NeedMoney", "&cУ вас недостаточно денег"),
     FIRSTJOINPLAYER("PlayerFirstJoin", "&7[&a+&7] &fИгрок &e%player% &fпопал к нам в тюрьму!"),
     SELECTMODE("OnSelectMode", "&fВы выбрали %mode% &fуровень сложности!"),
-    NOLOREUPGRADE("NoLoreOnUpgrade", "&cТо, что у Вас в руке - не поддаётся никаким улучшениям"),
-    MAXLEVELUPGRADE("MaxLevelUpgrade", "&cЭтот предмет улучшен по максимуму!"),
+    NOLOREUPGRADE("NoLoreOnUpgrade", "&cТо, что у Вас в руке, не поддаётся улучшениям"),
+    MAXLEVELUPGRADE("MaxLevelUpgrade", "&cЭтот предмет улучшен до максимального уровня!"),
     NOTENOUGHPROPERTY("NoProperty", "&cУ вас маловато &4%property%&c!"),
     SUCCESSFULUPGRADE("SuccessfulyUpgrade", "&aВы успешно улучшили предмет в руке"),
     BREAKBYTOOLS("BreakByTools", "&cВы не можете ломать блоки &4рукой&c, возьмите &4инструмент &cв руки!"),
@@ -46,22 +46,22 @@ public enum  EMessage {
     GIFTYOU("GiftYou", "&fИгрок %player% хочет сделать вам подарок. Если хотите принять - напишите /gift"),
     NOPLAYER("NoPlayer", "&cЭтого игрока, к сожалению, нет на нашем сервере в данный момент :("),
     GIFTLEFTTIME("GiftLeftTime", "&cВы не успели принять подарок от %player%"),
-    HANDSLEFT("HandsLeft", "&cПоложите уже, наконец-то, что-нибудь в руку)"),
+    HANDSLEFT("HandsLeft", "&cПоложите уже, наконец-то, что-нибудь в руку"),
     SENDERALREADYGIFT("SenderAlreadyGifted", "&cВы не можете отправлять несколько подарков сразу"),
     CONSUMERALREADYGIFT("ConsumerAlreadyGifted", "&cЭтот игрок занят, попробуйте примерно через %time% секунд!"),
     CANCELGIFT("GiftCanceled", "&cВы отказались получать подарок от %player%!"),
     ACCEPTGIFT("GiftAccepted", "&aВы приняли подарок от %player%!"),
     ACCEPTEDGIFT("GiftWasAccepted", "&aВаш подарок успешно приняли"),
-    CANCELEDGIFT("GiftWasCanceled", "&cВаш подарок был отклонён("),
-    TIMELEFT("TimeLeft", "&cВремя вышло... Вы не успели("),
-    TIMELEFTOWNER("TimeLeftForOwner", "&cВаш подарок не успели принять, ну или просто не хотят)"),
+    CANCELEDGIFT("GiftWasCanceled", "&cВаш подарок был отклонён"),
+    TIMELEFT("TimeLeft", "&cВремя вышло... Вы не успели"),
+    TIMELEFTOWNER("TimeLeftForOwner", "&cВаш подарок не успели/захотели принять"),
     RETURNITEM("GiftReturnItem", "&cВаш предмет вернулся к вам в инвентарь!"),
-    SELFGIFT("GiftSelf", "&cВы не сможете отправить подарок самому себе)"),
+    SELFGIFT("GiftSelf", "&cВы не сможете отправить подарок самому себе"),
     MINERESET("MineReset", "&eШахта обновилась!"),
     SUCCESSFULBUY("SuccessfulyBought", "&aУспешная покупка!"),
     MINLEVELITEM("ItemMinLevel", "&cМинимальный уровень для использования данного предмета - &4%level%"),
     DISFUNCTION("DisabledFunction", "&cЭта функция отключена на данный момент"),
-    DELETECHEST("ChestDelete", "&cВаш предыдущий клад был удалён, так как вы нашли новый)"),
+    DELETECHEST("ChestDelete", "&cВаш предыдущий клад был удалён, так как вы нашли новый"),
     TIMELEFTCHEST("ChestTimeLeft", "&cВы не успели забрать клад за %time% секунд, его украли"),
     CASEOPENSHIFT("CaseOpenShift", "&eВстаньте с shift, чтобы открыть сундук!"),
     KEYOPENCASE("CaseOpenKey", "&cВозьмите ключ в руку, чтобы открыть этот сундук)"),
@@ -88,24 +88,24 @@ public enum  EMessage {
     NOAUCTION("NoAuctions", "&cВсе аукционы завершены! Приходите попозже."),
     FULLINVAUCTION("FullInventoryAuction", "&cПрежде, чем участвовать в аукционе - освободите инвентарь!"),
     AUCTIONSELF("SelfAuction", "&cВам не надо перебивать свою ставку)"),
-    WAIT("Wait", "&cНе так быстро! Подождите немного..."),
-    FRIENDATTACK("FriendNoAttack", "&cНе стоит бить союзников по фрацкции!"),
-    NOMESSAGE("NoMessage", "&cВведите само сообщение..."),
-    AMPERSAND("NoAmpersand", "&cНе используйте таких символов!"),
-    VALUEBAD("BadValue", "&cНеправильное значение..."),
+    WAIT("Wait", "&cНе так быстро! Подождите немного...", EMessageType.ACTION_BAR),
+    FRIENDATTACK("FriendNoAttack", "&cНе стоит бить союзников по фрацкции!", EMessageType.ACTION_BAR),
+    NOMESSAGE("NoMessage", "&cВведите сообщение"),
+    AMPERSAND("NoAmpersand", "&cНе используйте такие символы!"),
+    VALUEBAD("BadValue", "&cНеправильное значение"),
     SENDMONEY("SendMoney", "&aВы отправили деньги."),
     GETMONEY("GetMoney", "&aВы получили %money% от %player%"),
     MANYAUCTION("ManyAuctions", "&cВы можете участвовать только в одном аукционе!"),
     VALUEINT("IntegerVault", "&cТолько целое число"),
     UPGRADEATTENTION("UpgradeAttention", "&cВнимание! Обращайте внимание на то, что у предметов есть &4минимальный уровень&c. Стоит проверить с какого уровня будет ваш следующий предмет! Для подтверждения введите команду &4/upgrade"),
     SENDGIFT("GiftSend", "&aВы успешно отправили подарок!"),
-    ALREADYHAVE("AlreadyHave", "&cУ вас уже есть эта локация..."),
+    ALREADYHAVE("AlreadyHave", "&cУ вас уже есть эта локация"),
     ACTIVATELOCATION("LocationActivate", "&aВы успешно активировали новую &eлокацию"),
     TIP("TipSuccess", "&aВы успешно поблагодарили всех &eвладельцев"),
-    ALREADYBOUGHT("AlreadyBought", "&cЭтот аукцион уже выкуплен("),
+    ALREADYBOUGHT("AlreadyBought", "&cЭтот аукцион уже выкуплен"),
     ERRORELEMENT("ErrorOfElement", "&cС этим элементом возникла проблема. Пожалуйста, сообщите об этом &4администрации &cсервера!"),
     SECONDLEVEL("SecondLevel", "&cПриходите сюда на втором уровне, а пока что надо копать &4дерево"),
-    ONEAUCTION("OneOnAuction", "&cНам не выгодно с вами играть, ведь на сервере совсем пусто..."),
+    ONEAUCTION("OneOnAuction", "&cНам не выгодно с вами играть, ведь на сервере совсем пусто"),
     AUCTIONTIMES("TimesAuction", "&fАукцион проходит в &e%time%"),
     BPMISSION("MissionComplete", "&aВы выполнили миссию &e%name%. &aПродолжайте в том же духе!"),
     BPREWARDGET("RewardGet", "&aВы получили следующие награды за повышение уровня боевого пропуска: %reward%"),
@@ -131,11 +131,17 @@ public enum  EMessage {
     GIFTCHANGING("GiftChanging", "&cИнвентарь отправителя изменился. Не пытайтесь обмануть!");
 
     private String config, defaults;
+    private EMessageType eMessageType;
     public static HashMap<String, String> messages = new HashMap<>();
 
     EMessage(String config, String defaults) {
+        this(config, defaults, EMessageType.CHAT);
+    }
+
+    EMessage(String config, String defaults, EMessageType eMessageType) {
         this.config = config;
         this.defaults = defaults;
+        this.eMessageType = eMessageType;
     }
 
     public String getConfigName() {
@@ -150,5 +156,15 @@ public enum  EMessage {
 
     public String getMessageConfig() {
         return EConfig.MESSAGES.getConfig().getString("messages." + config);
+    }
+
+    public EMessageType geteMessageType() {
+        return eMessageType;
+    }
+
+    public enum EMessageType {
+        CHAT,
+        ACTION_BAR,
+        TITLE;
     }
 }

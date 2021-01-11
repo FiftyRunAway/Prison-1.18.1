@@ -37,7 +37,7 @@ public class UpgradeCommand extends CommandManager {
                 gamer.sendMessage("&cВы не можете улучшить данный предмет!");
                 return;
             }
-            if (gamer.getLevelItem(UpgradeMisc.buildItem(UpgradeMisc.getNext(upgradeSection), false, p, false)) > (int)gamer.getStatistics(EStat.LEVEL)) {
+            if (gamer.getLevelItem(UpgradeMisc.buildItem(UpgradeMisc.getNext(upgradeSection), false, p, false)) > gamer.getIntStatistics(EStat.LEVEL)) {
                 if (!confirm.contains(p.getName())) {
                     confirm.add(p.getName());
                     gamer.sendMessage(EMessage.UPGRADEATTENTION);

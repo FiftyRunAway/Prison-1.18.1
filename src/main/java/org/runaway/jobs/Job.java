@@ -32,7 +32,7 @@ public abstract class Job {
 
     public Item getButton(Gamer gamer) {
         ArrayList<String> reqs = new ArrayList<>();
-        boolean access = (int)gamer.getStatistics(EStat.LEVEL) >= getLevel();
+        boolean access = gamer.getIntStatistics(EStat.LEVEL) >= getLevel();
         reqs.add("&7- " + (access ? ChatColor.GREEN : ChatColor.RED) + "Минимальный уровень • " + getLevel());
         return new Item.Builder(getMaterial()).name("&7Работа: &r" + getName()).lore(
                 new Lore.BuilderLore()

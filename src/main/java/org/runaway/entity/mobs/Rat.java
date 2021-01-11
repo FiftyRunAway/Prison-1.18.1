@@ -119,8 +119,8 @@ public class Rat extends EntityMonster {
                     }
                     gamer.depositMoney(money);
                     Bukkit.getServer().getPluginManager().callEvent(new KillRatsEvent(gamer.getPlayer(), this.glowing));
-                    gamer.setStatistics(EStat.RATS, (int)gamer.getStatistics(EStat.RATS) + rats);
-                    if ((int)gamer.getStatistics(EStat.RATS) == 15) {
+                    gamer.setStatistics(EStat.RATS, gamer.getIntStatistics(EStat.RATS) + rats);
+                    if (gamer.getIntStatistics(EStat.RATS) == 15) {
                         Achievement.FIFTEEN_RATS.get(gamer.getPlayer(), false);
                     }
                 }

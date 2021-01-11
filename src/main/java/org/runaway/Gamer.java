@@ -1,6 +1,8 @@
 package org.runaway;
 
 import com.nametagedit.plugin.NametagEdit;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.Configuration;
@@ -27,6 +29,8 @@ import org.runaway.passiveperks.perks.BBlocksFirst;
 import org.runaway.passiveperks.perks.BBlocksSecond;
 import org.runaway.passiveperks.perks.BMoneyFirst;
 import org.runaway.rebirth.ESkill;
+import org.runaway.tasks.AsyncRepeatTask;
+import org.runaway.tasks.SyncTask;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
@@ -46,7 +50,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Gamer {
 
     public static HashMap<Player, Long> messages = new HashMap<>();
-    private final long msg_cd = 200;
 
     private static final String bp_perm = "prison.battlepass";
 
@@ -100,7 +103,17 @@ public class Gamer {
     }
 
     public void sendMessage(EMessage message) {
-        sendMessage(message.getMessage());
+        switch (message.geteMessageType()) {
+            case CHAT:
+                sendMessage(message.getMessage());
+                break;
+            case TITLE:
+                sendTitle(message.getMessage());
+                break;
+            case ACTION_BAR:
+                sendActionbar(message.getMessage());
+                break;
+        }
     }
 
     public void sendMessage(String message) {
@@ -108,7 +121,7 @@ public class Gamer {
         if(!isEndedCooldown("lastMsg")) {
             return;
         }
-        addCooldown("lastMsg", 400);
+        addCooldown("lastMsg", 600);
         getPlayer().sendMessage(Utils.colored("&7[&4&lPrison&7] &r" + message));
     }
 
@@ -125,7 +138,7 @@ public class Gamer {
     }
 
     public boolean hasMoney(double money) {
-        return (double)getStatistics(EStat.MONEY) >= money;
+        return getDoubleStatistics(EStat.MONEY) >= money;
     }
 
     public boolean hasBattlePass() {
@@ -133,7 +146,7 @@ public class Gamer {
     }
 
     public void addExperienceBP(int experience) {
-        setStatistics(EStat.BATTLEPASS_SCORE, (int)getStatistics(EStat.BATTLEPASS_SCORE) + experience);
+        increaseIntStatistics(EStat.BATTLEPASS_SCORE, experience);
         sendActionbar(Utils.colored("&dПолучено " + experience + " опыта"));
     }
 
@@ -169,13 +182,13 @@ public class Gamer {
     }
 
     public void setHearts() {
-        int res = 19 + (int)getStatistics(EStat.LEVEL);
+        int res = 19 + getIntStatistics(EStat.LEVEL);
         getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(res);
         getPlayer().setHealth(res);
     }
 
     public void setNametag() {
-        NametagEdit.getApi().setPrefix(getPlayer(), ChatColor.YELLOW + getDisplayRebirth() + ((int)getStatistics(EStat.REBIRTH) > 0 ? " " : "") + "&7[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor());
+        NametagEdit.getApi().setPrefix(getPlayer(), ChatColor.YELLOW + getDisplayRebirth() + (getIntStatistics(EStat.REBIRTH) > 0 ? " " : "") + "&7[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor());
     }
 
     public void teleportBase() {
@@ -190,7 +203,7 @@ public class Gamer {
     public void teleportTrashAuction() {
         getPlayer().closeInventory();
         if (is1_15_2()) {
-            if (TrashAuction.auctions.size() > 0) {
+            if (!TrashAuction.auctions.isEmpty()) {
                 teleport(TrashAuction.auction_spawn);
             } else {
                 StringBuilder times = new StringBuilder();
@@ -229,17 +242,11 @@ public class Gamer {
     }
 
     public boolean isEffected(PotionEffectType e) {
-        AtomicBoolean s = new AtomicBoolean(false);
-        getPlayer().getActivePotionEffects().forEach(effect -> {
-            if (effect.getType().equals(e)) {
-                s.set(true);
-            }
-        });
-        return s.get();
+        return getPlayer().hasPotionEffect(e);
     }
 
     public String getDisplayRebirth() {
-        switch ((int)getStatistics(EStat.REBIRTH)) {
+        switch (getIntStatistics(EStat.REBIRTH)) {
             case 1: {
                 return "I";
             }
@@ -280,15 +287,15 @@ public class Gamer {
     }
 
     public int getDisplayLevel() {
-        if ((int)getStatistics(EStat.LEVEL) != toRebirth) {
-            return (int)getStatistics(EStat.LEVEL) % 30;
+        if (getIntStatistics(EStat.LEVEL) != toRebirth) {
+            return getIntStatistics(EStat.LEVEL) % 30;
         }
-        return (int)getStatistics(EStat.LEVEL);
+        return getIntStatistics(EStat.LEVEL);
     }
 
     public void rebirth () {
-        setStatistics(EStat.REBIRTH, (int)getStatistics(EStat.REBIRTH) + 1);
-        setStatistics(EStat.REBIRTH_SCORE, (int)getStatistics(EStat.REBIRTH_SCORE) + 5);
+        increaseIntStatistics(EStat.REBIRTH);
+        increaseIntStatistics(EStat.REBIRTH_SCORE, 5);
         Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replaceAll("%player%", getPlayer().getName()).replaceAll("%rebirth%", ChatColor.YELLOW + getDisplayRebirth()));
 
         Inventory inventory = getPlayer().getInventory();
@@ -341,7 +348,7 @@ public class Gamer {
     }
 
     public boolean needRebirth() {
-        return (int)getStatistics(EStat.LEVEL) % toRebirth == 0;
+        return getIntStatistics(EStat.LEVEL) % toRebirth == 0;
     }
 
     public void inFraction(FactionType type, boolean isRandom, int cost) {
@@ -369,7 +376,7 @@ public class Gamer {
 
     public void leaveFraction() {
         if (!getFaction().equals(FactionType.DEFAULT)) {
-            int mon = EConfig.CONFIG.getConfig().getInt("costs.FractionLeave") * (int)getStatistics(EStat.LEVEL);
+            int mon = EConfig.CONFIG.getConfig().getInt("costs.FractionLeave") * getIntStatistics(EStat.LEVEL);
             Object obj = getPrivilege().getValue(new FractionDiscount());
             if (obj != null) mon = mon * (1 - Integer.parseInt(obj.toString()) / 100);
             if (hasMoney(mon)) {
@@ -394,14 +401,14 @@ public class Gamer {
     }
 
     public void setLevelBar() {
-        getPlayer().setLevel((int)getStatistics(EStat.LEVEL) % 30);
+        getPlayer().setLevel(getIntStatistics(EStat.LEVEL) % 30);
     }
 
     public void setExpProgress() {
-        /*int needblocks = EConfig.CONFIG.getConfig().getInt("levels." + ((int)getStatistics(EStat.LEVEL) + 1) + ".blocks");
-        float toSet = (float)((double)getStatistics(EStat.BLOCKS) / needblocks);
+        /*int needblocks = EConfig.CONFIG.getConfig().getInt("levels." + (getIntStatistics(EStat.LEVEL) + 1) + ".blocks");
+        float toSet = (float)(getDoubleStatistics(EStat.BLOCKS) / needblocks);
         if (toSet > 1) toSet = 1;
-        if (Math.round((double)getStatistics(EStat.BLOCKS)) <= needblocks) getPlayer().setExp(toSet);*/
+        if (Math.round(getDoubleStatistics(EStat.BLOCKS)) <= needblocks) getPlayer().setExp(toSet);*/
         getPlayer().setExp(0);
     }
 
@@ -413,7 +420,7 @@ public class Gamer {
         }
         if (!tp.contains(uuid)) {
             tp.add(uuid);
-            addEffect(PotionEffectType.BLINDNESS, 70, 3);
+            addEffect(PotionEffectType.BLINDNESS, 60, 3);
             AtomicInteger lef = new AtomicInteger(teleportTimer);
             new BukkitRunnable() {
                 @Override
@@ -441,13 +448,13 @@ public class Gamer {
     public void depositMoney(double money) {
         if (money <= 0) return;
         if (getStatistics(EStat.MONEY) instanceof Integer) {
-            setStatistics(EStat.MONEY, new BigDecimal(money + (int)getStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+            setStatistics(EStat.MONEY, new BigDecimal(money + getIntStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         } else {
-            setStatistics(EStat.MONEY, new BigDecimal(money + (double)getStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+            setStatistics(EStat.MONEY, new BigDecimal(money + getDoubleStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         }
         if (isOnline()) {
             sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
-            double m = (double)getStatistics(EStat.MONEY);
+            double m = getDoubleStatistics(EStat.MONEY);
             if (m >= 15) Achievement.GET_15.get(getPlayer(), false);
             if (m >= 100) Achievement.GET_100.get(getPlayer(), false);
             if (m >= 1500) Achievement.GET_1000.get(getPlayer(), false);
@@ -466,10 +473,10 @@ public class Gamer {
 
     public void withdrawMoney(double money, int sale) {
         double to_withdraw = (1 - (double)sale / 100) * money;
-        setStatistics(EStat.MONEY, (double)getStatistics(EStat.MONEY) - to_withdraw);
+        setStatistics(EStat.MONEY, getDoubleStatistics(EStat.MONEY) - to_withdraw);
         if (isOnline()) {
             sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));
-            if ((int)getStatistics(EStat.CASHBACK_TRAINER) > 0) {
+            if (getIntStatistics(EStat.CASHBACK_TRAINER) > 0) {
                 Utils.trainer.forEach(trainer -> {
                     Trainer tr = (Trainer) trainer;
                     if (tr.getType() != TypeTrainings.CASHBACK) return;
@@ -500,7 +507,7 @@ public class Gamer {
     }
 
     public double getBoosterBlocks() {
-        double boost = (double)getStatistics(EStat.BOOSTERBLOCKS);
+        double boost = getDoubleStatistics(EStat.BOOSTERBLOCKS);
         if (Main.gBlocks.isActive()) boost += Main.gBlocks.getMultiplier() - 1.0;
         if (isActiveLocalBlocks()) boost += Utils.getlBlocksMultiplier().get(getGamer()) - 1.0;
         Object b = getPrivilege().getValue(new BoosterBlocks());
@@ -511,7 +518,7 @@ public class Gamer {
     }
 
     public double getBoosterMoney() {
-        double boost = (double)getStatistics(EStat.BOOSTERMONEY);
+        double boost = getDoubleStatistics(EStat.BOOSTERMONEY);
         if (Main.gMoney.isActive()) boost += Main.gMoney.getMultiplier() - 1.0;
         if (isActiveLocalMoney()) boost += Utils.getlMoneyMultiplier().get(getGamer()) - 1.0;
         Object b = getPrivilege().getValue(new BoosterMoney());
@@ -534,7 +541,7 @@ public class Gamer {
     }*/
 
     public ChatColor getLevelColor() {
-        int level = (int) getStatistics(EStat.LEVEL);
+        int level = getIntStatistics(EStat.LEVEL);
         if (level > 0 && level < 5) { return ChatColor.GRAY; }
         if (level >= 5 && level < 10) { return ChatColor.YELLOW; }
         if (level >= 10 && level < 15) { return ChatColor.GREEN; }
@@ -545,6 +552,38 @@ public class Gamer {
 
     public Object getStatisticsFromConfig(EStat statistic, String name) {
         return statistic.getFromConfig(name);
+    }
+
+    public void increaseIntStatistics(EStat stat, int value) {
+        setStatistics(stat, getIntStatistics(stat) + value);
+    }
+
+    public void increaseIntStatistics(EStat stat) {
+        this.increaseIntStatistics(stat, 1);
+    }
+
+    public void increaseDoubleStatistics(EStat stat, double value) {
+        setStatistics(stat, getDoubleStatistics(stat) + value);
+    }
+
+    public void increaseDoubleStatistics(EStat stat) {
+        this.increaseDoubleStatistics(stat, 1D);
+    }
+
+    public int getIntStatistics(EStat stat) {
+        return (int) getStatistics(stat);
+    }
+
+    public String getStringStatistics(EStat stat) {
+        return (String) getStatistics(stat);
+    }
+
+    public double getDoubleStatistics(EStat stat) {
+        return (double) getStatistics(stat);
+    }
+
+    public boolean getBooleanStatistics(EStat stat) {
+        return (boolean) getStatistics(stat);
     }
 
     public Object getStatistics(EStat statistic) {
@@ -594,15 +633,6 @@ public class Gamer {
     }
 
     public void sendActionbar(String msg) {
-        try {
-            Constructor<?> constructor = Objects.requireNonNull(Utils.getNMSClass("PacketPlayOutChat")).getConstructor(Utils.getNMSClass("IChatBaseComponent"), Utils.getNMSClass("ChatMessageType"));
-            Object icbc = Objects.requireNonNull(Utils.getNMSClass("IChatBaseComponent")).getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + msg + "\"}");
-            Object packet = constructor.newInstance(icbc, Objects.requireNonNull(Utils.getNMSClass("ChatMessageType")).getEnumConstants()[2]);
-            Object entityPlayer = this.getPlayer().getClass().getMethod("getHandle").invoke(this.getPlayer());
-            Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
-            playerConnection.getClass().getMethod("sendPacket", Utils.getNMSClass("Packet")).invoke(playerConnection, packet);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getPlayer().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.colored(msg)));
     }
 }

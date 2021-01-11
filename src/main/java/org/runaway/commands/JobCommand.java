@@ -36,7 +36,7 @@ public class JobCommand extends CommandManager {
         Player player = Bukkit.getPlayer(args[0]);
         Gamer gamer = GamerManager.getGamer(player);
         Job job = EJobs.valueOf(args[1].toUpperCase()).getJob();
-        if ((int)gamer.getStatistics(EStat.LEVEL) < job.getLevel()) {
+        if (gamer.getIntStatistics(EStat.LEVEL) < job.getLevel()) {
             gamer.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", job.getLevel() + "")));
             return;
         }

@@ -18,7 +18,7 @@ public class Requires {
     }
 
     public double blocksNextLevel() {
-        return getBlocksLevel((int)gamer.getStatistics(EStat.LEVEL) + 1);
+        return getBlocksLevel(gamer.getIntStatistics(EStat.LEVEL) + 1);
     }
 
     private double getBlocksLevel(int level) {
@@ -26,7 +26,7 @@ public class Requires {
     }
 
     public double costNextLevel() {
-        return getCostLevel((int)gamer.getStatistics(EStat.LEVEL) + 1);
+        return getCostLevel(gamer.getIntStatistics(EStat.LEVEL) + 1);
     }
 
     private double getCostLevel(int level) {

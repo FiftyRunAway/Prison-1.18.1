@@ -64,7 +64,7 @@ public class BattlePassMenu implements IMenus {
         data.put(gamer.getGamer(), page);
 
         boolean pass = true;
-        int player_level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
+        int player_level = gamer.getIntStatistics(EStat.BATTLEPASS_LEVEL);
         boolean hasMaxLevel = false;
         int maxLevel = page * 9 + 9;
         if (max_level < maxLevel && max_level >= page * 9) hasMaxLevel = true;
@@ -127,7 +127,7 @@ public class BattlePassMenu implements IMenus {
     }
 
     private static void openStartPage(Gamer gamer) {
-        int level = (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL);
+        int level = gamer.getIntStatistics(EStat.BATTLEPASS_LEVEL);
         int page = 0;
         if (gamer.hasBattlePass() && max_level > 8 && level >= 8) page = (level + 1) / 9;
         if (level > max_level) page = (int) Math.ceil(pages) - 1;
@@ -136,7 +136,7 @@ public class BattlePassMenu implements IMenus {
     }
 
     private static ItemStack glass(boolean opened, int level, Gamer gamer) {
-        return ExampleItems.glass(opened ? 5 : ((int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) + 1 == level ? 4 : 14), ChatColor.GRAY + "" + level + " Уровень");
+        return ExampleItems.glass(opened ? 5 : (gamer.getIntStatistics(EStat.BATTLEPASS_LEVEL) + 1 == level ? 4 : 14), ChatColor.GRAY + "" + level + " Уровень");
     }
 
     private static void preLoadingMenuButtons(int page) {

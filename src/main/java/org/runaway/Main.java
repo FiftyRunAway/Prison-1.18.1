@@ -43,6 +43,10 @@ import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
 import org.runaway.quests.MinesQuest;
+import org.runaway.tasks.AsyncRepeatTask;
+import org.runaway.tasks.AsyncTask;
+import org.runaway.tasks.SyncRepeatTask;
+import org.runaway.tasks.SyncTask;
 import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.*;
@@ -130,6 +134,7 @@ public class Main extends JavaPlugin {
         new Config().loadConfigs();
         FileConfiguration loader = EConfig.MODULES.getConfig();
 
+        loadTasks();
         if (loader.getBoolean("register.events")) registerEvents();
         if (loader.getBoolean("register.commands")) registerCommands();
         if (loader.getBoolean("loader.messages")) loadMessage();
@@ -212,6 +217,14 @@ public class Main extends JavaPlugin {
         }
     }
 
+    //Рег. тасков
+    private void loadTasks() {
+        AsyncTask.setJavaPlugin(this);
+        AsyncRepeatTask.setJavaPlugin(this);
+        SyncTask.setJavaPlugin(this);
+        SyncRepeatTask.setJavaPlugin(this);
+    }
+
     //Регистрация команд
     private void registerCommands() {
         try {
@@ -222,7 +235,7 @@ public class Main extends JavaPlugin {
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
                     new BaseCommand(), new TrashCommand(), new QuestCommand(), new FisherCommand(),
-                    new JobCommand(), new MsgCommand(), new ReplyCommand()).forEach(CommandManager::register);
+                    new JobCommand(), new MsgCommand(), new ReplyCommand(), new InvseeCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
@@ -475,7 +488,7 @@ public class Main extends JavaPlugin {
                 if (Utils.getPlayers().isEmpty()) return;
                 Utils.getPlayers().forEach(s -> {
                     Gamer gamer = gamers.get(Bukkit.getPlayer(s).getUniqueId());
-                    int get = (int) gamer.getStatistics(EStat.PLAYEDTIME) + 1;
+                    int get = gamer.getIntStatistics(EStat.PLAYEDTIME) + 1;
                     gamer.setStatistics(EStat.PLAYEDTIME, get);
                     if (get == 30) Achievement.TIME_30.get(gamer.getPlayer(), false);
                     if (get == 90) Achievement.TIME_90.get(gamer.getPlayer(), false);
@@ -572,19 +585,19 @@ public class Main extends JavaPlugin {
             } else {
                 Gamer gamer = Main.gamers.get(Bukkit.getPlayer(name).getUniqueId());
                 if (gamer.getStatistics(EStat.MONEY) instanceof Integer) {
-                    money1.put(name, (long) (int)gamer.getStatistics(EStat.MONEY));
+                    money1.put(name, (long) gamer.getIntStatistics(EStat.MONEY));
                 } else {
-                    money1.put(name, Math.round((double)gamer.getStatistics(EStat.MONEY)));
+                    money1.put(name, Math.round(gamer.getDoubleStatistics(EStat.MONEY)));
                 }
                 if (gamer.getStatistics(EStat.BLOCKS) instanceof Integer) {
-                    blocks1.put(name, (long) (int)gamer.getStatistics(EStat.BLOCKS));
+                    blocks1.put(name, (long) gamer.getIntStatistics(EStat.BLOCKS));
                 } else {
-                    blocks1.put(name, Math.round((double)gamer.getStatistics(EStat.BLOCKS)));
+                    blocks1.put(name, Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)));
                 }
-                level1.put(name, (long) (int)gamer.getStatistics(EStat.LEVEL));
-                rats1.put(name, (long) (int)gamer.getStatistics(EStat.RATS));
-                //rebirth1.put(name, (long) (int)gamer.getStatistics(EStat.REBIRTH));
-                keys1.put(name, (long) (int)gamer.getStatistics(EStat.KEYS));
+                level1.put(name, (long) gamer.getIntStatistics(EStat.LEVEL));
+                rats1.put(name, (long) gamer.getIntStatistics(EStat.RATS));
+                //rebirth1.put(name, (long) gamer.getIntStatistics(EStat.REBIRTH));
+                keys1.put(name, (long) gamer.getIntStatistics(EStat.KEYS));
             }
             dm1.put(name, (long) Donate.getTotalDonateMoney(name));
         }

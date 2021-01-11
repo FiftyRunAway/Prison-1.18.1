@@ -39,7 +39,7 @@ public class PlayerAttack implements Listener {
             Player p = (Player)event.getDamager();
             Gamer gamer = GamerManager.getGamer(p);
             if (p.getInventory().getItemInMainHand().getType().toString().endsWith("SWORD")) {
-                if ((int)gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
+                if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                     event.setCancelled(true);
                     p.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
                     return;
@@ -48,7 +48,7 @@ public class PlayerAttack implements Listener {
             Gamer attacker = GamerManager.getGamer(p);
             int boost = 0;
             if (attacker.hasPassivePerk(new Killer())) boost += 1;
-            event.setDamage(event.getDamage() + (double) ((int)attacker.getStatistics(EStat.GYM_TRAINER) + boost) * 4 / 100);
+            event.setDamage(event.getDamage() + (double) (attacker.getIntStatistics(EStat.GYM_TRAINER) + boost) * 4 / 100);
         }
     }
 

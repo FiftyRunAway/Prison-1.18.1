@@ -17,7 +17,7 @@ public class MoneyReward extends IReward {
 
     @Override
     protected void getReward(Gamer gamer) {
-        gamer.setStatistics(EStat.DONATEMONEY, (int)gamer.getStatistics(EStat.DONATEMONEY) + this.value);
+        gamer.increaseIntStatistics(EStat.DONATEMONEY, this.value);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class Upgrade {
                     }
                 }
                 ItemStack save = UpgradeMisc.buildItem(next, false, player, false);
-                if (!fastGet && gamer.getLevelItem(save) > (int)gamer.getStatistics(EStat.LEVEL)) {
+                if (!fastGet && gamer.getLevelItem(save) > gamer.getIntStatistics(EStat.LEVEL)) {
                     new Confirmation(player, null, null, () ->
                             Upgrade.upgrade(player, true));
                     return;
@@ -55,7 +55,7 @@ public class Upgrade {
                 Bukkit.getServer().getPluginManager().callEvent(new UpgradeEvent(player));
                 player.closeInventory();
                 Achievement.FIRST_UPGRADE.get(player, false);
-                if ((int)gamer.getStatistics(EStat.UPGRADE_TRAINER) > 0) {
+                if (gamer.getIntStatistics(EStat.UPGRADE_TRAINER) > 0) {
                     Utils.trainer.forEach(trainer -> {
                         Trainer tr = (Trainer) trainer;
                         if (tr.getType() != TypeTrainings.UPGRADE) return;
@@ -89,7 +89,7 @@ public class Upgrade {
     public static String getProp(UpgradeProperty prop, Gamer gamer) {
         switch (prop) {
             case COST: {
-                return String.valueOf(Math.round((Double) gamer.getStatistics(EStat.MONEY)));
+                return String.valueOf(Math.round(gamer.getDoubleStatistics(EStat.MONEY)));
             }
             case LEVEL: {
                 return String.valueOf(gamer.getStatistics(EStat.LEVEL));
@@ -104,7 +104,7 @@ public class Upgrade {
                 return String.valueOf(gamer.getCurrentBlocks("LOG_2"));
             }
             case BLOCKS: {
-                return String.valueOf(Math.round((Double) gamer.getStatistics(EStat.BLOCKS)));
+                return String.valueOf(Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)));
             }
             case MINE_BLOCKS: {
                 return String.valueOf(gamer.getCurrentBlocks("STONE") + gamer.getCurrentBlocks("COBBLESTONE"));
@@ -159,7 +159,7 @@ public class Upgrade {
                 break;
             }
             case BLOCKS: {
-                gamer.setStatistics(EStat.BLOCKS, (double)gamer.getStatistics(EStat.BLOCKS) - p);
+                gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) - p);
                 break;
             }
         }

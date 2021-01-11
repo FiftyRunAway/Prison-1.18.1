@@ -86,17 +86,17 @@ public class PlayerInventoryClick implements Listener {
                 if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
                     Gamer gamer = GamerManager.getGamer(player);
                     double price = new Requires(gamer).costNextLevel();
-                    if ((double)gamer.getStatistics(EStat.MONEY) >= price) {
+                    if (gamer.getDoubleStatistics(EStat.MONEY) >= price) {
                         double blocks = new Requires(gamer).blocksNextLevel();
-                        if ((double)gamer.getStatistics(EStat.BLOCKS) >= blocks) {
+                        if (gamer.getDoubleStatistics(EStat.BLOCKS) >= blocks) {
                             gamer.sendTitle(ChatColor.YELLOW + "Поздравляем", ChatColor.YELLOW + "с повышением уровня!");
                             gamer.withdrawMoney(price);
-                            gamer.setStatistics(EStat.LEVEL, (int) gamer.getStatistics(EStat.LEVEL) + 1);
+                            gamer.increaseIntStatistics(EStat.LEVEL);
                             player.closeInventory();
                             gamer.setLevelBar();
                             gamer.setExpProgress();
                             gamer.setHearts();
-                            int newLevel = (int)gamer.getStatistics(EStat.LEVEL);
+                            int newLevel = gamer.getIntStatistics(EStat.LEVEL);
                             if (newLevel == 5) {
                                 Achievement.FIVE_LEVEL.get(player, false);
                             } else if (newLevel == 10) {
@@ -133,7 +133,7 @@ public class PlayerInventoryClick implements Listener {
                     }
                     if (last_lore.contains("цена")) {
                         float cost = Float.parseFloat(last_lore.replace("•", "").replace("цена", "").replace(MoneyType.RUBLES.getShortName(), ""));
-                        if ((double)gamer.getStatistics(EStat.MONEY) < cost) {
+                        if (gamer.getDoubleStatistics(EStat.MONEY) < cost) {
                             gamer.sendMessage(EMessage.MONEYNEEDS);
                             player.closeInventory();
                             return;

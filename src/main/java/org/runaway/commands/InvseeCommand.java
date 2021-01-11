@@ -4,24 +4,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
-import org.runaway.enums.EStat;
-import org.runaway.inventories.LevelMenu;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 import java.util.Arrays;
+import java.util.Collections;
 
-public class MsgCommand extends CommandManager {
-    public MsgCommand() {
-        super("msg", "prison.commands", Arrays.asList("m", "tell", "w"), false);
+public class InvseeCommand extends CommandManager {
+    public InvseeCommand() {
+        super("invsee", "prison.commands", Collections.singletonList("checkinv"), false);
     }
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         Gamer gamer = GamerManager.getGamer(p);
+        if(!p.hasPermission("prison.admin")) {
+            gamer.sendMessage(EMessage.NOPERM);
+            return;
+        }
         if(args.length == 0) {
             gamer.sendMessage("&cВведите ник!");
             return;
@@ -33,15 +34,10 @@ public class MsgCommand extends CommandManager {
             return;
         }
         if(args.length == 1) {
-            gamer.sendMessage("&cВведите сообщение!");
-            return;
+            p.openInventory(target.getInventory());
+        } else if(args.length == 2 && args[1].equalsIgnoreCase("ec")) {
+            p.openInventory(target.getEnderChest());
         }
-        Gamer targetGamer = GamerManager.getGamer(target);
-        targetGamer.setReplyPlayer(p.getName());
-        gamer.setReplyPlayer(targetName);
-        String message = Utils.combine(args, 1);
-        targetGamer.sendMessage("&6" + p.getName() + " -> ВЫ: &7" + message);
-        gamer.sendMessage("&6ВЫ -> " + target.getName() + ": &7" + message);
     }
 
     @Override

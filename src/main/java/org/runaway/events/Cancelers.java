@@ -47,7 +47,7 @@ public class Cancelers implements Listener {
     public void onEquip(ArmorEquipEvent e) {
         if(e.getNewArmorPiece() != null && e.getNewArmorPiece().getType() != Material.AIR) {
                 Gamer gamer = Main.gamers.get(e.getPlayer().getUniqueId());
-                if ((int) gamer.getStatistics(EStat.LEVEL) < gamer.getLevelItem(e.getNewArmorPiece())) {
+                if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem(e.getNewArmorPiece())) {
                     e.setCancelled(true);
                     e.getPlayer().sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
                 }
