@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="minecraft" name="Minecraft">
+      <configuration>
+        <autoDetectTypes>
+          <platformType>PAPER</platformType>
+        </autoDetectTypes>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -7,19 +16,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="spigot-1.12.2" level="project" />
-    <orderEntry type="library" name="HolographicDisplays" level="project" />
-    <orderEntry type="library" name="NametagEdit" level="project" />
-    <orderEntry type="library" name="BannerBoard-1.11.2" level="project" />
-    <orderEntry type="library" name="PermissionsEx-1.23.4" level="project" />
-    <orderEntry type="library" name="ArmorEquipEvent-1.7.2" level="project" />
-    <orderEntry type="library" name="ProtocolLib" level="project" />
-    <orderEntry type="library" name="CoolFishing" level="project" />
-    <orderEntry type="library" name="ViaVersion-3.2.1" level="project" />
-    <orderEntry type="library" name="TelegramBotsAPI-4.5" level="project" />
     <orderEntry type="library" name="org.telegram:telegrambots:4.4.0.1" level="project" />
     <orderEntry type="library" name="org.telegram:telegrambotsextensions:4.4.0.1" level="project" />
     <orderEntry type="library" name="org.telegram:telegrambots-meta:4.0.1" level="project" />
     <orderEntry type="library" name="org.telegram:telegrambots-abilities:4.4.0.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Desktop/IdeaProjects/libs" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/Desktop/IdeaProjects/libs" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

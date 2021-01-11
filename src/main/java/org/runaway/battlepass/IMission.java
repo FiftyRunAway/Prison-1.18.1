@@ -69,7 +69,7 @@ public abstract class IMission {
 
     protected void checkLevel(Gamer gamer) {
         if (isCompleted(gamer)) {
-            gamer.getPlayer().sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", Utils.upCurLetter(getName().toLowerCase(), 1))));
+            gamer.sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", Utils.upCurLetter(getName().toLowerCase(), 1))));
             gamer.addExperienceBP(getExperience());
 
             BattlePass.checkLevelUp(gamer);

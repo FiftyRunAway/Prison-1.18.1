@@ -12,6 +12,7 @@ import org.runaway.inventories.FishSellMenu;
 import org.runaway.inventories.JobUpgradeMenu;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 import java.util.Collections;
@@ -33,10 +34,10 @@ public class JobCommand extends CommandManager {
             return;
         }
         Player player = Bukkit.getPlayer(args[0]);
-        Gamer gamer = Main.gamers.get(player.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(player);
         Job job = EJobs.valueOf(args[1].toUpperCase()).getJob();
         if ((int)gamer.getStatistics(EStat.LEVEL) < job.getLevel()) {
-            player.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", job.getLevel() + "")));
+            gamer.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", job.getLevel() + "")));
             return;
         }
         player.openInventory(JobUpgradeMenu.getMenu(

@@ -326,7 +326,7 @@ public class TrashAuction {
                 now += toAdd;
                 last = player.getDisplayName();
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 10, 10);
-                player.sendMessage(Utils.colored("&b+" + toAdd + " " + MoneyType.RUBLES.getShortName()) + " на аукцион");
+                gamer.sendMessage(Utils.colored("&b+" + toAdd + " " + MoneyType.RUBLES.getShortName()) + " на аукцион");
             } else {
                 gamer.sendMessage(EMessage.MONEYNEEDS);
             }

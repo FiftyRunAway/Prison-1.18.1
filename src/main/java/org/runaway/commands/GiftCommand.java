@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Main;
 import org.runaway.utils.Utils;
@@ -27,16 +28,18 @@ public class GiftCommand extends CommandManager {
     private static HashMap<Player, BukkitTask> list = new HashMap<>();
 
     private void accept(boolean is, Player consumer) {
+        Gamer consumerGamer = GamerManager.getGamer(consumer);
         if (!Utils.getGifts().containsKey(consumer.getName())) {
-            consumer.sendMessage(Utils.colored(EMessage.TIMELEFT.getMessage()));
+            consumerGamer.sendMessage(Utils.colored(EMessage.TIMELEFT.getMessage()));
             consumer.getPlayer().closeInventory();
             return;
         }
         Player owner = Bukkit.getPlayer(Utils.getGifters().get(consumer.getName()));
         if (owner == null) {
-            consumer.sendMessage(Utils.colored(EMessage.NOPLAYER.getMessage()));
+            consumerGamer.sendMessage(Utils.colored(EMessage.NOPLAYER.getMessage()));
             return;
         }
+        Gamer ownerGamer = GamerManager.getGamer(owner);
         if (is) {
             boolean taken = false;
             for (int i = 0; i < owner.getInventory().getContents().length; i++) {
@@ -48,11 +51,11 @@ public class GiftCommand extends CommandManager {
             }
             if (!taken) {
                 onCancel(owner, consumer, false);
-                owner.sendMessage(Utils.colored(EMessage.GIFTCHANGING.getMessage()));
+                ownerGamer.sendMessage(Utils.colored(EMessage.GIFTCHANGING.getMessage()));
                 return;
             }
             consumer.getPlayer().getInventory().addItem(Utils.getGifts().get(consumer.getName()));
-            consumer.sendMessage(EMessage.ACCEPTGIFT.getMessage().replaceAll("%player%", owner.getName()));
+            consumerGamer.sendMessage(EMessage.ACCEPTGIFT.getMessage().replaceAll("%player%", owner.getName()));
             owner.sendMessage(Utils.colored(EMessage.ACCEPTEDGIFT.getMessage()));
             consumer.getPlayer().closeInventory();
             Utils.getGifters().remove(consumer.getName());
@@ -66,8 +69,10 @@ public class GiftCommand extends CommandManager {
         Utils.getGifters().remove(consumer.getName());
         Utils.getGifts().remove(consumer.getName());
         if (msgs) {
-            consumer.sendMessage(EMessage.CANCELGIFT.getMessage().replaceAll("%player%", owner.getName()));
-            owner.sendMessage(Utils.colored(EMessage.CANCELEDGIFT.getMessage()));
+            Gamer ownerGamer = GamerManager.getGamer(owner);
+            Gamer consumerGamer = GamerManager.getGamer(consumer);
+            consumerGamer.sendMessage(EMessage.CANCELGIFT.getMessage().replaceAll("%player%", owner.getName()));
+            ownerGamer.sendMessage(Utils.colored(EMessage.CANCELEDGIFT.getMessage()));
         }
         consumer.getPlayer().closeInventory();
     }
@@ -75,7 +80,7 @@ public class GiftCommand extends CommandManager {
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
-        Gamer gamer = Main.gamers.get(p.getUniqueId());
+        Gamer gamer = GamerManager.getGamer(p);
         if (args.length == 0) {
             if (Utils.getGifts().containsKey(p.getName())) {
                 StandardMenu menu = StandardMenu.create(1, "&cВы хотите получить этот подарок?");
@@ -96,28 +101,28 @@ public class GiftCommand extends CommandManager {
                 p.openInventory(menu.build());
                 return;
             }
-            p.sendMessage(ChatColor.RED + "Использование: /" + cmdName + " [получатель]");
+            gamer.sendMessage(ChatColor.RED + "Использование: /" + cmdName + " [получатель]");
         } else if (args.length == 1) {
             if (p.getName().equals(args[0])) {
-                p.sendMessage(Utils.colored(EMessage.SELFGIFT.getMessage()));
+                gamer.sendMessage(Utils.colored(EMessage.SELFGIFT.getMessage()));
                 return;
             }
             if (!Utils.getPlayers().contains(args[0])) {
-                p.sendMessage(Utils.colored(EMessage.NOPLAYER.getMessage()));
+                gamer.sendMessage(Utils.colored(EMessage.NOPLAYER.getMessage()));
                 return;
             }
             if (p.getInventory().getItemInMainHand() == null || p.getInventory().getItemInMainHand().getAmount() == 0 || p.getInventory().getItemInMainHand() == null || p.getInventory().getItemInMainHand().getAmount() == 0 || !p.getInventory().getItemInMainHand().hasItemMeta()) {
-                p.sendMessage(Utils.colored(EMessage.HANDSLEFT.getMessage()));
+                gamer.sendMessage(Utils.colored(EMessage.HANDSLEFT.getMessage()));
                 return;
             }
             Player cons = Bukkit.getPlayer(String.valueOf(args[0]));
             if (Utils.getGifters().containsValue(p.getName())) {
-                p.sendMessage(Utils.colored(EMessage.SENDERALREADYGIFT.getMessage()));
+                gamer.sendMessage(Utils.colored(EMessage.SENDERALREADYGIFT.getMessage()));
                 return;
             }
             long timer = 20;
             if (Utils.getGifters().containsKey(cons.getName())) {
-                p.sendMessage(EMessage.CONSUMERALREADYGIFT.getMessage().replaceAll("%time%", String.valueOf(timer)));
+                gamer.sendMessage(EMessage.CONSUMERALREADYGIFT.getMessage().replaceAll("%time%", String.valueOf(timer)));
                 return;
             }
             Utils.getGifters().put(cons.getName(), p.getName());
@@ -134,7 +139,7 @@ public class GiftCommand extends CommandManager {
                 }
             }, timer * 20);
         } else {
-            p.sendMessage(ChatColor.RED + "Использование: /" + cmdName + " [получатель]");
+            gamer.sendMessage(ChatColor.RED + "Использование: /" + cmdName + " [получатель]");
         }
     }
 
