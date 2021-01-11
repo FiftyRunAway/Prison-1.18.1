@@ -39,4 +39,9 @@ public class Fisherman extends Job {
         reqs.add(new JobReq[] { new JobReq(JobRequriement.LEGENDARY_FISH, 500) });
         return reqs;
     }
+
+    @Override
+    public String getConfigName() {
+        return "fisherman";
+    }
 }

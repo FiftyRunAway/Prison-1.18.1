@@ -332,13 +332,15 @@ public class BlockBreak implements Listener {
                 list.add(Material.BRICK);
                 list.add(Material.SANDSTONE);
                 list.add(Material.COAL_BLOCK);
+                list.add(Material.QUARTZ_ORE);
+                list.add(Material.PACKED_ICE);
+                list.add(Material.ICE);
                 break;
             }
             case STONE_PICKAXE: {
                 list = breakableByPickaxe(Material.WOOD_PICKAXE);
                 list.add(Material.ENDER_STONE);
                 list.add(Material.END_BRICKS);
-                list.add(Material.QUARTZ);
                 list.add(Material.IRON_ORE);
                 list.add(Material.SMOOTH_BRICK);
                 list.add(Material.LAPIS_BLOCK);

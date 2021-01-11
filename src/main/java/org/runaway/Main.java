@@ -638,7 +638,6 @@ public class Main extends JavaPlugin {
                         file.getBoolean("tpSpawn"),
                         surface);
                 mines.add(mine);
-
                 Mine.updateMine(mine);
             });
             Vars.sendSystemMessage(TypeMessage.SUCCESS, value_mines + " mines was loaded!");

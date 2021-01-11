@@ -20,13 +20,14 @@ public abstract class Job {
     public abstract String getDescrition();
     public abstract Material getMaterial();
     public abstract ArrayList<JobReq[]> getLevels();
+    public abstract String getConfigName();
 
     public int getMaxLevel() {
         return getLevels().size();
     }
 
     public Location getLocation(Job job) {
-        return Utils.unserializeLocation(EConfig.MINES.getConfig().getString("jobs." + job.getClass().getSimpleName() + ".location"));
+        return Utils.unserializeLocation(EConfig.MINES.getConfig().getString("jobs." + job.getConfigName() + ".location"));
     }
 
     public Item getButton(Gamer gamer) {

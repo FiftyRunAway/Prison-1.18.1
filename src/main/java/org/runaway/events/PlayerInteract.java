@@ -50,7 +50,7 @@ public class PlayerInteract implements Listener {
         // Локации
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             addLocation(player, "Подвал", EStat.LOCATION_VAULT);
-            //addLocation(player, "Ледяная шахта", EStat.LOCATION_ICE);
+            addLocation(player, "Ледяная шахта", EStat.LOCATION_ICE);
             addLocation(player, "Гладиаторская арена", EStat.LOCATION_GLAD);
         }
 
