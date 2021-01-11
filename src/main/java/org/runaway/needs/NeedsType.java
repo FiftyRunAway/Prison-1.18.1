@@ -13,12 +13,12 @@ public enum NeedsType {
         switch (type) {
             case WASH:
                 list.add("Душ");
-                list.add("Срочно идите в душ!");
+                list.add("Срочно идите в душ!%/spawn и налево");
                 list.add("&cСрочно помойтесь.");
                 break;
             case TOILET:
                 list.add("Туалет");
-                list.add("Срочно сходите в туалет!");
+                list.add("Срочно сходите в туалет!%/spawn и налево");
                 list.add("&cБегите в туалет.");
                 break;
             case SLEEP:
