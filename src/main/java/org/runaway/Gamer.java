@@ -100,7 +100,7 @@ public class Gamer {
             return;
         }
         addCooldown("lastMsg", 400);
-        getPlayer().sendMessage("&7[&4&lPrison&7] &r" + Utils.colored(message));
+        getPlayer().sendMessage(Utils.colored("&7[&4&lPrison&7] &r" + message));
     }
 
     public Privs getPrivilege() {
