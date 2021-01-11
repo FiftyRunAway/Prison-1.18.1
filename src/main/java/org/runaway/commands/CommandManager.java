@@ -6,6 +6,7 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -40,11 +41,28 @@ public abstract class CommandManager implements CommandExecutor {
     }
 
     public void register() {
+        unregister(this.command);
         ReflectCommand cmd = new ReflectCommand(this.command);
         cmd.setAliases(this.alias);
         cmd.setPermissionMessage(this.permMessage);
         getCommandMap().register("", cmd);
         cmd.setExecutor(this);
+    }
+
+    private static void unregister(String command) {
+        try {
+            final Field field = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            field.setAccessible(true);
+            final CommandMap map = (CommandMap) field.get(Bukkit.getServer());
+            final Field field2 = map.getClass().getDeclaredField("knownCommands");
+            field2.setAccessible(true);
+            final HashMap<String, Command> knownCommands = (HashMap<String, Command>) field2.get(map);
+            knownCommands.remove(command);
+            field2.setAccessible(false);
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex9) {
+            ex9.printStackTrace();
+        }
     }
 
     private CommandMap getCommandMap() {

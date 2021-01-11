@@ -32,8 +32,6 @@ import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
-import us.myles.ViaVersion.api.Via;
-
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -433,9 +431,6 @@ public class Gamer {
     }
 
     private int getVerison() {
-        if (Main.useViaVersion) {
-            return Via.getAPI().getPlayerVersion(this.uuid);
-        }
         return 1000;
     }
 
