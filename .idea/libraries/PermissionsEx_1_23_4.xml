@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="PermissionsEx-1.23.4">
     <CLASSES>
-      <root url="jar://D:/Prison Recoded/plugins/PermissionsEx-1.23.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../Prison Recoded/plugins/PermissionsEx-1.23.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,5 +1,10 @@
 package org.runaway.enums;
 
+import org.bukkit.Bukkit;
+import org.runaway.Main;
+import org.runaway.sqlite.DoReturn;
+import org.runaway.sqlite.DoVoid;
+import org.runaway.sqlite.PreparedRequests;
 import org.runaway.utils.Utils;
 
 import java.util.HashMap;
@@ -20,27 +25,27 @@ public enum EStat {
     DEATHES("deathes", 0, StatType.INTEGER, Utils.getDeathes()),
     RATS("rats", 0, StatType.INTEGER, Utils.getRats()),
     ZOMBIES("zombies", 0, StatType.INTEGER, Utils.getZombies()),
-    DONATEMONEY("donate.money", 0, StatType.INTEGER, Utils.getDonatemoney()),
-    ZBT("donate.zbt", false, StatType.BOOLEAN, Utils.getZbt()),
-    AUTOSELLDONATE("donate.autosell", false, StatType.BOOLEAN, Utils.getAutoselldonate()),
-    BOOSTERMONEY("donate.boost.money", 1.0, StatType.DOUBLE, Utils.getBoostermoney()),
-    BOOSTERBLOCKS("donate.boost.blocks", 1.0, StatType.DOUBLE, Utils.getBoosterblocks()),
-    PLAYEDTIME("played-time", 0, StatType.INTEGER, Utils.getPlayedtime()),
+    DONATEMONEY("donatemoney", 0, StatType.INTEGER, Utils.getDonatemoney()),
+    ZBT("zbt", false, StatType.BOOLEAN, Utils.getZbt()),
+    AUTOSELLDONATE("autosell_donate", false, StatType.BOOLEAN, Utils.getAutoselldonate()),
+    BOOSTERMONEY("boost_money", 1.0, StatType.DOUBLE, Utils.getBoostermoney()),
+    BOOSTERBLOCKS("boost_blocks", 1.0, StatType.DOUBLE, Utils.getBoosterblocks()),
+    PLAYEDTIME("played_time", 0, StatType.INTEGER, Utils.getPlayedtime()),
     BOSSES("bosses", 0, StatType.INTEGER, Utils.getBosses()),
     AUTOSELL("autosell", false, StatType.BOOLEAN, Utils.getAutosell()),
-    REBIRTH("rebirth.level", 0, StatType.INTEGER, Utils.getRebirth()),
+    REBIRTH("rebirth_level", 0, StatType.INTEGER, Utils.getRebirth()),
     HELPER("helper", 0, StatType.INTEGER, Utils.getHelper()),
     SCROLLS("scrolls", 0, StatType.INTEGER, Utils.getScrolls()),
-    CASHBACK_TRAINER("trainer.cashback", 0, StatType.INTEGER, Utils.getCashback()),
-    UPGRADE_TRAINER("trainer.upgrade", 0, StatType.INTEGER, Utils.getUpgrade()),
-    LUCK_TRAINER("trainer.luck", 0, StatType.INTEGER, Utils.getLuck()),
-    GYM_TRAINER("trainer.gym", 0, StatType.INTEGER, Utils.getGym()),
-    REBIRTH_SCORE("rebirth.score", 0, StatType.INTEGER, Utils.getRebirthScores()),
-    BATTLEPASS_SCORE("battlepass.score", 0, StatType.INTEGER, Utils.getBattlePassScores()),
-    BATTLEPASS_LEVEL("battlepass.level", 0, StatType.INTEGER, Utils.getBattlePassLevel()),
-    LOCATION_GLAD("locations.glad", false, StatType.BOOLEAN, Utils.getGladiator()),
-    LOCATION_VAULT("locations.vault", false, StatType.BOOLEAN, Utils.getVault()),
-    LOCATION_ICE("locations.ice", false, StatType.BOOLEAN, Utils.getIce());
+    CASHBACK_TRAINER("trainer_cashback", 0, StatType.INTEGER, Utils.getCashback()),
+    UPGRADE_TRAINER("trainer_upgrade", 0, StatType.INTEGER, Utils.getUpgrade()),
+    LUCK_TRAINER("trainer_luck", 0, StatType.INTEGER, Utils.getLuck()),
+    GYM_TRAINER("trainer_gym", 0, StatType.INTEGER, Utils.getGym()),
+    REBIRTH_SCORE("rebirth_score", 0, StatType.INTEGER, Utils.getRebirthScores()),
+    BATTLEPASS_SCORE("battlepass_score", 0, StatType.INTEGER, Utils.getBattlePassScores()),
+    BATTLEPASS_LEVEL("battlepass_level", 0, StatType.INTEGER, Utils.getBattlePassLevel()),
+    LOCATION_GLAD("locglad", false, StatType.BOOLEAN, Utils.getGladiator()),
+    LOCATION_VAULT("locvault", false, StatType.BOOLEAN, Utils.getVault()),
+    LOCATION_ICE("locice", false, StatType.BOOLEAN, Utils.getIce());
 
     private String title;
     private Object defualt;
@@ -59,6 +64,10 @@ public enum EStat {
     }
 
     public Object getFromConfig(String player) {
+        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
+            return PreparedRequests.returnRequest(DoReturn.SELECT, Main.getMainDatabase(), player,
+                    Main.getInstance().stat_table, this.title);
+        }
         if (!containsInConfig(player)) {
             return defualt;
         }
@@ -66,6 +75,11 @@ public enum EStat {
     }
 
     public void setInConfig(String player, Object value) {
+        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
+            PreparedRequests.voidRequest(DoVoid.UPDATE, Main.getMainDatabase(), player,
+                    Main.getInstance().stat_table, value, this.title);
+            return;
+        }
         EConfig.STATISTICS.getConfig().set(player + "." + this.title, value);
         EConfig.STATISTICS.saveConfig();
     }
@@ -84,6 +98,11 @@ public enum EStat {
 
     public StatType getStatType() {
         return this.type;
+    }
+
+    public String getSQLiteType() {
+        if (this.type.equals(StatType.STRING)) return "TEXT";
+        return this.type.name();
     }
 
     public Object getDefualt() {

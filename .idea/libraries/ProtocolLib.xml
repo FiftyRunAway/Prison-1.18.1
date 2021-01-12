@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="ProtocolLib">
     <CLASSES>
-      <root url="jar://D:/Prison Recoded/plugins/ProtocolLib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../Prison Recoded/plugins/ProtocolLib.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

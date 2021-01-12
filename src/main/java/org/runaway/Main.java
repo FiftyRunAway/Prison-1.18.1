@@ -22,6 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
@@ -50,6 +51,8 @@ import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
 import org.runaway.quests.MinesQuest;
+import org.runaway.sqlite.Database;
+import org.runaway.sqlite.SQLite;
 import org.runaway.tasks.AsyncRepeatTask;
 import org.runaway.tasks.AsyncTask;
 import org.runaway.tasks.SyncRepeatTask;
@@ -74,6 +77,12 @@ public class Main extends JavaPlugin {
     public static Main getInstance() {
         return instance;
     }
+
+    //SQLite
+    private Map<String, Database> databases = new HashMap<>();
+    private final String database_name = "database";
+    public final String stat_table = "Statistics";
+    private SaveType type_saving;
 
     private ServerStatus status = null;
 
@@ -189,6 +198,88 @@ public class Main extends JavaPlugin {
             }
         });
         loadBoosters();
+        loadSQLite();
+    }
+
+    private void loadSQLite() {
+        type_saving = SaveType.CONFIG;
+        if (EConfig.CONFIG.getConfig().getBoolean("SQLite.enable")) {
+            type_saving = SaveType.SQLITE;
+
+            //Statistics table
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE IF NOT EXISTS " + stat_table + " (`player` VARCHAR (32) NOT NULL,");
+            Arrays.stream(EStat.values()).forEach(eStat ->
+                    sb.append('`').append(eStat.getStatName()).append('`').append(' ')
+                            .append(eStat.getSQLiteType()).append(" NOT NULL,"));
+
+            sb.append("PRIMARY KEY (player));");
+
+            initializeDatabase(database_name, sb.toString());
+        }
+    }
+
+    public static Database getMainDatabase() {
+        return getInstance().getDatabase(instance.database_name);
+    }
+
+
+    /**
+     *
+     * @param databaseName
+     *            name
+     * @param createStatement
+     *            statement once the database is created. Usually used to create
+     *            tables.
+     *
+     *            Sets the string sent to player when an item cannot be purchased.
+     */
+    public void initializeDatabase(String databaseName, String createStatement) {
+        Database db = new SQLite(databaseName, createStatement, Config.standartFile);
+        db.load();
+        databases.put(databaseName, db);
+    }
+
+    /**
+     *
+     * @param databaseName
+     *            name
+     * @param createStatement
+     *            statement once the database is created. Usually used to create
+     *            tables.
+     *
+     *            Sets the string sent to player when an item cannot be purchased.
+     * @param plugin to create database file inside.
+     */
+    public void initializeDatabase(Plugin plugin, String databaseName, String createStatement) {
+        Database db = new SQLite(databaseName, createStatement, plugin.getDataFolder());
+        db.load();
+        databases.put(databaseName, db);
+    }
+
+    /**
+     * Get the global list of currently loaded databased.
+     * <p>
+     *
+     * @return the {@link Main}'s global database list.
+     */
+    public Map<String, Database> getDatabases() {
+        return databases;
+    }
+
+    /**
+     *
+     * @param databaseName
+     *            name
+     *
+     *            Gets a specific {@link Database}'s class.
+     */
+    public Database getDatabase(String databaseName) {
+        return getDatabases().get(databaseName);
+    }
+
+    public SaveType getSaveType() {
+        return type_saving;
     }
 
     //Регистрация эвентов

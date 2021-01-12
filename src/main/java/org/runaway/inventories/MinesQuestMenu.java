@@ -91,6 +91,7 @@ public class MinesQuestMenu implements IMenus {
                         Material finalMat = mat;
                         int finalData = data;
                         int finalAm = am;
+                        String finalName = name;
                         btn.setClickEvent(event -> {
                             Player player = event.getWhoClicked();
                             Gamer g = GamerManager.getGamer(player);
@@ -101,7 +102,7 @@ public class MinesQuestMenu implements IMenus {
                             upLevel(player, finalMat, finalData);
                             player.closeInventory();
                             double money = getMoney(finalAm, quest.getStepMoney());
-                            g.sendTitle("&fКвест &e" + quest.getName().toLowerCase() + " &fвыполнен!",
+                            g.sendTitle("&fКвест &e" + finalName.toLowerCase() + " &fвыполнен!",
                                     "&8[&a+" + money + " " + MoneyType.RUBLES.getShortName() + "&8]");
                             g.depositMoney(money);
                         });

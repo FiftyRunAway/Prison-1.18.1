@@ -12,8 +12,12 @@ import org.runaway.Main;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
+import org.runaway.enums.SaveType;
 import org.runaway.enums.ServerStatus;
 import org.runaway.inventories.BattlePassMenu;
+import org.runaway.managers.GamerManager;
+import org.runaway.sqlite.DoVoid;
+import org.runaway.sqlite.PreparedRequests;
 import org.runaway.utils.Utils;
 
 import java.util.Arrays;
@@ -40,7 +44,6 @@ public class PlayerQuit implements Listener {
         Main.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
         BattlePassMenu.data.remove(player.getName());
-        Gamer.messages.remove(player.getName());
     }
 
     private void removeMissions(Player player) {
@@ -58,7 +61,15 @@ public class PlayerQuit implements Listener {
     }
 
     public static void SavePlayer(String g) {
-        Gamer gamer = Main.gamers.get(Bukkit.getPlayer(g).getUniqueId());
+        Gamer gamer = GamerManager.getGamer(g);
+        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
+            Arrays.stream(EStat.values()).forEach(eStat -> {
+                PreparedRequests.voidRequest(DoVoid.UPDATE, Main.getMainDatabase(), g, Main.getInstance().stat_table, gamer.getStatistics(eStat), eStat.getStatName());
+                eStat.getMap().remove(g);
+            });
+            return;
+        }
+
         Arrays.stream(EStat.values()).forEach(stat -> {
             EConfig.STATISTICS.getConfig().set(g + "." + stat.getStatName(), gamer.getStatistics(stat));
             stat.getMap().remove(g);

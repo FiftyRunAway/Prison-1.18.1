@@ -49,8 +49,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Gamer {
 
-    public static HashMap<Player, Long> messages = new HashMap<>();
-
     private static final String bp_perm = "prison.battlepass";
 
     public static ArrayList<UUID> tp = new ArrayList<>();
@@ -599,7 +597,6 @@ public class Gamer {
         if (isOnline()) {
             statistic.getMap().put(getPlayer().getName(), value);
         } else {
-            System.out.println(Bukkit.getOfflinePlayer(getUUID()).getName());
             statistic.setInConfig(Bukkit.getOfflinePlayer(getUUID()).getName(), value);
         }
     }
@@ -642,6 +639,6 @@ public class Gamer {
     }
 
     public void sendActionbar(String msg) {
-        getPlayer().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.colored(msg)));
+        //sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.colored(msg)));
     }
 }

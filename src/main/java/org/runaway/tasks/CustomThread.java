@@ -1,7 +1,6 @@
 package org.runaway.tasks;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;

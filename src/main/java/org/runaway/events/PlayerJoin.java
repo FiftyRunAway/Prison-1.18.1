@@ -21,11 +21,15 @@ import org.runaway.enums.*;
 import org.runaway.managers.GamerManager;
 import org.runaway.needs.Needs;
 import org.runaway.passiveperks.PassivePerks;
+import org.runaway.sqlite.DoReturn;
+import org.runaway.sqlite.DoVoid;
+import org.runaway.sqlite.PreparedRequests;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /*
@@ -96,6 +100,21 @@ public class PlayerJoin implements Listener {
     private void CreateInConfig(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
+
+        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
+
+            Arrays.stream(EStat.values()).forEach(eStat -> {
+                Object value = PreparedRequests.returnRequest(DoReturn.SELECT, Main.getMainDatabase(), player.getName(), Main.getInstance().stat_table, eStat.getStatName());
+                if (value != null) {
+                    addInMap(eStat, gamer, value);
+                } else {
+                    eStat.getMap().put(player.getName(), eStat.getDefualt());
+                    PreparedRequests.voidRequest(DoVoid.INSERT, Main.getMainDatabase(), player.getName(), Main.getInstance().stat_table, eStat.getDefualt(), eStat.getStatName());
+                }
+            });
+            return;
+        }
+
         if (!EConfig.STATISTICS.getConfig().contains(player.getName())) {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, player.getName() + " was added in config");
             Arrays.stream(EStat.values()).forEach(stat -> {
@@ -115,7 +134,10 @@ public class PlayerJoin implements Listener {
     }
 
     private void addInMap(EStat stat, Gamer player) {
-        Object value = EConfig.STATISTICS.getConfig().get(player.getGamer() + "." + stat.getStatName());
+        addInMap(stat, player, stat.getFromConfig(player.getGamer()));
+    }
+
+    private void addInMap(EStat stat, Gamer player, Object value) {
         try {
             if (stat.getStatType().equals(StatType.INTEGER)) {
                 stat.getMap().put(player.getPlayer().getName(), Integer.parseInt(value.toString()));
