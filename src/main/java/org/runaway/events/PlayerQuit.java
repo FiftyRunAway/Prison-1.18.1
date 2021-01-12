@@ -20,6 +20,9 @@ import org.runaway.sqlite.DoVoid;
 import org.runaway.sqlite.PreparedRequests;
 import org.runaway.utils.Utils;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
@@ -63,13 +66,28 @@ public class PlayerQuit implements Listener {
     public static void SavePlayer(String g) {
         Gamer gamer = GamerManager.getGamer(g);
         if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
+            try {
+                StringBuilder sb = new StringBuilder("mode");
+                ArrayList<Object> objs = new ArrayList<>();
+                Arrays.stream(EStat.values()).forEach(eStat -> {
+                    if (eStat.equals(EStat.MODE)) return;
+                    sb.append(", ").append(eStat.getStatName());
+                    objs.add(gamer.getStatistics(eStat));
+
+                    eStat.getMap().remove(g);
+                });
+                PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("UPDATE " + Main.getInstance().stat_table +
+                        " SET (" + sb.toString() + ") = (" + objs.toString().replace("[", "").replace("]", "") + ")");
+                ps.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             Arrays.stream(EStat.values()).forEach(eStat -> {
                 PreparedRequests.voidRequest(DoVoid.UPDATE, Main.getMainDatabase(), g, Main.getInstance().stat_table, gamer.getStatistics(eStat), eStat.getStatName());
                 eStat.getMap().remove(g);
             });
             return;
         }
-
         Arrays.stream(EStat.values()).forEach(stat -> {
             EConfig.STATISTICS.getConfig().set(g + "." + stat.getStatName(), gamer.getStatistics(stat));
             stat.getMap().remove(g);

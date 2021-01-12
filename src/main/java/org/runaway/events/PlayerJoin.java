@@ -29,7 +29,10 @@ import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
@@ -100,18 +103,41 @@ public class PlayerJoin implements Listener {
     private void CreateInConfig(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
-
         if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
-
-            Arrays.stream(EStat.values()).forEach(eStat -> {
-                Object value = PreparedRequests.returnRequest(DoReturn.SELECT, Main.getMainDatabase(), player.getName(), Main.getInstance().stat_table, eStat.getStatName());
-                if (value != null) {
-                    addInMap(eStat, gamer, value);
-                } else {
-                    eStat.getMap().put(player.getName(), eStat.getDefualt());
-                    PreparedRequests.voidRequest(DoVoid.INSERT, Main.getMainDatabase(), player.getName(), Main.getInstance().stat_table, eStat.getDefualt(), eStat.getStatName());
+            try {
+                PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("SELECT * FROM " + Main.getInstance().stat_table + " WHERE player = ?");
+                ps.setString(1, player.getName());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        Arrays.stream(EStat.values()).forEach(eStat -> {
+                            try {
+                                addInMap(eStat, gamer , rs.getObject(eStat.getStatName()));
+                            } catch (SQLException exception) {
+                                exception.printStackTrace();
+                            }
+                        });
+                    }
                 }
-            });
+            } catch (SQLException ex) {
+                try {
+                    StringBuilder sb = new StringBuilder("mode");
+                    ArrayList<Object> objs = new ArrayList<>();
+                    Arrays.stream(EStat.values()).forEach(eStat -> {
+                        if (eStat.equals(EStat.MODE)) return;
+                        sb.append(", ").append(eStat.getStatName());
+                        objs.add(eStat.getDefualt());
+
+                        System.out.println("added " + eStat.getStatName());
+                        eStat.getMap().put(player.getName(), eStat.getDefualt());
+                    });
+                    PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("INSERT INTO " +
+                            Main.getInstance().stat_table + " (player, " + sb.toString() +
+                            ") VALUES (" + player.getName() + "," + objs.toString().replace("[", "").replace("]", "") + ")");
+                    ps.executeQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
             return;
         }
 
