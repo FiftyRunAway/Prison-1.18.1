@@ -89,7 +89,7 @@ public class Upgrade {
     public static String getProp(UpgradeProperty prop, Gamer gamer) {
         switch (prop) {
             case COST: {
-                return String.valueOf(Math.round(gamer.getDoubleStatistics(EStat.MONEY)));
+                return String.valueOf(Math.round(gamer.getMoney()));
             }
             case LEVEL: {
                 return String.valueOf(gamer.getStatistics(EStat.LEVEL));

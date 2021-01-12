@@ -145,7 +145,7 @@ public class Board {
             Main.event = EConfig.SHOP.getConfig().getString("event");
             dateFormat = new SimpleDateFormat("HH:mm МСК | dd.MM.yy");
             decimalFormatSymbols.setDecimalSeparator('.');
-            decimalFormatSymbols.setGroupingSeparator(',');
+            decimalFormatSymbols.setGroupingSeparator(' ');
             ScoreBoardUpdate.addAll(EConfig.CONFIG.getConfig().getStringList("DisplayName"));
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> Bukkit.getOnlinePlayers().forEach(Board::sendBoard), 0, 10);
         } catch (Exception ex) {

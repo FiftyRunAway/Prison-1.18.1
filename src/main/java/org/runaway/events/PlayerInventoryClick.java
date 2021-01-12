@@ -86,7 +86,7 @@ public class PlayerInventoryClick implements Listener {
                 if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
                     Gamer gamer = GamerManager.getGamer(player);
                     double price = new Requires(gamer).costNextLevel();
-                    if (gamer.getDoubleStatistics(EStat.MONEY) >= price) {
+                    if (gamer.getMoney() >= price) {
                         double blocks = new Requires(gamer).blocksNextLevel();
                         if (gamer.getDoubleStatistics(EStat.BLOCKS) >= blocks) {
                             gamer.sendTitle(ChatColor.YELLOW + "Поздравляем", ChatColor.YELLOW + "с повышением уровня!");
@@ -133,7 +133,7 @@ public class PlayerInventoryClick implements Listener {
                     }
                     if (last_lore.contains("цена")) {
                         float cost = Float.parseFloat(last_lore.replace("•", "").replace("цена", "").replace(MoneyType.RUBLES.getShortName(), ""));
-                        if (gamer.getDoubleStatistics(EStat.MONEY) < cost) {
+                        if (gamer.getMoney() < cost) {
                             gamer.sendMessage(EMessage.MONEYNEEDS);
                             player.closeInventory();
                             return;

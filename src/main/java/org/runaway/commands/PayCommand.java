@@ -44,7 +44,7 @@ public class PayCommand extends CommandManager {
                 gamer.sendMessage(EMessage.VALUEBAD);
                 return;
             }
-            if (send > gamer.getDoubleStatistics(EStat.MONEY)) {
+            if (send > gamer.getMoney()) {
                 gamer.sendMessage(EMessage.MONEYNEEDS);
                 return;
             }

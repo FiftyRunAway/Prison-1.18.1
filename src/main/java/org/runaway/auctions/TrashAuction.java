@@ -60,7 +60,7 @@ public class TrashAuction {
         updater();
     }
 
-    private static void startAuction() {
+    public static void startAuction() {
         if (!auctions.isEmpty()) closeAll();
         HashMap<ItemStack, Double> already = new HashMap<>(items);
         for (int i = 0; i < locs.size(); i++) {
@@ -241,7 +241,7 @@ public class TrashAuction {
                 return;
             }
             this.hologram.clearLines();
-            this.hologram.appendTextLine(Utils.colored("&fПредмет &7• " + this.itemStack.getItemMeta().getDisplayName()));
+            this.hologram.appendTextLine(Utils.colored("&fПредмет &7• " + this.itemStack.getItemMeta().getDisplayName())).setTouchHandler(player -> player.openInventory(menu.build()));
             ItemLine item = this.hologram.appendItemLine(this.itemStack);
             item.setTouchHandler(player -> player.openInventory(menu.build()));
             this.hologram.appendTextLine(Utils.colored("&7(&eПКМ&7 по предмету)"));
@@ -253,8 +253,8 @@ public class TrashAuction {
             this.hologram.appendTextLine(Utils.colored("&fПоставил &7• &a" + (winner_exited ? last + " &cВышел" : last)));
             this.hologram.appendTextLine(Utils.colored("&fОсталось &7• &a" + color(timeout) + timeout + " сек"));
 
-            this.hologram.appendTextLine(" ");
-            this.hologram.appendTextLine(Utils.colored("&eПКМ &fчтобы добавить &a15 " + MoneyType.RUBLES.getShortName()));
+            this.hologram.appendTextLine(" ").setTouchHandler(player -> player.openInventory(menu.build()));
+            this.hologram.appendTextLine(Utils.colored("&eПКМ &fчтобы добавить &a15 " + MoneyType.RUBLES.getShortName())).setTouchHandler(player -> player.openInventory(menu.build()));
             TouchableLine l = this.hologram.appendTextLine(Utils.colored("&eПКМ + SHIFT &fчтобы добавить &a50 " + MoneyType.RUBLES.getShortName()));
             l.setTouchHandler(this::add);
         }
@@ -317,7 +317,7 @@ public class TrashAuction {
                 return;
             }
             if (bought) return;
-            if (gamer.getDoubleStatistics(EStat.MONEY) >= now + toAdd) {
+            if (gamer.getMoney() >= now + toAdd) {
                 if (!started) start();
                 inauc.add(player.getName());
                 inauc.remove(last);

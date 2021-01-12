@@ -454,7 +454,7 @@ public class Gamer {
         }
         if (isOnline()) {
             sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
-            double m = getDoubleStatistics(EStat.MONEY);
+            double m = getMoney();
             if (m >= 15) Achievement.GET_15.get(getPlayer(), false);
             if (m >= 100) Achievement.GET_100.get(getPlayer(), false);
             if (m >= 1500) Achievement.GET_1000.get(getPlayer(), false);
@@ -473,7 +473,7 @@ public class Gamer {
 
     public void withdrawMoney(double money, int sale) {
         double to_withdraw = (1 - (double)sale / 100) * money;
-        setStatistics(EStat.MONEY, getDoubleStatistics(EStat.MONEY) - to_withdraw);
+        setStatistics(EStat.MONEY, getMoney() - to_withdraw);
         if (isOnline()) {
             sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));
             if (getIntStatistics(EStat.CASHBACK_TRAINER) > 0) {
@@ -604,6 +604,10 @@ public class Gamer {
         }
     }
 
+    public double getMoney() {
+        return getDoubleStatistics(EStat.MONEY);
+    }
+
     public String getGamer() {
         return this.gamer;
     }
@@ -629,7 +633,12 @@ public class Gamer {
     }
 
     public void sendTitle(String title) {
-        sendTitle(title, null);
+        String subtitle = null;
+        if(title.contains("\n")) {
+            title = title.split("\n")[0];
+            subtitle = title.split("\n")[1];
+        }
+        sendTitle(title, subtitle);
     }
 
     public void sendActionbar(String msg) {

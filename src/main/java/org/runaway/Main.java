@@ -1,5 +1,12 @@
 package org.runaway;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
@@ -86,6 +93,8 @@ public class Main extends JavaPlugin {
     public static boolean useBannerBoard;
     public static boolean useTelegramBots;
 
+    public static TrashAuction trashAuction;
+
     //Telegram
     public String bot_username;
     public String bot_token;
@@ -169,7 +178,16 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
         SPAWN = Utils.getLocation("spawn");
         Bukkit.getServer().getWorlds().forEach(world -> world.setGameRuleValue("announceAdvancements", "false"));
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.MONITOR, PacketType.Play.Client.USE_ENTITY) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                if (event.getPacketType() == PacketType.Play.Client.USE_ENTITY) {
+                    PacketContainer packet = event.getPacket();
+                    EnumWrappers.EntityUseAction entityUseAction = packet.getEntityUseActions().read(0);
 
+                }
+            }
+        });
         loadBoosters();
     }
 
@@ -587,7 +605,7 @@ public class Main extends JavaPlugin {
                 if (gamer.getStatistics(EStat.MONEY) instanceof Integer) {
                     money1.put(name, (long) gamer.getIntStatistics(EStat.MONEY));
                 } else {
-                    money1.put(name, Math.round(gamer.getDoubleStatistics(EStat.MONEY)));
+                    money1.put(name, Math.round(gamer.getMoney()));
                 }
                 if (gamer.getStatistics(EStat.BLOCKS) instanceof Integer) {
                     blocks1.put(name, (long) gamer.getIntStatistics(EStat.BLOCKS));

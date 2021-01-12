@@ -55,7 +55,7 @@ public class LevelMenu implements IMenus {
         lore.add(" ");
         lore.add(Utils.colored("&eТребования:"));
         lore.add(Utils.colored("&7• &fБлоков: " + AccessBlocksColor(gamer) + Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)) + "/" + blocks + " " + AccessBlocksSymbol(gamer)));
-        lore.add(Utils.colored("&7• &fДенег: " + AccessMoneyColor(gamer) + Board.FormatMoney(gamer.getDoubleStatistics(EStat.MONEY)) + "/" + Board.FormatMoney(price) + " " + AccessMoneySymbol(gamer)));
+        lore.add(Utils.colored("&7• &fДенег: " + AccessMoneyColor(gamer) + Board.FormatMoney(gamer.getMoney()) + "/" + Board.FormatMoney(price) + " " + AccessMoneySymbol(gamer)));
         return lore;
     }
 
@@ -70,7 +70,7 @@ public class LevelMenu implements IMenus {
 
     private static ChatColor AccessMoneyColor(Gamer gamer) {
         int nextlevel = (gamer.getIntStatistics(EStat.LEVEL) + 1);
-        if (gamer.getDoubleStatistics(EStat.MONEY) - EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".price") >= 0) {
+        if (gamer.getMoney() - EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".price") >= 0) {
             return ChatColor.GREEN;
         } else {
             return ChatColor.RED;
@@ -79,7 +79,7 @@ public class LevelMenu implements IMenus {
 
     private static boolean hasAccessToNextLevel(Gamer gamer) {
         int nextlevel = (gamer.getIntStatistics(EStat.LEVEL) + 1);
-        if (gamer.getDoubleStatistics(EStat.MONEY) >= EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".price")) {
+        if (gamer.getMoney() >= EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".price")) {
             return gamer.getDoubleStatistics(EStat.BLOCKS) >= EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".blocks");
         }
         return false;
@@ -96,7 +96,7 @@ public class LevelMenu implements IMenus {
 
     private static String AccessMoneySymbol(Gamer gamer) {
         int nextlevel = (gamer.getIntStatistics(EStat.LEVEL) + 1);
-        if (gamer.getDoubleStatistics(EStat.MONEY) >= EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".price")) {
+        if (gamer.getMoney() >= EConfig.CONFIG.getConfig().getDouble("levels." + nextlevel + ".price")) {
             return ChatColor.GREEN + "✔";
         } else {
             return ChatColor.RED + "✘";

@@ -228,7 +228,7 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
         } else {
             DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
             decimalFormatSymbols.setDecimalSeparator('.');
-            decimalFormatSymbols.setGroupingSeparator(',');
+            decimalFormatSymbols.setGroupingSeparator(' ');
             DecimalFormat decimalFormat = new DecimalFormat("#,##0", decimalFormatSymbols);
             String r = decimalFormat.format(balance);
             return r;

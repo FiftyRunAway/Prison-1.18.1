@@ -66,7 +66,7 @@ public class Trainer {
                     "- " + tempmas[1].replaceAll("_", " ") + ".");
             if (getColorLevel(plevel, i + 1) == ChatColor.GREEN) {
                 lore.addString(" &7Требования:");
-                if (Integer.parseInt(tempmas[0]) < gamer.getDoubleStatistics(EStat.MONEY)) {
+                if (Integer.parseInt(tempmas[0]) < gamer.getMoney()) {
                     lore.addString("&a  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
                 } else {
                     lore.addString("&c  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
