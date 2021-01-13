@@ -25,8 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BattlePass {
 
     public static ArrayList<WeeklyMission> missions = new ArrayList<>();
-    private static ArrayList<IReward> rewards = new ArrayList<>();
-    private static HashMap<Integer, ArrayList<IReward>> level_rewards = new HashMap<>();
+    private static final ArrayList<IReward> rewards = new ArrayList<>();
+    private static final HashMap<Integer, ArrayList<IReward>> level_rewards = new HashMap<>();
     public static HashMap<IReward, Integer> slots = new HashMap<>();
     public static ArrayList<Integer> glass_slots = new ArrayList<>();
     public static int season;
@@ -38,9 +38,14 @@ public class BattlePass {
     private final static int openingIn = 9;
 
     static void checkLevelUp(Gamer gamer) {
-        if (gamer.getIntStatistics(EStat.BATTLEPASS_SCORE) / level >= 1) {
+        if (gamer.getIntStatistics(EStat.BATTLEPASS_SCORE) / level >= 1
+                && (int)gamer.getStatistics(EStat.BATTLEPASS_LEVEL) != getMaxLevelBattlePass()) {
             levelUp(gamer);
         }
+    }
+
+    static int getMaxLevelBattlePass() {
+        return level_rewards.size();
     }
 
     private static void levelUp(Gamer gamer) {
@@ -161,10 +166,7 @@ public class BattlePass {
 
                 reward.setDetails(objects.toArray());
                 reward.setLevel(level);
-
-                if (splitter[0].equals("free")) {
-                    reward.setFree(true);
-                } else reward.setFree(false);
+                reward.setFree(splitter[0].equals("free"));
 
                 reward.init();
 

@@ -45,12 +45,16 @@ public class Donate {
         this.sale = sale;
     }
 
+    public static void donate(Gamer gamer, int sum) {
+
+    }
+
     public ItemStack getIcon() {
         return new Item.Builder(icon).amount(amount).name(name + (temporary ? " &c&nВременный предмет!" : "")).lore(new Lore.BuilderLore()
                 .addString("&7Описание:")
                 .addLore(lore)
                 .addSpace()
-                .addString("&fЦена: " + (sale > 0 ? ("&b&m" + price + " &c&n" + sale) : ("&l&b&n" + price)) + " ₽")
+                .addString("&fЦена: " + (sale > 0 ? ("&b&m" + price + " &c&n" + sale) : ("&l&b&n" + price)) + " стримов")
         .build()).build().item();
     }
 

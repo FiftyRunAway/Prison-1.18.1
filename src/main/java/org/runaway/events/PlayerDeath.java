@@ -80,9 +80,9 @@ public class PlayerDeath implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         event.setRespawnLocation(Main.SPAWN);
         Player player = event.getPlayer();
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
         Gamer gamer = GamerManager.getGamer(player);
         new SyncTask(() -> {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
             gamer.getPassivePerks().forEach(passive -> {
                 if (!passive.isEffectAction()) return;
                 passive.getPerkAction(gamer);

@@ -54,7 +54,7 @@ public class Gamer {
     private final UUID uuid;
     private String replyPlayer;
 
-    private Map<Saveable, Object> statisticsMap;
+    private final Map<Saveable, Object> statisticsMap;
 
     private boolean isOnline = false;
 

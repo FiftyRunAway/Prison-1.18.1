@@ -25,8 +25,6 @@ public class GiftCommand extends CommandManager {
         super("gift", "prison.commands", Collections.singletonList("подарок"), false);
     }
 
-    private static HashMap<Player, BukkitTask> list = new HashMap<>();
-
     private void accept(boolean is, Player consumer) {
         Gamer consumerGamer = GamerManager.getGamer(consumer);
         if (!Utils.getGifts().containsKey(consumer.getName())) {
@@ -42,11 +40,13 @@ public class GiftCommand extends CommandManager {
         Gamer ownerGamer = GamerManager.getGamer(owner);
         if (is) {
             boolean taken = false;
-            for (int i = 0; i < owner.getInventory().getContents().length; i++) {
-                if (owner.getInventory().getContents()[i].equals(Utils.getGifts().get(consumer.getName()))) {
-                    owner.getInventory().getItem(i).setAmount(0);
-                    taken = true;
-                    break;
+            if (owner.getInventory().getContents().length > 0) {
+                for (int i = 0; i < owner.getInventory().getContents().length; i++) {
+                    if (owner.getInventory().getContents()[i].equals(Utils.getGifts().get(consumer.getName()))) {
+                        owner.getInventory().getItem(i).setAmount(0);
+                        taken = true;
+                        break;
+                    }
                 }
             }
             if (!taken) {
@@ -83,7 +83,7 @@ public class GiftCommand extends CommandManager {
         Gamer gamer = GamerManager.getGamer(p);
         if (args.length == 0) {
             if (Utils.getGifts().containsKey(p.getName())) {
-                StandardMenu menu = StandardMenu.create(1, "&cВы хотите получить этот подарок?");
+                StandardMenu menu = StandardMenu.create(1, "&cВы хотите получить подарок?");
 
                 MenuButton accept = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(5, "&aПРИНЯТЬ"));
                 accept.setClickEvent(event -> accept(true, p));

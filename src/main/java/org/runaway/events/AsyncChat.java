@@ -9,6 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.donate.Donate;
+import org.runaway.inventories.DonateMenu;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
@@ -30,6 +32,26 @@ public class AsyncChat implements Listener {
         String message = event.getMessage();
         if ((message.contains("&") || message.contains("|")) && !player.hasPermission("prison.moder")) {
             gamer.sendMessage(EMessage.AMPERSAND);
+            return;
+        }
+        if (DonateMenu.in_buiying.containsKey(player.getName())) {
+            if (message.split(" ").length > 1) {
+                gamer.sendMessage(EMessage.INTERROR);
+                return;
+            } else if (message.contains("отмена")) {
+                DonateMenu.stopBuyingProcess(player);
+                gamer.sendMessage(EMessage.DONATINGSTOP);
+                return;
+            }
+            int streams;
+            try {
+                streams = Integer.parseInt(message);
+            } catch (Exception exception) {
+                gamer.sendMessage(EMessage.INTERROR);
+                return;
+            }
+            DonateMenu.stopBuyingProcess(player);
+            Donate.donate(gamer, streams);
             return;
         }
         String faction = "";
@@ -57,7 +79,8 @@ public class AsyncChat implements Listener {
                     }
                 });
             } else {
-                event.getRecipients().forEach(players -> send(Main.gamers.get(players.getUniqueId()), format + message.replace("!", "")));
+                event.getRecipients().forEach(players ->
+                        send(Main.gamers.get(players.getUniqueId()), format + message.replace("!", "")));
             }
             return;
         }

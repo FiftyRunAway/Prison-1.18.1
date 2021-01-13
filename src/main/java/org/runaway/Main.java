@@ -30,7 +30,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
@@ -88,7 +87,7 @@ public class Main extends JavaPlugin {
     }
 
     //SQLite
-    private Map<String, Database> databases = new HashMap<>();
+    private final Map<String, Database> databases = new HashMap<>();
     public final String stat_table = "Statistics";
     private SaveType type_saving;
     private PreparedRequests preparedRequests;
@@ -110,8 +109,6 @@ public class Main extends JavaPlugin {
     public static boolean useViaVersion;
     public static boolean useBannerBoard;
     public static boolean useTelegramBots;
-
-    public static TrashAuction trashAuction;
 
     //Telegram
     public String bot_username;
@@ -186,7 +183,6 @@ public class Main extends JavaPlugin {
         if (loader.getBoolean("loader.main_menu")) MainMenu.load();
         if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
         if (loader.getBoolean("loader.nametag")) loadNametagEdit();
-        if (loader.getBoolean("loader.telegram")) loadTelegramBotsAPI();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
         if (loader.getBoolean("loader.battlepass")) BattlePass.load();
@@ -265,17 +261,6 @@ public class Main extends JavaPlugin {
         this.preparedRequests = new PreparedRequests(db);
     }
 
-    /**
-     *
-     * @param databaseName
-     *            name
-     * @param createStatement
-     *            statement once the database is created. Usually used to create
-     *            tables.
-     *
-     *            Sets the string sent to player when an item cannot be purchased.
-     * @param plugin to create database file inside.
-     */
     /**
      * Get the global list of currently loaded databased.
      * <p>
@@ -492,25 +477,6 @@ public class Main extends JavaPlugin {
         Vars.sendSystemMessage(TypeMessage.INFO, "PermissionsEx Displays has not been installed yet");
     }
 
-    //Привязка TelegramBotsAPI
-    private void loadTelegramBotsAPI() {
-        useTelegramBots = Bukkit.getPluginManager().isPluginEnabled("TelegramBotsAPIPlugin");
-        if (useTelegramBots) {
-            Vars.sendSystemMessage(TypeMessage.SUCCESS, "TelegramBotsAPI was successfully connected");
-            this.bot_username = EConfig.CONFIG.getConfig().getString("telegram.username");
-            this.bot_token = EConfig.CONFIG.getConfig().getString("telegram.token");
-            /*ApiContextInitializer.init();
-            try {
-                TelegramBotsApi botsApi = new TelegramBotsApi();
-                botsApi.registerBot(new TelegramBot());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }*/
-            return;
-        }
-        Vars.sendSystemMessage(TypeMessage.INFO, "TelegramBotsAPI Displays has not been installed yet");
-    }
-
     //Привязка NametagEdit
     private void loadNametagEdit() {
         useNametagEdit = Bukkit.getPluginManager().isPluginEnabled("NametagEdit");
@@ -642,21 +608,13 @@ public class Main extends JavaPlugin {
                 Vars.sendSystemMessage(TypeMessage.INFO, "BannerBoard has not been installed yet");
                 return;
             }
-
-            Map<String, Long> money = new HashMap<>();
-            Map<String, Long> blocks = new HashMap<>();
-            Map<String, Long> level = new HashMap<>();
-            Map<String, Long> rats = new HashMap<>();
-            Map<String, Long> rebirth = new HashMap<>();
-            Map<String, Long> keys = new HashMap<>();
-            Map<String, Long> dm = new HashMap<>();
-            money = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
-            blocks = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
-            level = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
-            rats = getPreparedRequests().getTop(EStat.RATS.getColumnName(), 10);
-            rebirth = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
-            keys = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
-            dm = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
+            Map<String, Long> money = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
+            Map<String, Long> blocks = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
+            Map<String, Long> level = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
+            Map<String, Long> rats = getPreparedRequests().getTop(EStat.RATS.getColumnName(), 10);
+            Map<String, Long> rebirth = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
+            Map<String, Long> keys = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
+            Map<String, Long> dm = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
             tops.put("money", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10,  MoneyType.RUBLES.getShortName()));
             tops.put("blocks", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10, "блоков"));
             tops.put("levels", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10, "уровень"));
@@ -681,7 +639,7 @@ public class Main extends JavaPlugin {
         Map<String, Long> blocks1 = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
         Map<String, Long> level1 = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
         Map<String, Long> rats1 = getPreparedRequests().getTop(EStat.RATS.getColumnName(), 10);
-        Map<String, Long> rebirth1 = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
+        //Map<String, Long> rebirth1 = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
         Map<String, Long> keys1 = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
         Map<String, Long> dm1 = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
         if (!Main.tops.keySet().iterator().hasNext()) return;
@@ -755,38 +713,36 @@ public class Main extends JavaPlugin {
 
         //Блоков
         Utils.getlBlocksMultiplier().forEach((player_name, mult) -> {
-            String name = player_name;
             AtomicLong time = new AtomicLong();
             Utils.getlBlocksRealTime().forEach((p, times) -> {
-                if (p.equals(name)) {
+                if (p.equals(player_name)) {
                     time.set(times);
                 }
             });
             AtomicLong start = new AtomicLong();
             Utils.getlBlocksActivatingTime().forEach((p, times) -> {
-                if (p.equals(name)) {
+                if (p.equals(player_name)) {
                     start.set(times);
                 }
             });
-            Utils.localBoostersSetter(name, "blocks", time.get(), mult, start.get());
+            Utils.localBoostersSetter(player_name, "blocks", time.get(), mult, start.get());
         });
 
         //Денег
         Utils.getlMoneyMultiplier().forEach((player_name, mult) -> {
-            String name = player_name;
             AtomicLong time = new AtomicLong();
             Utils.getlMoneyRealTime().forEach((p, times) -> {
-                if (p.equals(name)) {
+                if (p.equals(player_name)) {
                     time.set(times);
                 }
             });
             AtomicLong start = new AtomicLong();
             Utils.getlMoneyActivatingTime().forEach((p, times) -> {
-                if (p.equals(name)) {
+                if (p.equals(player_name)) {
                     start.set(times);
                 }
             });
-            Utils.localBoostersSetter(name, "money", time.get(), mult, start.get());
+            Utils.localBoostersSetter(player_name, "money", time.get(), mult, start.get());
         });
 
         //Текщее время

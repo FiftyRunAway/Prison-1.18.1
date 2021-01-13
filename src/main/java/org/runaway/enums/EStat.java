@@ -1,11 +1,8 @@
 package org.runaway.enums;
 
-import org.bukkit.Bukkit;
 import org.runaway.Main;
 import org.runaway.sqlite.DoReturn;
 import org.runaway.sqlite.DoVoid;
-import org.runaway.sqlite.PreparedRequests;
-import org.runaway.utils.Utils;
 
 import java.util.HashMap;
 
@@ -18,7 +15,7 @@ public enum EStat implements Saveable {
     UUID("uuid", "", StatType.STRING),
     FULL_NAME("full_name", "", StatType.STRING),
     LEVEL("level", 1, StatType.INTEGER),
-    STREAMS("streams", 0, StatType.DOUBLE),
+    STREAMS("streams", 0.0, StatType.DOUBLE),
     MONEY("balance", 0.0, StatType.DOUBLE),
     BLOCKS("blocks", 0.0, StatType.DOUBLE),
     FACTION("faction", "default", StatType.STRING),

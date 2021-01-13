@@ -54,6 +54,14 @@ public class Needs implements Listener {
         }, cooldown * 1200L, cooldown * 1200L));
     }
 
+    public static void onQuit(PlayerQuitEvent event) {
+        String name = event.getPlayer().getName();
+        if (tasks.containsKey(name)) {
+            tasks.get(name).cancel();
+            tasks.remove(name);
+        }
+    }
+
     private static void check(Player player) {
         ArrayList<String> list = NeedsType.getProperties(needs.get(player.getName()));
         Gamer gamer = GamerManager.getGamer(player);
@@ -119,15 +127,6 @@ public class Needs implements Listener {
                     player.removePotionEffect(effect.getType());
                 }
             }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onQuit(PlayerQuitEvent event) {
-        String name = event.getPlayer().getName();
-        if (tasks.containsKey(name)) {
-            tasks.get(name).cancel();
-            tasks.remove(name);
         }
     }
 

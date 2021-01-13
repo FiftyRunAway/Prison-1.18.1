@@ -1,6 +1,5 @@
 package org.runaway.mines;
 
-import com.boydti.fawe.jnbt.anvil.filters.SetPatternFilter;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;

@@ -3,6 +3,7 @@ package org.runaway.inventories;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
 import org.runaway.Item;
@@ -15,11 +16,16 @@ import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
+import org.runaway.tasks.SyncRepeatTask;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
-import org.runaway.utils.Vars;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DonateMenu implements IMenus {
+
+    public static Map<String, SyncRepeatTask> in_buiying = new HashMap<>();
 
     private void buy(Donate donate, Player player, Inventory menu) {
         Gamer gamer = GamerManager.getGamer(player);
@@ -72,16 +78,23 @@ public class DonateMenu implements IMenus {
         privs.setClickEvent(event -> new PrivilageMenu(event.getWhoClicked()));
         menu.addButton(privs);
 
-        IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&eВаш донат-счёт пополнен на &a" + Donate.getDonateMoney(player.getName()) + " ₽")
-                .lore(new Lore.BuilderLore().addSpace().addString("&7>> &7&nНажмите, чтобы пополнить").build()).build().item());
+        IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&eВаш донат-счёт пополнен на &a" + Donate.getDonateMoney(player.getName()) + " стримов")
+                .lore(new Lore.BuilderLore().addSpace().addString("&7>> &c&nНажмите, чтобы пополнить").build()).build().item());
         dm.setClickEvent(event -> {
-            event.getWhoClicked().sendMessage(Utils.colored("&aПерейдите на наш сайт:\n&7• &e&n" + Vars.getSite()));
+            Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
             event.getWhoClicked().closeInventory();
+            in_buiying.put(gamer.getGamer(), new SyncRepeatTask(() ->
+                    gamer.sendMessage(EMessage.STREAMSBUYING), 150));
         });
         menu.addButton(dm.setSlot(39));
         menu.addButton(dm.clone().setSlot(41));
 
         player.openInventory(menu.build());
+    }
+
+    public static void stopBuyingProcess(Player player) {
+        in_buiying.get(player.getName()).stop();
+        in_buiying.remove(player.getName());
     }
 
     @Override

@@ -15,7 +15,9 @@ import org.runaway.enums.EStat;
 import org.runaway.enums.SaveType;
 import org.runaway.enums.ServerStatus;
 import org.runaway.inventories.BattlePassMenu;
+import org.runaway.inventories.DonateMenu;
 import org.runaway.managers.GamerManager;
+import org.runaway.needs.Needs;
 import org.runaway.sqlite.DoVoid;
 import org.runaway.sqlite.PreparedRequests;
 import org.runaway.utils.Utils;
@@ -44,10 +46,12 @@ public class PlayerQuit implements Listener {
         if (BlockBreak.treasure_holo.containsKey(player.getName())) {
             Bukkit.getWorld(player.getWorld().getName()).getBlockAt(BlockBreak.treasure_holo.get(player.getName()).getLocation().add(-0.5, -1.5, -0.5)).setType(Material.AIR);
         }
+        Needs.onQuit(event);
         Gamer.tp.remove(player.getUniqueId());
         Main.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
         BattlePassMenu.data.remove(player.getName());
+        DonateMenu.stopBuyingProcess(player);
     }
 
     private void removeMissions(Player player) {
@@ -67,20 +71,6 @@ public class PlayerQuit implements Listener {
     public static void SavePlayer(String g) {
         Gamer gamer = GamerManager.getGamer(g);
         if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
-            try {
-                /*StringBuilder sb = new StringBuilder("mode");
-                ArrayList<Object> objs = new ArrayList<>();
-                Arrays.stream(EStat.values()).forEach(eStat -> {
-                    if (eStat.equals(EStat.MODE)) return;
-                    sb.append(", ").append(eStat.getStatName());
-                    objs.add(gamer.getStatistics(eStat));
-                });
-                PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("UPDATE " + Main.getInstance().stat_table +
-                        " SET (" + sb.toString() + ") = (" + objs.toString().replace("[", "").replace("]", "") + ")");
-                ps.executeQuery(); */
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             Arrays.stream(EStat.values()).forEach(eStat -> {
                 //PreparedRequests.voidRequest(DoVoid.UPDATE, g, eStat.getStatName(), gamer.getStatistics(eStat));
             });

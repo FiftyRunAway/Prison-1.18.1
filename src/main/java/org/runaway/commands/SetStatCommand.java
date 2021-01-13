@@ -103,7 +103,7 @@ public class SetStatCommand extends CommandManager {
         try {
             type = EStat.valueOf(args[1].toUpperCase());
         } catch (Exception ex) {
-            cs.sendMessage(ChatColor.RED + "Typed " + Utils.upCurLetter(args[1], 1) + " hasn't real");
+            cs.sendMessage(ChatColor.RED + "Typed " + Utils.upCurLetter(args[1], 1) + " isn`t real");
             cs.sendMessage(ChatColor.RED + "Available: " + st.toString());
             return;
         }

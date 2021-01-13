@@ -97,12 +97,12 @@ public class UpgradeMisc {
                 for (UpgradeProperty up : properties.keySet()) {
                     int dat = Integer.parseInt(data.get(up));
                     int prop = Integer.parseInt(properties.get(up));
-                    lores.add(Utils.colored("  &f- " + up.getName() + " &7&l>> " + ((dat < prop) ? "&c" : "&a") + dat + "&f/&6" + prop));
+                    lores.add(Utils.colored("  &f• " + up.getName() + " &7&l>> " + ((dat < prop) ? "&c" : "&a") + dat + "&f/&6" + prop));
                 }
             } else {
                 for (UpgradeProperty up : properties.keySet()) {
                     int prop = Integer.parseInt(properties.get(up));
-                    lores.add(Utils.colored("  &f- " + up.getName() + " &7&l>> " + "&6" + prop));
+                    lores.add(Utils.colored("  &f• " + up.getName() + " &7&l>> " + "&6" + prop));
                 }
             }
         }
@@ -113,8 +113,8 @@ public class UpgradeMisc {
     }
 
     public static String getSection(Player player) {
+        if(player.getInventory().getItemInMainHand() == null) return null;
         ItemStack item = player.getInventory().getItemInMainHand();
-        if(item == null) return null;
         if(!item.hasItemMeta()) return null;
         if(!item.getItemMeta().hasDisplayName()) return null;
         String type = item.getType().name();
