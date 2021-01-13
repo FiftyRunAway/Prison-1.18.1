@@ -3,7 +3,9 @@ package org.runaway.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 import org.runaway.enums.BoosterType;
@@ -116,19 +118,13 @@ public class BoosterCommand extends CommandManager {
             return;
         }
         if (args.length == 6 && args[0].equalsIgnoreCase("add")) {
-            String format = args[2].toUpperCase() + " " + args[3].toLowerCase() + " " + args[5] + " " + args[4];
+            String format = args[2].toUpperCase() + "-" + args[3].toLowerCase() + "-" + args[5] + "-" + args[4];
             String name = args[1];
-            if (!EConfig.BOOSTERS.getConfig().contains(name)) {
-                List<String> list = new ArrayList<>();
-                list.add(format);
-                EConfig.BOOSTERS.getConfig().set(name, list);
-            } else {
-                List<String> list = EConfig.BOOSTERS.getConfig().getStringList(name);
-                list.add(format);
-                EConfig.BOOSTERS.getConfig().set(name, list);
+            if (Utils.getPlayers().contains(name)) {
+                Gamer gamer = GamerManager.getGamer(name);
+                gamer.getBoosters().add(format);
+                Vars.sendSystemMessage(TypeMessage.SUCCESS, "Added to " + name + " " + format);
             }
-            EConfig.BOOSTERS.saveConfig();
-            Vars.sendSystemMessage(TypeMessage.SUCCESS, "Added to " + name + " " + format);
         }
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("debug")) {

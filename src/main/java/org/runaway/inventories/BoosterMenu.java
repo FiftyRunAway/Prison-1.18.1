@@ -7,6 +7,7 @@ import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.BoosterType;
+import org.runaway.enums.EStat;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.boosters.Serializer;
@@ -52,11 +53,11 @@ public class BoosterMenu implements IMenus {
     }
 
     private static void loadMenu(Gamer gamer, StandardMenu menu, BoosterType type) {
-        if (EConfig.BOOSTERS.getConfig().contains(gamer.getGamer()) && !EConfig.BOOSTERS.getConfig().getStringList(gamer.getGamer()).isEmpty()) {
+        if (gamer.getStringStatistics(EStat.BOOSTERS) != null) {
             AtomicInteger i = new AtomicInteger(0);
             AtomicInteger ser = new AtomicInteger(0);
-            EConfig.BOOSTERS.getConfig().getStringList(gamer.getGamer()).forEach(s -> {
-                if (type.name().equals(s.split(" ")[0])) {
+            gamer.getBoosters().forEach(s -> {
+                if (type.name().equals(s.split("-")[0].toUpperCase())) {
                     IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Serializer().unserializeBooster(s, i.get(), type)).setSlot(ser.getAndIncrement());
                     menu.addButton(btn);
                 }

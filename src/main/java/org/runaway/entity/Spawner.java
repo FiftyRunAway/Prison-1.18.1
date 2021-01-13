@@ -90,7 +90,7 @@ public class Spawner {
         }
         this.hologram.clearLines();
         this.hologram.appendTextLine(Utils.colored("&fБосс &7• " + EConfig.MOBS.getConfig().getString(type.toString().toLowerCase() + ".name")));
-        long ticks = (this.interval * 1000) - (System.currentTimeMillis() - this.deathTime);
+        long ticks = (this.interval * 1000L) - (System.currentTimeMillis() - this.deathTime);
         long hours = ticks / 3600000; ticks %= 3600000; long minutes = ticks / 60000;
         String time = (hours < 10 ? "0" : "" + hours) + " ч " + (minutes < 10 ? "0" + minutes : minutes) + " мин";
         if (minutes == 0) time = "< 1 мин";

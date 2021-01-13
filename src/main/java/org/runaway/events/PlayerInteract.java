@@ -21,6 +21,7 @@ import org.runaway.inventories.BlockShopMenu;
 import org.runaway.inventories.MainMenu;
 import org.runaway.jobs.EJobs;
 import org.runaway.managers.GamerManager;
+import org.runaway.mines.Location;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
@@ -50,9 +51,9 @@ public class PlayerInteract implements Listener {
 
         // Локации
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            addLocation(player, "Подвал", EStat.LOCATION_VAULT);
-            addLocation(player, "Ледяная шахта", EStat.LOCATION_ICE);
-            addLocation(player, "Гладиаторская арена", EStat.LOCATION_GLAD);
+            Location.locations.forEach(location -> {
+                addLocation(player, location.getName(), location.getLocName());
+            });
         }
 
         if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
@@ -99,23 +100,24 @@ public class PlayerInteract implements Listener {
         }
     }
 
-    private void addLocation(Player player, String name, EStat perm) {
+    private void addLocation(Player player, String name, String location) {
         Gamer gamer = GamerManager.getGamer(player);
         try {
-            if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains(name)) {
-                if (gamer.getStatistics(perm).equals(false)) {
-                    if (Main.usePermissionsEx) {
-                        gamer.setStatistics(perm, true);
-                        gamer.sendMessage(EMessage.ACTIVATELOCATION);
-                        player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
-                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                        Achievement.FIRST_LOCATION.get(player, false);
-                    }
+            if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null &&
+                    ChatColor.stripColor(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).contains(name)) {
+                if (!gamer.getLocations().contains(location)) {
+                    gamer.getLocations().add(location);
+                    gamer.sendMessage(EMessage.ACTIVATELOCATION);
+                    player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                    Achievement.FIRST_LOCATION.get(player, false);
                 } else {
                     gamer.sendMessage(EMessage.ALREADYHAVE);
                 }
             }
-        } catch (Exception ex) { }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     //Продажа предметов

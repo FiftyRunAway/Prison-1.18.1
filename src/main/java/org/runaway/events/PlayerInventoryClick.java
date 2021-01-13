@@ -39,7 +39,7 @@ public class PlayerInventoryClick implements Listener {
                     Gamer gamer = GamerManager.getGamer(player);
                     if (event.getCurrentItem().getType().isBlock()) {
                         if (!Main.gBlocks.isActive()) {
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split(" ");
+                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split("-");
                             Main.gBlocks.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
                             player.closeInventory();
                         } else {
@@ -48,7 +48,7 @@ public class PlayerInventoryClick implements Listener {
                     } else {
                         if (!gamer.isActiveLocalBlocks()) {
                             LBlocks blocks = new LBlocks();
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split(" ");
+                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split("-");
                             blocks.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
                             player.closeInventory();
                         } else {
@@ -63,7 +63,7 @@ public class PlayerInventoryClick implements Listener {
                     Gamer gamer = GamerManager.getGamer(player);
                     if (event.getCurrentItem().getType().isBlock()) {
                         if (!Main.gMoney.isActive()) {
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split(" ");
+                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split("-");
                             Main.gMoney.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
                             player.closeInventory();
                         } else {
@@ -72,7 +72,7 @@ public class PlayerInventoryClick implements Listener {
                     } else {
                         if (!gamer.isActiveLocalMoney()) {
                             LMoney money = new LMoney();
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split(" ");
+                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split("-");
                             money.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
                             player.closeInventory();
                         } else {

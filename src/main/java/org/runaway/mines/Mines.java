@@ -1,6 +1,7 @@
 package org.runaway.mines;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,7 +30,7 @@ public class Mines {
     String id;
     String name;
     boolean needPerm;
-    EStat perm;
+    String perm;
     int minLevel;
     Location spawn;
     Material icon;
@@ -42,44 +43,29 @@ public class Mines {
                     if (!cRegion.contains("name")) continue;
                     ConfigurationSection cLoc = cRegion.getConfigurationSection("location");
                     Location loc = new Location(Bukkit.getWorld(cLoc.getString("world")), cLoc.getDouble("x"), cLoc.getDouble("y"), cLoc.getDouble("z"));
-                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, Material.getMaterial(cRegion.getString("icon").toUpperCase()), cRegion.getBoolean("needperm", false), getStat(cRegion.getString("permission")));
+                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, Material.getMaterial(cRegion.getString("icon").toUpperCase()), cRegion.getBoolean("needperm", false), cRegion.getString("permission"));
                     MineIcon icon = new MineIcon.Builder(mine).build();
                     Mines.icons.put(mine, icon);
                 }
             }
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading mines menu!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
             Main.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
 
-    public static EStat getStat(String cfg) {
-        switch (cfg) {
-            case "prison.glad": {
-                return EStat.LOCATION_GLAD;
-            }
-            case "prison.vault": {
-                return EStat.LOCATION_VAULT;
-            }
-            case "prison.ice": {
-                return EStat.LOCATION_ICE;
-            }
-            default: {
-                return null;
-            }
-        }
-    }
-
-    private Mines(String id, String name, int minLevel, Location spawn, Material icon, boolean needPerm, EStat perm) {
+    private Mines(String id, String name, int minLevel, Location spawn, Material icon, boolean needPerm, String loc_name) {
         this.id = id;
         this.name = name;
         this.needPerm = needPerm;
-        this.perm = perm;
+        this.perm = loc_name;
         this.minLevel = minLevel;
         this.spawn = spawn;
         this.icon = icon;
+        if (needPerm) {
+            org.runaway.mines.Location.locations.add(new org.runaway.mines.Location(ChatColor.stripColor(this.name), loc_name));
+        }
         Mines.mines.put(id, this);
     }
 
@@ -95,7 +81,7 @@ public class Mines {
         return this.needPerm;
     }
 
-    public EStat getPerm() {
+    public String getLocName() {
         return this.perm;
     }
 

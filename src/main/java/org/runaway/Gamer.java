@@ -63,6 +63,8 @@ public class Gamer {
     private Map<String, Double> blocksValues;
     private Map<String, Integer> mobKills;
     private List<PassivePerks> passivePerks;
+    private List<String> boosters;
+    private List<String> locations;
 
     private boolean isOnline = false;
     private boolean isExist = true;
@@ -83,18 +85,23 @@ public class Gamer {
         setStatistics(EStat.UUID, getPlayer().getUniqueId());
         setStatistics(EStat.FULL_NAME, player.getName());
         offlineValues = Utils.fromStringToMap(getStringStatistics(EStat.OFFLINE_VALUES));
-        blocksValues = new HashMap();
+        blocksValues = new HashMap<>();
         Utils.fromStringToMap(getStringStatistics(EStat.BLOCKS_AMOUNT)).forEach((block, amount) -> {
             blocksValues.put(block.toString(), Double.parseDouble(amount.toString()));
         });
-        mobKills = new HashMap();
+        mobKills = new HashMap<>();
         Utils.fromStringToMap(getStringStatistics(EStat.MOB_KILLS)).forEach((mob, amount) -> {
             mobKills.put(mob.toString(), Integer.parseInt(amount.toString()));
         });
-        passivePerks = new ArrayList();
+        passivePerks = new ArrayList<>();
         Utils.fromStringToList(getStringStatistics(EStat.PERKS)).forEach(perk -> {
             passivePerks.add(EPassivePerk.valueOf(perk).getPerk());
         });
+        boosters = new ArrayList<>();
+        boosters.addAll(Utils.fromStringToList(getStringStatistics(EStat.BOOSTERS)));
+
+        locations = new ArrayList<>();
+        locations.addAll(Utils.fromStringToList(getStringStatistics(EStat.LOCATIONS)));
     }
 
     public void savePlayer() {
@@ -102,6 +109,8 @@ public class Gamer {
         setStatistics(EStat.OFFLINE_VALUES, Utils.fromMapToString(offlineValues));
         setStatistics(EStat.PERKS, Utils.fromListToString(getPassivePerks().stream().map(passivePerks1 -> passivePerks1.getClass().getSimpleName().toUpperCase()).collect(Collectors.toList())));
         setStatistics(EStat.MOB_KILLS, Utils.fromMapToString(mobKills));
+        setStatistics(EStat.BOOSTERS, Utils.fromListToString(boosters));
+        setStatistics(EStat.LOCATIONS, Utils.fromListToString(locations));
         if(isExist) {
             preparedRequests.saveAllValues("player", getPlayer().getName(), statisticsMap);
         } else {
@@ -159,6 +168,14 @@ public class Gamer {
 
     public Map<String, Integer> getMobKills() {
         return mobKills;
+    }
+
+    public List<String> getBoosters() {
+        return boosters;
+    }
+
+    public List<String> getLocations() {
+        return locations;
     }
 
     public int getMobKills(String mobName) {
@@ -287,17 +304,8 @@ public class Gamer {
     }
 
     public void addBooster(BoosterType type, double multiplier, long time, boolean global) {
-        String format = type.name() + " " + (global ? "GLOBAL" : "LOCAL") + " " + multiplier + " " + time;
-        if (!EConfig.BOOSTERS.getConfig().contains(getGamer())) {
-            List<String> list = new ArrayList<>();
-            list.add(format);
-            EConfig.BOOSTERS.getConfig().set(getGamer(), list);
-        } else {
-            List<String> list = EConfig.BOOSTERS.getConfig().getStringList(getGamer());
-            list.add(format);
-            EConfig.BOOSTERS.getConfig().set(getGamer(), list);
-        }
-        EConfig.BOOSTERS.saveConfig();
+        String format = type.name().toLowerCase() + "-" + (global ? "g" : "l") + "-" + multiplier + "-" + time;
+        getBoosters().add(format);
     }
 
     public boolean isEffected(PotionEffectType e) {
@@ -636,7 +644,7 @@ public class Gamer {
     }
 
     public String getStringStatistics(EStat stat) {
-        return (String) getStatistics(stat);
+        return (String)getStatistics(stat);
     }
 
     public double getDoubleStatistics(EStat stat) {

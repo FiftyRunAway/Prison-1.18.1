@@ -30,16 +30,16 @@ public class MinesMenu implements IMenus {
 
     public MinesMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
-        AtomicInteger i = new AtomicInteger(36);
         Gamer gamer = GamerManager.getGamer(player);
         Mines.icons.forEach((mines, mineIcon) -> {
-            IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(mines.getPrisonIcon(gamer)).setSlot(mines.getMinLevel() - 1);
+            IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(mines.getPrisonIcon(gamer))
+                    .setSlot(mines.getMinLevel() - 1);
             bt.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
                 Gamer g = GamerManager.getGamer(p);
                 if (g.getIntStatistics(EStat.LEVEL) >= mines.getMinLevel()) {
                     if (mines.needPerm()) {
-                        if (g.getStatistics(mines.getPerm()).equals(true)) {
+                        if (g.getLocations().contains(mines.getLocName())) {
                             g.teleport(mines.getSpawn());
                         } else g.sendMessage(EMessage.MINENEEDPERM);
                     } else g.teleport(mines.getSpawn());
@@ -73,7 +73,7 @@ public class MinesMenu implements IMenus {
                         .data((short) 12)
                         .name("&cСкоро").lore(new Lore.BuilderLore()
                                 .addString("&7Совсем скоро эта шахта")
-                                .addString("&7&nпоявится &r&7на сервере!").build()).build().item()).setSlot(s));
+                                .addString("&7&nпоявится&r&7 на сервере!").build()).build().item()).setSlot(s));
             }
         }
 
