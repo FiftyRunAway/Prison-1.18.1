@@ -1,6 +1,7 @@
 package org.runaway.sqlite;
 
 import org.runaway.Main;
+import org.runaway.enums.Saveable;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public abstract class Database {
 
     public abstract Connection getSQLConnection();
 
-    public abstract void load();
+    public abstract void load(String primaryKey, Saveable[] saveables);
 
     public void initialize() {
         connection = getSQLConnection();

@@ -4,4 +4,6 @@ public interface Saveable {
     Object getDefaultValue();
 
     String getColumnName();
+
+    String getColumnType();
 }

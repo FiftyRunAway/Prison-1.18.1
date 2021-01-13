@@ -231,15 +231,7 @@ public class Main extends JavaPlugin {
         type_saving = SaveType.SQLITE;
 
         //Statistics table
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE IF NOT EXISTS " + stat_table + " (`player` VARCHAR (32) NOT NULL,");
-        Arrays.stream(EStat.values()).forEach(eStat ->
-                sb.append('`').append(eStat.getStatName()).append('`').append(' ')
-                        .append(eStat.getSQLiteType()).append(" NOT NULL,"));
-
-        sb.append("PRIMARY KEY (player));");
-        System.out.println(sb.toString() + " CREATE STRING");
-        initializeDatabase(stat_table, sb.toString());
+        initializeDatabase(stat_table, "player", EStat.values());
         Gamer.preparedRequests = getPreparedRequests();
     }
 
@@ -256,15 +248,10 @@ public class Main extends JavaPlugin {
      *
      * @param databaseName
      *            name
-     * @param createStatement
-     *            statement once the database is created. Usually used to create
-     *            tables.
-     *
-     *            Sets the string sent to player when an item cannot be purchased.
      */
-    public void initializeDatabase(String databaseName, String createStatement) {
-        Database db = new SQLite(databaseName, createStatement, Config.standartFile);
-        db.load();
+    public void initializeDatabase(String databaseName, String primaryKey, Saveable[] saveables) {
+        Database db = new SQLite(databaseName, Config.standartFile);
+        db.load(primaryKey, saveables);
         databases.put(databaseName, db);
         this.preparedRequests = new PreparedRequests(db);
     }

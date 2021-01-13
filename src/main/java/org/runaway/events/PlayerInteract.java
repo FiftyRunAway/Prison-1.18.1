@@ -103,7 +103,10 @@ public class PlayerInteract implements Listener {
     private void addLocation(Player player, String name, String location) {
         Gamer gamer = GamerManager.getGamer(player);
         try {
-            if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null &&
+            ItemStack itemStack = player.getInventory().getItemInMainHand();
+            if (itemStack != null &&
+                    itemStack.hasItemMeta() &&
+                    itemStack.getItemMeta().getDisplayName() != null &&
                     ChatColor.stripColor(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).contains(name)) {
                 if (!gamer.getLocations().contains(location)) {
                     gamer.getLocations().add(location);

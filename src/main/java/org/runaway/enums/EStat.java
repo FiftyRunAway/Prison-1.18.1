@@ -103,4 +103,9 @@ public enum EStat implements Saveable {
     public String getColumnName() {
         return getStatName();
     }
+
+    @Override
+    public String getColumnType() {
+        return getSQLiteType();
+    }
 }

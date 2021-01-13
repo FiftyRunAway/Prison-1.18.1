@@ -51,10 +51,10 @@ public class BoosterCommand extends CommandManager {
                 if (args[0].equalsIgnoreCase("stop")) {
                     if (args[1].equalsIgnoreCase("blocks") && Main.gBlocks.isActive()) {
                         Main.gBlocks.setTime(4);
-                        p.sendMessage(ChatColor.DARK_GREEN + "Бустер блоков остановиться через 3 секунды!");
+                        p.sendMessage(ChatColor.DARK_GREEN + "Бустер блоков остановится через 3 секунды!");
                     } else if (args[1].equalsIgnoreCase("money") && Main.gMoney.isActive()) {
                         Main.gMoney.setTime(4);
-                        p.sendMessage(ChatColor.DARK_GREEN + "Бустер денег остановиться через 3 секунды!");
+                        p.sendMessage(ChatColor.DARK_GREEN + "Бустер денег остановится через 3 секунды!");
                     }
                     return;
                 }
@@ -90,16 +90,12 @@ public class BoosterCommand extends CommandManager {
                 p.sendMessage(ChatColor.RED + "Может быть только один знак после точки множителя");
                 return;
             }
-            double maxmultiplier = 10.0;
-            if (multiplier < maxmultiplier) {
-                if (type.equals(BoosterType.MONEY)) {
-                    if (!Main.gMoney.isActive()) {
-                        Main.gMoney.start(p.getName(), seconds, multiplier);
-                    }
-                } else if (type.equals(BoosterType.BLOCKS)) {
-                    if (!Main.gBlocks.isActive()) {
-                        Main.gBlocks.start(p.getName(), seconds, multiplier);
-                    }
+            double maxmultiplier = 50.0;
+            if (multiplier <= maxmultiplier) {
+                if (type.equals(BoosterType.MONEY) && !Main.gMoney.isActive()) {
+                    Main.gMoney.start(p.getName(), seconds, multiplier);
+                } else if (type.equals(BoosterType.BLOCKS) && !Main.gBlocks.isActive()) {
+                    Main.gBlocks.start(p.getName(), seconds, multiplier);
                 }
             } else {
                 p.sendMessage(ChatColor.RED + "Множитель должен быть меньше " + maxmultiplier + "x");
