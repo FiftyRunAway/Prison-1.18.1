@@ -2,10 +2,7 @@ package org.runaway.sqlite;
 
 import org.runaway.Main;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +12,15 @@ import java.util.logging.Level;
 public abstract class Database {
 
     protected Connection connection;
+    protected String dbName;
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
 
     public abstract Connection getSQLConnection();
 
@@ -22,14 +28,6 @@ public abstract class Database {
 
     public void initialize() {
         connection = getSQLConnection();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM test");
-            ResultSet rs = ps.executeQuery();
-            close(ps, rs);
-
-        } catch (SQLException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
-        }
     }
 
     /**
@@ -55,15 +53,12 @@ public abstract class Database {
             try {
                 if (ps != null)
                     ps.close();
-                if (conn != null)
-                    conn.close();
             } catch (SQLException ex) {
                 Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
                 return false;
             }
         }
     }
-
     /**
      * Get a single value from the database. Your If your statement returns multiple
      * values, only the first value will return. Use queryRow for multiple values in
@@ -97,8 +92,6 @@ public abstract class Database {
             try {
                 if (ps != null)
                     ps.close();
-                if (conn != null)
-                    conn.close();
             } catch (SQLException ex) {
                 Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
             }

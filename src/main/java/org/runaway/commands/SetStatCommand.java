@@ -4,6 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.runaway.Gamer;
+import org.runaway.Main;
+import org.runaway.managers.GamerManager;
+import org.runaway.sqlite.DoVoid;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
@@ -116,26 +120,10 @@ public class SetStatCommand extends CommandManager {
 
     private void addStat(String player, EStat type, Object obj, boolean online) {
         if (online) {
-            if (type.getStatType().equals(StatType.INTEGER)) {
-                type.getMap().put(player, Integer.parseInt(obj.toString()));
-            } else if (type.getStatType().equals(StatType.DOUBLE)) {
-                type.getMap().put(player, Double.parseDouble(obj.toString()));
-            } else if (type.getStatType().equals(StatType.BOOLEAN)) {
-                type.getMap().put(player, Boolean.parseBoolean(obj.toString()));
-            } else if (type.getStatType().equals(StatType.STRING)) {
-                type.getMap().put(player, obj.toString().toLowerCase());
-            }
+            Gamer gamer = GamerManager.getGamer(player);
+            gamer.setStatistics(type, obj);
         } else {
-            if (type.getStatType().equals(StatType.INTEGER)) {
-                EConfig.STATISTICS.getConfig().set(player + "." + type.getStatName(), Integer.parseInt(obj.toString()));
-            } else if (type.getStatType().equals(StatType.DOUBLE)) {
-                EConfig.STATISTICS.getConfig().set(player + "." + type.getStatName(), Double.parseDouble(obj.toString()));
-            } else if (type.getStatType().equals(StatType.BOOLEAN)) {
-                EConfig.STATISTICS.getConfig().set(player + "." + type.getStatName(), Boolean.parseBoolean(obj.toString()));
-            } else if (type.getStatType().equals(StatType.STRING)) {
-                EConfig.STATISTICS.getConfig().set(player + "." + type.getStatName(), obj.toString());
-            }
-            EConfig.STATISTICS.saveConfig();
+            Main.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, type.getStatName(), obj);
         }
     }
 }

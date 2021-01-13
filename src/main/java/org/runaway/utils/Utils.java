@@ -27,29 +27,6 @@ import java.util.stream.Collectors;
 public class Utils {
 
     //Статистика
-    private static HashMap<String, String> mode = new HashMap<>();
-    private static HashMap<String, Integer> level = new HashMap<>();
-    private static HashMap<String, Double> money = new HashMap<>();
-    private static HashMap<String, Object> blocks = new HashMap<>();
-    private static HashMap<String, String> faction = new HashMap<>();
-    private static HashMap<String, Integer> kills = new HashMap<>();
-    private static HashMap<String, Integer> keys = new HashMap<>();
-    private static HashMap<String, Integer> bow_kills = new HashMap<>();
-    private static HashMap<String, Integer> deathes = new HashMap<>();
-    private static HashMap<String, Integer> rats = new HashMap<>();
-    private static HashMap<String, Integer> zombies = new HashMap<>();
-    private static HashMap<String, Integer> donatemoney = new HashMap<>();
-    private static HashMap<String, Boolean> zbt = new HashMap<>();
-    private static HashMap<String, Boolean> autoselldonate = new HashMap<>();
-    private static HashMap<String, Double> boostermoney = new HashMap<>();
-    private static HashMap<String, Double> boosterblocks = new HashMap<>();
-    private static HashMap<String, Integer> playedtime = new HashMap<>();
-    private static HashMap<String, Integer> bosses = new HashMap<>();
-    private static HashMap<String, Boolean> autosell = new HashMap<>();
-    private static HashMap<String, Integer> rebith = new HashMap<>();
-    private static HashMap<String, Integer> helper = new HashMap<>();
-    private static HashMap<String, Integer> scrolls = new HashMap<>();
-    private static HashMap<String, Integer> rebirthScores = new HashMap<>();
 
     //Locations
     private static HashMap<String, Boolean> gladiator = new HashMap<>();
@@ -288,93 +265,11 @@ public class Utils {
 
     public static Map<String, String> getGifters() { return gift_owners; }
 
-    public static HashMap<String, Integer> getLevel() {
-        return level;
-    }
-
-    public static HashMap<String, Double> getMoney() {
-        return money;
-    }
-
-    public static HashMap<String, Object> getBlocks() {
-        return blocks;
-    }
-
-    public static HashMap<String, Integer> getKills() {
-        return kills;
-    }
-
-    public static HashMap<String, Integer> getKeys() {
-        return keys;
-    }
-
-    public static HashMap<String, Integer> getBow_kills() {
-        return bow_kills;
-    }
-
-    public static HashMap<String, Integer> getDeathes() {
-        return deathes;
-    }
-
-    public static HashMap<String, Integer> getRats() {
-        return rats;
-    }
-
-    public static HashMap<String, Integer> getZombies() {
-        return zombies;
-    }
-
-    public static HashMap<String, Integer> getDonatemoney() {
-        return donatemoney;
-    }
-
-    public static HashMap<String, Boolean> getAutoselldonate() {
-        return autoselldonate;
-    }
-
-    public static HashMap<String, Double> getBoostermoney() {
-        return boostermoney;
-    }
-
-    public static HashMap<String, Double> getBoosterblocks() {
-        return boosterblocks;
-    }
-
-    public static HashMap<String, Integer> getPlayedtime() {
-        return playedtime;
-    }
-
-    public static HashMap<String, Integer> getBosses() {
-        return bosses;
-    }
-
-    public static HashMap<String, Boolean> getAutosell() {
-        return autosell;
-    }
-
-    public static HashMap<String, String> getFactionMap() {
-        return faction;
-    }
 
     public static HashMap<String, Boolean> getVault() {
         return vault;
     }
 
-    public static HashMap<String, Integer> getRebirth() {
-        return rebith;
-    }
-
-    public static HashMap<String, Integer> getHelper() {
-        return helper;
-    }
-
-    public static HashMap<String, Boolean> getZbt() {
-        return zbt;
-    }
-
-    public static HashMap<String, String> getMode() {
-        return mode;
-    }
 
     public static HashMap<String, Integer> getCashback() {
         return cashback;
@@ -392,13 +287,6 @@ public class Utils {
         return gym;
     }
 
-    public static HashMap<String, Integer> getScrolls() {
-        return scrolls;
-    }
-
-    public static HashMap<String, Integer> getRebirthScores() {
-        return rebirthScores;
-    }
 
     public static HashMap<String, Integer> getBattlePassScores() {
         return bpScores;

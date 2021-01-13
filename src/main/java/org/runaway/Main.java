@@ -52,6 +52,7 @@ import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
 import org.runaway.quests.MinesQuest;
 import org.runaway.sqlite.Database;
+import org.runaway.sqlite.PreparedRequests;
 import org.runaway.sqlite.SQLite;
 import org.runaway.tasks.AsyncRepeatTask;
 import org.runaway.tasks.AsyncTask;
@@ -80,9 +81,9 @@ public class Main extends JavaPlugin {
 
     //SQLite
     private Map<String, Database> databases = new HashMap<>();
-    private final String database_name = "database";
     public final String stat_table = "Statistics";
     private SaveType type_saving;
+    private PreparedRequests preparedRequests;
 
     private ServerStatus status = null;
 
@@ -151,7 +152,7 @@ public class Main extends JavaPlugin {
     private void loader() {
         new Config().loadConfigs();
         FileConfiguration loader = EConfig.MODULES.getConfig();
-
+        loadSQLite();
         loadTasks();
         if (loader.getBoolean("register.events")) registerEvents();
         if (loader.getBoolean("register.commands")) registerCommands();
@@ -198,31 +199,32 @@ public class Main extends JavaPlugin {
             }
         });
         loadBoosters();
-        loadSQLite();
     }
 
     private void loadSQLite() {
-        type_saving = SaveType.CONFIG;
-        if (EConfig.CONFIG.getConfig().getBoolean("SQLite.enable")) {
-            type_saving = SaveType.SQLITE;
+        type_saving = SaveType.SQLITE;
 
-            //Statistics table
-            StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE IF NOT EXISTS " + stat_table + " (`player` VARCHAR (32) NOT NULL,");
-            Arrays.stream(EStat.values()).forEach(eStat ->
-                    sb.append('`').append(eStat.getStatName()).append('`').append(' ')
-                            .append(eStat.getSQLiteType()).append(" NOT NULL,"));
+        //Statistics table
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE IF NOT EXISTS " + stat_table + " (`player` VARCHAR (32) NOT NULL,");
+        Arrays.stream(EStat.values()).forEach(eStat ->
+                sb.append('`').append(eStat.getStatName()).append('`').append(' ')
+                        .append(eStat.getSQLiteType()).append(" NOT NULL,"));
 
-            sb.append("PRIMARY KEY (player));");
-
-            initializeDatabase(database_name, sb.toString());
-        }
+        sb.append("PRIMARY KEY (player));");
+        System.out.println(sb.toString() + " CREATE STRING");
+        initializeDatabase(stat_table, sb.toString());
+        Gamer.preparedRequests = getPreparedRequests();
     }
 
     public static Database getMainDatabase() {
-        return getInstance().getDatabase(instance.database_name);
+        return getInstance().getDatabase(instance.stat_table);
     }
 
+
+    public PreparedRequests getPreparedRequests() {
+        return preparedRequests;
+    }
 
     /**
      *
@@ -238,6 +240,7 @@ public class Main extends JavaPlugin {
         Database db = new SQLite(databaseName, createStatement, Config.standartFile);
         db.load();
         databases.put(databaseName, db);
+        this.preparedRequests = new PreparedRequests(db);
     }
 
     /**
@@ -251,12 +254,6 @@ public class Main extends JavaPlugin {
      *            Sets the string sent to player when an item cannot be purchased.
      * @param plugin to create database file inside.
      */
-    public void initializeDatabase(Plugin plugin, String databaseName, String createStatement) {
-        Database db = new SQLite(databaseName, createStatement, plugin.getDataFolder());
-        db.load();
-        databases.put(databaseName, db);
-    }
-
     /**
      * Get the global list of currently loaded databased.
      * <p>
@@ -624,30 +621,20 @@ public class Main extends JavaPlugin {
                 return;
             }
 
-            HashMap<String, Long> money = new HashMap<>();
-            HashMap<String, Long> blocks = new HashMap<>();
-            HashMap<String, Long> level = new HashMap<>();
-            HashMap<String, Long> rats = new HashMap<>();
-            HashMap<String, Long> rebirth = new HashMap<>();
-            HashMap<String, Long> keys = new HashMap<>();
-            HashMap<String, Long> dm = new HashMap<>();
-            for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
-                if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
-                    money.put(name, (long) (int) EStat.MONEY.getFromConfig(name));
-                } else {
-                    money.put(name, Math.round((double)EStat.MONEY.getFromConfig(name)));
-                }
-                if (EStat.BLOCKS.getFromConfig(name) instanceof Integer) {
-                    blocks.put(name, (long) (int)EStat.BLOCKS.getFromConfig(name));
-                } else {
-                    blocks.put(name, Math.round((double)EStat.BLOCKS.getFromConfig(name)));
-                }
-                level.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
-                rats.put(name, (long) (int)EStat.RATS.getFromConfig(name));
-                rebirth.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
-                keys.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
-                dm.put(name, (long) Donate.getTotalDonateMoney(name));
-            }
+            Map<String, Long> money = new HashMap<>();
+            Map<String, Long> blocks = new HashMap<>();
+            Map<String, Long> level = new HashMap<>();
+            Map<String, Long> rats = new HashMap<>();
+            Map<String, Long> rebirth = new HashMap<>();
+            Map<String, Long> keys = new HashMap<>();
+            Map<String, Long> dm = new HashMap<>();
+            money = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
+            blocks = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
+            level = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
+            rats = getPreparedRequests().getTop(EStat.RATS.getColumnName(), 10);
+            rebirth = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
+            keys = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
+            dm = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
             tops.put("money", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10,  MoneyType.RUBLES.getShortName()));
             tops.put("blocks", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10, "блоков"));
             tops.put("levels", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10, "уровень"));
@@ -666,50 +653,15 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public static void forceUpdateTop() {
-        HashMap<String, Long> money1 = new HashMap<>();
-        HashMap<String, Long> blocks1 = new HashMap<>();
-        HashMap<String, Long> level1 = new HashMap<>();
-        HashMap<String, Long> rats1 = new HashMap<>();
-        HashMap<String, Long> rebirth1 = new HashMap<>();
-        HashMap<String, Long> keys1 = new HashMap<>();
-        HashMap<String, Long> dm1 = new HashMap<>();
+    public void forceUpdateTop() {
 
-        for (String name : EConfig.STATISTICS.getConfig().getKeys(false)) {
-            if (!Utils.getPlayers().contains(name)) {
-                if (EStat.MONEY.getFromConfig(name) instanceof Integer) {
-                    money1.put(name, (long) (int)EStat.MONEY.getFromConfig(name));
-                } else {
-                    money1.put(name, Math.round((double)EStat.MONEY.getFromConfig(name)));
-                }
-                if (EStat.BLOCKS.getFromConfig(name) instanceof Integer) {
-                    blocks1.put(name, (long) (int)EStat.BLOCKS.getFromConfig(name));
-                } else {
-                    blocks1.put(name, Math.round((double)EStat.BLOCKS.getFromConfig(name)));
-                }
-                level1.put(name, (long) (int)EStat.LEVEL.getFromConfig(name));
-                rats1.put(name, (long) (int)EStat.RATS.getFromConfig(name));
-                //rebirth1.put(name, (long) (int)EStat.REBIRTH.getFromConfig(name));
-                keys1.put(name, (long) (int)EStat.KEYS.getFromConfig(name));
-            } else {
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(name).getUniqueId());
-                if (gamer.getStatistics(EStat.MONEY) instanceof Integer) {
-                    money1.put(name, (long) gamer.getIntStatistics(EStat.MONEY));
-                } else {
-                    money1.put(name, Math.round(gamer.getMoney()));
-                }
-                if (gamer.getStatistics(EStat.BLOCKS) instanceof Integer) {
-                    blocks1.put(name, (long) gamer.getIntStatistics(EStat.BLOCKS));
-                } else {
-                    blocks1.put(name, Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)));
-                }
-                level1.put(name, (long) gamer.getIntStatistics(EStat.LEVEL));
-                rats1.put(name, (long) gamer.getIntStatistics(EStat.RATS));
-                //rebirth1.put(name, (long) gamer.getIntStatistics(EStat.REBIRTH));
-                keys1.put(name, (long) gamer.getIntStatistics(EStat.KEYS));
-            }
-            dm1.put(name, (long) Donate.getTotalDonateMoney(name));
-        }
+        Map<String, Long> money1 = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
+        Map<String, Long> blocks1 = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
+        Map<String, Long> level1 = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
+        Map<String, Long> rats1 = getPreparedRequests().getTop(EStat.RATS.getColumnName(), 10);
+        Map<String, Long> rebirth1 = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
+        Map<String, Long> keys1 = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
+        Map<String, Long> dm1 = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
         if (!Main.tops.keySet().iterator().hasNext()) return;
         tops.keySet().forEach(s -> {
             if ("money".equals(s)) {

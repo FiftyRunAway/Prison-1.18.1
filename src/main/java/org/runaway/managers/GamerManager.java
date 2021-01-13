@@ -22,6 +22,6 @@ public class GamerManager {
     }
 
     public static void createGamer(Player player) {
-        Main.gamers.put(player.getUniqueId(), new Gamer(player.getUniqueId()));
+        Main.gamers.put(player.getUniqueId(), new Gamer(player));
     }
 }

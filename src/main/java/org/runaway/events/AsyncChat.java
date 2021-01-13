@@ -46,7 +46,7 @@ public class AsyncChat implements Listener {
                 gamer.sendMessage(EMessage.NOMESSAGE);
                 return;
             }
-            String local = start ? ChatColor.BLUE + "Ⓖ " : ChatColor.GREEN + "Ⓛ ";
+            String local = start ? ChatColor.BLUE + "G " : ChatColor.GREEN + "L ";
 
             String format = local + level + rebirth + prefix + player.getName() + " " + faction + ChatColor.GRAY + "» " + ChatColor.GRAY;
             Bukkit.getConsoleSender().sendMessage(format + message.replace("!", ""));

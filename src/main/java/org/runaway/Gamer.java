@@ -1,12 +1,8 @@
 package org.runaway;
 
 import com.nametagedit.plugin.NametagEdit;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -29,18 +25,15 @@ import org.runaway.passiveperks.perks.BBlocksFirst;
 import org.runaway.passiveperks.perks.BBlocksSecond;
 import org.runaway.passiveperks.perks.BMoneyFirst;
 import org.runaway.rebirth.ESkill;
-import org.runaway.tasks.AsyncRepeatTask;
-import org.runaway.tasks.SyncTask;
+import org.runaway.sqlite.PreparedRequests;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
-import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
@@ -54,24 +47,33 @@ public class Gamer {
     public static ArrayList<UUID> tp = new ArrayList<>();
     private static final int teleportTimer = 3;
     public static int toRebirth = 30;
+    public static PreparedRequests preparedRequests;
 
     private String gamer;
     private Player player;
     private final UUID uuid;
     private String replyPlayer;
 
+    private Map<Saveable, Object> statisticsMap;
+
     private boolean isOnline = false;
 
     private Map<String, Long> cooldowns;
 
-    public Gamer(UUID uuid) {
-        this.uuid = uuid;
+    public Gamer(Player player) {
+        this.uuid = player.getUniqueId();
         this.cooldowns = OfflineValues.getPlayerCooldown(uuid).getCooldowns();
-        if (Utils.getPlayers().contains(Bukkit.getOfflinePlayer(getUUID()).getName()) || Bukkit.getOfflinePlayer(getUUID()).isOnline()) {
-            this.player = Bukkit.getPlayer(this.uuid);
-            this.gamer = this.player.getName();
-            this.isOnline = true;
-        }
+        this.player = player;
+        this.gamer = this.player.getName();
+        this.isOnline = true;
+        statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values());
+        setStatistics(EStat.UUID, getPlayer().getUniqueId());
+        setStatistics(EStat.FULL_NAME, player.getName());
+    }
+
+    public void savePlayer() {
+        preparedRequests.saveAllValues("player", getPlayer().getName(), statisticsMap);
+        sendMessage("&aВаши данные сохранены!");
     }
 
     public boolean isEndedCooldown(String name) {
@@ -116,10 +118,10 @@ public class Gamer {
 
     public void sendMessage(String message) {
         // Avoid command spam
-        if(!isEndedCooldown("lastMsg")) {
+        if(!isEndedCooldown(message.hashCode() + "msgCd")) {
             return;
         }
-        addCooldown("lastMsg", 600);
+        addCooldown(message.hashCode() + "msgCd", 500);
         getPlayer().sendMessage(Utils.colored("&7[&4&lPrison&7] &r" + message));
     }
 
@@ -586,7 +588,7 @@ public class Gamer {
 
     public Object getStatistics(EStat statistic) {
         if (isOnline()) {
-            return statistic.getMap().get(getGamer());
+            return statisticsMap.get(statistic);
         } else {
             System.out.println(Bukkit.getOfflinePlayer(getUUID()).getName());
             return getStatisticsFromConfig(statistic, Bukkit.getOfflinePlayer(getUUID()).getName());
@@ -594,8 +596,15 @@ public class Gamer {
     }
 
     public void setStatistics(EStat statistic, Object value) {
+        if(statistic.getStatType() == StatType.DOUBLE) {
+            value = Double.parseDouble(value.toString());
+        } else if(statistic.getStatType() == StatType.INTEGER) {
+            value = Integer.parseInt(value.toString());
+        } else if(statistic.getStatType() == StatType.BOOLEAN) {
+            value = Boolean.parseBoolean(value.toString());
+        }
         if (isOnline()) {
-            statistic.getMap().put(getPlayer().getName(), value);
+            statisticsMap.put(statistic, value);
         } else {
             statistic.setInConfig(Bukkit.getOfflinePlayer(getUUID()).getName(), value);
         }

@@ -35,6 +35,7 @@ public class PlayerQuit implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
         Player player = event.getPlayer();
+        GamerManager.getGamer(player).savePlayer();
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         removeMissions(player);
         SavePlayer(player.getName());
@@ -67,30 +68,26 @@ public class PlayerQuit implements Listener {
         Gamer gamer = GamerManager.getGamer(g);
         if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
             try {
-                StringBuilder sb = new StringBuilder("mode");
+                /*StringBuilder sb = new StringBuilder("mode");
                 ArrayList<Object> objs = new ArrayList<>();
                 Arrays.stream(EStat.values()).forEach(eStat -> {
                     if (eStat.equals(EStat.MODE)) return;
                     sb.append(", ").append(eStat.getStatName());
                     objs.add(gamer.getStatistics(eStat));
-
-                    eStat.getMap().remove(g);
                 });
                 PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("UPDATE " + Main.getInstance().stat_table +
                         " SET (" + sb.toString() + ") = (" + objs.toString().replace("[", "").replace("]", "") + ")");
-                ps.executeQuery();
-            } catch (SQLException e) {
+                ps.executeQuery(); */
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             Arrays.stream(EStat.values()).forEach(eStat -> {
-                PreparedRequests.voidRequest(DoVoid.UPDATE, Main.getMainDatabase(), g, Main.getInstance().stat_table, gamer.getStatistics(eStat), eStat.getStatName());
-                eStat.getMap().remove(g);
+                //PreparedRequests.voidRequest(DoVoid.UPDATE, g, eStat.getStatName(), gamer.getStatistics(eStat));
             });
             return;
         }
         Arrays.stream(EStat.values()).forEach(stat -> {
             EConfig.STATISTICS.getConfig().set(g + "." + stat.getStatName(), gamer.getStatistics(stat));
-            stat.getMap().remove(g);
         });
         EConfig.STATISTICS.saveConfig();
     }

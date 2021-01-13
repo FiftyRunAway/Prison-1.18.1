@@ -1,5 +1,6 @@
 package org.runaway.events;
 
+import com.google.common.base.Joiner;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -47,7 +48,6 @@ public class PlayerJoin implements Listener {
         Player player = event.getPlayer();
         if (isAccess(event)) {
             GamerManager.createGamer(player); // Add Gamer class to player
-            CreateInConfig(event); // Add in config file
             Utils.getPlayers().add(player.getName());
             Gamer gamer = GamerManager.getGamer(player);
             Board.sendBoard(player); // Set up scoreboard to player
@@ -98,83 +98,6 @@ public class PlayerJoin implements Listener {
     private void startKit(Player player) {
         player.getInventory().addItem(UpgradeMisc.buildItem("waxe0", false, player, false));
         player.getInventory().addItem(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").amount(8).build().item());
-    }
-
-    private void CreateInConfig(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        Gamer gamer = GamerManager.getGamer(player);
-        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
-            try {
-                PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("SELECT * FROM " + Main.getInstance().stat_table + " WHERE player = ?");
-                ps.setString(1, player.getName());
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        Arrays.stream(EStat.values()).forEach(eStat -> {
-                            try {
-                                addInMap(eStat, gamer , rs.getObject(eStat.getStatName()));
-                            } catch (SQLException exception) {
-                                exception.printStackTrace();
-                            }
-                        });
-                    }
-                }
-            } catch (SQLException ex) {
-                try {
-                    StringBuilder sb = new StringBuilder("mode");
-                    ArrayList<Object> objs = new ArrayList<>();
-                    Arrays.stream(EStat.values()).forEach(eStat -> {
-                        if (eStat.equals(EStat.MODE)) return;
-                        sb.append(", ").append(eStat.getStatName());
-                        objs.add(eStat.getDefualt());
-
-                        System.out.println("added " + eStat.getStatName());
-                        eStat.getMap().put(player.getName(), eStat.getDefualt());
-                    });
-                    PreparedStatement ps = Main.getMainDatabase().getSQLConnection().prepareStatement("INSERT INTO " +
-                            Main.getInstance().stat_table + " (player, " + sb.toString() +
-                            ") VALUES (" + player.getName() + "," + objs.toString().replace("[", "").replace("]", "") + ")");
-                    ps.executeQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            return;
-        }
-
-        if (!EConfig.STATISTICS.getConfig().contains(player.getName())) {
-            Vars.sendSystemMessage(TypeMessage.SUCCESS, player.getName() + " was added in config");
-            Arrays.stream(EStat.values()).forEach(stat -> {
-                stat.setInConfig(player.getName(), stat.getDefualt());
-                stat.getMap().put(player.getName(), stat.getDefualt());
-            });
-        } else {
-            Arrays.stream(EStat.values()).forEach(stat -> {
-                if (!EConfig.STATISTICS.getConfig().contains(player.getName() + "." + stat.getStatName())) {
-                    stat.setInConfig(player.getName(), stat.getDefualt());
-                    stat.getMap().put(player.getName(), stat.getDefualt());
-                } else {
-                    addInMap(stat, gamer);
-                }
-            });
-        }
-    }
-
-    private void addInMap(EStat stat, Gamer player) {
-        addInMap(stat, player, stat.getFromConfig(player.getGamer()));
-    }
-
-    private void addInMap(EStat stat, Gamer player, Object value) {
-        try {
-            if (stat.getStatType().equals(StatType.INTEGER)) {
-                stat.getMap().put(player.getPlayer().getName(), Integer.parseInt(value.toString()));
-            } else if (stat.getStatType().equals(StatType.DOUBLE)) {
-                stat.getMap().put(player.getPlayer().getName(), Double.parseDouble(value.toString()));
-            } else if (stat.getStatType().equals(StatType.BOOLEAN) && new SetStatCommand().isBoolean(value.toString().toLowerCase())) {
-                stat.getMap().put(player.getPlayer().getName(), Boolean.parseBoolean(value.toString()));
-            } else if (stat.getStatType().equals(StatType.STRING)) {
-                stat.getMap().put(player.getPlayer().getName(), value.toString().toLowerCase());
-            }
-        } catch (Exception ex) { player.getPlayer().sendMessage(ChatColor.RED + "Error 404"); }
     }
 
     private boolean isAccess(PlayerJoinEvent event) {

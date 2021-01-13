@@ -15,13 +15,13 @@ import java.util.*;
 public class TopPlayers {
 
     private Location location;
-    private HashMap<String, Long> topValues;
+    private Map<String, Long> topValues;
     private String start;
     private Hologram hologram;
     private int max;
     private String description;
 
-    TopPlayers(Location location, HashMap<String, Long> values, String start, int max, String description) {
+    TopPlayers(Location location, Map<String, Long> values, String start, int max, String description) {
        // this.location = location;
         this.topValues = values;
         this.start = start;
@@ -30,7 +30,7 @@ public class TopPlayers {
         //this.create();
     }
 
-    void setTopValues(HashMap<String, Long> map) {
+    void setTopValues(Map<String, Long> map) {
         this.topValues = map;
     }
 
@@ -66,7 +66,7 @@ public class TopPlayers {
     }
 
     public HashMap<String, Long> getTopValues() {
-        Main.forceUpdateTop();
+        Main.getInstance().forceUpdateTop();
         return (HashMap<String, Long>) sortByValue(this.topValues);
     }
 

@@ -3,12 +3,15 @@ package org.runaway.donate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.enums.BoosterType;
 import org.runaway.enums.EConfig;
+import org.runaway.enums.EStat;
 import org.runaway.enums.TypeMessage;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -138,12 +141,13 @@ public class Donate {
         }
     }
 
-    public static int getTotalDonateMoney(String name) {
-        ConfigurationSection sec = EConfig.DONATE.getConfig().getConfigurationSection("total");
-        if (sec == null || !sec.contains(name)) {
-            return 0;
+    public static double getTotalDonateMoney(String name) {
+        Player player = Bukkit.getPlayerExact(name);
+        if(player != null) {
+            return GamerManager.getGamer(player).getDoubleStatistics(EStat.STREAMS);
+        } else {
+            return (double) EStat.STREAMS.getFromConfig(name);
         }
-        return Integer.parseInt(sec.get(name).toString());
     }
 
     public static void getDonate(Material material, Gamer gamer) {

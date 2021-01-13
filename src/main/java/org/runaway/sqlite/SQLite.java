@@ -15,57 +15,31 @@ import java.util.logging.Level;
 
 public class SQLite extends Database {
 
-    private String dbname;
-
-    private String createTestTable = "CREATE TABLE IF NOT EXISTS test (" + "`test` varchar(32) NOT NULL,"
-            + "PRIMARY KEY (`test`)" + ");";
 
     private String customCreateString;
 
     private File dataFolder;
 
     public SQLite(String databaseName, String createStatement, File folder) {
-        dbname = databaseName;
+        setDbName(databaseName);
         customCreateString = createStatement;
         dataFolder = folder;
     }
 
     public Connection getSQLConnection() {
-        File folder = new File(dataFolder, dbname + ".db");
-        if (!folder.exists()) {
-            try {
-                folder.createNewFile();
-            } catch (IOException e) {
-                Main.getInstance().getLogger().log(Level.SEVERE, "File write error: " + dbname + ".db");
-            }
-        }
-        try {
-            if (connection != null && !connection.isClosed()) {
-                return connection;
-            }
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + folder);
-            return connection;
-        } catch (SQLException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize", ex);
-        } catch (ClassNotFoundException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE,
-                    "You need the SQLite JBDC library. Google it. Put it in /lib folder.");
-        }
-        return null;
+        return this.connection;
     }
 
     public void load() {
-        connection = getSQLConnection();
         try {
-            Statement s = connection.createStatement();
-            s.executeUpdate(createTestTable);
-            s.executeUpdate(customCreateString);
-            s.close();
+            this.connection = DriverManager.getConnection("jdbc:sqlite:" + new File(Main.getInstance().getDataFolder().getAbsolutePath()) + File.separator + getDbName());
+            Statement statement = connection.createStatement();
+            statement.execute("PRAGMA synchronous = OFF;");
+            statement.execute("PRAGMA temp_store = MEMORY;");
+            statement.execute(customCreateString);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        initialize();
     }
 
     public File getDataFolder() {
