@@ -22,6 +22,7 @@ public enum EStat implements Saveable {
     BLOCKS_AMOUNT("blocks_amount", "", StatType.STRING),
     PERKS("perks", "", StatType.STRING),
     BOOSTERS("boosters", "", StatType.STRING),
+    ACHIEVEMENTS("achievements", "", StatType.STRING),
     OFFLINE_VALUES("offline_values", "", StatType.STRING),
     FACTION("faction", "default", StatType.STRING),
     KILLS("kills", 0, StatType.INTEGER),

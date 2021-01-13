@@ -188,7 +188,7 @@ public class BlockBreak implements Listener {
                 hologram.appendTextLine(ChatColor.RED + "Забери!");
                 treasure_holo.put(player.getName(), hologram);
             }
-            Achievement.FIRST_TREASURE.get(player, false);
+            Achievement.FIRST_TREASURE.get(player);
             return true;
         }
         return false;

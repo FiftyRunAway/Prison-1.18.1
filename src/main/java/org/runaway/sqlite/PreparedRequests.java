@@ -34,7 +34,7 @@ public class PreparedRequests {
 
     public void saveAllValues(String primaryKey, String primaryValue, Map<Saveable, Object> saveableValues) {
         primaryValue = primaryValue.toLowerCase();
-        List<String> columnNames = saveableValues.keySet().stream().map(saveable -> saveable.getColumnName()).collect(Collectors.toList());
+        List<String> columnNames = saveableValues.keySet().stream().map(Saveable::getColumnName).collect(Collectors.toList());
         String statementString = String.format("UPDATE %s SET ('%s') = ('%s') WHERE %s = '%s'",
                 getDbName(), Joiner.on("','").join(columnNames), Joiner.on("','").join(saveableValues.values()), primaryKey, primaryValue);
         getDatabase().executeStatement(statementString);

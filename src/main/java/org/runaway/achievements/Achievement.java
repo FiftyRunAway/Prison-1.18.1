@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.Main;
 import org.runaway.enums.BoosterType;
@@ -106,7 +107,7 @@ public enum Achievement {
             new BoosterReward().setReward(BoosterType.MONEY, 1.4, 600, false),
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(12).build().item()) }, true),
     FIRST_LOCATION("&aОткрыть новую локацию", "Крупно повезло", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(16).build().item()) }, false);
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(12).build().item()) }, false);
 
     String name;
     String title;
@@ -115,90 +116,29 @@ public enum Achievement {
 
     static HashMap<Achievement, AchievementIcon> icons = new HashMap<>();
 
-    static HashMap<String, ArrayList<Achievement>> queue = new HashMap<>();
-
     Achievement(String name, String title, Reward[] reward, boolean isSecret) {
         this.name = name;
         this.title = title;
         this.reward = reward;
         this.isSecret = isSecret;
+
     }
 
-    public void get(Player player, boolean fast_get) {
-        List<String> list = EConfig.ACHIEVEMENTS.getConfig().getStringList(this.toString());
-        if (list.contains(player.getName())) {
+    public void get(Player player) {
+        Gamer gamer = GamerManager.getGamer(player);
+        List<Achievement> list = gamer.getAchievements();
+        if (list.contains(this)) {
             return;
         }
-
-        ArrayList<Achievement> achievements;
-        if (!fast_get) {
-            if (!queue.containsKey(player.getName())) {
-                achievements = new ArrayList<>();
-
-                achievements.add(this);
-                queue.put(player.getName(), achievements);
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!player.isOnline()) {
-                            queue.remove(player.getName());
-                            cancel();
-                            return;
-                        }
-                        ArrayList<Achievement> a = queue.get(player.getName());
-                        a.remove(Achievement.this);
-                        if (a.size() <= 0) {
-                            queue.remove(player.getName());
-                        } else queue.put(player.getName(), a);
-                    }
-                }.runTaskLater(Main.getInstance(), 100);
-            } else {
-                achievements = queue.get(player.getName());
-                if (achievements.contains(this)) return;
-
-                achievements.add(this);
-                queue.put(player.getName(), achievements);
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!player.isOnline()) {
-                            queue.remove(player.getName());
-                            cancel();
-                            return;
-                        }
-                        ArrayList<Achievement> a = queue.get(player.getName());
-                        Achievement achievement = a.get(0);
-
-                        achievement.get(player, true);
-                        a.remove(achievement);
-
-                        if (a.size() <= 0) {
-                            queue.remove(player.getName());
-                        } else queue.put(player.getName(), a);
-                    }
-                }.runTaskLater(Main.getInstance(), 120 * (achievements.size() + 1));
-                return;
-            }
-        }
-
-        list.add(player.getName());
-        EConfig.ACHIEVEMENTS.getConfig().set(this.toString(), list); EConfig.ACHIEVEMENTS.saveConfig();
+        gamer.getAchievements().add(this);
         Arrays.stream(getReward()).forEach(rew -> rew.giveReward(player));
         GamerManager.getGamer(player).sendAchievementTitle(getName());
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
     }
 
     public static void removeAll(Player player) {
-        Arrays.stream(values()).forEach(achievement -> {
-            List<String> list = EConfig.ACHIEVEMENTS.getConfig().getStringList(achievement.toString());
-            if (list.contains(player.getName())) {
-                list.remove(player.getName());
-                EConfig.ACHIEVEMENTS.getConfig().set(achievement.toString(), list);
-            }
-        });
-        EConfig.ACHIEVEMENTS.saveConfig();
+        Gamer gamer = GamerManager.getGamer(player);
+        gamer.getAchievements().clear();
     }
 
     public ItemStack getIcon(boolean opened) {
@@ -208,20 +148,11 @@ public enum Achievement {
 
     public void load() {
         try {
-            Arrays.stream(values()).forEach(achievement -> {
-                //Загрузка новых ачивок в конфиг
-                if (!EConfig.ACHIEVEMENTS.getConfig().contains(achievement.toString())) {
-                    List n = new ArrayList();
-                    EConfig.ACHIEVEMENTS.getConfig().set(achievement.toString(), n);
-                }
-                //Загрузка итемов для меню
-                icons.put(achievement, new AchievementIcon.Builder(achievement).build());
-            });
-            EConfig.ACHIEVEMENTS.saveConfig();
+            Arrays.stream(values()).forEach(achievement ->
+                    icons.put(achievement, new AchievementIcon.Builder(achievement).build()));
             Vars.sendSystemMessage(TypeMessage.SUCCESS, values().length + " achievements loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load achievements!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
             Main.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -235,5 +166,9 @@ public enum Achievement {
 
     public Reward[] getReward() {
         return reward;
+    }
+
+    public boolean isSecret() {
+        return isSecret;
     }
 }

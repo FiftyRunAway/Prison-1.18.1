@@ -51,9 +51,7 @@ public class PlayerInteract implements Listener {
 
         // Локации
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            Location.locations.forEach(location -> {
-                addLocation(player, location.getName(), location.getLocName());
-            });
+            Location.locations.forEach(location -> location.getLocation(gamer));
         }
 
         if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
@@ -97,29 +95,6 @@ public class PlayerInteract implements Listener {
                     BlockBreak.chests_tasks.remove(player.getName());
                 }
             } catch (Exception ex) { }
-        }
-    }
-
-    private void addLocation(Player player, String name, String location) {
-        Gamer gamer = GamerManager.getGamer(player);
-        try {
-            ItemStack itemStack = player.getInventory().getItemInMainHand();
-            if (itemStack != null &&
-                    itemStack.hasItemMeta() &&
-                    itemStack.getItemMeta().getDisplayName() != null &&
-                    ChatColor.stripColor(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).contains(name)) {
-                if (!gamer.getLocations().contains(location)) {
-                    gamer.getLocations().add(location);
-                    gamer.sendMessage(EMessage.ACTIVATELOCATION);
-                    player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                    Achievement.FIRST_LOCATION.get(player, false);
-                } else {
-                    gamer.sendMessage(EMessage.ALREADYHAVE);
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 

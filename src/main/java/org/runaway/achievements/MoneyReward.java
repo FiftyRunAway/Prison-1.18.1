@@ -32,6 +32,6 @@ public class MoneyReward implements Reward {
 
     @Override
     public String rewardTitle() {
-        return "&a" + reward + " " + MoneyType.RUBLES.getShortName() + "&r";
+        return "&7Деньги: &a" + reward + " " + MoneyType.RUBLES.getShortName() + "&r";
     }
 }

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
 import org.runaway.events.custom.TrainerUpEvent;
@@ -105,7 +104,7 @@ public class Trainer {
                 g.withdrawMoney(Integer.parseInt(tempmas[0]));
                 g.sendMessage(EMessage.TRAINERSUCCESS);
                 g.setStatistics(type.getValue(),  g.getIntStatistics(type.getValue()) + 1);
-                Achievement.FIRST_TRAINER.get(p, false);
+                Achievement.FIRST_TRAINER.get(p);
                 p.closeInventory();
 
                 Bukkit.getServer().getPluginManager().callEvent(new TrainerUpEvent(p, type));

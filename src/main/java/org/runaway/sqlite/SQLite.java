@@ -36,7 +36,7 @@ public class SQLite extends Database {
             StringBuilder sb = new StringBuilder();
             sb.append(String.format("CREATE TABLE IF NOT EXISTS %s (`%s` VARCHAR (32) NOT NULL,", getDbName(), primaryKey));
             Arrays.stream(saveables).forEach(eStat ->
-                    sb.append('`').append(eStat.getColumnType()).append('`').append(' ')
+                    sb.append('`').append(eStat.getColumnName()).append('`').append(' ')
                             .append(eStat.getColumnType()).append(" NOT NULL,"));
 
             sb.append("PRIMARY KEY (player));");

@@ -46,6 +46,6 @@ public class BoosterReward implements Reward {
 
     @Override
     public String rewardTitle() {
-        return "&2" + (global ? "Глобальный" : "Локальный") + " ускоритель " + (type == BoosterType.MONEY ? "денег" : "блоков") + " " + mult + "x на " + Utils.formatTime(time) + " мин.";
+        return "&2" + (global ? "Глобальный" : "Локальный") + " ускоритель " + (type == BoosterType.MONEY ? "денег" : "блоков") + " " + mult + "x на " + Utils.formatTime(time);
     }
 }

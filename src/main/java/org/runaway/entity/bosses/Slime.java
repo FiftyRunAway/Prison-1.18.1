@@ -8,10 +8,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.potion.PotionEffect;
@@ -204,7 +202,7 @@ public class Slime extends EntityMonster {
                 }
                 Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
                 gamer.depositMoney(money);
-                Achievement.SLIME_KILL.get(gamer.getPlayer(), false);
+                Achievement.SLIME_KILL.get(gamer.getPlayer());
                 gamer.setStatistics(EStat.BOSSES, gamer.getIntStatistics(EStat.BOSSES) + 1);
 
                 Object obj = gamer.getPrivilege().getValue(new BossMoney());

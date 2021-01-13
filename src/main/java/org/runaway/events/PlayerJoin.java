@@ -1,7 +1,5 @@
 package org.runaway.events;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -16,24 +14,14 @@ import org.runaway.Main;
 import org.runaway.achievements.Achievement;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
-import org.runaway.commands.SetStatCommand;
 import org.runaway.enums.*;
 import org.runaway.managers.GamerManager;
 import org.runaway.needs.Needs;
 import org.runaway.passiveperks.PassivePerks;
-import org.runaway.sqlite.DoReturn;
-import org.runaway.sqlite.DoVoid;
-import org.runaway.sqlite.PreparedRequests;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /*
  * Created by _RunAway_ on 14.1.2019
@@ -60,12 +48,11 @@ public class PlayerJoin implements Listener {
             PassivePerks.onJoin(gamer);
             //if (TWOFA.authlocked != null) twoFA(gamer); // Google Authenticator
             if (!player.hasPlayedBefore()) {
-                Achievement.JOIN.get(player, false); // Achievement
+                Achievement.JOIN.get(player); // Achievement
                 startKit(event.getPlayer()); // Give a start kit
                 gamer.teleport(Main.SPAWN); // Teleport to spawn
-                Utils.getPlayers().forEach(p -> Bukkit.getPlayer(p).sendMessage(Utils.colored(EMessage.FIRSTJOINPLAYER.getMessage()).replace("%player%", gamer.getGamer())));
             } else {
-                if (Utils.getPlayers().size() == 1) Achievement.EMPTY_SERVER.get(player, false); // Achievement
+                if (Utils.getPlayers().size() == 1) Achievement.EMPTY_SERVER.get(player); // Achievement
             }
         }
     }

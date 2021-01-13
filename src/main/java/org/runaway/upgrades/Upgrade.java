@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
@@ -54,7 +53,7 @@ public class Upgrade {
                 gamer.sendMessage(EMessage.SUCCESSFULUPGRADE);
                 Bukkit.getServer().getPluginManager().callEvent(new UpgradeEvent(player));
                 player.closeInventory();
-                Achievement.FIRST_UPGRADE.get(player, false);
+                Achievement.FIRST_UPGRADE.get(player);
                 if (gamer.getIntStatistics(EStat.UPGRADE_TRAINER) > 0) {
                     Utils.trainer.forEach(trainer -> {
                         Trainer tr = (Trainer) trainer;

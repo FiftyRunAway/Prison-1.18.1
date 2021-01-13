@@ -43,7 +43,7 @@ public class AchievementIcon extends Items {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(Utils.colored(ChatColor.YELLOW + achievement.getTitle()));
         ArrayList<String> rews = new ArrayList<>();
-        Arrays.stream(achievement.getReward()).forEach(reward -> rews.add("&7- " + reward.rewardTitle()));
+        Arrays.stream(achievement.getReward()).forEach(reward -> rews.add("&7• " + reward.rewardTitle()));
         meta.setLore(new Lore.BuilderLore()
                 .addString("&aДостижение получено!")
                 .addString("&7Задание: " + achievement.getName())
@@ -55,13 +55,13 @@ public class AchievementIcon extends Items {
     }
 
     private ItemStack getClosed() {
-        ItemStack item = new ItemStack(Material.COAL_BLOCK);
+        ItemStack item = new ItemStack(achievement.isSecret ? Material.COAL_BLOCK : Material.REDSTONE_BLOCK);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(Utils.colored(achievement.isSecret ? "&4!!! &cСекретное достижение &4!!!" : ChatColor.YELLOW + achievement.getTitle()));
         ArrayList<String> rews = null;
         if (!achievement.isSecret) {
             rews = new ArrayList<>();
-            for (Reward reward : achievement.getReward()) { rews.add("&7- " + reward.rewardTitle()); }
+            for (Reward reward : achievement.getReward()) { rews.add("&7• " + reward.rewardTitle()); }
         }
         meta.setLore(new Lore.BuilderLore()
                 .addString("&cДостижение заблокировано!")

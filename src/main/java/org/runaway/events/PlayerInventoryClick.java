@@ -98,13 +98,13 @@ public class PlayerInventoryClick implements Listener {
                             gamer.setHearts();
                             int newLevel = gamer.getIntStatistics(EStat.LEVEL);
                             if (newLevel == 5) {
-                                Achievement.FIVE_LEVEL.get(player, false);
+                                Achievement.FIVE_LEVEL.get(player);
                             } else if (newLevel == 10) {
-                                Achievement.TEN_LEVEL.get(player, false);
+                                Achievement.TEN_LEVEL.get(player);
                             } else if (newLevel == 15) {
-                                Achievement.FIFTEEN_LEVEL.get(player, false);
+                                Achievement.FIFTEEN_LEVEL.get(player);
                             } else if (newLevel == 20) {
-                                Achievement.TWENTY_LEVEL.get(player, false);
+                                Achievement.TWENTY_LEVEL.get(player);
                             }
                         } else {
                             gamer.sendMessage(EMessage.LEVELNEEDBLOCKS);

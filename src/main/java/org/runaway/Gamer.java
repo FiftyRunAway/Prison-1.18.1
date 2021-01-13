@@ -65,6 +65,7 @@ public class Gamer {
     private List<PassivePerks> passivePerks;
     private List<String> boosters;
     private List<String> locations;
+    private List<Achievement> achievements;
 
     private boolean isOnline = false;
     private boolean isExist = true;
@@ -94,20 +95,22 @@ public class Gamer {
             mobKills.put(mob.toString(), Integer.parseInt(amount.toString()));
         });
         passivePerks = new ArrayList<>();
-        Utils.fromStringToList(getStringStatistics(EStat.PERKS)).forEach(perk -> {
-            passivePerks.add(EPassivePerk.valueOf(perk).getPerk());
-        });
+        Utils.fromStringToList(getStringStatistics(EStat.PERKS)).forEach(perk ->
+                passivePerks.add(EPassivePerk.valueOf(perk).getPerk()));
         boosters = new ArrayList<>();
         boosters.addAll(Utils.fromStringToList(getStringStatistics(EStat.BOOSTERS)));
-
         locations = new ArrayList<>();
         locations.addAll(Utils.fromStringToList(getStringStatistics(EStat.LOCATIONS)));
+        achievements = new ArrayList<>();
+        Utils.fromStringToList(getStringStatistics(EStat.ACHIEVEMENTS)).forEach(achievement ->
+                achievements.add(Achievement.valueOf(achievement)));
     }
 
     public void savePlayer() {
         setStatistics(EStat.BLOCKS_AMOUNT, Utils.fromMapToString(blocksValues));
         setStatistics(EStat.OFFLINE_VALUES, Utils.fromMapToString(offlineValues));
         setStatistics(EStat.PERKS, Utils.fromListToString(getPassivePerks().stream().map(passivePerks1 -> passivePerks1.getClass().getSimpleName().toUpperCase()).collect(Collectors.toList())));
+        setStatistics(EStat.ACHIEVEMENTS, Utils.fromListToString(getAchievements().stream().map(Enum::name).collect(Collectors.toList())));
         setStatistics(EStat.MOB_KILLS, Utils.fromMapToString(mobKills));
         setStatistics(EStat.BOOSTERS, Utils.fromListToString(boosters));
         setStatistics(EStat.LOCATIONS, Utils.fromListToString(locations));
@@ -240,6 +243,10 @@ public class Gamer {
 
     public List<PassivePerks> getPassivePerks() {
         return passivePerks;
+    }
+
+    public List<Achievement> getAchievements() {
+        return achievements;
     }
 
     public boolean hasPassivePerk(PassivePerks perk) {
@@ -380,8 +387,8 @@ public class Gamer {
         getPlayer().setExp(0);
         getPlayer().setLevel(0);
 
-        Achievement.JOIN.get(player, false);
-        Achievement.REBIRTH.get(player, false);
+        Achievement.JOIN.get(player);
+        Achievement.REBIRTH.get(player);
 
         ItemStack is = new Item.Builder(Material.PAPER).name("&aМеню").lore(new Lore.BuilderLore().addSpace().addString("&7>> &bОткрыть").build()).build().item();
         if (!player.getInventory().contains(is)) {
@@ -522,11 +529,11 @@ public class Gamer {
         if (isOnline()) {
             sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
             double m = getMoney();
-            if (m >= 15) Achievement.GET_15.get(getPlayer(), false);
-            if (m >= 100) Achievement.GET_100.get(getPlayer(), false);
-            if (m >= 1500) Achievement.GET_1000.get(getPlayer(), false);
-            if (m >= 15000) Achievement.GET_15000.get(getPlayer(), false);
-            if (m >= 100000) Achievement.GET_100000.get(getPlayer(), false);
+            if (m >= 15) Achievement.GET_15.get(getPlayer());
+            if (m >= 100) Achievement.GET_100.get(getPlayer());
+            if (m >= 1500) Achievement.GET_1000.get(getPlayer());
+            if (m >= 15000) Achievement.GET_15000.get(getPlayer());
+            if (m >= 100000) Achievement.GET_100000.get(getPlayer());
         }
     }
 
