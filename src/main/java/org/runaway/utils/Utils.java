@@ -17,6 +17,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerQuit;
+import org.runaway.managers.GamerManager;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -163,7 +164,7 @@ public class Utils {
         try {
             if (!Utils.getPlayers().isEmpty()) {
                 Utils.getPlayers().forEach(player -> {
-                    PlayerQuit.SavePlayer(player);
+                    GamerManager.getGamer(player).savePlayer();
                     Bukkit.getPlayer(player).kickPlayer(ChatColor.RED + "Запланированная перезагрузка сервера");
                 });
                 Vars.sendSystemMessage(TypeMessage.SUCCESS, "All players were kicked from the server!");

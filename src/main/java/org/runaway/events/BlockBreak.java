@@ -93,12 +93,7 @@ public class BlockBreak implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
                 if (blocktolog.contains(block.getType())) {
-                    if (EConfig.BLOCKS.getConfig().contains(player.getName() + "." + block.getType().toString() + "-" + block.getData())) {
-                        add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + "." + block.getType().toString() + "-" + block.getData());
-                    }
-                    String ret = String.valueOf(new BigDecimal(add).setScale(2, RoundingMode.UP).doubleValue());
-                    EConfig.BLOCKS.getConfig().set(player.getName() + "." + block.getType().toString() + "-" + block.getData(), Double.valueOf(ret));
-                    EConfig.BLOCKS.saveConfig();
+                    gamer.addCurrentBlocks(block.getType().toString(), block.getData(), add);
                 }
                 gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf(gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
@@ -150,18 +145,13 @@ public class BlockBreak implements Listener {
                     gamer.increaseIntStatistics(EStat.KEYS);
                 }
                 double add = gamer.getBoosterBlocks();
-                if (EConfig.BLOCKS.getConfig().contains(player.getName() + ".LOG_2-0")) {
-                    add += EConfig.BLOCKS.getConfig().getDouble(player.getName() + ".LOG_2-0");
-                }
-                String ret = String.valueOf(new BigDecimal(add).setScale(2, RoundingMode.UP).doubleValue());
-                EConfig.BLOCKS.getConfig().set(player.getName() + ".LOG_2-0", Double.valueOf(ret));
-                EConfig.BLOCKS.saveConfig();
+                gamer.addCurrentBlocks("LOG_2", 0, add);
                 gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
                 block.setTypeIdAndData(Material.WOOD.getId(), (byte)1, true);
                 Bukkit.getServer().getPluginManager().callEvent(new BreakWoodEvent(player));
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                     block.setType(Material.LOG_2);
-                    block.setData((byte)1);
+                    block.setData((byte) 1);
                 }, 250L);
             }
         }

@@ -60,7 +60,8 @@ public class Gamer {
 
     private BiConsumer<Player, String> chatConsumer;
     private Map<String, String> offlineValues;
-    private Map<String, Integer> blocksValues, mobKills;
+    private Map<String, Double> blocksValues;
+    private Map<String, Integer> mobKills;
     private List<PassivePerks> passivePerks;
 
     private boolean isOnline = false;
@@ -84,7 +85,7 @@ public class Gamer {
         offlineValues = Utils.fromStringToMap(getStringStatistics(EStat.OFFLINE_VALUES));
         blocksValues = new HashMap();
         Utils.fromStringToMap(getStringStatistics(EStat.BLOCKS_AMOUNT)).forEach((block, amount) -> {
-            blocksValues.put(block.toString(), Integer.parseInt(amount.toString()));
+            blocksValues.put(block.toString(), Double.parseDouble(amount.toString()));
         });
         mobKills = new HashMap();
         Utils.fromStringToMap(getStringStatistics(EStat.MOB_KILLS)).forEach((mob, amount) -> {
@@ -152,7 +153,7 @@ public class Gamer {
         return offlineValues;
     }
 
-    public Map<String, Integer> getBlocksValues() {
+    public Map<String, Double> getBlocksValues() {
         return blocksValues;
     }
 
@@ -552,12 +553,14 @@ public class Gamer {
         withdrawMoney(money, 0);
     }
 
+    public void addCurrentBlocks(String block, int data, double amount) {
+        String blockString = block + "-" + data;
+        blocksValues.put(blockString, getCurrentBlocks(block, data) + amount);
+    }
+
     public int getCurrentBlocks(String block, int data) {
-        try {
-            return blocksValues.get(block + "-" + data);
-        } catch (Exception e) {
-            return 0;
-        }
+        String blockString = block + "-" + data;
+        return blocksValues.getOrDefault(blockString, 0D).intValue();
     }
 
     public int getCurrentBlocks(String block) {

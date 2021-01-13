@@ -22,19 +22,19 @@ public class BrockenBlocksMenu implements IMenus {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         Gamer gamer = GamerManager.getGamer(player);
 
-        if (!EConfig.BLOCKS.getConfig().contains(player.getName())) {
+        if (gamer.getBlocksValues().isEmpty()) {
             gamer.sendMessage(EMessage.BROCKENBLOCKS);
             player.closeInventory();
             return;
         }
 
         AtomicInteger i = new AtomicInteger(0);
-        EConfig.BLOCKS.getConfig().getConfigurationSection(player.getName()).getKeys(false).forEach(s ->
+        gamer.getBlocksValues().forEach((s, amount) ->
                 menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.valueOf(s.split("-")[0]))
                 .data(Short.parseShort(s.split("-")[1]))
                 .lore(new Lore.BuilderLore()
                         .addSpace()
-                        .addString("&7>> &e" + Math.round((double) EConfig.BLOCKS.getConfig().get((player.getName() + "." + s))) + " &fблоков сломано").build()).build().item()).setSlot(i.getAndIncrement())));
+                        .addString("&7>> &e" + Math.round(amount) + " &fблоков сломано").build()).build().item()).setSlot(i.getAndIncrement())));
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(53);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);

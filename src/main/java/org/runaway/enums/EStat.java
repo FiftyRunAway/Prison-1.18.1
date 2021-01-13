@@ -59,10 +59,6 @@ public enum EStat implements Saveable {
         this.type = type;
     }
 
-    public boolean containsInConfig(String player) {
-        return EConfig.STATISTICS.getConfig().contains(player + "." + this.title);
-    }
-
     public Object getFromConfig(String player) {
         return Main.getInstance().getPreparedRequests().returnRequest(DoReturn.SELECT, player, this.title);
     }
@@ -72,8 +68,6 @@ public enum EStat implements Saveable {
             Main.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, this.title, value);
             return;
         }
-        EConfig.STATISTICS.getConfig().set(player + "." + this.title, value);
-        EConfig.STATISTICS.saveConfig();
     }
 
     public void addConfig(String player, int value) {

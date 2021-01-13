@@ -13,7 +13,6 @@ import java.io.File;
 public enum EConfig {
     MINES("Mines", Config.mines, Config.minesFile, false, null),
     ACHIEVEMENTS("Achievements", Config.achievs, Config.achievsFile, true, null),
-    BLOCKS("Blocks", Config.blocks, Config.blocksFile, true, null),
     BOOSTERS("Boosters", Config.boosters, Config.boostersFile, true, null),
     BOSS("Boss", Config.boss, Config.bossFile, false, null),
     CASES("Cases", Config.cases, Config.casesFile, false, null),
@@ -24,7 +23,6 @@ public enum EConfig {
     MOBS("Mobs", Config.mobs, Config.mobsFile, false, null),
     MODULES("Modules", Config.modules, Config.modulesFile, false, null),
     SHOP("Shop", Config.shop, Config.shopFile, false, null),
-    STATISTICS("Statistics", Config.statistics, Config.statisticsFile, true, null),
     TALANTS("Talants", Config.talants, Config.talantsFile, true, null),
     TRAINER("Trainer", Config.trainer, Config.trainerFile, false, null),
     BATTLEPASS("BattlePass", Config.bp, Config.bpFile, false, ConfigHeaders.bpHeader()),

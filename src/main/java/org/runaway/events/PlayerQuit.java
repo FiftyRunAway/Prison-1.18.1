@@ -40,7 +40,6 @@ public class PlayerQuit implements Listener {
         GamerManager.getGamer(player).savePlayer();
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         removeMissions(player);
-        SavePlayer(player.getName());
         Utils.getPlayers().remove(player.getName());
         removeBar(player);
         if (BlockBreak.treasure_holo.containsKey(player.getName())) {
@@ -65,19 +64,5 @@ public class PlayerQuit implements Listener {
     private void removeBar(Player player) {
         Main.MoneyBar.removePlayer(player);
         Main.BlocksBar.removePlayer(player);
-    }
-
-    public static void SavePlayer(String g) {
-        Gamer gamer = GamerManager.getGamer(g);
-        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
-            Arrays.stream(EStat.values()).forEach(eStat -> {
-                //PreparedRequests.voidRequest(DoVoid.UPDATE, g, eStat.getStatName(), gamer.getStatistics(eStat));
-            });
-            return;
-        }
-        Arrays.stream(EStat.values()).forEach(stat -> {
-            EConfig.STATISTICS.getConfig().set(g + "." + stat.getStatName(), gamer.getStatistics(stat));
-        });
-        EConfig.STATISTICS.saveConfig();
     }
 }
