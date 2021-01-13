@@ -106,7 +106,7 @@ public class UpgradeMisc {
                 }
             }
         }
-        meta.spigot().setUnbreakable(true);
+        meta.setUnbreakable(true);
         meta.setLore(lores);
         itemstack.setItemMeta(meta);
         return itemstack;

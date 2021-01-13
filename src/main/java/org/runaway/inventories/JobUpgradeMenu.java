@@ -47,7 +47,7 @@ public class JobUpgradeMenu implements IMenus {
             Gamer g = GamerManager.getGamer(player);
             for (JobReq jobReq : job.getLevels().get(Job.getLevel(gamer, job))) {
                 if (!Job.hasStatistics(g, jobReq)) {
-                    player.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName())));
+                    gamer.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName())));
                     player.closeInventory();
                     return;
                 } else {

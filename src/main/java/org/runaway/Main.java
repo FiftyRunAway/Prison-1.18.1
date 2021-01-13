@@ -1,5 +1,6 @@
 package org.runaway;
 
+import com.boydti.fawe.util.EditSessionBuilder;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -9,6 +10,13 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.function.pattern.BlockPattern;
+import com.sk89q.worldedit.function.pattern.RandomPattern;
+import com.sk89q.worldedit.patterns.Pattern;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.bukkit.Bukkit;
@@ -199,6 +207,20 @@ public class Main extends JavaPlugin {
             }
         });
         loadBoosters();
+        try {
+            CuboidSelection cuboidSelection = new CuboidSelection(Bukkit.getWorld("world"), new Location(Bukkit.getWorld("world"), 10, 10, 10), new Location(Bukkit.getWorld("world"), 30, 30, 30));
+            EditSession editSession = new EditSessionBuilder(BukkitUtil.getLocalWorld(Bukkit.getWorld("world"))).build();
+            RandomPattern randomPattern = new RandomPattern();
+            BlockPattern blockPattern = new BlockPattern(new BaseBlock(35, 1));
+            BlockPattern blockPattern2 = new BlockPattern(new BaseBlock(35, 3));
+            randomPattern.add(blockPattern, 0.75);
+            randomPattern.add(blockPattern2, 0.25);
+            editSession.setBlocks(cuboidSelection.getRegionSelector().getRegion(), (Pattern) randomPattern);
+            editSession.setFastMode(true);
+            editSession.flushQueue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadSQLite() {

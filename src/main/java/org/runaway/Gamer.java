@@ -472,7 +472,7 @@ public class Gamer {
     }
 
     public void withdrawMoney(double money, int sale) {
-        double to_withdraw = (1 - (double)sale / 100) * money;
+        double to_withdraw = (1 - (double) sale / 100) * money;
         setStatistics(EStat.MONEY, getMoney() - to_withdraw);
         if (isOnline()) {
             sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));

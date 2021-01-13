@@ -1,8 +1,17 @@
 package org.runaway.mines;
 
+import com.boydti.fawe.jnbt.anvil.filters.SetPatternFilter;
+import com.boydti.fawe.util.EditSessionBuilder;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.function.pattern.BlockPattern;
+import com.sk89q.worldedit.function.pattern.RandomPattern;
+import com.sk89q.worldedit.patterns.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -170,7 +179,6 @@ public class Mine {
     public static void updateMine(Mine mine) {
         mineTask = new BukkitRunnable() {
             public void run() {
-                Random random = new Random();
                 Location loc = new Location(mine.world, mine.getX(), mine.getY(), mine.getZ());
                 int diametr = mine.getDiametr();
                 Location endLoc = new Location(mine.world, (mine.getX() - diametr), (mine.getY() - mine.getHeight()), (mine.getZ() - diametr));
@@ -190,38 +198,45 @@ public class Mine {
                 mine.reseted = System.currentTimeMillis();
                 mine.will_reset = mine.reseted + mine.delay * 1000L;
                 mine.forceUpdateHolo();
-                int highFloor = loc.getBlockY();
                 boolean isSurface = false;
-                if (!mine.surface.equals(Material.AIR)) isSurface = true;
-                for (int i = 0; i < mine.getHeight(); i++) {
-                    for (int q = 0; q < diametr; q++) {
-                        for (int l = 0; l < diametr; l++) {
-                            String str = mine.getTypes().split(" ")[random.nextInt(mine.getTypes().split(" ").length)];
-                            Material mat;
-                            int subid = 0;
-                            if (str.contains(":")) {
-                                String[] splitter = str.split(":");
-                                mat = Material.valueOf(splitter[0].toUpperCase());
-                                subid = Integer.parseInt(splitter[1]);
-                            } else {
-                                mat = Material.valueOf(str);
-                            }
-                            if (loc.getBlockY() == highFloor && isSurface) {
-                                loc.getBlock().setType(mine.surface);
-                            } else {
-                                loc.getBlock().setTypeIdAndData(mat.getId(), (byte) subid, true);
-                            }
-                            loc.subtract(1.0, 0.0, 0.0);
-                            if (l == diametr - 1) {
-                                loc.subtract((-l - 1), 0.0, 0.0);
-                            }
-                        }
-                        loc.subtract(0.0, 0.0, 1.0);
-                        if (q == diametr - 1) {
-                            loc.subtract(0.0, 0.0, (-q - 1));
-                        }
+                if (!mine.surface.equals(Material.AIR)) {
+                    isSurface = true;
+                    try {
+                        CuboidSelection cuboidSelection = new CuboidSelection(loc.getWorld(),
+                                loc,
+                                loc.clone().subtract(mine.getDiametr() - 1, 0, mine.getDiametr() - 1));
+                        EditSession editSession = new EditSessionBuilder(BukkitUtil.getLocalWorld(loc.getWorld())).build();
+                        BlockPattern blockPattern = new BlockPattern(new BaseBlock(mine.surface.getId()));
+                        editSession.setBlocks(cuboidSelection.getRegionSelector().getRegion(), (Pattern) blockPattern);
+                        editSession.setFastMode(true);
+                        editSession.flushQueue();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    loc.subtract(0.0, 1.0, 0.0);
+                }
+                try {
+                    CuboidSelection cuboidSelection = new CuboidSelection(loc.getWorld(),
+                            loc.clone().subtract(0, isSurface ? 1 : 0, 0),
+                            loc.clone().subtract(mine.getDiametr() - 1, mine.getHeight() + 1, mine.getDiametr() - 1));
+                    EditSession editSession = new EditSessionBuilder(BukkitUtil.getLocalWorld(loc.getWorld())).build();
+                    RandomPattern randomPattern = new RandomPattern();
+                    for (String str : mine.getTypes().split(" ")) {
+                        Material mat;
+                        int subid = 0;
+                        if (str.contains(":")) {
+                            String[] splitter = str.split(":");
+                            mat = Material.valueOf(splitter[0].toUpperCase());
+                            subid = Integer.parseInt(splitter[1]);
+                        } else {
+                            mat = Material.valueOf(str);
+                        }
+                        randomPattern.add(new BlockPattern(new BaseBlock(mat.getId(), subid)), 1);
+                    }
+                    editSession.setBlocks(cuboidSelection.getRegionSelector().getRegion(), (Pattern) randomPattern);
+                    editSession.setFastMode(true);
+                    editSession.flushQueue();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.runTaskTimer(Main.getInstance(), 0L, mine.getDelay() * 20L);

@@ -34,7 +34,7 @@ public class Upgrade {
                 HashMap<UpgradeProperty, String> itemdata = UpgradeMisc.getProperties(next);
                 for (UpgradeProperty prop : itemdata.keySet()) {
                     if (Double.parseDouble(data.get(prop)) < Double.parseDouble(itemdata.get(prop))) {
-                        player.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage()).replaceAll("%property%", prop.getForMessage()));
+                        gamer.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage()).replaceAll("%property%", prop.getForMessage()));
                         player.closeInventory();
                         return;
                     }
