@@ -51,7 +51,6 @@ public class PlayerQuit implements Listener {
         Main.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
         BattlePassMenu.data.remove(player.getName());
-        DonateMenu.stopBuyingProcess(player);
     }
 
     private void removeMissions(Player player) {

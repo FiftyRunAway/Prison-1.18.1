@@ -106,10 +106,10 @@ public class Zombie extends EntityMonster {
                     Gamer gamer = Main.gamers.get(Bukkit.getPlayer(killer.getName()).getUniqueId());
                     double money = (10.0 + ThreadLocalRandom.current().nextInt(15)) / 10.0;
                     gamer.depositMoney(money);
-                    gamer.setStatistics(EStat.ZOMBIES, gamer.getIntStatistics(EStat.ZOMBIES) + 1);
-                    if (gamer.getIntStatistics(EStat.ZOMBIES) == 15) {
-                        Achievement.FIFTEEN_ZOMBIES.get(gamer.getPlayer(), false);
-                    }
+                    //gamer.setStatistics(EStat.ZOMBIES, gamer.getIntStatistics(EStat.ZOMBIES) + 1);
+                    //if (gamer.getIntStatistics(EStat.ZOMBIES) == 15) {
+                        //Achievement.FIFTEEN_ZOMBIES.get(gamer.getPlayer(), false);
+                    //}
                 }
             }
         } catch (Exception ex) { ex.printStackTrace(); }

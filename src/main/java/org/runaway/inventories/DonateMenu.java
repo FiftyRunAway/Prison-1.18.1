@@ -25,8 +25,6 @@ import java.util.Map;
 
 public class DonateMenu implements IMenus {
 
-    public static Map<String, SyncRepeatTask> in_buiying = new HashMap<>();
-
     private void buy(Donate donate, Player player, Inventory menu) {
         Gamer gamer = GamerManager.getGamer(player);
         String d = Donate.getPex(donate.getIcon().getType());
@@ -83,18 +81,25 @@ public class DonateMenu implements IMenus {
         dm.setClickEvent(event -> {
             Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
             event.getWhoClicked().closeInventory();
-            in_buiying.put(gamer.getGamer(), new SyncRepeatTask(() ->
-                    gamer.sendMessage(EMessage.STREAMSBUYING), 150));
+            gamer.setChatConsumer((p, message) -> {
+                if (message.startsWith("отмена")) {
+                    gamer.setChatConsumer(null);
+                    gamer.sendMessage(EMessage.DONATINGSTOP);
+                    return;
+                }
+                try {
+                    Donate.donate(gamer, Integer.parseInt(message));
+                } catch (Exception exception) {
+                    gamer.sendMessage(EMessage.INTERROR);
+                    return;
+                }
+                return;
+            });
         });
         menu.addButton(dm.setSlot(39));
         menu.addButton(dm.clone().setSlot(41));
 
         player.openInventory(menu.build());
-    }
-
-    public static void stopBuyingProcess(Player player) {
-        in_buiying.get(player.getName()).stop();
-        in_buiying.remove(player.getName());
     }
 
     @Override

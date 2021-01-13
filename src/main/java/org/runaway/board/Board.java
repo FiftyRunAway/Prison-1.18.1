@@ -50,7 +50,7 @@ public class Board {
         replaceScore(objective, 11, ChatColor.WHITE + " Баланс" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + FormatMoney(gamer.getStatistics(EStat.MONEY)));
         replaceScore(objective, 10, ChatColor.WHITE + " Блоков " + getSplitter(ChatColor.GOLD) + ChatColor.BOLD + FormatBlocks(gamer));
         replaceScore(objective, 9, ChatColor.WHITE + " Убийств" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.KILLS));
-        replaceScore(objective, 8, ChatColor.WHITE + " Крыс убито" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.RATS));
+        replaceScore(objective, 8, ChatColor.WHITE + " Крыс убито" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getMobKills("rat"));
         replaceScore(objective, 7, ChatColor.WHITE + " Ключей добыто" + getSplitter(ChatColor.RED) + ChatColor.BOLD + gamer.getStatistics(EStat.KEYS));
         replaceScore(objective, 6, ChatColor.WHITE + " Фракция" + getSplitter(ChatColor.RED) + ChatColor.BOLD + "" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
         replaceScore(objective, 5, "  ");

@@ -95,7 +95,7 @@ public class Upgrade {
                 return String.valueOf(gamer.getStatistics(EStat.LEVEL));
             }
             case RATS: {
-                return String.valueOf(gamer.getStatistics(EStat.RATS));
+                return String.valueOf(gamer.getMobKills("rat"));
             }
             case KILLS: {
                 return String.valueOf(gamer.getStatistics(EStat.KILLS));

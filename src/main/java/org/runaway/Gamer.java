@@ -35,6 +35,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /*
  * Created by _RunAway_ on 16.1.2019
@@ -56,9 +58,16 @@ public class Gamer {
 
     private final Map<Saveable, Object> statisticsMap;
 
+    private BiConsumer<Player, String> chatConsumer;
+    private Map<String, String> offlineValues;
+    private Map<String, Integer> blocksValues, mobKills;
+    private List<PassivePerks> passivePerks;
+
     private boolean isOnline = false;
+    private boolean isExist = true;
 
     private Map<String, Long> cooldowns;
+
 
     public Gamer(Player player) {
         this.uuid = player.getUniqueId();
@@ -66,14 +75,47 @@ public class Gamer {
         this.player = player;
         this.gamer = this.player.getName();
         this.isOnline = true;
-        statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values());
+        if(!preparedRequests.isExist("player", getPlayer().getName())) {
+            isExist = false;
+        }
+        statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values(), isExist);
         setStatistics(EStat.UUID, getPlayer().getUniqueId());
         setStatistics(EStat.FULL_NAME, player.getName());
+        offlineValues = Utils.fromStringToMap(getStringStatistics(EStat.OFFLINE_VALUES));
+        blocksValues = new HashMap();
+        Utils.fromStringToMap(getStringStatistics(EStat.BLOCKS_AMOUNT)).forEach((block, amount) -> {
+            blocksValues.put(block.toString(), Integer.parseInt(amount.toString()));
+        });
+        mobKills = new HashMap();
+        Utils.fromStringToMap(getStringStatistics(EStat.MOB_KILLS)).forEach((mob, amount) -> {
+            mobKills.put(mob.toString(), Integer.parseInt(amount.toString()));
+        });
+        passivePerks = new ArrayList();
+        Utils.fromStringToList(getStringStatistics(EStat.PERKS)).forEach(perk -> {
+            passivePerks.add(EPassivePerk.valueOf(perk).getPerk());
+        });
     }
 
     public void savePlayer() {
-        preparedRequests.saveAllValues("player", getPlayer().getName(), statisticsMap);
+        setStatistics(EStat.BLOCKS_AMOUNT, Utils.fromMapToString(blocksValues));
+        setStatistics(EStat.OFFLINE_VALUES, Utils.fromMapToString(offlineValues));
+        setStatistics(EStat.PERKS, Utils.fromListToString(getPassivePerks().stream().map(passivePerks1 -> passivePerks1.getClass().getSimpleName().toUpperCase()).collect(Collectors.toList())));
+        setStatistics(EStat.MOB_KILLS, Utils.fromMapToString(mobKills));
+        if(isExist) {
+            preparedRequests.saveAllValues("player", getPlayer().getName(), statisticsMap);
+        } else {
+            preparedRequests.create("player", getPlayer().getName(), statisticsMap);
+            isExist = true;
+        }
         sendMessage("&aВаши данные сохранены!");
+    }
+
+    public void setChatConsumer(BiConsumer<Player, String> chatConsumer) {
+        this.chatConsumer = chatConsumer;
+    }
+
+    public BiConsumer<Player, String> getChatConsumer() {
+        return chatConsumer;
     }
 
     public boolean isEndedCooldown(String name) {
@@ -100,6 +142,34 @@ public class Gamer {
 
     public String getReplyPlayer() {
         return replyPlayer;
+    }
+
+    public Map<Saveable, Object> getStatisticsMap() {
+        return statisticsMap;
+    }
+
+    public Map<String, String> getOfflineValues() {
+        return offlineValues;
+    }
+
+    public Map<String, Integer> getBlocksValues() {
+        return blocksValues;
+    }
+
+    public Map<String, Integer> getMobKills() {
+        return mobKills;
+    }
+
+    public int getMobKills(String mobName) {
+        return getMobKills().getOrDefault(mobName, 0);
+    }
+
+    public boolean isExist() {
+        return isExist;
+    }
+
+    public Map<String, Long> getCooldowns() {
+        return cooldowns;
     }
 
     public void sendMessage(EMessage message) {
@@ -150,18 +220,12 @@ public class Gamer {
         sendActionbar(Utils.colored("&dПолучено " + experience + " опыта"));
     }
 
-    public ArrayList<PassivePerks> getPassivePerks() {
-        ArrayList<PassivePerks> list = new ArrayList<>();
-        FileConfiguration cfg = EConfig.TALANTS.getConfig();
-        if (!cfg.contains(getGamer())) return null;
-        for (String s : cfg.getStringList(getGamer())) {
-            list.add(EPassivePerk.valueOf(s).getPerk());
-        }
-        return list;
+    public List<PassivePerks> getPassivePerks() {
+        return passivePerks;
     }
 
     public boolean hasPassivePerk(PassivePerks perk) {
-        ArrayList<PassivePerks> perks = getPassivePerks();
+        List<PassivePerks> perks = getPassivePerks();
         if (perks == null) return false;
         for (PassivePerks p : perks) {
             if (p.getSlot() == perk.getSlot()) {
@@ -172,13 +236,7 @@ public class Gamer {
     }
 
     public void addPassivePerk(PassivePerks perk) {
-        ArrayList<String> strs = new ArrayList<>();
-        strs.add(perk.getClass().getSimpleName().toUpperCase());
-        if (EConfig.TALANTS.getConfig().contains(getGamer())) {
-            strs.addAll(EConfig.TALANTS.getConfig().getStringList(getGamer()));
-        }
-        EConfig.TALANTS.getConfig().set(getGamer(), strs);
-        EConfig.TALANTS.saveConfig();
+        getPassivePerks().add(perk);
     }
 
     public void setHearts() {
@@ -342,7 +400,7 @@ public class Gamer {
                 setStatistics(stat, stat.getDefualt());
             }
         });
-        EConfig.BLOCKS.getConfig().set(getGamer(), null);
+        blocksValues.clear();
         Achievement.removeAll(getPlayer());
         resetQuests();
     }
@@ -496,7 +554,7 @@ public class Gamer {
 
     public int getCurrentBlocks(String block, int data) {
         try {
-            return (int)EConfig.BLOCKS.getConfig().getDouble(getGamer() + "." + block + "-" + data);
+            return blocksValues.get(block + "-" + data);
         } catch (Exception e) {
             return 0;
         }
@@ -590,7 +648,6 @@ public class Gamer {
         if (isOnline()) {
             return statisticsMap.get(statistic);
         } else {
-            System.out.println(Bukkit.getOfflinePlayer(getUUID()).getName());
             return getStatisticsFromConfig(statistic, Bukkit.getOfflinePlayer(getUUID()).getName());
         }
     }

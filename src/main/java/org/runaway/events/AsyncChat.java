@@ -34,24 +34,10 @@ public class AsyncChat implements Listener {
             gamer.sendMessage(EMessage.AMPERSAND);
             return;
         }
-        if (DonateMenu.in_buiying.containsKey(player.getName())) {
-            if (message.split(" ").length > 1) {
-                gamer.sendMessage(EMessage.INTERROR);
-                return;
-            } else if (message.contains("отмена")) {
-                DonateMenu.stopBuyingProcess(player);
-                gamer.sendMessage(EMessage.DONATINGSTOP);
-                return;
-            }
-            int streams;
-            try {
-                streams = Integer.parseInt(message);
-            } catch (Exception exception) {
-                gamer.sendMessage(EMessage.INTERROR);
-                return;
-            }
-            DonateMenu.stopBuyingProcess(player);
-            Donate.donate(gamer, streams);
+        if(gamer.getChatConsumer() != null) {
+            gamer.getChatConsumer().accept(player, message);
+            gamer.setChatConsumer(null);
+            event.setCancelled(true);
             return;
         }
         String faction = "";

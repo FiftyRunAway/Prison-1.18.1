@@ -1,6 +1,8 @@
 package org.runaway.sqlite;
 
 import com.google.common.base.Joiner;
+import org.runaway.Main;
+import org.runaway.enums.EStat;
 import org.runaway.enums.Saveable;
 
 import java.sql.PreparedStatement;
@@ -11,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class PreparedRequests {
 
-    private final Database database;
-    private final String dbName;
+    private Database database;
+    private String dbName;
     public PreparedRequests(Database database) {
         this.database = database;
         this.dbName = database.getDbName();
@@ -26,13 +28,13 @@ public class PreparedRequests {
         return this.dbName;
     }
 
-    public Map<Saveable, Object> getAllValues(String player, Saveable[] saveables) {
-        return getAllValues("player", player, saveables);
+    public Map<Saveable, Object> getAllValues(String player, Saveable[] saveables, boolean exist) {
+        return getAllValues("player", player, saveables, exist);
     }
 
     public void saveAllValues(String primaryKey, String primaryValue, Map<Saveable, Object> saveableValues) {
         primaryValue = primaryValue.toLowerCase();
-        List<String> columnNames = saveableValues.keySet().stream().map(Saveable::getColumnName).collect(Collectors.toList());
+        List<String> columnNames = saveableValues.keySet().stream().map(saveable -> saveable.getColumnName()).collect(Collectors.toList());
         String statementString = String.format("UPDATE %s SET ('%s') = ('%s') WHERE %s = '%s'",
                 getDbName(), Joiner.on("','").join(columnNames), Joiner.on("','").join(saveableValues.values()), primaryKey, primaryValue);
         getDatabase().executeStatement(statementString);
@@ -52,13 +54,13 @@ public class PreparedRequests {
         }
         return false;
     }
-    public Map<Saveable, Object> getAllValues(String key, String value, Saveable[] saveables) {
+    public Map<Saveable, Object> getAllValues(String key, String value, Saveable[] saveables, boolean exist) {
         try {
-            Map<Saveable, Object> allValues = new HashMap<>();
-            if(!isExist(key, value)) {
-                Arrays.stream(saveables).forEach(eStat ->
-                        allValues.put(eStat, eStat.getDefaultValue()));
-                create(key, value, Arrays.asList(saveables.clone()));
+            Map<Saveable, Object> allValues = new HashMap();
+            if(!exist) {
+                Arrays.stream(saveables).forEach(eStat -> {
+                    allValues.put(eStat, eStat.getDefaultValue());
+                });
                 return allValues;
             }
             String statementString = String.format("SELECT * FROM %s WHERE %s = '%s'", getDbName(), key, value.toLowerCase());
@@ -82,12 +84,17 @@ public class PreparedRequests {
     }
 
     public void create(String key, String primary, List<Saveable> saveableList) {
-        Map<String, Object> defaultValues = new HashMap<>();
-        saveableList.forEach(saveable ->
-                defaultValues.put(saveable.getColumnName(), saveable.getDefaultValue()));
-        List<String> columnNames = saveableList.stream().map(Saveable::getColumnName).collect(Collectors.toList());
+        Map<Saveable, Object> saveableValues = new HashMap();
+        saveableList.forEach(saveable -> {
+            saveableValues.put(saveable, saveable.getDefaultValue());
+        });
+        create(key, primary, saveableValues);
+    }
+
+    public void create(String key, String primary, Map<Saveable, Object> saveableValues) {
+        List<String> columnNames = saveableValues.keySet().stream().map(saveable -> saveable.getColumnName()).collect(Collectors.toList());
         String allColumns = Joiner.on("','").join(columnNames);
-        String allValues = Joiner.on("','").join(defaultValues.values());
+        String allValues = Joiner.on("','").join(saveableValues.values());
         String statementString = String.format("INSERT INTO %s (%s, '%s') VALUES ('%s', '%s')", getDbName(), key, allColumns, primary.toLowerCase(), allValues);
         getDatabase().executeStatement(statementString);
     }
@@ -118,7 +125,7 @@ public class PreparedRequests {
 
     public Map<String, Long> getTop(String orderBy, int limit) {
         try {
-            Map<String, Long> top = new TreeMap<>();
+            Map<String, Long> top = new TreeMap();
             PreparedStatement preparedStatement = database.getSQLConnection().prepareStatement(String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT " + limit, getDbName(), orderBy));
             ResultSet set = preparedStatement.executeQuery();
             while (set.next()) {

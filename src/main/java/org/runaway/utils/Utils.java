@@ -1,5 +1,7 @@
 package org.runaway.utils;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import net.minecraft.server.v1_12_R1.EnumChatFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -239,6 +241,42 @@ public class Utils {
 
     public static String combine(String[] args, int firstIndex) {
         return String.join(" ", Arrays.stream(args).skip(firstIndex).collect(Collectors.toList()));
+    }
+
+    public static List<String> fromStringToList(String string) {
+        if (string == null || string.equals("")) {
+            return new ArrayList();
+        }
+        return Splitter.on(",").splitToList(string);
+    }
+
+    public static String fromListToString(List list) {
+        if (list.isEmpty()) {
+            return "";
+        }
+        return Joiner.on(",").join(list);
+    }
+
+    public static Map fromStringToMap(String string) {
+        return fromStringToMap(string, ",", ";");
+    }
+
+    public static String fromMapToString(Map map) {
+        return fromMapToString(map, ",", ";");
+    }
+
+    public static Map<String, Object> fromStringToMap(String string, String on, String separator) {
+        if (string == null || string.equals("")) {
+            return new HashMap();
+        }
+        return new HashMap<>(Splitter.on(on).withKeyValueSeparator(separator).split(string));
+    }
+
+    public static String fromMapToString(Map map, String on, String separator) {
+        if (map.isEmpty()) {
+            return "";
+        }
+        return Joiner.on(on).withKeyValueSeparator(separator).join(map);
     }
 
     public static HashMap<String, Double> getlBlocksMultiplier() {
