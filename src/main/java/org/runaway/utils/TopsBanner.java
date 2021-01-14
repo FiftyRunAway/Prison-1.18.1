@@ -209,7 +209,7 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
                 } else if (this.desc.equalsIgnoreCase(MoneyType.RUBLES.getShortName())) {
                     score_string = FormatMoney(score) + " " + MoneyType.RUBLES.getShortName();
                 } else if (this.desc.equalsIgnoreCase("рублей")) {
-                    score_string = FormatMoney(score) + " ₽";
+                    score_string = FormatMoney(score) + " стримов";
                 }
                 g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), pos + ". " + name, font, textColor, blurColor, strokeThickness, null, null), finalXOffset - 110,
                         finalYOffset + (k.get() * 27) - 200 + (k.get() * 2), null);

@@ -37,7 +37,7 @@ import java.util.*;
 
 public class BlockBreak implements Listener {
 
-    private static final List<Material> blocktolog = new ArrayList<>();
+    //private static final List<Material> blocktolog = new ArrayList<>();
     static HashMap<String, Location> chests = new HashMap<>();
     static HashMap<String, BukkitTask> chests_tasks = new HashMap<>();
 
@@ -92,9 +92,7 @@ public class BlockBreak implements Listener {
                 }
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
-                if (blocktolog.contains(block.getType())) {
-                    gamer.addCurrentBlocks(block.getType().toString(), block.getData(), add);
-                }
+                gamer.addCurrentBlocks(block.getType().toString(), block.getData(), add);
                 gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf(gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
                 AutoSell(event, FindChest(event));
@@ -268,7 +266,7 @@ public class BlockBreak implements Listener {
     public void loadLogger() {
         try {
             LeftChest = EConfig.CONFIG.getConfig().getInt("chest_time");
-            EConfig.CONFIG.getConfig().getStringList("logger").forEach(s -> blocktolog.add(Material.valueOf(s)));
+            //EConfig.CONFIG.getConfig().getStringList("logger").forEach(s -> blocktolog.add(Material.valueOf(s)));
 
             canbreak = new HashMap<>();
             canbreak.put(Material.WOOD_PICKAXE, breakableByPickaxe(Material.WOOD_PICKAXE));
@@ -326,6 +324,7 @@ public class BlockBreak implements Listener {
                 list.add(Material.QUARTZ_ORE);
                 list.add(Material.PACKED_ICE);
                 list.add(Material.ICE);
+                list.add(Material.STAINED_CLAY);
                 break;
             }
             case STONE_PICKAXE: {

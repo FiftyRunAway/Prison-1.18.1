@@ -713,6 +713,10 @@ public class Gamer {
         getPlayer().sendTitle(Utils.colored("&aНовое достижение!"), Utils.colored(name), 50, 70, 50);
     }
 
+    public void sendFishingTeleport(String main) {
+        getPlayer().sendTitle(Utils.colored(main), Utils.colored(ChatColor.YELLOW + "КРУТИ КАТУШКУ!"), 0, 2, 0);
+    }
+
     public void sendTitle(String title) {
         String subtitle = null;
         if(title.contains("\n")) {

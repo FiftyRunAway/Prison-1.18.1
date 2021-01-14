@@ -66,7 +66,6 @@ public enum EStat implements Saveable {
     public void setInConfig(String player, Object value) {
         if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
             Main.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, this.title, value);
-            return;
         }
     }
 

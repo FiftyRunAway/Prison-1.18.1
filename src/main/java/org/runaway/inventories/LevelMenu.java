@@ -52,10 +52,13 @@ public class LevelMenu implements IMenus {
 
         ArrayList<String> lore = new ArrayList<>();
         lore.add(Utils.colored("       &7[&c" + (gamer.getStatistics(EStat.LEVEL)) + " &7-> &a" + (Integer.parseInt(gamer.getStatistics(EStat.LEVEL).toString()) + 1) + "&7]"));
-        lore.add(" ");
         lore.add(Utils.colored("&eТребования:"));
         lore.add(Utils.colored("&7• &fБлоков: " + AccessBlocksColor(gamer) + Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)) + "/" + blocks + " " + AccessBlocksSymbol(gamer)));
         lore.add(Utils.colored("&7• &fДенег: " + AccessMoneyColor(gamer) + Board.FormatMoney(gamer.getMoney()) + "/" + Board.FormatMoney(price) + " " + AccessMoneySymbol(gamer)));
+//        lore.add(" ");
+//        lore.add("&eВы получите:");
+//        int next = gamer.getIntStatistics(EStat.LEVEL);
+//        if ()
         return lore;
     }
 

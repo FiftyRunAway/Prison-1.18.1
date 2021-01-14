@@ -64,7 +64,7 @@ public class MinesMenu implements IMenus {
                 }
             });
             menu.addButton(btn);
-        }
+        }/*
         ConfigurationSection levels = EConfig.CONFIG.getConfig().getConfigurationSection("levels");
         int maxLevel = levels.getKeys(false).size();
         for (int s = 0; s < maxLevel; s++) {
@@ -75,7 +75,18 @@ public class MinesMenu implements IMenus {
                                 .addString("&7Совсем скоро эта шахта")
                                 .addString("&7&nпоявится&r&7 на сервере!").build()).build().item()).setSlot(s));
             }
-        }
+        }*/
+
+        IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.NETHER_STAR).name("&6База")
+                .lore(new Lore.BuilderLore()
+                        .addSpace()
+                        .addString("&7Требования к доступу:")
+                        .addString("&7• " + (gamer.getIntStatistics(EStat.LEVEL) < 5 ? ChatColor.RED : ChatColor.GREEN)  + "Минимальный уровень • 6")
+                        .addString("&7• " + (gamer.getFaction() == null ? ChatColor.RED : ChatColor.GREEN)  + "Вступление во фракцию")
+                        .build())
+                .build().item()).setSlot(4);
+        base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
+        menu.addButton(base);
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));

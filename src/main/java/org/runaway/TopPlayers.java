@@ -72,11 +72,11 @@ public class TopPlayers {
 
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         LinkedList<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
-        list.sort(Comparator.comparing(Map.Entry::getValue));
+        list.sort(Map.Entry.comparingByValue());
         LinkedHashMap<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
             if (!entry.getKey().equals("_RunAway_") &&
-                    !entry.getKey().equals("AttempGame")) {
+                    !entry.getKey().equals("EternalHuman2049")) {
                 result.put(entry.getKey(), entry.getValue());
             }
         }

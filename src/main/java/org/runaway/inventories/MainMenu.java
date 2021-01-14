@@ -9,6 +9,7 @@ import org.runaway.Main;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerInteract;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.events.ClickType;
@@ -154,7 +155,7 @@ public class MainMenu implements IMenus {
                             .addSpace()
                             .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(8);
-            base.setClickEvent(event -> Main.gamers.get(event.getWhoClicked().getUniqueId()).teleportBase());
+            base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
             menu.addButton(base);
 
             IMenuButton spawn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DOUBLE_PLANT)

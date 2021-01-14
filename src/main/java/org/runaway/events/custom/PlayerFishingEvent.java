@@ -4,25 +4,29 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.runaway.fishing.EFishType;
 
 public class PlayerFishingEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
     private Player player;
-    private Entity entity;
+    private EFishType reward;
     private boolean cancelled;
 
-    public PlayerFishingEvent(Player player, Entity entity) {
+    public PlayerFishingEvent(Player player, EFishType fishType) {
         this.player = player;
         this.cancelled = false;
+        this.reward = fishType;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public Entity getEntity() { return entity; }
+    public EFishType getReward() {
+        return reward;
+    }
 
     public boolean isCancelled() {
         return cancelled;
