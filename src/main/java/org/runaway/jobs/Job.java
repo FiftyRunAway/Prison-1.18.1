@@ -43,6 +43,7 @@ public abstract class Job {
     }
 
     public static int getStatistics(Gamer gamer, JobRequriement requriement) {
+        if (requriement == JobRequriement.MONEY) return (int)Math.round(gamer.getDoubleStatistics(EStat.MONEY));
         if (!EConfig.JOBS_DATA.getConfig().contains(gamer.getGamer() + "." + requriement.getConfig())) return 0;
         return EConfig.JOBS_DATA.getConfig().getInt(gamer.getGamer() + "." + requriement.getConfig());
     }
@@ -57,19 +58,22 @@ public abstract class Job {
     }
 
     public static void addStatistics(Gamer gamer, JobRequriement requriement) {
-        if (getStatistics(gamer, requriement) > 0) {
-            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + requriement.getConfig(), getStatistics(gamer, requriement) + 1);
-        } else {
-            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + requriement.getConfig(), 1);
-        }
-        EConfig.JOBS_DATA.saveConfig();
+        addStatistics(gamer, requriement.getConfig(), 1);
+    }
+
+    public static void addStatistics(Gamer gamer, JobRequriement requriement, int value) {
+        addStatistics(gamer, requriement.getConfig(), value);
     }
 
     public static void addStatistics(Gamer gamer, String name) {
+        addStatistics(gamer, name, 1);
+    }
+
+    public static void addStatistics(Gamer gamer, String name, int value) {
         if (getStatistics(gamer, name) > 0) {
-            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + name, getStatistics(gamer, name) + 1);
+            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + name, getStatistics(gamer, name) + value);
         } else {
-            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + name, 1);
+            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + name, value);
         }
         EConfig.JOBS_DATA.saveConfig();
     }
@@ -80,14 +84,18 @@ public abstract class Job {
     }
 
     public static boolean hasStatistics(Gamer gamer, JobReq req) {
+        if (req.getRequriement() == JobRequriement.MONEY) return gamer.getDoubleStatistics(EStat.MONEY) >= req.getValue();
         return getStatistics(gamer, req.getRequriement()) >= req.getValue();
     }
 
-    public static void take(Gamer gamer, JobRequriement job) {
-        switch (job) {
-            case LEGENDARY_FISH: {
-                removeStatistics(gamer, job);
+    public static void take(Gamer gamer, JobReq job) {
+        switch (job.getRequriement()) {
+            case MONEY: {
+                gamer.withdrawMoney(job.getValue());
                 break;
+            }
+            default: {
+                removeStatistics(gamer, job.getRequriement());
             }
         }
     }

@@ -216,7 +216,7 @@ public class Mine {
                 try {
                     CuboidSelection cuboidSelection = new CuboidSelection(loc.getWorld(),
                             loc.clone().subtract(0, isSurface ? 1 : 0, 0),
-                            loc.clone().subtract(mine.getDiametr() - 1, mine.getHeight() + 1, mine.getDiametr() - 1));
+                            loc.clone().subtract(mine.getDiametr() - 1, mine.getHeight() - 1, mine.getDiametr() - 1));
                     EditSession editSession = new EditSessionBuilder(BukkitUtil.getLocalWorld(loc.getWorld())).build();
                     RandomPattern randomPattern = new RandomPattern();
                     for (String str : mine.getTypes().split(" ")) {

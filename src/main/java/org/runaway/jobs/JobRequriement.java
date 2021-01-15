@@ -1,7 +1,8 @@
 package org.runaway.jobs;
 
 public enum JobRequriement {
-    LEGENDARY_FISH("Легендарные рыбы", "leg_fish", true);
+    LEGENDARY_FISH("Легендарные рыбы", "leg_fish", true),
+    MONEY("Деньги", null, true);
 
     private String name;
     private String cfgName;

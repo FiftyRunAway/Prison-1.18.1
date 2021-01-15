@@ -33,7 +33,9 @@ public class Fisherman extends Job {
     public ArrayList<JobReq[]> getLevels() {
         ArrayList<JobReq[]> reqs = new ArrayList<>();
         reqs.add(new JobReq[] { new JobReq(JobRequriement.LEGENDARY_FISH, 10) });
-        reqs.add(new JobReq[] { new JobReq(JobRequriement.LEGENDARY_FISH, 50) });
+        reqs.add(new JobReq[] {
+                new JobReq(JobRequriement.LEGENDARY_FISH, 50),
+                new JobReq(JobRequriement.MONEY, 15) });
         reqs.add(new JobReq[] { new JobReq(JobRequriement.LEGENDARY_FISH, 150) });
         reqs.add(new JobReq[] { new JobReq(JobRequriement.LEGENDARY_FISH, 300) });
         reqs.add(new JobReq[] { new JobReq(JobRequriement.LEGENDARY_FISH, 500) });

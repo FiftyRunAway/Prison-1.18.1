@@ -36,7 +36,7 @@ public class JobUpgradeMenu implements IMenus {
                 .name("&eУлучшение работы")
                 .lore(new Lore.BuilderLore()
                         .addString("&7Собирай ресурсы, чтобы")
-                        .addString("&7&nповышать свою награду &r&7за работу!")
+                        .addString("&7&nповышать свою награду&r&7 за работу!")
                         .addSpace()
                         .addString("&7Требования:")
                         .addList(list)
@@ -45,21 +45,21 @@ public class JobUpgradeMenu implements IMenus {
         upgrade.setClickEvent(event -> {
             Player player = event.getWhoClicked();
             Gamer g = GamerManager.getGamer(player);
-            for (JobReq jobReq : job.getLevels().get(Job.getLevel(gamer, job))) {
+            for (JobReq jobReq : job.getLevels().get(Job.getLevel(g, job))) {
                 if (!Job.hasStatistics(g, jobReq)) {
-                    gamer.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName())));
+                    g.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName())));
                     player.closeInventory();
                     return;
                 } else {
                     if (jobReq.getRequriement().isTaken()) {
-                        Job.take(g, jobReq.getRequriement());
+                        Job.take(g, jobReq);
                     }
                 }
             }
             Job.addStatistics(g, job.getClass().getSimpleName().toLowerCase());
-            player.closeInventory();
             player.sendMessage(Utils.colored(EMessage.JOBUPGRADE.getMessage().replace("%job%", job.getName())));
             g.sendTitle("&bПовышен", "&fуровень работы!");
+            player.closeInventory();
         });
         menu.addButton(upgrade);
 

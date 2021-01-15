@@ -4,7 +4,7 @@ import org.runaway.passiveperks.perks.*;
 
 public enum EPassivePerk {
     VACCINE(new Vaccine()),
-    BBLOCKFIRST(new BBlocksFirst()),
+    BBLOCKSFIRST(new BBlocksFirst()),
     BBLOCKSSECOND(new BBlocksSecond()),
     BBMONEYSECOND(new BBMoneySecond()),
     BMONEYFIRST(new BMoneyFirst()),

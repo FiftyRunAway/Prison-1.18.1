@@ -24,7 +24,8 @@ public class Location {
     public void getLocation(Gamer gamer) {
         Player player = gamer.getPlayer();
         try {
-            if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null &&
+            if (player.getInventory().getItemInMainHand() != null &&
+                    player.getInventory().getItemInMainHand().hasItemMeta() &&
                     ChatColor.stripColor(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).contains(name)) {
                 if (!gamer.getLocations().contains(getLocName())) {
                     gamer.getLocations().add(getLocName());

@@ -10,6 +10,7 @@ import org.runaway.Main;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.enums.FactionType;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
 import org.runaway.managers.GamerManager;
@@ -39,7 +40,7 @@ public class MinesMenu implements IMenus {
                 Gamer g = GamerManager.getGamer(p);
                 if (g.getIntStatistics(EStat.LEVEL) >= mines.getMinLevel()) {
                     if (mines.needPerm()) {
-                        if (g.getLocations().contains(mines.getLocName())) {
+                        if (g.getLocations().contains(mines.getLocName()) || p.isOp()) {
                             g.teleport(mines.getSpawn());
                         } else g.sendMessage(EMessage.MINENEEDPERM);
                     } else g.teleport(mines.getSpawn());
@@ -81,8 +82,8 @@ public class MinesMenu implements IMenus {
                 .lore(new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7Требования к доступу:")
-                        .addString("&7• " + (gamer.getIntStatistics(EStat.LEVEL) < 5 ? ChatColor.RED : ChatColor.GREEN)  + "Минимальный уровень • 6")
-                        .addString("&7• " + (gamer.getFaction() == null ? ChatColor.RED : ChatColor.GREEN)  + "Вступление во фракцию")
+                        .addString("&7• " + (gamer.getIntStatistics(EStat.LEVEL) < 5 ? ChatColor.RED : ChatColor.GREEN)  + "Минимальный уровень • 5")
+                        .addString("&7• " + (gamer.getFaction().equals(FactionType.DEFAULT) ? ChatColor.RED : ChatColor.GREEN)  + "Вступление во фракцию")
                         .build())
                 .build().item()).setSlot(4);
         base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());

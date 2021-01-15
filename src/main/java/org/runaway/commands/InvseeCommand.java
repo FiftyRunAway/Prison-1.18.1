@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class InvseeCommand extends CommandManager {
+
     public InvseeCommand() {
         super("invsee", "prison.commands", Collections.singletonList("checkinv"), false);
     }

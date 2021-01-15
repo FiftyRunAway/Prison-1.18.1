@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.runaway.Gamer;
 import org.runaway.Main;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
@@ -35,7 +36,7 @@ public class LMoney extends Booster {
                 Utils.getlMoneyRealTime().remove(owner);
                 Utils.getlMoneyActivatingTime().remove(owner);
                 if (Utils.getPlayers().contains(owner)) {
-                    gamer.sendMessage(ChatColor.RED + "Ваш локальный бустер денег закончился!");
+                    GamerManager.getGamer(owner).sendMessage(ChatColor.RED + "Ваш локальный бустер денег закончился!");
                 }
             },20 * time);
         }

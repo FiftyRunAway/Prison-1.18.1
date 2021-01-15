@@ -309,6 +309,7 @@ public class Main extends JavaPlugin {
             new Utils().RegisterEvent(new ListPing());
             new Utils().RegisterEvent(new PlayerAttack());
             new Utils().RegisterEvent(new BossSpawn());
+            new Utils().RegisterEvent(new PlayerFishing());
 
             //new Utils().RegisterEvent(new TWOFA());
             new Utils().RegisterEvent(new Needs());

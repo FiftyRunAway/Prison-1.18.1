@@ -1,6 +1,7 @@
 package org.runaway.fishing;
 
 import org.bukkit.ChatColor;
+import org.runaway.utils.Utils;
 
 public enum EFishType {
     LEGENDARY(ChatColor.GOLD, "&eУДАЧЛИВЫЙ", "&6Легендарная рыба"),
@@ -24,10 +25,10 @@ public enum EFishType {
     }
 
     public String getName() {
-        return name;
+        return Utils.colored(this.name);
     }
 
     public String getRewardName() {
-        return rewardName;
+        return Utils.colored(this.rewardName);
     }
 }

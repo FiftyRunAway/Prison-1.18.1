@@ -67,7 +67,7 @@ public class TopPlayers {
 
     public HashMap<String, Long> getTopValues() {
         Main.getInstance().forceUpdateTop();
-        return (HashMap<String, Long>) sortByValue(this.topValues);
+        return (HashMap<String, Long>) this.topValues;
     }
 
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {

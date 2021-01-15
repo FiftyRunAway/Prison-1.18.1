@@ -76,15 +76,6 @@ public enum Achievement {
     GET_100("&aЗаработать 100 руб.", "Повелитель мыла", new Reward[]{
             new MoneyReward().setReward(10),
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(12).build().item()) }, true),
-    GET_1000("&aЗаработать 1,500 руб.", "Блоковый магистр", new Reward[]{
-            new MoneyReward().setReward(150),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(16).build().item()) }, true),
-    GET_15000("&aЗаработать 15,000 руб.", "Да что ты вообще творишь?", new Reward[]{
-            new MoneyReward().setReward(1500),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(48).build().item()) }, true),
-    GET_100000("&aЗаработать 100,000 руб.", "Что? Повтори", new Reward[]{
-            new MoneyReward().setReward(10000),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(64).build().item()) }, true),
     FIRST_FISH("&aПоймать первую легендарную рыбу", "Рыболоff", new Reward[]{
             new ItemReward().setReward(ExampleItems.getKeyBuilder().amount(12).build().item()) }, false),
     DEAD_5("&aУмереть 5 раз", "Как же так...", new Reward[]{

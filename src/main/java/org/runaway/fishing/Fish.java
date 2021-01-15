@@ -83,6 +83,7 @@ public abstract class Fish {
     }
 
     public static Fish randomFish(EFishType type) {
+        if (type == EFishType.NONE_REWARD || type == EFishType.TRY_AGAIN) return null;
         Fish fish = null;
         while (fish == null) {
             fish = getRandomFish(type);

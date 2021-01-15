@@ -3,7 +3,6 @@ package org.runaway;
 import com.nametagedit.plugin.NametagEdit;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +16,7 @@ import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
 import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
+import org.runaway.fishing.EFishType;
 import org.runaway.inventories.FractionMenu;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.passiveperks.PassivePerks;
@@ -31,9 +31,12 @@ import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
+
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -95,8 +98,9 @@ public class Gamer {
             mobKills.put(mob.toString(), Integer.parseInt(amount.toString()));
         });
         passivePerks = new ArrayList<>();
-        Utils.fromStringToList(getStringStatistics(EStat.PERKS)).forEach(perk ->
-                passivePerks.add(EPassivePerk.valueOf(perk).getPerk()));
+        Utils.fromStringToList(getStringStatistics(EStat.PERKS)).forEach(perk -> {
+            passivePerks.add(EPassivePerk.valueOf(perk).getPerk());
+        });
         boosters = new ArrayList<>();
         boosters.addAll(Utils.fromStringToList(getStringStatistics(EStat.BOOSTERS)));
         locations = new ArrayList<>();
@@ -531,9 +535,6 @@ public class Gamer {
             double m = getMoney();
             if (m >= 15) Achievement.GET_15.get(getPlayer());
             if (m >= 100) Achievement.GET_100.get(getPlayer());
-            if (m >= 1500) Achievement.GET_1000.get(getPlayer());
-            if (m >= 15000) Achievement.GET_15000.get(getPlayer());
-            if (m >= 100000) Achievement.GET_100000.get(getPlayer());
         }
     }
 
@@ -713,8 +714,12 @@ public class Gamer {
         getPlayer().sendTitle(Utils.colored("&aНовое достижение!"), Utils.colored(name), 50, 70, 50);
     }
 
-    public void sendFishingTeleport(String main) {
-        getPlayer().sendTitle(Utils.colored(main), Utils.colored(ChatColor.YELLOW + "КРУТИ КАТУШКУ!"), 0, 2, 0);
+    public void sendFishingTitle(String main) {
+        getPlayer().sendTitle(Utils.colored(main), Utils.colored(ChatColor.YELLOW + "      КРУТИ КАТУШКУ!"), 0, 2, 0);
+    }
+
+    public void sendFishRewardTitle(EFishType type) {
+        sendTitle(type.getName(), type.getRewardName());
     }
 
     public void sendTitle(String title) {
@@ -727,6 +732,6 @@ public class Gamer {
     }
 
     public void sendActionbar(String msg) {
-        //sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.colored(msg)));
+        //sendTitle(new TextComponent(Utils.colored(msg)));
     }
 }

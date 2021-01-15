@@ -50,14 +50,15 @@ public class PlayerInteract implements Listener {
         }
 
         // Локации
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
+                event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             Location.locations.forEach(location -> location.getLocation(gamer));
         }
 
         if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
             if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
                 if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
-                    player.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
+                    player.sendMessage(Vars.getPrefix() + Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
                     event.setCancelled(true);
                     return;
                 }
