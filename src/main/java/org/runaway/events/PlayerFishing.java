@@ -4,13 +4,11 @@ import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
 import org.runaway.Main;
@@ -47,8 +45,12 @@ public class PlayerFishing implements Listener {
 
     @EventHandler
     public void onPlayerFishing(PlayerFishEvent event) {
-        Player player = event.getPlayer();
         event.setExpToDrop(0);
+        if (event.getState() != PlayerFishEvent.State.FISHING &&
+                event.getCaught() != null && (Item)event.getCaught() != null) {
+            ((Item) event.getCaught()).setItemStack(new ItemStack(Material.AIR));
+        }
+        Player player = event.getPlayer();
         if (!BlockBreak.isLocation(player.getLocation(), "fisherman")) return;
         FishHook fh = event.getHook();
         Gamer gamer = GamerManager.getGamer(player);

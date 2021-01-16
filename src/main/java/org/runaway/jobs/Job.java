@@ -44,13 +44,11 @@ public abstract class Job {
 
     public static int getStatistics(Gamer gamer, JobRequriement requriement) {
         if (requriement == JobRequriement.MONEY) return (int)Math.round(gamer.getDoubleStatistics(EStat.MONEY));
-        if (!EConfig.JOBS_DATA.getConfig().contains(gamer.getGamer() + "." + requriement.getConfig())) return 0;
-        return EConfig.JOBS_DATA.getConfig().getInt(gamer.getGamer() + "." + requriement.getConfig());
+        return getStatistics(gamer, requriement.getConfig());
     }
 
     public static int getStatistics(Gamer gamer, String name) {
-        if (!EConfig.JOBS_DATA.getConfig().contains(gamer.getGamer() + "." + name)) return 0;
-        return EConfig.JOBS_DATA.getConfig().getInt(gamer.getGamer() + "." + name);
+        return gamer.getJobValues(name);
     }
 
     public static int getLevel(Gamer gamer, Job job) {
@@ -70,17 +68,12 @@ public abstract class Job {
     }
 
     public static void addStatistics(Gamer gamer, String name, int value) {
-        if (getStatistics(gamer, name) > 0) {
-            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + name, getStatistics(gamer, name) + value);
-        } else {
-            EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + name, value);
-        }
-        EConfig.JOBS_DATA.saveConfig();
+        gamer.getJobValues().put(name, gamer.getJobValues(name) + value);
     }
 
-    public static void removeStatistics(Gamer gamer, JobRequriement requriement) {
-        EConfig.JOBS_DATA.getConfig().set(gamer.getGamer() + "." + requriement.getConfig(), null);
-        EConfig.JOBS_DATA.saveConfig();
+    public static void removeStatistics(Gamer gamer, JobReq requriement) {
+        gamer.getJobValues().put(requriement.getRequriement().getName(),
+                getStatistics(gamer, requriement.getRequriement()) - requriement.getValue());
     }
 
     public static boolean hasStatistics(Gamer gamer, JobReq req) {
@@ -95,7 +88,7 @@ public abstract class Job {
                 break;
             }
             default: {
-                removeStatistics(gamer, job.getRequriement());
+                removeStatistics(gamer, job);
             }
         }
     }

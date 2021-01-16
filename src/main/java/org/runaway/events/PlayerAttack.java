@@ -17,6 +17,7 @@ import org.runaway.enums.FactionType;
 import org.runaway.events.custom.PlayerDamageEvent;
 import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.Killer;
+import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
 
 public class PlayerAttack implements Listener {
@@ -48,7 +49,7 @@ public class PlayerAttack implements Listener {
             Gamer attacker = GamerManager.getGamer(p);
             int boost = 0;
             if (attacker.hasPassivePerk(new Killer())) boost += 1;
-            event.setDamage(event.getDamage() + (double) (attacker.getIntStatistics(EStat.GYM_TRAINER) + boost) * 4 / 100);
+            event.setDamage(event.getDamage() + (double) (gamer.getTrainingLevel(TypeTrainings.GYM.name()) + boost) * 4 / 100);
         }
     }
 

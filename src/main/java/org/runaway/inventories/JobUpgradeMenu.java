@@ -58,13 +58,13 @@ public class JobUpgradeMenu implements IMenus {
             }
             Job.addStatistics(g, job.getClass().getSimpleName().toLowerCase());
             player.sendMessage(Utils.colored(EMessage.JOBUPGRADE.getMessage().replace("%job%", job.getName())));
-            g.sendTitle("&bПовышен", "&fуровень работы!");
+            g.sendTitle("&b" + job.getName(), "&eповышен уровень работы!");
             player.closeInventory();
         });
         menu.addButton(upgrade);
 
         IMenuButton info = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.SIGN)
-                .name("&7Уровень данной работы: &e" + Job.getLevel(gamer, EJobs.FISHERMAN.getJob()) + "/" + job.getMaxLevel())
+                .name("&7Уровень данной работы: &e" + Job.getLevel(gamer, job) + "/" + job.getMaxLevel())
                 .build().item()).setSlot(13);
         menu.addButton(info);
 

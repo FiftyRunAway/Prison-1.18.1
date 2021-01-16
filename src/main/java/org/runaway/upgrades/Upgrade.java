@@ -54,7 +54,7 @@ public class Upgrade {
                 Bukkit.getServer().getPluginManager().callEvent(new UpgradeEvent(player));
                 player.closeInventory();
                 Achievement.FIRST_UPGRADE.get(player);
-                if (gamer.getIntStatistics(EStat.UPGRADE_TRAINER) > 0) {
+                if (gamer.getTrainingLevel(TypeTrainings.UPGRADE.name()) > 0) {
                     Utils.trainer.forEach(trainer -> {
                         Trainer tr = (Trainer) trainer;
                         if (tr.getType() != TypeTrainings.UPGRADE) return;

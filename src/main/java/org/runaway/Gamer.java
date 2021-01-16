@@ -69,6 +69,8 @@ public class Gamer {
     private List<String> boosters;
     private List<String> locations;
     private List<Achievement> achievements;
+    private Map<String, Integer> jobValues;
+    private Map<String, Integer> trainings;
 
     private boolean isOnline = false;
     private boolean isExist = true;
@@ -108,6 +110,13 @@ public class Gamer {
         achievements = new ArrayList<>();
         Utils.fromStringToList(getStringStatistics(EStat.ACHIEVEMENTS)).forEach(achievement ->
                 achievements.add(Achievement.valueOf(achievement)));
+        jobValues = new HashMap<>();
+        Utils.fromStringToMap(getStringStatistics(EStat.JOB)).forEach((data, value) -> {
+            jobValues.put(data.toString(), Integer.parseInt(value.toString()));
+        });
+        trainings = new HashMap<>();
+        Utils.fromStringToMap(getStringStatistics(EStat.TRAINER)).forEach((training, value) ->
+                trainings.put(training.toString(), Integer.parseInt(value.toString())));
     }
 
     public void savePlayer() {
@@ -118,6 +127,8 @@ public class Gamer {
         setStatistics(EStat.MOB_KILLS, Utils.fromMapToString(mobKills));
         setStatistics(EStat.BOOSTERS, Utils.fromListToString(boosters));
         setStatistics(EStat.LOCATIONS, Utils.fromListToString(locations));
+        setStatistics(EStat.JOB, Utils.fromMapToString(jobValues));
+        setStatistics(EStat.TRAINER, Utils.fromMapToString(trainings));
         if(isExist) {
             preparedRequests.saveAllValues("player", getPlayer().getName(), statisticsMap);
         } else {
@@ -187,6 +198,22 @@ public class Gamer {
 
     public int getMobKills(String mobName) {
         return getMobKills().getOrDefault(mobName, 0);
+    }
+
+    public Map<String, Integer> getJobValues() {
+        return jobValues;
+    }
+
+    public int getJobValues(String name) {
+        return getJobValues().getOrDefault(name, 0);
+    }
+
+    public Map<String, Integer> getTrainings() {
+        return trainings;
+    }
+
+    public int getTrainingLevel(String name) {
+        return getTrainings().getOrDefault(name, 0);
     }
 
     public boolean isExist() {
@@ -551,7 +578,7 @@ public class Gamer {
         setStatistics(EStat.MONEY, getMoney() - to_withdraw);
         if (isOnline()) {
             sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));
-            if (getIntStatistics(EStat.CASHBACK_TRAINER) > 0) {
+            if (getTrainingLevel(TypeTrainings.CASHBACK.name()) > 0) {
                 Utils.trainer.forEach(trainer -> {
                     Trainer tr = (Trainer) trainer;
                     if (tr.getType() != TypeTrainings.CASHBACK) return;

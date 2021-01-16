@@ -40,14 +40,12 @@ public enum EStat implements Saveable {
     REBIRTH("rebirth_level", 0, StatType.INTEGER),
     HELPER("helper", 0, StatType.INTEGER),
     SCROLLS("scrolls", 0, StatType.INTEGER),
-    CASHBACK_TRAINER("trainer_cashback", 0, StatType.INTEGER),
-    UPGRADE_TRAINER("trainer_upgrade", 0, StatType.INTEGER),
-    LUCK_TRAINER("trainer_luck", 0, StatType.INTEGER),
-    GYM_TRAINER("trainer_gym", 0, StatType.INTEGER),
+    TRAINER("trainer", "", StatType.STRING),
     REBIRTH_SCORE("rebirth_score", 0, StatType.INTEGER),
     BATTLEPASS_SCORE("battlepass_score", 0, StatType.INTEGER),
     BATTLEPASS_LEVEL("battlepass_level", 0, StatType.INTEGER),
-    LOCATIONS("locations", "", StatType.STRING);
+    LOCATIONS("locations", "", StatType.STRING),
+    JOB("job", "", StatType.STRING);
 
     private String title;
     private Object defualt;

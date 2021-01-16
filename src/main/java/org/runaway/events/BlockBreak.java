@@ -24,6 +24,7 @@ import org.runaway.events.custom.TreasureFindEvent;
 import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.KeyFirst;
 import org.runaway.passiveperks.perks.KeySecond;
+import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
@@ -84,7 +85,7 @@ public class BlockBreak implements Listener {
                 double boost = 1;
                 if (gamer.hasPassivePerk(new KeyFirst())) boost += 1;
                 if (gamer.hasPassivePerk(new KeySecond())) boost += 1;
-                if (Math.random() < (0.005 * (gamer.getIntStatistics(EStat.LUCK_TRAINER) + boost)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * (gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + boost)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
@@ -135,7 +136,7 @@ public class BlockBreak implements Listener {
             }
             if (isLocation(event.getBlock().getLocation(), "forest")) {
                 AutoSell(event, false);
-                if (Math.random() < (0.005 * (gamer.getIntStatistics(EStat.LUCK_TRAINER) + 1)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.005 * gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + 1) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
 
                     player.getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());

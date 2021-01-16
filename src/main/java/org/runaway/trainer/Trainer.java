@@ -54,7 +54,7 @@ public class Trainer {
         meta.setDisplayName(this.name);
         Lore.BuilderLore lore = new Lore.BuilderLore().addLore(this.lore).addSpace().addString("&dУровни прокачки:");
         Gamer gamer = GamerManager.getGamer(player);
-        int plevel = gamer.getIntStatistics(this.type.getValue());
+        int plevel = gamer.getTrainingLevel(type.name());
         ConfigurationSection section = EConfig.TRAINER.getConfig().getConfigurationSection(type.name().toLowerCase());
         AtomicBoolean canget = new AtomicBoolean(true);
         HashMap<UpgradeProperty, Integer> map = new HashMap<>();
@@ -92,7 +92,7 @@ public class Trainer {
         btn.setClickEvent(event -> {
             Player p = event.getWhoClicked();
             Gamer g = GamerManager.getGamer(p);
-            int l = gamer.getIntStatistics(this.type.getValue());
+            int l = gamer.getTrainingLevel(type.name());
             if (l >= section.getStringList("levels").size()) {
                 g.sendMessage(EMessage.TRAINERFULL);
                 p.closeInventory();
@@ -103,7 +103,7 @@ public class Trainer {
                 String[] tempmas = lvl.split(" ");
                 g.withdrawMoney(Integer.parseInt(tempmas[0]));
                 g.sendMessage(EMessage.TRAINERSUCCESS);
-                g.setStatistics(type.getValue(),  g.getIntStatistics(type.getValue()) + 1);
+                g.getTrainings().put(type.name(), g.getTrainingLevel(type.name()) + 1);
                 Achievement.FIRST_TRAINER.get(p);
                 p.closeInventory();
 
@@ -117,7 +117,7 @@ public class Trainer {
     }
 
     public double getValue(Player player) {
-        return this.values.get((int) GamerManager.getGamer(player).getStatistics(this.type.getValue()));
+        return this.values.get(GamerManager.getGamer(player).getTrainingLevel(type.name()));
     }
 
     private ChatColor getColorLevel(int plevel, int level) {
