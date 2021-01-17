@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.Confirmation;
 import org.runaway.managers.GamerManager;

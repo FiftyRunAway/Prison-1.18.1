@@ -2,12 +2,9 @@ package org.runaway.inventories;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
-import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
@@ -20,8 +17,6 @@ import org.runaway.menu.type.StandardMenu;
 import org.runaway.mines.Mines;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * Created by _RunAway_ on 5.5.2019

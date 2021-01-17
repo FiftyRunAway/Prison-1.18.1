@@ -4,7 +4,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
@@ -19,7 +19,7 @@ public class LBlocks extends Booster {
 
     @Override
     public void start(String owner, long time, double multiplier) {
-        Gamer gamer = Main.gamers.get(Bukkit.getOfflinePlayer(owner).getUniqueId());
+        Gamer gamer = Prison.gamers.get(Bukkit.getOfflinePlayer(owner).getUniqueId());
         if (!Utils.getlBlocksTime().containsKey(owner)) {
             Date target = new Date();
             target = DateUtils.addSeconds(target, (int)time);
@@ -30,7 +30,7 @@ public class LBlocks extends Booster {
             if (Utils.getPlayers().contains(owner)) {
                 gamer.sendTitle(ChatColor.GREEN + "Вы активировали", ChatColor.GREEN + "бустер блоков " + multiplier + "x");
             }
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                 Utils.getlBlocksMultiplier().remove(owner);
                 Utils.getlBlocksTime().remove(owner);
                 Utils.getlBlocksRealTime().remove(owner);

@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
@@ -48,7 +48,7 @@ public class UpgradeCommand extends CommandManager {
                         public void run() {
                             confirm.remove(p.getName());
                         }
-                    }.runTaskLater(Main.getInstance(), 100L);
+                    }.runTaskLater(Prison.getInstance(), 100L);
 
                     return;
                 }

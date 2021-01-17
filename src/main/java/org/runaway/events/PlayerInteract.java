@@ -3,7 +3,6 @@ package org.runaway.events;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -13,8 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.achievements.Achievement;
+import org.runaway.Prison;
 import org.runaway.board.Board;
 import org.runaway.enums.*;
 import org.runaway.inventories.BlockShopMenu;
@@ -66,7 +64,7 @@ public class PlayerInteract implements Listener {
         }
 
         if (block == null) return;
-        Main.cases.forEach(aCase -> aCase.open(event));
+        Prison.cases.forEach(aCase -> aCase.open(event));
         if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
             Sign sign = (Sign)block.getState();
             String[] lines = sign.getLines();
@@ -137,8 +135,8 @@ public class PlayerInteract implements Listener {
             });
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading shop prices!");
-            Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

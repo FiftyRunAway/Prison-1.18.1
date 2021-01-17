@@ -2,7 +2,7 @@ package org.runaway.configs;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
@@ -39,8 +39,8 @@ public class Config {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, EConfig.values().length + " configs was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading configs!");
-            Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

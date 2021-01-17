@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
 import org.runaway.menu.button.IMenuButton;
@@ -24,14 +24,14 @@ public class BoostersMenu implements IMenus {
     public BoostersMenu(Player g) {
         StandardMenu menu = StandardMenu.create(1, "&eВаши активные ускорители");
         int i = 0;
-        Gamer gamer = Main.gamers.get(g.getUniqueId());
+        Gamer gamer = Prison.gamers.get(g.getUniqueId());
 
         if (gamer.getPrivilege().getValue(new BoosterBlocks()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_NUGGET).name("&eУскоритель блоков донатера").lore(loreConstPrivilege(gamer, true)).build().item()).setSlot(i++));
         if (gamer.getPrivilege().getValue(new BoosterMoney()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.IRON_NUGGET).name("&eУскоритель денег донатера").lore(loreConstPrivilege(gamer, false)).build().item()).setSlot(i++));
         if (gamer.isActiveLocalBlocks()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND).name("&dⓁ &eускоритель блоков").lore(loreLocal(gamer, true)).build().item()).setSlot(i++));
         if (gamer.isActiveLocalMoney()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_INGOT).name("&dⓁ &eускоритель денег").lore(loreLocal(gamer,false)).build().item()).setSlot(i++));
-        if (Main.gMoney.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_BLOCK).name("&dⒼ &eускоритель денег").lore(loreGlobal(false)).build().item()).setSlot(i++));
-        if (Main.gBlocks.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND_BLOCK).name("&dⒼ &eускоритель блоков").lore(loreGlobal(true)).build().item()).setSlot(i++));
+        if (Prison.gMoney.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_BLOCK).name("&dⒼ &eускоритель денег").lore(loreGlobal(false)).build().item()).setSlot(i++));
+        if (Prison.gBlocks.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND_BLOCK).name("&dⒼ &eускоритель блоков").lore(loreGlobal(true)).build().item()).setSlot(i++));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND_ORE).name("&cПостоянный &aускоритель денег").lore(loreConst(gamer, false)).build().item()).setSlot(7));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_ORE).name("&cПостоянный &aускоритель блоков").lore(loreConst(gamer, true)).build().item()).setSlot(6));
 
@@ -44,9 +44,9 @@ public class BoostersMenu implements IMenus {
 
     private static Lore loreGlobal(boolean blocks) {
         return new Lore.BuilderLore()
-                .addString("&fВладелец: &e" + (blocks ? Main.gBlocks.getOwner() : Main.gMoney.getOwner()))
-                .addString("&fОсталось времени: &e" + (blocks ? Utils.formatTime(Main.gBlocks.getTime()) : Utils.formatTime(Main.gMoney.getTime())))
-                .addString("&fМножитель: &e" + (blocks ? Main.gBlocks.getMultiplier() : Main.gMoney.getMultiplier()) + "x")
+                .addString("&fВладелец: &e" + (blocks ? Prison.gBlocks.getOwner() : Prison.gMoney.getOwner()))
+                .addString("&fОсталось времени: &e" + (blocks ? Utils.formatTime(Prison.gBlocks.getTime()) : Utils.formatTime(Prison.gMoney.getTime())))
+                .addString("&fМножитель: &e" + (blocks ? Prison.gBlocks.getMultiplier() : Prison.gMoney.getMultiplier()) + "x")
                 .build();
     }
 

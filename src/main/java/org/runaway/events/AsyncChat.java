@@ -8,9 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.donate.Donate;
-import org.runaway.inventories.DonateMenu;
+import org.runaway.Prison;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
@@ -46,7 +44,7 @@ public class AsyncChat implements Listener {
         if (!gamer.getFaction().equals(FactionType.DEFAULT)) faction = Utils.colored("&7[" + gamer.getFaction().getColor() + gamer.getFaction().getName() + "&7] &f");
         if (gamer.getIntStatistics(EStat.REBIRTH) > 0) rebirth = ChatColor.YELLOW + gamer.getDisplayRebirth() + " " + ChatColor.GRAY;
         String level = Utils.colored("&7[" + gamer.getLevelColor() + "" + gamer.getDisplayLevel() + "&7] ");
-        if (Main.usePermissionsEx) prefix = Utils.colored(PermissionsEx.getUser(player).getPrefix());
+        if (Prison.usePermissionsEx) prefix = Utils.colored(PermissionsEx.getUser(player).getPrefix());
 
         boolean start = message.startsWith("!");
         if (start || !message.startsWith("@")) {
@@ -61,12 +59,12 @@ public class AsyncChat implements Listener {
             if (!start) {
                 event.getRecipients().forEach(players -> {
                     if (!outOfRange(event.getPlayer().getLocation(), player.getLocation()) || player.hasPermission("prison.spy")) {
-                        send(Main.gamers.get(players.getUniqueId()), format + message);
+                        send(Prison.gamers.get(players.getUniqueId()), format + message);
                     }
                 });
             } else {
                 event.getRecipients().forEach(players ->
-                        send(Main.gamers.get(players.getUniqueId()), format + message.replace("!", "")));
+                        send(Prison.gamers.get(players.getUniqueId()), format + message.replace("!", "")));
             }
             return;
         }
@@ -82,7 +80,7 @@ public class AsyncChat implements Listener {
         final String format = gamer.getFaction().getColor() + gamer.getFaction().getName() + ChatColor.GRAY + " | " + prefix + player.getName() + ChatColor.GRAY + " » " + ChatColor.BLUE;
         Bukkit.getConsoleSender().sendMessage(format + message.replace("@", ""));
         event.getRecipients().forEach(players -> {
-            Gamer g = Main.gamers.get(players.getUniqueId());
+            Gamer g = Prison.gamers.get(players.getUniqueId());
             if (gamer.getFaction().equals(g.getFaction()) || players.hasPermission("prison.spy")) {
                 send(g, format + message.replace("@", ""));
             }

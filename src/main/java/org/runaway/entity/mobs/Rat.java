@@ -1,23 +1,12 @@
 package org.runaway.entity.mobs;
 
 import net.minecraft.server.v1_12_R1.*;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.achievements.Achievement;
 import org.runaway.entity.Attributable;
 import org.runaway.entity.IMobController;
-import org.runaway.entity.Spawner;
-import org.runaway.enums.EConfig;
-import org.runaway.enums.EStat;
-import org.runaway.events.custom.KillRatsEvent;
 import org.runaway.utils.Utils;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Rat extends EntityMonster {
 
@@ -62,7 +51,7 @@ public class Rat extends EntityMonster {
             if (damagesource.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
                 int damage = Math.round(getHealth() - f);
                 if (damage < 0) damage = 0;
-                //Main.gamers.get(Bukkit.getPlayer(damagesource.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + damage + "♥",  "&c" + this.name);
+                //Prison.gamers.get(Bukkit.getPlayer(damagesource.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + damage + "♥",  "&c" + this.name);
             }
         }
         return super.damageEntity(damagesource, f);

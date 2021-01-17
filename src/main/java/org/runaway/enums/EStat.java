@@ -1,10 +1,8 @@
 package org.runaway.enums;
 
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.sqlite.DoReturn;
 import org.runaway.sqlite.DoVoid;
-
-import java.util.HashMap;
 
 /*
  * Created by _RunAway_ on 16.1.2019
@@ -58,12 +56,12 @@ public enum EStat implements Saveable {
     }
 
     public Object getFromConfig(String player) {
-        return Main.getInstance().getPreparedRequests().returnRequest(DoReturn.SELECT, player, this.title);
+        return Prison.getInstance().getPreparedRequests().returnRequest(DoReturn.SELECT, player, this.title);
     }
 
     public void setInConfig(String player, Object value) {
-        if (Main.getInstance().getSaveType().equals(SaveType.SQLITE)) {
-            Main.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, this.title, value);
+        if (Prison.getInstance().getSaveType().equals(SaveType.SQLITE)) {
+            Prison.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, this.title, value);
         }
     }
 

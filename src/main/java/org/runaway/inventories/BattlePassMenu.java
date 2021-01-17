@@ -6,12 +6,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
 import org.runaway.battlepass.WeeklyMission;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
@@ -105,7 +104,7 @@ public class BattlePassMenu implements IMenus {
                 IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(ic.lore(new Lore.BuilderLore().addList(lore).build()).build().item())
                         .setSlot(i);
                 btn.setClickEvent(e -> {
-                    BattlePass.unPin(mission, Main.gamers.get(e.getWhoClicked().getUniqueId()));
+                    BattlePass.unPin(mission, Prison.gamers.get(e.getWhoClicked().getUniqueId()));
                     new BattlePassMenu(e.getWhoClicked());
                 });
                 menu.addButton(btn);
@@ -177,7 +176,7 @@ public class BattlePassMenu implements IMenus {
         if (page < Math.ceil(pages - 1)) {
             IMenuButton next = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aВперёд").build().item()).setSlot(53);
             next.setClickEvent(event -> {
-                Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
+                Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
                 openPage(data.get(gamer.getGamer()) + 1, gamer);
             });
 
@@ -187,7 +186,7 @@ public class BattlePassMenu implements IMenus {
         if (page != 0) {
             IMenuButton back = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aНазад").build().item()).setSlot(45);
             back.setClickEvent(event -> {
-                Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
+                Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
                 openPage(data.get(gamer.getGamer()) - 1, gamer);
             });
 
@@ -270,7 +269,7 @@ public class BattlePassMenu implements IMenus {
             boolean finalOpened = opened;
             btn.setClickEvent(e -> {
                 if (finalOpened) {
-                    openTasksMenu(Main.gamers.get(e.getWhoClicked().getUniqueId()), wm);
+                    openTasksMenu(Prison.gamers.get(e.getWhoClicked().getUniqueId()), wm);
                 }
             });
             menu.addButton(btn);
@@ -318,7 +317,7 @@ public class BattlePassMenu implements IMenus {
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(ic.lore(new Lore.BuilderLore().addList(lore).build()).build().item())
                     .setSlot(i.getAndIncrement());
             btn.setClickEvent(e -> {
-                Gamer g = Main.gamers.get(e.getWhoClicked().getUniqueId());
+                Gamer g = Prison.gamers.get(e.getWhoClicked().getUniqueId());
                 if (mission.isCompleted(g))
                     return;
                 if (mission.isPinned(gamer)) {

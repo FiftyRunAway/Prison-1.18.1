@@ -13,8 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.menu.button.ButtonOptions;
 import org.runaway.menu.button.IMenuButton;
@@ -88,7 +87,7 @@ public class MenuListener implements Listener {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            Main.gamers.get(event.getWhoClicked().getUniqueId()).sendMessage(EMessage.ERRORELEMENT);
+            Prison.gamers.get(event.getWhoClicked().getUniqueId()).sendMessage(EMessage.ERRORELEMENT);
             event.getWhoClicked().closeInventory();
         }
     }

@@ -1,6 +1,6 @@
 package org.runaway.sqlite;
 
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.Saveable;
 
 import java.sql.*;
@@ -48,14 +48,14 @@ public abstract class Database {
             ps = conn.prepareStatement(statement);
             return !ps.execute();
         } catch (SQLException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
             return false;
         } finally {
             try {
                 if (ps != null)
                     ps.close();
             } catch (SQLException ex) {
-                Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+                Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
                 return false;
             }
         }
@@ -88,13 +88,13 @@ public abstract class Database {
                 return rs.getObject(row);
             }
         } catch (SQLException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
         } finally {
             try {
                 if (ps != null)
                     ps.close();
             } catch (SQLException ex) {
-                Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+                Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
             }
         }
         return null;
@@ -131,7 +131,7 @@ public abstract class Database {
             }
             return objects;
         } catch (SQLException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
         } finally {
             try {
                 if (ps != null)
@@ -139,7 +139,7 @@ public abstract class Database {
                 if (conn != null)
                     conn.close();
             } catch (SQLException ex) {
-                Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+                Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
             }
         }
         return null;
@@ -185,7 +185,7 @@ public abstract class Database {
             }
             return map;
         } catch (SQLException ex) {
-            Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+            Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
         } finally {
             try {
                 if (ps != null)
@@ -193,7 +193,7 @@ public abstract class Database {
                 if (conn != null)
                     conn.close();
             } catch (SQLException ex) {
-                Main.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+                Prison.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
             }
         }
         return null;
@@ -218,7 +218,7 @@ public abstract class Database {
             if (rs != null)
                 rs.close();
         } catch (SQLException ex) {
-            Error.close(Main.getInstance(), ex);
+            Error.close(Prison.getInstance(), ex);
         }
     }
 
@@ -236,7 +236,7 @@ public abstract class Database {
         try {
             connection.close();
         } catch (SQLException e) {
-            Error.close(Main.getInstance(), e);
+            Error.close(Prison.getInstance(), e);
         }
     }
 }

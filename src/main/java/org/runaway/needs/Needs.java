@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,7 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.donate.features.NeedsLonger;
 import org.runaway.enums.EMessage;
 import org.runaway.managers.GamerManager;
@@ -44,7 +43,7 @@ public class Needs implements Listener {
             cooldown = Integer.parseInt(obj.toString());
         }
         if (GamerManager.getGamer(player).hasPassivePerk(new Vaccine())) cooldown *= 1.5;
-        tasks.put(player.getName(), Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> {
+        tasks.put(player.getName(), Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
             if (player.getName() == null || needs.containsKey(player.getName())) return;
             int type = ThreadLocalRandom.current().nextInt(NeedsType.values().length);
             NeedsType t = NeedsType.values()[type];
@@ -97,12 +96,12 @@ public class Needs implements Listener {
             if (needs.containsKey(player.getName()) && NeedsType.getType(needs.get(player.getName())) == 3) {
                 if (bed_cd.contains(player.getName())) return;
                 bed_cd.add(player.getName());
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                     bed_cd.remove(player.getName());
                 }, 40L);
                 Gamer gamer = GamerManager.getGamer(player);
                 gamer.sendMessage(EMessage.STARTSLEEPING);
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                     if (Math.random() > 0.5) {
                         needs.remove(player.getName());
                         for (PotionEffect effect : player.getActivePotionEffects()) {

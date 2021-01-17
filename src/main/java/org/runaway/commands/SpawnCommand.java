@@ -3,7 +3,7 @@ package org.runaway.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.managers.GamerManager;
 
 import java.util.Collections;
@@ -22,7 +22,7 @@ public class SpawnCommand extends CommandManager {
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         Gamer gamer = GamerManager.getGamer(p);
-        gamer.teleport(Main.SPAWN);
+        gamer.teleport(Prison.SPAWN);
     }
 
     @Override

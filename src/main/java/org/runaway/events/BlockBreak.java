@@ -14,7 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
 import org.runaway.events.custom.BreakWoodEvent;
@@ -148,7 +148,7 @@ public class BlockBreak implements Listener {
                 gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
                 block.setTypeIdAndData(Material.WOOD.getId(), (byte)1, true);
                 Bukkit.getServer().getPluginManager().callEvent(new BreakWoodEvent(player));
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                     block.setType(Material.LOG_2);
                     block.setData((byte) 1);
                 }, 250L);
@@ -173,7 +173,7 @@ public class BlockBreak implements Listener {
             chests.put(player.getName(), block.getLocation());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
             Bukkit.getServer().getPluginManager().callEvent(new TreasureFindEvent(player));
-            chests_tasks.put(player.getName(), Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            chests_tasks.put(player.getName(), Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                 if (!chests.containsKey(player.getName())) return;
                 block.setType(Material.AIR);
                 chests.remove(player.getName());
@@ -181,8 +181,8 @@ public class BlockBreak implements Listener {
                 //player.sendMessage(Utils.colored(EMessage.TIMELEFTCHEST.getMessage().replace("%time%", LeftChest + "")));
                 chests_tasks.remove(player.getName());
             }, LeftChest * 20L));
-            if (Main.useHolographicDisplays) {
-                Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), block.getLocation().add(0.5, 1.5, 0.5));
+            if (Prison.useHolographicDisplays) {
+                Hologram hologram = HologramsAPI.createHologram(Prison.getInstance(), block.getLocation().add(0.5, 1.5, 0.5));
                 hologram.appendTextLine(ChatColor.WHITE + "Нашёл " + ChatColor.YELLOW + player.getName());
                 hologram.appendTextLine(ChatColor.RED + "Забери!");
                 treasure_holo.put(player.getName(), hologram);
@@ -276,8 +276,8 @@ public class BlockBreak implements Listener {
             canbreak.put(Material.DIAMOND_PICKAXE, breakableByPickaxe(Material.DIAMOND_PICKAXE));
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading log blocks!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

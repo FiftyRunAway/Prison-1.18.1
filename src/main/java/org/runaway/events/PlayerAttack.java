@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
@@ -30,7 +30,7 @@ public class PlayerAttack implements Listener {
             if (event.getDamager() instanceof Player) damager = (Player) event.getDamager();
             if (event.getDamager() instanceof Projectile) damager = (Player) ((Projectile) event.getDamager()).getShooter();
             if (!canAttack(damager, (Player)event.getEntity())) {
-                Main.gamers.get(damager.getUniqueId()).sendMessage(EMessage.FRIENDATTACK);
+                Prison.gamers.get(damager.getUniqueId()).sendMessage(EMessage.FRIENDATTACK);
                 event.setCancelled(true);
             } else {
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerDamageEvent(damager, (Player)event.getEntity()));
@@ -67,8 +67,8 @@ public class PlayerAttack implements Listener {
     }
 
     private boolean canAttack(Player attacker, Player getDamager) {
-        Gamer at = Main.gamers.get(attacker.getUniqueId());
-        Gamer get = Main.gamers.get(getDamager.getUniqueId());
+        Gamer at = Prison.gamers.get(attacker.getUniqueId());
+        Gamer get = Prison.gamers.get(getDamager.getUniqueId());
         if (at.getFaction().equals(get.getFaction())) {
             if (!at.getFaction().equals(FactionType.DEFAULT)) {
                 return false;

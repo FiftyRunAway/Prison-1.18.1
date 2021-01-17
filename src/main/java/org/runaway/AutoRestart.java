@@ -19,7 +19,7 @@ public class AutoRestart {
     private static long TIME_TO_RESTART;
 
     private void timeUpdater() {
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
             if (TIME_TO_RESTART > 0) {
                 TIME_TO_RESTART--;
             } else {
@@ -33,11 +33,11 @@ public class AutoRestart {
         try {
             TIME_TO_RESTART = 1440;
             timeUpdater();
-            Main.isAutoRestart = true;
+            Prison.isAutoRestart = true;
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading auto restarter!");
-            Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.donate.features.BossMoney;
 import org.runaway.entity.CustomEntity;
@@ -105,7 +105,7 @@ public class Blaze extends EntityMonster {
             Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.getEntity().getBukkitEntity()).getName());
             if (pAttacker == null) return false;
 
-            Main.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
+            Prison.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
             if (!this.attackers.containsKey(pAttacker.getName())) {
                 this.attackers.put(pAttacker.getName(), (int)a);
             } else {
@@ -157,7 +157,7 @@ public class Blaze extends EntityMonster {
                         cancel();
                     }
                 }
-            }.runTaskLater(Main.getInstance(), 600);
+            }.runTaskLater(Prison.getInstance(), 600);
 
             this.getBukkitEntity().teleport(cotel_boss);
             new BukkitRunnable() {
@@ -187,7 +187,7 @@ public class Blaze extends EntityMonster {
                         }
                     }
                 }
-            }.runTaskTimer(Main.getInstance(), 0L, 15L);
+            }.runTaskTimer(Prison.getInstance(), 0L, 15L);
         }
         if (event) dopDamage += a;
         return super.damageEntity(source, a);
@@ -216,7 +216,7 @@ public class Blaze extends EntityMonster {
     }
 
     public void die() {
-        if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (!Prison.bosses.contains(this.getUniqueID())) return;
         if (this.getBukkitEntity().getCustomName().equals("toDelete")) {
             super.die();
             return;
@@ -244,7 +244,7 @@ public class Blaze extends EntityMonster {
                     EStat.MONEY.setInConfig(key, (double)EStat.MONEY.getFromConfig(key) + money);
                     continue;
                 }
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
+                Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(key).getUniqueId());
 
                 gamer.depositMoney(money);
                 Achievement.BLAZE_KILL.get(gamer.getPlayer());

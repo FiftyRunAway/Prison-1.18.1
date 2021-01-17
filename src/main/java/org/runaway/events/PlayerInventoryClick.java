@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.Requires;
 import org.runaway.achievements.Achievement;
 import org.runaway.boosters.LBlocks;
@@ -38,9 +38,9 @@ public class PlayerInventoryClick implements Listener {
                 if (event.getCurrentItem() != null) {
                     Gamer gamer = GamerManager.getGamer(player);
                     if (event.getCurrentItem().getType().isBlock()) {
-                        if (!Main.gBlocks.isActive()) {
+                        if (!Prison.gBlocks.isActive()) {
                             String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split("-");
-                            Main.gBlocks.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
+                            Prison.gBlocks.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
                             player.closeInventory();
                         } else {
                             gamer.sendMessage(EMessage.BOOSTERALREADYACTIVE);
@@ -62,9 +62,9 @@ public class PlayerInventoryClick implements Listener {
                 if (event.getCurrentItem() != null) {
                     Gamer gamer = GamerManager.getGamer(player);
                     if (event.getCurrentItem().getType().isBlock()) {
-                        if (!Main.gMoney.isActive()) {
+                        if (!Prison.gMoney.isActive()) {
                             String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split("-");
-                            Main.gMoney.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
+                            Prison.gMoney.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
                             player.closeInventory();
                         } else {
                             gamer.sendMessage(EMessage.BOOSTERALREADYACTIVE);

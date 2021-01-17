@@ -3,19 +3,13 @@ package org.runaway.inventories;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.passiveperks.EPassivePerk;
-import org.runaway.passiveperks.PassivePerks;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PassivePerksMenu implements IMenus {
 

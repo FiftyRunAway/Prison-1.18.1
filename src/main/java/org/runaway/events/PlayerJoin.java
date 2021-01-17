@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
@@ -43,14 +43,14 @@ public class PlayerJoin implements Listener {
             addBar(player); // Add boss bar with boosters
             addPaper(player); // Add menu paper item
             addToMissions(gamer); // Add to missions of battle pass
-            if (Main.useNametagEdit) gamer.setNametag(); // Add nametag
+            if (Prison.useNametagEdit) gamer.setNametag(); // Add nametag
             Needs.onJoin(event);
             PassivePerks.onJoin(gamer);
             //if (TWOFA.authlocked != null) twoFA(gamer); // Google Authenticator
             if (!player.hasPlayedBefore()) {
                 Achievement.JOIN.get(player); // Achievement
                 startKit(event.getPlayer()); // Give a start kit
-                gamer.teleport(Main.SPAWN); // Teleport to spawn
+                gamer.teleport(Prison.SPAWN); // Teleport to spawn
             } else {
                 if (Utils.getPlayers().size() == 1) Achievement.EMPTY_SERVER.get(player); // Achievement
             }
@@ -70,8 +70,8 @@ public class PlayerJoin implements Listener {
     }
 
     private void addBar(Player player) {
-        Main.MoneyBar.addPlayer(player);
-        Main.BlocksBar.addPlayer(player);
+        Prison.MoneyBar.addPlayer(player);
+        Prison.BlocksBar.addPlayer(player);
     }
 
     private void addPaper(Player player) {
@@ -88,8 +88,8 @@ public class PlayerJoin implements Listener {
 
     private boolean isAccess(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (player.isOp() || Main.getInstance().getStatus().equals(ServerStatus.NORMAL)) return true;
-        ServerStatus now = Main.getInstance().getStatus();
+        if (player.isOp() || Prison.getInstance().getStatus().equals(ServerStatus.NORMAL)) return true;
+        ServerStatus now = Prison.getInstance().getStatus();
         if (ServerStatus.PREVENTIVEWORKS.equals(now)) {
             player.kickPlayer(Utils.colored("&cСервер в данный момент находится на профилактических работах." +
                     "\n&cЗайдите позже..."));

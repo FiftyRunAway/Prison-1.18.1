@@ -7,9 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.EStat;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.utils.Utils;
@@ -50,7 +49,7 @@ public class Mines {
             }
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading mines menu!");
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

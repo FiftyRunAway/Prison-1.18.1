@@ -3,17 +3,15 @@ package org.runaway.cases;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuAnimation;
-import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.design.MenuDesigner;
 import org.runaway.menu.design.Row;
 import org.runaway.menu.design.RowType;
@@ -113,7 +111,7 @@ public class Case {
                             designer.setItem("Y", ExampleItems.glass(5));
 
                             MenuAnimation animation = MenuAnimation.create();
-                            animation.start(Main.getInstance(), menu);
+                            animation.start(Prison.getInstance(), menu);
                             menu.setAnimation(animation);
                             /*
                             for (int i = 0; i <= 15; i++) {
@@ -135,7 +133,7 @@ public class Case {
                             animation.setAnimationEndEvent(e -> {
                                 player.closeInventory();
                             });*/
-                            animation.start(Main.getInstance(), menu);
+                            animation.start(Prison.getInstance(), menu);
                             player.openInventory(menu.build());
                         }
                     } else {

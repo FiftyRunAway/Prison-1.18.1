@@ -7,14 +7,11 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.utils.Utils;
-import org.runaway.achievements.Achievement;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.EStat;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Zombie extends EntityMonster {
@@ -61,7 +58,7 @@ public class Zombie extends EntityMonster {
             if (damagesource.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
                 int damage = Math.round(getHealth() - f);
                 if (damage < 0) damage = 0;
-                Main.gamers.get(Bukkit.getPlayer(damagesource.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + damage + "♥",  "&c" + this.name);
+                Prison.gamers.get(Bukkit.getPlayer(damagesource.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + damage + "♥",  "&c" + this.name);
             }
         }
         return super.damageEntity(damagesource, f);
@@ -96,14 +93,14 @@ public class Zombie extends EntityMonster {
     }
 
     public void die() {
-        if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (!Prison.bosses.contains(this.getUniqueID())) return;
         try {
             if (this.spawner != null) {
                 this.spawner.dead();
             }
             if (this.killer != null && this.killer instanceof EntityPlayer) {
                 if (this.spawner != null) {
-                    Gamer gamer = Main.gamers.get(Bukkit.getPlayer(killer.getName()).getUniqueId());
+                    Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(killer.getName()).getUniqueId());
                     double money = (10.0 + ThreadLocalRandom.current().nextInt(15)) / 10.0;
                     gamer.depositMoney(money);
                     //gamer.setStatistics(EStat.ZOMBIES, gamer.getIntStatistics(EStat.ZOMBIES) + 1);

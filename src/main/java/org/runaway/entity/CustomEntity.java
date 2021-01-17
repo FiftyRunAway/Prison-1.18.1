@@ -5,11 +5,8 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
-import org.bukkit.entity.Slime;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.Mobs;
 
 import java.lang.reflect.Field;
@@ -38,7 +35,7 @@ public class CustomEntity extends RegistryMaterials {
             Entity entity = entityType.getCustom().getConstructor(Spawner.class).newInstance(spawner);
             entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
             ((CraftWorld)location.getWorld()).getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
-            Main.bosses.add(entity.getUniqueID());
+            Prison.bosses.add(entity.getUniqueID());
         } catch (Exception ex) { }
     }
 

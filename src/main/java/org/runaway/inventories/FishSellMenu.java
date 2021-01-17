@@ -4,15 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Item;
-import org.runaway.Main;
 import org.runaway.enums.EMessage;
-import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
 import org.runaway.fishing.EFish;
 import org.runaway.fishing.Fish;
-import org.runaway.jobs.EJobs;
-import org.runaway.jobs.Job;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
@@ -21,7 +16,6 @@ import org.runaway.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 
 public class FishSellMenu implements IMenus {
 

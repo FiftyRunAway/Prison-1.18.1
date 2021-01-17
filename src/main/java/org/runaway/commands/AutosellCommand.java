@@ -3,7 +3,6 @@ package org.runaway.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.managers.GamerManager;

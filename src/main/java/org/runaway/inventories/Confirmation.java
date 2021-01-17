@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -66,7 +66,7 @@ public class Confirmation {
                     }
                 }
             }
-        }.runTaskLater(Main.getInstance(), 40L);
+        }.runTaskLater(Prison.getInstance(), 40L);
     }
 
     public static void load() {

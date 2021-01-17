@@ -1,12 +1,5 @@
 package org.runaway.utils;
 
-import org.runaway.Main;
-import org.runaway.enums.EConfig;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 public class TelegramBot /*extends TelegramLongPollingBot*/ {
 /*
     @Override
@@ -47,11 +40,11 @@ public class TelegramBot /*extends TelegramLongPollingBot*/ {
 
     @Override
     public String getBotUsername() {
-        return Main.getInstance().bot_username;
+        return Prison.getInstance().bot_username;
     }
 
     @Override
     public String getBotToken() {
-        return Main.getInstance().bot_token;
+        return Prison.getInstance().bot_token;
     }*/
 }

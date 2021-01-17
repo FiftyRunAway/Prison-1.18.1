@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.board.Board;
 import org.runaway.enums.EMessage;
@@ -55,7 +55,7 @@ public class PlayerDeath implements Listener {
         if (gamer.getIntStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player);
         gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
         if (event.getEntity().getKiller() != null) {
-            Gamer gamerKiller = Main.gamers.get(event.getEntity().getKiller().getUniqueId());
+            Gamer gamerKiller = Prison.gamers.get(event.getEntity().getKiller().getUniqueId());
             gamerKiller.increaseDoubleStatistics(EStat.KILLS);
             if (gamerKiller.getIntStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer());
             if (gamerKiller.getIntStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer());
@@ -68,14 +68,14 @@ public class PlayerDeath implements Listener {
             if (gamerKiller.getPlayer().hasPermission("*")) Achievement.KILL_ADMIN.get(gamerKiller.getPlayer());
         } else if (event.getEntity() instanceof Projectile && ((Projectile)event.getEntity()).getShooter() instanceof Player) {
             if (event.getEntity().getKiller().getName().equals(event.getEntity().getName())) Achievement.KILL_ARROW.get(player);
-            Gamer gamerKiller = Main.gamers.get(event.getEntity().getKiller().getUniqueId());
+            Gamer gamerKiller = Prison.gamers.get(event.getEntity().getKiller().getUniqueId());
             gamerKiller.increaseIntStatistics(EStat.BOW_KILL);
         }
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        event.setRespawnLocation(Main.SPAWN);
+        event.setRespawnLocation(Prison.SPAWN);
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         new SyncTask(() -> {

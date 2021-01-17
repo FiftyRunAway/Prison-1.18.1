@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerInteract;
@@ -63,7 +63,7 @@ public class MainMenu implements IMenus {
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(21);
             exp.setClickEvent(event -> {
-                Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
+                Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
                 if (!gamer.needRebirth()) {
                     new LevelMenu(event.getWhoClicked());
                 } else {
@@ -144,7 +144,7 @@ public class MainMenu implements IMenus {
                     .setSlot(0);
             trash.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
-                Gamer gamer = Main.gamers.get(event.getWhoClicked().getUniqueId());
+                Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
                 gamer.teleportTrashAuction();
             });
             menu.addButton(trash);
@@ -166,7 +166,7 @@ public class MainMenu implements IMenus {
                     .setSlot(45);
             spawn.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
-                Main.gamers.get(event.getWhoClicked().getUniqueId()).teleport(Main.SPAWN);
+                Prison.gamers.get(event.getWhoClicked().getUniqueId()).teleport(Prison.SPAWN);
             });
             menu.addButton(spawn);
 
@@ -205,8 +205,8 @@ public class MainMenu implements IMenus {
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load profile menu!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

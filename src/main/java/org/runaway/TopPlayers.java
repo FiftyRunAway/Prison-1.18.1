@@ -2,7 +2,6 @@ package org.runaway;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -40,7 +39,7 @@ public class TopPlayers {
     }
 
     public void create() {
-        Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), this.location);
+        Hologram hologram = HologramsAPI.createHologram(Prison.getInstance(), this.location);
         if (hologram == null) {
             System.out.println("hologram is null. but Why?...");
             return;
@@ -66,7 +65,7 @@ public class TopPlayers {
     }
 
     public HashMap<String, Long> getTopValues() {
-        Main.getInstance().forceUpdateTop();
+        Prison.getInstance().forceUpdateTop();
         return (HashMap<String, Long>) this.topValues;
     }
 

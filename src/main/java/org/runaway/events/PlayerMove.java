@@ -4,14 +4,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.auctions.TrashAuction;
 import org.runaway.enums.TypeMessage;
 import org.runaway.managers.GamerManager;
 

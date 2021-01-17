@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.donate.features.BossNotify;
 import org.runaway.enums.EMessage;
 import org.runaway.events.custom.BossSpawnEvent;

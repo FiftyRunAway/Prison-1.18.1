@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.utils.ExampleItems;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.MoneyType;
@@ -37,8 +37,8 @@ public class ShopMenu implements IMenus {
         for (int i = 27; i < 36; i++) {
             inventory.setItem(i, ExampleItems.glass(7));
         }
-        Main.value_shopitems = EConfig.CONFIG.getConfig().getInt("values.shop_items");
-        for (int i = 1; i < Main.value_shopitems + 1; i++) {
+        Prison.value_shopitems = EConfig.CONFIG.getConfig().getInt("values.shop_items");
+        for (int i = 1; i < Prison.value_shopitems + 1; i++) {
             ItemStack item;
             if (EConfig.SHOP.getConfig().contains("items." + i + ".config")) {
                 item = UpgradeMisc.buildItem(EConfig.SHOP.getConfig().getString("items." + i + ".config"), false, null, false);

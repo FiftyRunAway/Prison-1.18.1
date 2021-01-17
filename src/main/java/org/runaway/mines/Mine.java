@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.events.BlockBreak;
 import org.runaway.managers.GamerManager;
@@ -28,10 +28,6 @@ import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.Utils;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Random;
 
 /*
  * Created by _RunAway_ on 24.5.2019
@@ -85,7 +81,7 @@ public class Mine {
         this.tpy = tpy;
         this.tpz = tpz;
         this.holoLoc = holo;
-        this.hologram = HologramsAPI.createHologram(Main.getInstance(), holoLoc);
+        this.hologram = HologramsAPI.createHologram(Prison.getInstance(), holoLoc);
         this.tpSpawn = tpSpawn;
         this.surface = surface;
 
@@ -127,7 +123,7 @@ public class Mine {
             public void run() {
                 forceUpdateHolo();
             }
-        }.runTaskTimer(Main.getInstance(), 0L, 1200L);
+        }.runTaskTimer(Prison.getInstance(), 0L, 1200L);
     }
 
     private void forceUpdateHolo() {
@@ -238,7 +234,7 @@ public class Mine {
                     e.printStackTrace();
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 0L, mine.getDelay() * 20L);
+        }.runTaskTimer(Prison.getInstance(), 0L, mine.getDelay() * 20L);
     }
 
     public boolean getPvp() {

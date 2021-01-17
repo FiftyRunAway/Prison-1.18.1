@@ -15,7 +15,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.donate.features.BossMoney;
 import org.runaway.entity.CustomEntity;
@@ -103,7 +103,7 @@ public class Slime extends EntityMonster {
             if (ThreadLocalRandom.current().nextFloat() < 0.3) {
                 Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).damage(1);
             }
-            Main.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
+            Prison.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
             if (!this.attackers.containsKey(pAttacker.getName())) {
                 this.attackers.put(pAttacker.getName(), (int)a);
             } else {
@@ -154,7 +154,7 @@ public class Slime extends EntityMonster {
     }
 
     private void power() {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Prison.getInstance(), () -> {
             List near = this.getBukkitEntity().getNearbyEntities(10.0, 10.0, 10.0);
             if (near.size() > 0) {
                 for (int t = 0; t < 6; ++t) {
@@ -173,7 +173,7 @@ public class Slime extends EntityMonster {
     }
 
     public void die() {
-        if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (!Prison.bosses.contains(this.getUniqueID())) return;
         if (this.getBukkitEntity().getCustomName().equals("toDelete")) {
             super.die();
             return;
@@ -200,7 +200,7 @@ public class Slime extends EntityMonster {
                     EStat.MONEY.setInConfig(key, (double)EStat.MONEY.getFromConfig(key) + money);
                     continue;
                 }
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
+                Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(key).getUniqueId());
                 gamer.depositMoney(money);
                 Achievement.SLIME_KILL.get(gamer.getPlayer());
                 gamer.setStatistics(EStat.BOSSES, gamer.getIntStatistics(EStat.BOSSES) + 1);

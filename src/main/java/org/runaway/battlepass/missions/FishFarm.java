@@ -1,10 +1,6 @@
 package org.runaway.battlepass.missions;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.battlepass.IMission;
 
 public class FishFarm extends IMission implements Listener {

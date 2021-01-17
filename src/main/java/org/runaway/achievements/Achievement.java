@@ -4,19 +4,16 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.BoosterType;
-import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Vars;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +141,7 @@ public enum Achievement {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, values().length + " achievements loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load achievements!");
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

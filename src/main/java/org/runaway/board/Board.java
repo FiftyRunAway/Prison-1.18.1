@@ -7,8 +7,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.battlepass.BattlePass;
+import org.runaway.Prison;
 import org.runaway.enums.*;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
@@ -121,15 +120,15 @@ public class Board {
     }
 
     private void titleUpdate() {
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
             Utils.getPlayers().forEach(player -> {
                 Player p = Bukkit.getPlayer(player);
                 Scoreboard scoreboard = p.getScoreboard();
                 if (scoreboard != null) {
                     if (scoreboard.getObjective(DisplaySlot.SIDEBAR) == null) return;
-                    if (Main.event != null) {
+                    if (Prison.event != null) {
                         scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
-                                .replace(Utils.colored(" &7| " + Main.event), "")) + Utils.colored(" &7| " + Main.event));
+                                .replace(Utils.colored(" &7| " + Prison.event), "")) + Utils.colored(" &7| " + Prison.event));
                     } else {
                         scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
                                 .replace(Utils.colored(" &7| &c" + /*BattlePass.season +*/ "ОТКРЫТИЕ"), "")) + Utils.colored(" &7| &c" + /*BattlePass.season + */"ОТКРЫТИЕ"));
@@ -142,16 +141,16 @@ public class Board {
     public void loadBoard() {
         try {
             titleUpdate();
-            Main.event = EConfig.SHOP.getConfig().getString("event");
+            Prison.event = EConfig.SHOP.getConfig().getString("event");
             dateFormat = new SimpleDateFormat("HH:mm МСК | dd.MM.yy");
             decimalFormatSymbols.setDecimalSeparator('.');
             decimalFormatSymbols.setGroupingSeparator(' ');
             ScoreBoardUpdate.addAll(EConfig.CONFIG.getConfig().getStringList("DisplayName"));
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> Bukkit.getOnlinePlayers().forEach(Board::sendBoard), 0, 10);
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> Bukkit.getOnlinePlayers().forEach(Board::sendBoard), 0, 10);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading scoreboard!");
-            Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

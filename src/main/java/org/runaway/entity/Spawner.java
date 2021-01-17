@@ -5,14 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.*;
 import net.minecraft.server.v1_12_R1.*;
 import com.gmail.filoghost.holographicdisplays.api.*;
-import org.bukkit.entity.Slime;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.*;
 import java.util.*;
 import org.bukkit.configuration.*;
 import org.bukkit.*;
-import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.BossNotify;
 import org.runaway.menu.button.DefaultButtons;
@@ -75,9 +72,9 @@ public class Spawner {
 
     private void createHologram() {
         if (!this.type.isMultispawn()) {
-            (this.hologram = HologramsAPI.createHologram(Main.getInstance(), this.location.clone().add(0.5, 2.5, 0.5))).setAllowPlaceholders(true);
+            (this.hologram = HologramsAPI.createHologram(Prison.getInstance(), this.location.clone().add(0.5, 2.5, 0.5))).setAllowPlaceholders(true);
             this.hologram.getVisibilityManager().setVisibleByDefault(true);
-            this.holoTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> {
+            this.holoTask = Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
                 this.updateHolo();
                 this.update();
             }, 0L, 1200L);

@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
@@ -127,7 +127,7 @@ public class TrashAuction {
         // Under this
 
         try {
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> {
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
                 Date now = new Date();
                 times.forEach(time -> {
                     if (now.getHours() == time) {
@@ -222,7 +222,7 @@ public class TrashAuction {
                 this.menu.addButton(fastbuy.clone().setSlot(i));
             }
 
-            this.hologram = HologramsAPI.createHologram(Main.getInstance(), loc.clone().add(0.0, 1.5, 0.0));
+            this.hologram = HologramsAPI.createHologram(Prison.getInstance(), loc.clone().add(0.0, 1.5, 0.0));
             this.hologram.getVisibilityManager().setVisibleByDefault(true);
             holograms.add(this.hologram);
 
@@ -344,7 +344,7 @@ public class TrashAuction {
                         cancel();
                     } else updateHolo();
                 }
-            }.runTaskTimer(Main.getInstance(), 0L, 20L);
+            }.runTaskTimer(Prison.getInstance(), 0L, 20L);
         }
 
         private void stopAuction() {
@@ -368,7 +368,7 @@ public class TrashAuction {
             this.hologram.appendTextLine(Utils.colored("&cЭтот аукцион окончен"));
             this.hologram.appendItemLine(itemStack);
 
-            Gamer gamer = Main.gamers.get(Bukkit.getPlayer(last).getUniqueId());
+            Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(last).getUniqueId());
             gamer.withdrawMoney(now);
             gamer.getPlayer().getInventory().addItem(itemStack);
 
@@ -385,11 +385,11 @@ public class TrashAuction {
                         holograms.forEach(Hologram::delete);
                         Utils.getPlayers().forEach(s -> {
                             if (BlockBreak.isLocation(Bukkit.getPlayer(s).getLocation(), "auction")) {
-                                Main.gamers.get(Bukkit.getPlayer(s).getUniqueId()).teleport(Main.SPAWN);
+                                Prison.gamers.get(Bukkit.getPlayer(s).getUniqueId()).teleport(Prison.SPAWN);
                             }
                         });
                     }
-                }.runTaskLater(Main.getInstance(), 1200L);
+                }.runTaskLater(Prison.getInstance(), 1200L);
             }
         }
     }

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
-import org.runaway.Main;
+import org.runaway.Prison;
 
 /*
  * Created by _RunAway_ on 20.1.2019
@@ -24,7 +24,7 @@ public class SignChange implements Listener {
             if (mas[0].equalsIgnoreCase("sell") && player.isOp()) {
                 event.setCancelled(true);
                 Sign sign = (Sign)event.getBlock().getState();
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> refreshSign(sign), 20L);
+                Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> refreshSign(sign), 20L);
             }
         }
     }

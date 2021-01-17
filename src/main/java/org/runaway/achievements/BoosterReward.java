@@ -2,7 +2,6 @@ package org.runaway.achievements;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.Main;
 import org.runaway.enums.BoosterType;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;

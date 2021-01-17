@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.events.custom.PlayerFishingEvent;
 import org.runaway.fishing.EFishType;
 import org.runaway.fishing.Fish;
@@ -177,9 +177,9 @@ public class PlayerFishing implements Listener {
                             --boldLine[n3];
                         }
                     }
-                }.runTaskTimer(Main.getInstance(), 1L, 1L);
+                }.runTaskTimer(Prison.getInstance(), 1L, 1L);
             }
-        }.runTaskLater(Main.getInstance(), 90L);
+        }.runTaskLater(Prison.getInstance(), 90L);
         return reward[0];
     }
 }

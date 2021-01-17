@@ -4,7 +4,6 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.battlepass.missions.EMissions;
 import org.runaway.battlepass.rewards.ERewards;
 import org.runaway.enums.EConfig;

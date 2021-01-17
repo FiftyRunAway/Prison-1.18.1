@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.utils.ExampleItems;
 import org.runaway.enums.EMessage;
 import org.runaway.upgrades.UpgradeMisc;
@@ -23,7 +23,7 @@ public class UpgradeMenu implements IMenus {
         inventory.setItem(1, ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "УЛУЧШИТЬ"));
         inventory.setItem(3, ExampleItems.glass(14, ChatColor.RED + "" + ChatColor.BOLD + "ОТМЕНИТЬ"));
         inventory.setItem(4, ExampleItems.glass(7));
-        Gamer gamer = Main.gamers.get(p2.getUniqueId());
+        Gamer gamer = Prison.gamers.get(p2.getUniqueId());
         if (p2.getInventory().getItemInMainHand().getItemMeta() == null || p2.getInventory().getItemInMainHand().getItemMeta().getLore() == null || p2.getInventory().getItemInMainHand().getItemMeta().getLore().size() < 1) {
             gamer.sendMessage(EMessage.NOLOREUPGRADE);
             return;

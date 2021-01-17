@@ -5,12 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
 import org.runaway.menu.button.DefaultButtons;
@@ -130,7 +128,7 @@ public class GiftCommand extends CommandManager {
             gamer.sendMessage(EMessage.SENDGIFT);
             cons.sendMessage(EMessage.GIFTYOU.getMessage().replaceAll("%player%", p.getName()));
             cons.playSound(cons.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                 if (Utils.getGifts().containsKey(args[0])) {
                     Utils.getGifts().remove(cons.getName());
                     Utils.getGifters().remove(cons.getName());

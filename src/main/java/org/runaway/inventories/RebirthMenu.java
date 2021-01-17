@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Item;
-import org.runaway.Main;
 import org.runaway.enums.EStat;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;

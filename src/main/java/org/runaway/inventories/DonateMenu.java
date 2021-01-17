@@ -3,11 +3,10 @@ package org.runaway.inventories;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.donate.Donate;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
@@ -16,12 +15,8 @@ import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.tasks.SyncRepeatTask;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DonateMenu implements IMenus {
 
@@ -61,7 +56,7 @@ public class DonateMenu implements IMenus {
 
     public DonateMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
-        for (int i = 0; i < Main.value_donate; i++) {
+        for (int i = 0; i < Prison.value_donate; i++) {
             Donate donate = (Donate) Utils.donate.get(i);
             MenuButton mn = DefaultButtons.OPEN.getButtonOfItemStack(Donate.icons.get(donate).icon());
             mn.setSlot(donate.getSlot());

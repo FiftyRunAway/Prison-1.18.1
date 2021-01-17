@@ -1,8 +1,6 @@
 package org.runaway.sqlite;
 
 import com.google.common.base.Joiner;
-import org.runaway.Main;
-import org.runaway.enums.EStat;
 import org.runaway.enums.Saveable;
 
 import java.sql.PreparedStatement;

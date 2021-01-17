@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.donate.features.BossMoney;
 import org.runaway.entity.CustomEntity;
@@ -97,7 +97,7 @@ public class Golem extends EntityMonster {
         if (source.getEntity() != null && source.getEntity().getBukkitEntity().getType() == EntityType.PLAYER) {
             Player pAttacker = Bukkit.getPlayer(Objects.requireNonNull(source.getEntity().getBukkitEntity()).getName());
             if (pAttacker == null) return false;
-            Main.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
+            Prison.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
             if (!this.attackers.containsKey(pAttacker.getName())) {
                 this.attackers.put(pAttacker.getName(), (int)a);
             } else {
@@ -150,7 +150,7 @@ public class Golem extends EntityMonster {
     }
 
     private void forcePower() {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Prison.getInstance(), () -> {
             List near = this.getBukkitEntity().getNearbyEntities(10.0, 10.0, 10.0);
             if (near.size() > 0) {
                 for (int t = 0; t < 5; ++t) {
@@ -171,7 +171,7 @@ public class Golem extends EntityMonster {
     }
 
     public void die() {
-        if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (!Prison.bosses.contains(this.getUniqueID())) return;
         if (this.getBukkitEntity().getCustomName().equals("toDelete")) {
             super.die();
             return;
@@ -199,7 +199,7 @@ public class Golem extends EntityMonster {
                     EStat.MONEY.setInConfig(key, (double)EStat.MONEY.getFromConfig(key) + money);
                     continue;
                 }
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
+                Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(key).getUniqueId());
                 gamer.depositMoney(money);
                 Achievement.GOLEM_KILL.get(gamer.getPlayer());
                 gamer.setStatistics(EStat.BOSSES, gamer.getIntStatistics(EStat.BOSSES) + 1);

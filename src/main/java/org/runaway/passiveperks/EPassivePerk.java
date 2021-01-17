@@ -18,8 +18,8 @@ public enum EPassivePerk {
 
     private PassivePerks perk;
 
-    EPassivePerk(PassivePerks c) {
-        this.perk = c;
+    EPassivePerk(PassivePerks perk) {
+        this.perk = perk;
     }
 
     public PassivePerks getPerk() {

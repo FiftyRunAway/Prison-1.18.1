@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.EConfig;
@@ -36,7 +36,7 @@ public class FractionMenu implements IMenus {
                 .build()).build().item()).setSlot(8);
         btn.setClickEvent(event ->
                 new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
-                    Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(FactionType.DEFAULT, true, 0)));
+                    Prison.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(FactionType.DEFAULT, true, 0)));
         menu.addButton(btn);
         //Скидка
         Object obj = Privs.DEFAULT.getPrivilege(player).getValue(new FractionDiscount());
@@ -61,7 +61,7 @@ public class FractionMenu implements IMenus {
                             .build()).build().item()).setSlot(i.getAndIncrement());
             button.setClickEvent(event ->
                     new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
-                        Main.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false, cost)));
+                        Prison.gamers.get(event.getWhoClicked().getUniqueId()).inFraction(factionType, false, cost)));
             menu.addButton(button);
         });
         player.openInventory(menu.build());

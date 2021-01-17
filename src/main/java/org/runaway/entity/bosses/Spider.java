@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.donate.features.BossMoney;
 import org.runaway.entity.CustomEntity;
@@ -93,7 +93,7 @@ public class Spider extends EntityMonster {
     private void superJump() {
         this.getBukkitEntity().getWorld().playEffect(this.getBukkitEntity().getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
         this.getBukkitEntity().setVelocity(new Vector(0, 1, 0).multiply(1));
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Prison.getInstance(), () -> {
             this.getBukkitEntity().getWorld().playSound(this.getBukkitEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
             for (Entity entity : this.getBukkitEntity().getNearbyEntities(7.0, 4.0, 7.0)) {
                 if (entity.getType() == EntityType.PLAYER) {
@@ -117,7 +117,7 @@ public class Spider extends EntityMonster {
             if (ThreadLocalRandom.current().nextFloat() < 0.3) {
                 Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).damage(1);
             }
-            Main.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
+            Prison.gamers.get(Bukkit.getPlayer(source.getEntity().getBukkitEntity().getName()).getUniqueId()).sendTitle("&c" + Math.round(this.getHealth() - a) + "♥",  "&c" + this.name);
             if (!this.attackers.containsKey(pAttacker.getName())) {
                 this.attackers.put(pAttacker.getName(), (int)a);
             } else {
@@ -166,7 +166,7 @@ public class Spider extends EntityMonster {
     }
 
     public void die() {
-        if (!Main.bosses.contains(this.getUniqueID())) return;
+        if (!Prison.bosses.contains(this.getUniqueID())) return;
         if (this.getBukkitEntity().getCustomName().equals("toDelete")) {
             super.die();
             return;
@@ -194,7 +194,7 @@ public class Spider extends EntityMonster {
                     EStat.MONEY.setInConfig(key, (double)EStat.MONEY.getFromConfig(key) + money);
                     continue;
                 }
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(key).getUniqueId());
+                Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(key).getUniqueId());
 
                 gamer.depositMoney(money);
                 Achievement.SPIDER_KILL.get(gamer.getPlayer());

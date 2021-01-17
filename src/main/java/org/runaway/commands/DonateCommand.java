@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.runaway.Main;
 import org.runaway.donate.Donate;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;

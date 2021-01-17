@@ -9,7 +9,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Item;
-import org.runaway.Main;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Requires;

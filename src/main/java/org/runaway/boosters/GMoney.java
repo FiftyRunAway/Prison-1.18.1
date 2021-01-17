@@ -2,7 +2,7 @@ package org.runaway.boosters;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.utils.Utils;
 
 /*
@@ -24,21 +24,21 @@ public class GMoney extends Booster {
         this.time = time;
         this.owner = owner;
         this.multiplier = multiplier;
-        Main.MoneyBar.setVisible(true);
+        Prison.MoneyBar.setVisible(true);
         this.fulltime = time;
 
-        timer = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> {
+        timer = Bukkit.getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
             if (getTime() == 0) {
                 Utils.getPlayers().forEach(s -> Bukkit.getPlayer(s).sendTitle(ChatColor.RED + "Бустер ускоритель " + multiplier + "x", ChatColor.RED + "закончился", 20, 20, 20));
                 active = false;
-                Main.MoneyBar.setVisible(false);
+                Prison.MoneyBar.setVisible(false);
                 Bukkit.getScheduler().cancelTask(timer);
-                Main.gMoney = new GMoney();
-                Main.THXersMoney.clear();
+                Prison.gMoney = new GMoney();
+                Prison.THXersMoney.clear();
             } else {
                 this.time--;
-                Main.MoneyBar.setProgress(getTime() / (float) fulltime);
-                Main.MoneyBar.setTitle(ChatColor.translateAlternateColorCodes('&',
+                Prison.MoneyBar.setProgress(getTime() / (float) fulltime);
+                Prison.MoneyBar.setTitle(ChatColor.translateAlternateColorCodes('&',
                         "&fАктивен ускоритель &eденег " + getMultiplier() + "x. &fПоблагодарите &e" + getOwner() + " &f- &e/tip&f. Осталось &e" + Utils.formatTime(getTime())));
             }
         }, 0, 20);

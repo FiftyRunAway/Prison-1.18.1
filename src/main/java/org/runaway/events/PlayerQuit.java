@@ -2,30 +2,18 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.EStat;
-import org.runaway.enums.SaveType;
-import org.runaway.enums.ServerStatus;
 import org.runaway.inventories.BattlePassMenu;
-import org.runaway.inventories.DonateMenu;
 import org.runaway.managers.GamerManager;
 import org.runaway.needs.Needs;
-import org.runaway.sqlite.DoVoid;
-import org.runaway.sqlite.PreparedRequests;
 import org.runaway.utils.Utils;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /*
  * Created by _RunAway_ on 20.1.2019
@@ -47,7 +35,7 @@ public class PlayerQuit implements Listener {
         }
         Needs.onQuit(event);
         Gamer.tp.remove(player.getUniqueId());
-        Main.gamers.remove(player.getUniqueId());
+        Prison.gamers.remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
         BattlePassMenu.data.remove(player.getName());
     }
@@ -62,7 +50,7 @@ public class PlayerQuit implements Listener {
     }
 
     private void removeBar(Player player) {
-        Main.MoneyBar.removePlayer(player);
-        Main.BlocksBar.removePlayer(player);
+        Prison.MoneyBar.removePlayer(player);
+        Prison.BlocksBar.removePlayer(player);
     }
 }

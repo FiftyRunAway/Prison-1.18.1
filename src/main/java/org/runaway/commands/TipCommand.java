@@ -5,8 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.enums.EConfig;
+import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
@@ -32,21 +31,21 @@ public class TipCommand extends CommandManager {
         Gamer gamer = GamerManager.getGamer(p);
         int is = 0;
         List<String> owners = new ArrayList<>();
-        if (Main.gBlocks.isActive() && !Main.THXersBlocks.contains(p.getName())) {
+        if (Prison.gBlocks.isActive() && !Prison.THXersBlocks.contains(p.getName())) {
             is++;
-            Main.THXersBlocks.add(p.getName());
-            owners.add(Main.gBlocks.getOwner());
+            Prison.THXersBlocks.add(p.getName());
+            owners.add(Prison.gBlocks.getOwner());
         }
-        if (Main.gMoney.isActive() && !Main.THXersMoney.contains(p.getName())) {
+        if (Prison.gMoney.isActive() && !Prison.THXersMoney.contains(p.getName())) {
             is++;
-            Main.THXersMoney.add(p.getName());
-            owners.add(Main.gMoney.getOwner());
+            Prison.THXersMoney.add(p.getName());
+            owners.add(Prison.gMoney.getOwner());
         }
         if (is > 0) {
             int money = 5;
             for (String owns : owners) {
                 if (Utils.getPlayers().contains(owns)) {
-                    Main.gamers.get(Bukkit.getPlayer(owns).getUniqueId()).depositMoney(gamer.getIntStatistics(EStat.LEVEL) * money);
+                    Prison.gamers.get(Bukkit.getPlayer(owns).getUniqueId()).depositMoney(gamer.getIntStatistics(EStat.LEVEL) * money);
                 } else {
                     EStat.MONEY.setInConfig(owns, (double)EStat.MONEY.getFromConfig(owns) + (money * (int)EStat.LEVEL.getFromConfig(owns)));
                 }

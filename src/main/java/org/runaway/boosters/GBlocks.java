@@ -2,7 +2,7 @@ package org.runaway.boosters;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.utils.Utils;
 
 /*
@@ -24,20 +24,20 @@ public class GBlocks extends Booster {
         this.time = time;
         this.owner = owner;
         this.multiplier = multiplier;
-        Main.BlocksBar.setVisible(true);
+        Prison.BlocksBar.setVisible(true);
         this.fulltime = time;
-        timer = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> {
+        timer = Bukkit.getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
             if (getTime() == 0) {
                 Utils.getPlayers().forEach(s -> Bukkit.getPlayer(s).sendTitle(ChatColor.RED + "Ускоритель блоков " + multiplier + "x", ChatColor.RED + "закончился", 20, 20, 20));
                 active = false;
-                Main.BlocksBar.setVisible(false);
+                Prison.BlocksBar.setVisible(false);
                 Bukkit.getScheduler().cancelTask(timer);
-                Main.gBlocks = new GBlocks();
-                Main.THXersBlocks.clear();
+                Prison.gBlocks = new GBlocks();
+                Prison.THXersBlocks.clear();
             } else {
                 this.time--;
-                Main.BlocksBar.setProgress(getTime() / (float) fulltime);
-                Main.BlocksBar.setTitle(ChatColor.translateAlternateColorCodes('&',
+                Prison.BlocksBar.setProgress(getTime() / (float) fulltime);
+                Prison.BlocksBar.setTitle(ChatColor.translateAlternateColorCodes('&',
                         "&fАктивен ускоритель &eблоков " + getMultiplier() + "x. &fПоблагодарите &e" + getOwner() + " &f- &e/tip&f. Осталось &e" + Utils.formatTime(getTime())));
             }
         }, 0, 20);

@@ -5,8 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.runaway.Main;
-import org.runaway.TopPlayers;
+import org.runaway.Prison;
 import org.runaway.board.Board;
 import org.runaway.enums.MoneyType;
 
@@ -117,7 +116,7 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
             public void run() {
                 updateBoard();
             }
-        }.runTaskTimerAsynchronously(Main.getInstance(), 250, 20 * 120);
+        }.runTaskTimerAsynchronously(Prison.getInstance(), 250, 20 * 120);
     }
 
     //private volatile BufferedImage skinImage;
@@ -134,12 +133,12 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
                 try {
                     String type = TopsBanner.this.getSetting("leaderboardname").getValue();
 
-                    TopsBanner.this.top = Main.tops.get(type.toLowerCase()).getTopValues();
+                    TopsBanner.this.top = Prison.tops.get(type.toLowerCase()).getTopValues();
                     if (TopsBanner.this.top.isEmpty()) {
                         Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[WARNING] [BannerBoard] No data was found for leaderboard " + type);
                         return;
                     }
-                    TopsBanner.this.desc = Main.tops.get(type.toLowerCase()).getDescription();
+                    TopsBanner.this.desc = Prison.tops.get(type.toLowerCase()).getDescription();
                 } finally {
                     synchronized (waitLock) {
                         wait = false;
@@ -147,7 +146,7 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
                     }
                 }
             }
-        }.runTaskAsynchronously(Main.getInstance());
+        }.runTaskAsynchronously(Prison.getInstance());
     }
 
     @Override

@@ -4,8 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
-import org.runaway.donate.Privs;
+import org.runaway.Prison;
 import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
 import org.runaway.inventories.FractionMenu;
@@ -55,7 +54,7 @@ public class FractionCommand extends CommandManager {
                             .replace("%money%", mon + " " + MoneyType.RUBLES.getShortName())
                             .replace("%discount%", "")));
                 }
-                Bukkit.getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
+                Bukkit.getServer().getScheduler().runTaskLater(Prison.getInstance(), () -> {
                     if (toLeave.contains(name)) {
                         toLeave.remove(name);
                         gamer.sendMessage(EMessage.ERRORCONFIRMATION);

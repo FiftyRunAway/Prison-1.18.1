@@ -4,18 +4,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 import org.runaway.enums.BoosterType;
-import org.runaway.enums.EConfig;
 import org.runaway.enums.TypeMessage;
 import org.runaway.inventories.BoosterMenu;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /*
  * Created by _RunAway_ on 20.1.2019
@@ -36,10 +33,10 @@ public class BoosterCommand extends CommandManager {
             }
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("debug")) {
-                    if (Main.gBlocks.isActive()) {
+                    if (Prison.gBlocks.isActive()) {
                         p.sendMessage(ChatColor.AQUA + "Активен глобальный бустер блоков");
                     }
-                    if (Main.gMoney.isActive()) {
+                    if (Prison.gMoney.isActive()) {
                         p.sendMessage(ChatColor.GREEN + "Активен глобальный бустер денег");
                     }
                     Utils.getlBlocksMultiplier().keySet().forEach(s -> p.sendMessage(ChatColor.DARK_AQUA + "- Локальный бустер блоков игрока " + s));
@@ -49,11 +46,11 @@ public class BoosterCommand extends CommandManager {
             }
             if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("stop")) {
-                    if (args[1].equalsIgnoreCase("blocks") && Main.gBlocks.isActive()) {
-                        Main.gBlocks.setTime(4);
+                    if (args[1].equalsIgnoreCase("blocks") && Prison.gBlocks.isActive()) {
+                        Prison.gBlocks.setTime(4);
                         p.sendMessage(ChatColor.DARK_GREEN + "Бустер блоков остановится через 3 секунды!");
-                    } else if (args[1].equalsIgnoreCase("money") && Main.gMoney.isActive()) {
-                        Main.gMoney.setTime(4);
+                    } else if (args[1].equalsIgnoreCase("money") && Prison.gMoney.isActive()) {
+                        Prison.gMoney.setTime(4);
                         p.sendMessage(ChatColor.DARK_GREEN + "Бустер денег остановится через 3 секунды!");
                     }
                     return;
@@ -92,10 +89,10 @@ public class BoosterCommand extends CommandManager {
             }
             double maxmultiplier = 50.0;
             if (multiplier <= maxmultiplier) {
-                if (type.equals(BoosterType.MONEY) && !Main.gMoney.isActive()) {
-                    Main.gMoney.start(p.getName(), seconds, multiplier);
-                } else if (type.equals(BoosterType.BLOCKS) && !Main.gBlocks.isActive()) {
-                    Main.gBlocks.start(p.getName(), seconds, multiplier);
+                if (type.equals(BoosterType.MONEY) && !Prison.gMoney.isActive()) {
+                    Prison.gMoney.start(p.getName(), seconds, multiplier);
+                } else if (type.equals(BoosterType.BLOCKS) && !Prison.gBlocks.isActive()) {
+                    Prison.gBlocks.start(p.getName(), seconds, multiplier);
                 }
             } else {
                 p.sendMessage(ChatColor.RED + "Множитель должен быть меньше " + maxmultiplier + "x");
@@ -124,10 +121,10 @@ public class BoosterCommand extends CommandManager {
         }
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("debug")) {
-                if (Main.gBlocks.isActive()) {
+                if (Prison.gBlocks.isActive()) {
                     cs.sendMessage(ChatColor.AQUA + "Активен глобальный бустер блоков");
                 }
-                if (Main.gMoney.isActive()) {
+                if (Prison.gMoney.isActive()) {
                     cs.sendMessage(ChatColor.GREEN + "Активен глобальный бустер денег");
                 }
                 Utils.getlBlocksMultiplier().keySet().forEach(s -> cs.sendMessage(ChatColor.DARK_AQUA + "- Локальный бустер блоков игрока " + s));

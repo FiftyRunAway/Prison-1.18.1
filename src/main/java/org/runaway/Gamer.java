@@ -32,7 +32,6 @@ import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -409,7 +408,7 @@ public class Gamer {
         Arrays.stream(inventory.getContents()).forEach(inventory::remove);
         Arrays.stream(ec.getContents()).forEach(ec::remove);
 
-        getPlayer().teleport(Main.SPAWN);
+        getPlayer().teleport(Prison.SPAWN);
         annulateStat();
         setNametag();
 
@@ -488,7 +487,7 @@ public class Gamer {
                 setStatistics(EStat.FACTION, FactionType.DEFAULT.getConfigName().toUpperCase());
                 withdrawMoney(mon);
                 sendMessage(EMessage.SUCCESSFULYLEAVE);
-                teleport(Main.SPAWN);
+                teleport(Prison.SPAWN);
             } else {
                 sendMessage(EMessage.MONEYNEEDS);
             }
@@ -544,7 +543,7 @@ public class Gamer {
                         cancel();
                     }
                 }
-            }.runTaskTimer(Main.getInstance(), 0L, 20L);
+            }.runTaskTimer(Prison.getInstance(), 0L, 20L);
         } else {
             sendMessage(EMessage.ALREADYTP);
         }
@@ -612,7 +611,7 @@ public class Gamer {
 
     public double getBoosterBlocks() {
         double boost = getDoubleStatistics(EStat.BOOSTERBLOCKS);
-        if (Main.gBlocks.isActive()) boost += Main.gBlocks.getMultiplier() - 1.0;
+        if (Prison.gBlocks.isActive()) boost += Prison.gBlocks.getMultiplier() - 1.0;
         if (isActiveLocalBlocks()) boost += Utils.getlBlocksMultiplier().get(getGamer()) - 1.0;
         Object b = getPrivilege().getValue(new BoosterBlocks());
         if (b != null) boost += Double.parseDouble(b.toString()) - 1.0;
@@ -623,7 +622,7 @@ public class Gamer {
 
     public double getBoosterMoney() {
         double boost = getDoubleStatistics(EStat.BOOSTERMONEY);
-        if (Main.gMoney.isActive()) boost += Main.gMoney.getMultiplier() - 1.0;
+        if (Prison.gMoney.isActive()) boost += Prison.gMoney.getMultiplier() - 1.0;
         if (isActiveLocalMoney()) boost += Utils.getlMoneyMultiplier().get(getGamer()) - 1.0;
         Object b = getPrivilege().getValue(new BoosterMoney());
         if (b != null) boost += Double.parseDouble(b.toString()) - 1.0;

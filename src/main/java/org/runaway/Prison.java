@@ -17,6 +17,8 @@ import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.function.pattern.BlockPattern;
 import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.patterns.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.bukkit.Bukkit;
@@ -51,6 +53,7 @@ import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
 import org.runaway.inventories.*;
+import org.runaway.items.ItemManager;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
@@ -77,12 +80,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by _RunAway_ on 14.1.2019
  */
 
-public class Main extends JavaPlugin {
+public class Prison extends JavaPlugin {
 
     public static HashMap<UUID, Gamer> gamers = new HashMap<>();
 
-    private static Main instance;
-    public static Main getInstance() {
+    private static Prison instance;
+    public static Prison getInstance() {
         return instance;
     }
 
@@ -137,6 +140,9 @@ public class Main extends JavaPlugin {
     // Список норм боссов
     public static ArrayList<UUID> bosses = new ArrayList<>();
 
+    //Менеджер предметов
+    @Getter
+    private ItemManager itemManager;
     // Список шахт
     public static ArrayList<Mine> mines = new ArrayList<>();
 
@@ -209,20 +215,7 @@ public class Main extends JavaPlugin {
             gamers.values().forEach(Gamer::savePlayer);
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
-        try {
-            CuboidSelection cuboidSelection = new CuboidSelection(Bukkit.getWorld("world"), new Location(Bukkit.getWorld("world"), 10, 10, 10), new Location(Bukkit.getWorld("world"), 30, 30, 30));
-            EditSession editSession = new EditSessionBuilder(BukkitUtil.getLocalWorld(Bukkit.getWorld("world"))).build();
-            RandomPattern randomPattern = new RandomPattern();
-            BlockPattern blockPattern = new BlockPattern(new BaseBlock(35, 1));
-            BlockPattern blockPattern2 = new BlockPattern(new BaseBlock(35, 3));
-            randomPattern.add(blockPattern, 0.75);
-            randomPattern.add(blockPattern2, 0.25);
-            editSession.setBlocks(cuboidSelection.getRegionSelector().getRegion(), (Pattern) randomPattern);
-            editSession.setFastMode(true);
-            editSession.flushQueue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.itemManager = new ItemManager();
     }
 
     private void loadSQLite() {
@@ -269,7 +262,7 @@ public class Main extends JavaPlugin {
      * Get the global list of currently loaded databased.
      * <p>
      *
-     * @return the {@link Main}'s global database list.
+     * @return the {@link Prison}'s global database list.
      */
     public Map<String, Database> getDatabases() {
         return databases;
@@ -329,8 +322,8 @@ public class Main extends JavaPlugin {
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering events!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -357,8 +350,8 @@ public class Main extends JavaPlugin {
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -373,8 +366,8 @@ public class Main extends JavaPlugin {
             //removeEntities();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering mobs!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -412,7 +405,7 @@ public class Main extends JavaPlugin {
                 Case c = new Case(EConfig.CASES.getConfig().getBoolean(st + ".animation"), drops, Utils.unserializeLocation(EConfig.CASES.getConfig().getString(st + ".location")), Utils.colored(EConfig.CASES.getConfig().getString(st + ".name")), key, Material.valueOf(EConfig.CASES.getConfig().getString(st + ".material")), EConfig.CASES.getConfig().getInt(st + ".money"), menu.build());
                 cases.add(c);
                 if (useHolographicDisplays) {
-                    Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), c.getLocation().getBlock().getLocation().add(0.5, 2, 0.5));
+                    Hologram hologram = HologramsAPI.createHologram(Prison.getInstance(), c.getLocation().getBlock().getLocation().add(0.5, 2, 0.5));
                     if (hologram == null) {
                         System.out.println("hologram is null. but Why?...");
                         return;
@@ -423,8 +416,8 @@ public class Main extends JavaPlugin {
             });
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load cases informations!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -438,8 +431,8 @@ public class Main extends JavaPlugin {
             MoneyBar.setVisible(false);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with creating BossBar`s!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -456,8 +449,8 @@ public class Main extends JavaPlugin {
             PassivePerksMenu.load();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in creating inventories!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -532,7 +525,7 @@ public class Main extends JavaPlugin {
     private void loadServerStatus() {
         try {
             if (status == null) {
-                Main.getInstance().setStatus(ServerStatus.valueOf(EConfig.CONFIG.getConfig().getString("status").toUpperCase()));
+                Prison.getInstance().setStatus(ServerStatus.valueOf(EConfig.CONFIG.getConfig().getString("status").toUpperCase()));
                 Vars.sendSystemMessage(TypeMessage.SUCCESS,"Successful loaded status: " + getStatus().toString());
             }
         } catch (Exception ex) {
@@ -580,8 +573,8 @@ public class Main extends JavaPlugin {
             if (errors != 0) Vars.sendSystemMessage(TypeMessage.INFO, errors + " NEW messages was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading messages!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -589,12 +582,12 @@ public class Main extends JavaPlugin {
     //Подгрузка меню магазина
     private static void loadShopItems() {
         try {
-            Main.value_shopitems = EConfig.CONFIG.getConfig().getInt("values.shop_items");
+            Prison.value_shopitems = EConfig.CONFIG.getConfig().getInt("values.shop_items");
             new ShopMenu(null);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading shop of items!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -616,8 +609,8 @@ public class Main extends JavaPlugin {
             }, 100, 1200);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in start timer!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -658,8 +651,8 @@ public class Main extends JavaPlugin {
             api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading players top!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -673,22 +666,22 @@ public class Main extends JavaPlugin {
         Map<String, Long> rebirth1 = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
         Map<String, Long> keys1 = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
         Map<String, Long> dm1 = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
-        if (!Main.tops.keySet().iterator().hasNext()) return;
+        if (!Prison.tops.keySet().iterator().hasNext()) return;
         tops.keySet().forEach(s -> {
             if ("money".equals(s)) {
-                Main.tops.get(s).setTopValues(money1);
+                Prison.tops.get(s).setTopValues(money1);
             } else if ("blocks".equals(s)) {
-                Main.tops.get(s).setTopValues(blocks1);
+                Prison.tops.get(s).setTopValues(blocks1);
             } else if ("levels".equals(s)) {
-                Main.tops.get(s).setTopValues(level1);
+                Prison.tops.get(s).setTopValues(level1);
             } else if ("rats".equals(s)) {
-                Main.tops.get(s).setTopValues(rats1);
+                Prison.tops.get(s).setTopValues(rats1);
             } else if ("rebirths".equals(s)) {
-                //Main.tops.get(s).setTopValues(rebirth1);
+                //Prison.tops.get(s).setTopValues(rebirth1);
             } else if ("keys".equals(s)) {
-                Main.tops.get(s).setTopValues(keys1);
+                Prison.tops.get(s).setTopValues(keys1);
             } else if ("donate".equals(s)) {
-                Main.tops.get(s).setTopValues(dm1);
+                Prison.tops.get(s).setTopValues(dm1);
             }
         });
     }
@@ -696,7 +689,7 @@ public class Main extends JavaPlugin {
     //Подгрузка шахт
     private void loadMines() {
         try {
-            Main.value_mines = EConfig.CONFIG.getConfig().getInt("values.mines");
+            Prison.value_mines = EConfig.CONFIG.getConfig().getInt("values.mines");
             EConfig.CONFIG.getConfig().getConfigurationSection("mines").getKeys(false).forEach(s -> {
                 ConfigurationSection file = EConfig.CONFIG.getFileConfigurationConfig().getConfigurationSection("mines." + s);
                 Material surface = Material.AIR;
@@ -725,8 +718,8 @@ public class Main extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, value_mines + " mines was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading mines!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -734,11 +727,11 @@ public class Main extends JavaPlugin {
     //Отгрузка бустеров
     private void saveBoosters() {
         //Глобальные бустеры
-        if (Main.gBlocks.isActive()) {
-            Utils.globalBoostersSetter("blocks", Main.gBlocks);
+        if (Prison.gBlocks.isActive()) {
+            Utils.globalBoostersSetter("blocks", Prison.gBlocks);
         }
-        if (Main.gMoney.isActive()) {
-            Utils.globalBoostersSetter("money", Main.gMoney);
+        if (Prison.gMoney.isActive()) {
+            Utils.globalBoostersSetter("money", Prison.gMoney);
         }
         //Локальные бустеры
 
@@ -789,13 +782,13 @@ public class Main extends JavaPlugin {
         //Глобальные
         if (cfg.getBoolean("global.blocks.activity")) {
             ConfigurationSection section = cfg.getConfigurationSection("global.blocks.information");
-            Main.gBlocks.start(section.getString("owner"), section.getLong("time"), section.getDouble("multiplier"));
+            Prison.gBlocks.start(section.getString("owner"), section.getLong("time"), section.getDouble("multiplier"));
             cfg.set("global.blocks.activity", false);
             Bukkit.getConsoleSender().sendMessage(Vars.getPrefix() + "Started Global BLOCKS booster from " + section.getString("owner"));
         }
         if (cfg.getBoolean("global.money.activity")) {
             ConfigurationSection section = cfg.getConfigurationSection("global.money.information");
-            Main.gMoney.start(section.getString("owner"), section.getLong("time"), section.getDouble("multiplier"));
+            Prison.gMoney.start(section.getString("owner"), section.getLong("time"), section.getDouble("multiplier"));
             cfg.set("global.money.activity", false);
             Bukkit.getConsoleSender().sendMessage(Vars.getPrefix() + "Started Global MONEY booster from " + section.getString("owner"));
         }
@@ -825,7 +818,7 @@ public class Main extends JavaPlugin {
     //Подгрузка шахт
     private void loadDonates() {
         try {
-            Main.value_donate = EConfig.CONFIG.getConfig().getInt("values.donate");
+            Prison.value_donate = EConfig.CONFIG.getConfig().getInt("values.donate");
             for (int i = 0; i < value_donate; i++) {
                 ConfigurationSection file = EConfig.DONATE.getFileConfigurationConfig().getConfigurationSection("donate." + (i + 1));
                 Donate n = new Donate(file.getString("name"), Material.valueOf(file.getString("icon").toUpperCase()), file.getInt("amount"), file.getInt("price"), file.getBoolean("temporary"), new Lore.BuilderLore().addList(file.getStringList("lore")).build(), file.getInt("slot"), file.getInt("sale"));
@@ -835,8 +828,8 @@ public class Main extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, value_donate + " donate items was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading donate items!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -850,8 +843,8 @@ public class Main extends JavaPlugin {
             });
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading trainer!");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }
@@ -873,8 +866,8 @@ public class Main extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.INFO, "Entities removed");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in delete entities! Please, don`t use /reload. Use /stop or /restart");
-            //Bukkit.getPluginManager().disablePlugin(Main.getInstance());
-            //Main.getInstance().setStatus(ServerStatus.ERROR);
+            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
+            //Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

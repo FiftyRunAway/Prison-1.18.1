@@ -5,11 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.managers.GamerManager;
 import org.runaway.sqlite.DoVoid;
 import org.runaway.utils.Utils;
-import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
 import org.runaway.enums.StatType;
 
@@ -123,7 +122,7 @@ public class SetStatCommand extends CommandManager {
             Gamer gamer = GamerManager.getGamer(player);
             gamer.setStatistics(type, obj);
         } else {
-            Main.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, type.getStatName(), obj);
+            Prison.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, type.getStatName(), obj);
         }
     }
 }

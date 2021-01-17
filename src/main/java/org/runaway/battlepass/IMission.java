@@ -1,7 +1,7 @@
 package org.runaway.battlepass;
 
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.mines.Mine;
@@ -183,7 +183,7 @@ public abstract class IMission {
 
     protected Mine getMineString(String string) {
         if (!string.equalsIgnoreCase("none") && !string.equalsIgnoreCase("null")) {
-            for (Mine m : Main.mines) {
+            for (Mine m : Prison.mines) {
                 if (m.getMaterial().toString().equalsIgnoreCase(string)) {
                     return m;
                 }

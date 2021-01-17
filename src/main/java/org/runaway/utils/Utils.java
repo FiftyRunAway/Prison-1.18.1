@@ -10,16 +10,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.FancyText;
 import org.runaway.Gamer;
-import org.runaway.Main;
+import org.runaway.Prison;
 import org.runaway.boosters.Booster;
 import org.runaway.donate.features.BossMoney;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
-import org.runaway.events.PlayerQuit;
 import org.runaway.managers.GamerManager;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -119,7 +117,7 @@ public class Utils {
     }
 
     public void RegisterEvent(Listener listener) {
-        Bukkit.getPluginManager().registerEvents(listener, Main.getInstance());
+        Bukkit.getPluginManager().registerEvents(listener, Prison.getInstance());
     }
 
     public static HashMap<String, Double> calculatePercents(Map<String, Integer> attackers, double damage) {
@@ -127,7 +125,7 @@ public class Utils {
         for (Map.Entry<String, Integer> entry : attackers.entrySet()) {
             double to_add = 1;
             if (Utils.getPlayers().contains(entry.getKey())) {
-                Gamer gamer = Main.gamers.get(Bukkit.getPlayer(entry.getKey()).getUniqueId());
+                Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(entry.getKey()).getUniqueId());
                 Object obj = gamer.getPrivilege().getValue(new BossMoney());
                 if (obj != null) to_add += (double) Integer.parseInt(obj.toString()) / 100;
             }

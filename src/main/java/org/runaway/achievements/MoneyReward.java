@@ -1,7 +1,6 @@
 package org.runaway.achievements;
 
 import org.bukkit.entity.Player;
-import org.runaway.Main;
 import org.runaway.enums.MoneyType;
 import org.runaway.managers.GamerManager;
 

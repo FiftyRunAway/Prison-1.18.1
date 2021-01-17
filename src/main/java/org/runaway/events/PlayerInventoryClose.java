@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.runaway.Gamer;
-import org.runaway.Main;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.Confirmation;
 import org.runaway.inventories.ModeMenu;

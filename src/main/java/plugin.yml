@@ -1,5 +1,5 @@
 name: Prison
-main: org.runaway.Main
+main: org.runaway.Prison
 version: 2.2
 author: _RunAway_
 softdepend:
