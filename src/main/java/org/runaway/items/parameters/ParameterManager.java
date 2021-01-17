@@ -50,4 +50,8 @@ public class ParameterManager {
     public Parameter getRunesParameter(int amount, List<String> defaultRunes) {
         return RunesParameter.builder().amount(amount).defaultRunes(defaultRunes).build();
     }
+
+    public Parameter getRunesParameter(int amount) {
+        return getRunesParameter(amount, null);
+    }
 }

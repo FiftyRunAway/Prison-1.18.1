@@ -54,6 +54,8 @@ import org.runaway.enums.*;
 import org.runaway.events.*;
 import org.runaway.inventories.*;
 import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.ParameterManager;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
@@ -216,6 +218,22 @@ public class Prison extends JavaPlugin {
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
         this.itemManager = new ItemManager();
+        ParameterManager parameterManager = getItemManager().getParameterManager();
+        if(false) {
+            //EXAMPLE
+            PrisonItem prisonItem = PrisonItem.builder()
+                    .techName("pick_1") //техническое название предмета для его хранения и обработки в будущем
+                    .itemStack(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
+                            .lore(new Lore.BuilderLore().addString("test").build()).build().item()) //билд предмета
+                    .parameters(Arrays.asList( //параметры
+                            parameterManager.getNodropParameter(), //предмет не выпадает
+                            parameterManager.getOwnerParameter(), //предмет с владельцем
+                            parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //категория предмета
+                            parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //редкость предмета
+                            parameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
+                            parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
+            getItemManager().addPrisonItem(prisonItem); //инициализация предмета
+        }
     }
 
     private void loadSQLite() {

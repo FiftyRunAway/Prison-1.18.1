@@ -34,10 +34,6 @@ public class ItemManager {
         ItemMeta itemMeta = finalItem.getItemMeta();
         Map<Integer, Parameter> parameterMap = new HashMap<>();
         prisonItem.getParameters().forEach(parameter -> parameterMap.put(parameter.getPriority(), parameter));
-        if(prisonItem.getRunesAmount() > 0) {
-            Parameter runesParameter = getParameterManager().getRunesParameter(prisonItem.getRunesAmount(), prisonItem.getDefaultRunes());
-            parameterMap.put(runesParameter.getPriority(), runesParameter);
-        }
         for (Parameter parameter : parameterMap.values()) {
             finalItem = parameter.getInitialParameterApplier().apply(finalItem);
         }
