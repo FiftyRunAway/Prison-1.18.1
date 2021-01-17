@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.utils.ItemUtils;
 
-@Getter @Builder
+@Builder @Getter
 public class LoreFormatter implements Formatter {
     Object finalValue;
     Object[] replaceObjects;

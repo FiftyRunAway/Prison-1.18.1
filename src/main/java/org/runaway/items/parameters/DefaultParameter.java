@@ -17,7 +17,6 @@ public class DefaultParameter implements Parameter {
     String loreString, nbtString;
     Formatter defaultLoreFormatter, defaultNbtFormatter;
     int priority;
-    ParameterManager parameterManager = Prison.getInstance().getItemManager().getParameterManager();
 
     @Override
     public UnaryOperator<ItemStack> getInitialParameterApplier() {

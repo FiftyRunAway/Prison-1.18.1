@@ -48,7 +48,7 @@ public class ParameterManager {
     }
 
     public Parameter getRunesParameter(int amount, List<String> defaultRunes) {
-        return RunesParameter.builder().amount(amount).defaultRunes(defaultRunes).build();
+        return new RunesParameter("rune%d", 15, amount, defaultRunes);
     }
 
     public Parameter getRunesParameter(int amount) {
