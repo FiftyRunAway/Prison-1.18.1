@@ -15,6 +15,6 @@ public class NbtFormatter implements Formatter {
     }
 
     public ItemStack apply(ItemStack itemStack, String string) {
-        return ItemUtils.addItemTag(itemStack, format(string), getFinalValue().toString());
+        return ItemUtils.addItemTag(itemStack, format(string), (getFinalValue() == null ? "" : getFinalValue().toString()));
     }
 }

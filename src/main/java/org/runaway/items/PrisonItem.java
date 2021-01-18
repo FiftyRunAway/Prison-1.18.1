@@ -24,7 +24,7 @@ public class PrisonItem {
     private Consumer<Gamer> consumerOnClick;
     private Category category;
     private Rare rare;
-    private int runesAmount, minLevel, itemLevel;
+    private int runesAmount, itemLevel;
     private List<String> defaultRunes;
     private List<Parameter> parameters;
     @Setter

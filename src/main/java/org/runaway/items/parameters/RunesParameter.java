@@ -18,7 +18,7 @@ public class RunesParameter extends DefaultParameter {
     List<String> defaultRunes;
 
     RunesParameter(String nbtString, int priority, int amount, List<String> defaultRunes) {
-        super(null, nbtString, null, null, priority);
+        super(null, nbtString, null, null, null, priority, false);
         this.amount = amount;
         this.defaultRunes = defaultRunes;
         this.priority = priority;

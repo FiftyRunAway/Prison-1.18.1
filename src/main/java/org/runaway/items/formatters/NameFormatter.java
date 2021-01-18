@@ -3,10 +3,12 @@ package org.runaway.items.formatters;
 import lombok.Builder;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.utils.ItemUtils;
+import org.runaway.utils.Utils;
 
-@Builder @Getter
-public class LoreFormatter implements Formatter {
+@Getter @Builder
+public class NameFormatter implements Formatter {
     Object finalValue;
     Object[] replaceObjects;
 
@@ -15,6 +17,9 @@ public class LoreFormatter implements Formatter {
     }
 
     public ItemStack apply(ItemStack itemStack, String string) {
-        return ItemUtils.addLore(itemStack, format(string) + (getFinalValue() == null ? "" : getFinalValue().toString()));
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(Utils.colored(format(string) + (getFinalValue() == null ? "" : getFinalValue().toString())));
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 }

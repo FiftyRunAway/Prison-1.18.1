@@ -224,12 +224,14 @@ public class Prison extends JavaPlugin {
             PrisonItem prisonItem = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
                     .itemLevel(1)//уровень предмета
-                    .minLevel(3)//мин лвл для использования предмета
                     .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
-                            .lore(new Lore.BuilderLore().addString("&atest").build()).build().item()) //билд предмета
+                            .name("&bАлмазная кирка")
+                            .lore(new Lore.BuilderLore().addString(" &aЛичная кирка для копания твёрдых блоков").build()).build().item()) //билд предмета
                     .parameters(Arrays.asList( //параметры
                             parameterManager.getNodropParameter(), //предмет не выпадает
                             parameterManager.getOwnerParameter(), //предмет с владельцем
+                            parameterManager.getMinLevelParameter(3), //мин лвл для использования предмета
+                            parameterManager.getStattrakBlocksParameter(), //статтрек блоков
                             parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
                             parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
                             parameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.

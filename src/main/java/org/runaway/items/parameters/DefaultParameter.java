@@ -3,6 +3,7 @@ package org.runaway.items.parameters;
 import lombok.Builder;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Prison;
 import org.runaway.items.formatters.Formatter;
 import org.runaway.items.formatters.LoreFormatter;
@@ -15,8 +16,9 @@ import java.util.function.UnaryOperator;
 @Getter @Builder
 public class DefaultParameter implements Parameter {
     String loreString, nbtString;
-    Formatter defaultLoreFormatter, defaultNbtFormatter;
+    Formatter defaultLoreFormatter, defaultNbtFormatter, defaultNameFormatter;
     int priority;
+    boolean preSpace;
 
     @Override
     public UnaryOperator<ItemStack> getInitialParameterApplier() {
@@ -26,6 +28,9 @@ public class DefaultParameter implements Parameter {
                     itemStack = ItemUtils.addLore(itemStack, "&r",
                             loreString);
                 } else {
+                    if(preSpace) {
+                        itemStack = ItemUtils.addLore(itemStack, "&r");
+                    }
                    itemStack = getDefaultLoreFormatter().apply(itemStack, loreString);
                 }
             }
@@ -35,6 +40,16 @@ public class DefaultParameter implements Parameter {
                 } else {
                     itemStack = getDefaultNbtFormatter().apply(itemStack, nbtString);
                 }
+            }
+            if(getDefaultNameFormatter() != null) {
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                String displayName;
+                if(itemMeta.hasDisplayName()) {
+                    displayName = itemMeta.getDisplayName();
+                } else {
+                    displayName = itemMeta.getLocalizedName();
+                }
+                itemStack = getDefaultNameFormatter().apply(itemStack, displayName);
             }
             return itemStack;
         });
