@@ -12,7 +12,8 @@ import java.util.List;
 public class ParameterManager {
     private String ownerString, nodropString, upgradableString, stattrakPlayersString, stattrakMobsString, runesAmountString,
             runeInfoString, categoryInfoString, rareInfoString, minLevelString, stattrakBlocksString;
-    Parameter ownerParameter, nodropParameter, upgradableParameter, stattrakPlayerParameter, stattrakMobsParameter, stattrakBlocksParameter;
+    Parameter ownerParameter, nodropParameter, upgradableParameter, stattrakPlayerParameter, stattrakMobsParameter,
+            stattrakBlocksParameter, runesAmountParameter, runesInfoParameter;
 
     public ParameterManager() {
         initValues();
@@ -33,19 +34,21 @@ public class ParameterManager {
                 .defaultLoreFormatter(LoreFormatter.builder().finalValue(0).build())
                 .defaultNbtFormatter(NbtFormatter.builder().finalValue(0).build())
                 .priority(15).build();
+        runesInfoParameter = new RunesParameter("rune%d");
+        runesAmountParameter = DefaultParameter.builder().nbtString("runesAmount").priority(5).build();
     }
 
     private void initValues() {
         ownerString = "&5☬ &7Владелец: &d";
         nodropString = "&a&l✪ &aНе выпадает";
-        upgradableString = "&a✔ Предмет можно улучшить";
+        upgradableString = "&a✔ Можно улучшить";
         stattrakPlayersString = "&4☠ &7Убито игроков: &c";
         stattrakMobsString = "&4☠ &7Убито мобов: &c";
-        runesAmountString = "&5⚝ &7Вмещается рун: &d%d";
+        runesAmountString = "&5⚝ &7Слотов рун: &d%d";
         runeInfoString = "&5⚝ &7&n%d&7 руна: %s";
-        rareInfoString = "&e★ &7Тип редкости: ";
-        categoryInfoString = "&1⚒ &7Категория: ";
-        minLevelString = "&7➤ Доступен с &6%d &7уровня";
+        rareInfoString = "&e★ &7Редкость: ";
+        categoryInfoString = "&1⚒ &7Тип: ";
+        minLevelString = "&7➤ С &6%d &7уровня";
         stattrakBlocksString = "&c✄ &4Сломано блоков: &c";
     }
 

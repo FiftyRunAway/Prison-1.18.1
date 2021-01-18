@@ -225,8 +225,9 @@ public class Prison extends JavaPlugin {
                     .vanillaName("pick") //тех. название предмета
                     .itemLevel(1)//уровень предмета
                     .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
-                            .name("&bАлмазная кирка")
-                            .lore(new Lore.BuilderLore().addString(" &aЛичная кирка для копания твёрдых блоков").build()).build().item()) //билд предмета
+                            .name("&dАлмазная кирка")
+                            //.lore(new Lore.BuilderLore().addString("&atest").build())
+                            .build().item()) //билд предмета
                     .parameters(Arrays.asList( //параметры
                             parameterManager.getNodropParameter(), //предмет не выпадает
                             parameterManager.getOwnerParameter(), //предмет с владельцем

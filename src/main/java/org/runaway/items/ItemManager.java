@@ -2,6 +2,7 @@ package org.runaway.items;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
@@ -28,7 +29,6 @@ public class ItemManager {
     public void addPrisonItem(PrisonItem prisonItem) {
         prisonItem.setTechName(prisonItem.getVanillaName() + (prisonItem.getItemLevel() == 0 ? "" : "_" + prisonItem.getItemLevel()));
         ItemStack finalItem = prisonItem.getVanillaItem().clone();
-        ItemMeta itemMeta = finalItem.getItemMeta();
         ItemUtils.addLore(finalItem, "&r");
         Map<Integer, Parameter> parameterMap = new TreeMap<>();
         prisonItem.getParameters().forEach(parameter -> parameterMap.put(parameter.getPriority(), parameter));
@@ -39,6 +39,10 @@ public class ItemManager {
             finalItem = parameter.getInitialParameterApplier().apply(finalItem);
         }
         ItemUtils.addItemTag(finalItem, "techName", prisonItem.getTechName());
+        ItemMeta itemMeta = finalItem.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE);
+        itemMeta.setUnbreakable(true);
+        finalItem.setItemMeta(itemMeta);
         prisonItem.setItemStack(finalItem);
         prisonItem.setName(itemMeta.hasDisplayName() ? itemMeta.getDisplayName() : itemMeta.getLocalizedName());
         prisonItemMap.put(prisonItem.getTechName(), prisonItem);

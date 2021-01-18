@@ -24,6 +24,10 @@ public class RunesParameter extends DefaultParameter {
         this.priority = priority;
     }
 
+    RunesParameter(String nbtString) {
+        this(nbtString, 0, 0, null);
+    }
+
     @Override
     public UnaryOperator<ItemStack> getInitialParameterApplier() {
         ParameterManager parameterManager = Prison.getInstance().getItemManager().getParameterManager();
