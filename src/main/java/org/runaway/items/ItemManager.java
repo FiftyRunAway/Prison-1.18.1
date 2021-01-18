@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.runaway.Gamer;
 import org.runaway.Item;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
@@ -20,8 +21,6 @@ import java.util.Map;
 public class ItemManager {
     private Map<String, PrisonItem> prisonItemMap;
     @Getter
-    private String ownerString, nodropString, upgradableString, stattrakPlayersString, stattrakMobsString, runesAmountString, runeInfoString;
-    @Getter
     private ParameterManager parameterManager;
 
     public ItemManager() {
@@ -30,6 +29,7 @@ public class ItemManager {
     }
 
     public void addPrisonItem(PrisonItem prisonItem) {
+        prisonItem.setTechName(prisonItem.getVanillaName() + (prisonItem.getItemLevel() == 0 ? "" : "_" + prisonItem.getItemLevel()));
         ItemStack finalItem = prisonItem.getVanillaItem().clone();
         ItemMeta itemMeta = finalItem.getItemMeta();
         Map<Integer, Parameter> parameterMap = new HashMap<>();
@@ -76,5 +76,13 @@ public class ItemManager {
             }
         }
         return itemStack;
+    }
+
+    public String getOwner(ItemStack itemStack) {
+        return parameterManager.getOwnerParameter().getParameterGetter().apply(itemStack, null).toString();
+    }
+
+    public boolean isOwner(Gamer gamer, ItemStack itemStack) {
+        return gamer.getName().equalsIgnoreCase(getOwner(itemStack));
     }
 }

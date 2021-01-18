@@ -1,6 +1,8 @@
 package org.runaway;
 
 import com.nametagedit.plugin.NametagEdit;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -18,6 +20,9 @@ import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
 import org.runaway.fishing.EFishType;
 import org.runaway.inventories.FractionMenu;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.menu.IMenu;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.passiveperks.PassivePerks;
 import org.runaway.passiveperks.perks.BBMoneySecond;
@@ -29,6 +34,7 @@ import org.runaway.sqlite.PreparedRequests;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
+import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
@@ -44,16 +50,18 @@ import java.util.stream.Collectors;
  * Created by _RunAway_ on 16.1.2019
  */
 
+@Getter @Setter
 public class Gamer {
 
     private static final String bp_perm = "prison.battlepass";
+    private static final ItemManager itemManager = Prison.getInstance().getItemManager();
 
     public static ArrayList<UUID> tp = new ArrayList<>();
     private static final int teleportTimer = 3;
     public static int toRebirth = 30;
     public static PreparedRequests preparedRequests;
 
-    private String gamer;
+    private String gamer, name;
     private Player player;
     private final UUID uuid;
     private String replyPlayer;
@@ -74,6 +82,7 @@ public class Gamer {
     private boolean isOnline = false;
     private boolean isExist = true;
 
+    private IMenu currentIMenu;
     private Map<String, Long> cooldowns;
 
 
@@ -83,6 +92,7 @@ public class Gamer {
         this.player = player;
         this.gamer = this.player.getName();
         this.isOnline = true;
+        this.name = player.getName();
         if(!preparedRequests.isExist("player", getPlayer().getName())) {
             isExist = false;
         }
@@ -158,6 +168,91 @@ public class Gamer {
         if (this.cooldowns.containsKey(name)) return;
         this.cooldowns.put(name, System.currentTimeMillis() + cooldown);
     }
+
+    public PrisonItem getItemInMainHand() {
+        return itemManager.getPrisonItem(getPlayer().getInventory().getItemInMainHand());
+    }
+
+    public PrisonItem getItemInOffHand() {
+        return itemManager.getPrisonItem(getPlayer().getInventory().getItemInOffHand());
+    }
+
+    public int getAmount(PrisonItem prisonItem, boolean ignoreLvl) {
+        ItemStack itemStack = prisonItem.getItemStack();
+        final Map<Integer, ? extends ItemStack> ammo = getPlayer().getOpenInventory().getBottomInventory().all(itemStack.getType());
+        int found = 0;
+
+        for (ItemStack stack : ammo.values()) {
+            PrisonItem prisonItemTarget = itemManager.getPrisonItem(stack);
+            if (prisonItemTarget == null) continue;
+            if (ItemUtils.containsNbtTag(stack, "event")) {
+                continue;
+            }
+            String techName = prisonItem.getTechName();
+            String vanillaName = prisonItem.getVanillaName();
+            if (ignoreLvl && !prisonItemTarget.getVanillaName().equals(vanillaName)) {
+                continue;
+            }
+            if(!ignoreLvl && !prisonItemTarget.getTechName().equals(techName)) {
+                continue;
+            }
+            if (prisonItem.getParameters().contains(itemManager.getParameterManager().getOwnerParameter())) {
+                if (itemManager.isOwner(this, stack)) found += stack.getAmount();
+            } else {
+                found += stack.getAmount();
+            }
+        }
+        return found;
+    }
+
+    public boolean removeItem(PrisonItem prisonItem, int count, boolean ignoreLvl) {
+        int found = getAmount(prisonItem, ignoreLvl);
+        if (count > found) {
+            return false;
+        }
+        ItemStack itemStack = prisonItem.getItemStack();
+        Material material = itemStack.getType();
+        final Map<Integer, ? extends ItemStack> ammo = getPlayer().getOpenInventory().getBottomInventory().all(material);
+        for (Integer index : ammo.keySet()) {
+            ItemStack stack = ammo.get(index);
+            PrisonItem prisonItemTarget = itemManager.getPrisonItem(stack);
+            if (prisonItemTarget == null) continue;
+            if (ItemUtils.containsNbtTag(stack, "event")) {
+                continue;
+            }
+            String techName = prisonItem.getTechName();
+            String vanillaName = prisonItem.getVanillaName();
+            if (ignoreLvl && !prisonItemTarget.getVanillaName().equals(vanillaName)) {
+                continue;
+            }
+            if(!ignoreLvl && !prisonItemTarget.getTechName().equals(techName)) {
+                continue;
+            }
+            boolean consume = false;
+            if (prisonItem.getParameters().contains(itemManager.getParameterManager().getOwnerParameter())) {
+                if (itemManager.isOwner(this, stack)) {
+                    consume = true;
+                }
+            } else {
+                consume = true;
+            }
+            if (consume) {
+                int removed = Math.min(count, stack.getAmount());
+                count -= removed;
+                if (stack.getAmount() == removed) {
+                    getPlayer().getInventory().setItem(index, null);
+                } else {
+                    stack.setAmount(stack.getAmount() - removed);
+                }
+                if (count <= 0) {
+                    break;
+                }
+            }
+        }
+        getPlayer().updateInventory();
+        return true;
+    }
+
 
     private boolean isOnline() {
         return this.isOnline;

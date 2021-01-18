@@ -6,6 +6,7 @@ import org.runaway.menu.IMenu;
 
 public class StandardMenu extends IMenu {
 
+    boolean created;
     private StandardMenu(int rows, String title){
         setTitle(title);
         setInventorySize(rows);
@@ -16,7 +17,10 @@ public class StandardMenu extends IMenu {
 
     @Override
     public Inventory build() {
-
+        if(created) {
+            return getInventory();
+        }
+        created = true;
         Inventory inv = Bukkit.createInventory(this, getSize(),getTitle());
         setDummies(inv);
         setInventory(inv);

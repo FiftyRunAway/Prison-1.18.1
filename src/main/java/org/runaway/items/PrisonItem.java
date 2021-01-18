@@ -18,13 +18,13 @@ import java.util.function.Consumer;
 @Getter @Builder
 public class PrisonItem {
     @Setter
-    private String techName, name;
+    private String vanillaName, techName, name;
     private Material material;
     private short data;
     private Consumer<Gamer> consumerOnClick;
     private Category category;
     private Rare rare;
-    private int runesAmount;
+    private int runesAmount, minLevel, itemLevel;
     private List<String> defaultRunes;
     private List<Parameter> parameters;
     @Setter

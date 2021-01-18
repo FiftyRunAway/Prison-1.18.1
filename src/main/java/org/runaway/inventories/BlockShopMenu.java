@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Item;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
@@ -21,8 +22,8 @@ public class BlockShopMenu implements IMenus {
 
     public BlockShopMenu(Player player) {
         if (player != null) {
-            Inventory i = menu.build();
-            player.openInventory(i);
+            menu.build();
+            menu.open(GamerManager.getGamer(player));
         }
     }
 

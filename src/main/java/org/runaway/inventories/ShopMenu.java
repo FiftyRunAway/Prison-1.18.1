@@ -76,6 +76,6 @@ public class ShopMenu implements IMenus {
 
     @Override
     public String getName() {
-        return ChatColor.YELLOW +  "Магазин";
+        return ChatColor.YELLOW + "Магазин";
     }
 }

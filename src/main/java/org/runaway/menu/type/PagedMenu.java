@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class PagedMenu extends IMenu {
 
     private BiMap<Integer, Inventory> pages = HashBiMap.create();
-
+    private boolean created;
     private PagedMenu(int rows, String title) {
         setInventorySize(rows);
         setTitle(title);
@@ -28,6 +28,10 @@ public class PagedMenu extends IMenu {
 
     @Override
     public Inventory build() {
+        if(created) {
+            return getInventory();
+        }
+        created = true;
         List<PagedButton> pagedButtons = getButtons().stream().filter(button -> button instanceof PagedButton)
                 .map(button -> (PagedButton) button).collect(Collectors.toList());
         int pagesRequired = 0;

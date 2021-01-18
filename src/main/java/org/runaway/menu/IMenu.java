@@ -6,6 +6,7 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.runaway.Gamer;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.PagedButton;
 import org.runaway.menu.design.MenuDesigner;
@@ -60,6 +61,10 @@ public abstract class IMenu implements InventoryHolder {
         this.itemClickEvent = itemClickEvent;
     }
 
+    public void open(Gamer gamer) {
+        gamer.setCurrentIMenu(this);
+        gamer.getPlayer().openInventory(getInventory());
+    }
     private Consumer<ButtonClickEvent> buttonClickListener;
     private Consumer<InventoryCloseEvent> closeListener;
     private Consumer<InventoryOpenEvent> openListener;

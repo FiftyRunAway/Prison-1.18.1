@@ -88,7 +88,8 @@ public class MinesMenu implements IMenus {
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 
-        player.openInventory(menu.build());
+        menu.build();
+        menu.open(gamer);
     }
 
     @Override
