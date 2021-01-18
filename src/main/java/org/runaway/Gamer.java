@@ -95,6 +95,7 @@ public class Gamer {
         this.name = player.getName();
         if(!preparedRequests.isExist("player", getPlayer().getName())) {
             isExist = false;
+            getPlayer().teleport(Prison.SPAWN);
         }
         statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values(), isExist);
         setStatistics(EStat.UUID, getPlayer().getUniqueId());

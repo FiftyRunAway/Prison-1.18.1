@@ -219,7 +219,7 @@ public class Prison extends JavaPlugin {
         loadBoosters();
         this.itemManager = new ItemManager();
         ParameterManager parameterManager = getItemManager().getParameterManager();
-        if(false) {
+        if(true) {
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
@@ -366,7 +366,7 @@ public class Prison extends JavaPlugin {
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
                     new BaseCommand(), new TrashCommand(), new QuestCommand(), new FisherCommand(),
-                    new JobCommand(), new MsgCommand(), new ReplyCommand(), new InvseeCommand()).forEach(CommandManager::register);
+                    new JobCommand(), new MsgCommand(), new ReplyCommand(), new InvseeCommand(), new ItemCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");

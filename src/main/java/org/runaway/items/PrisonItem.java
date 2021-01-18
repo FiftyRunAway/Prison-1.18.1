@@ -30,6 +30,16 @@ public class PrisonItem {
     @Setter
     private ItemStack vanillaItem, itemStack;
 
+    public ItemStack getItemStack() {
+        return this.itemStack.clone();
+    }
+
+    public ItemStack getItemStack(int amount) {
+        ItemStack resultItem = this.itemStack.clone();
+        resultItem.setAmount(amount);
+        return resultItem;
+    }
+
     public enum Category {
         WEAPON("&cОружие", new ItemStack(Material.IRON_SWORD)),
         TOOLS("&9Инструменты", new ItemStack(Material.DIAMOND_PICKAXE)),
