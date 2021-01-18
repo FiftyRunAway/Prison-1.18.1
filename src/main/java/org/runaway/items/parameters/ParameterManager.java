@@ -44,10 +44,10 @@ public class ParameterManager {
         upgradableString = "&a✔ Можно улучшить";
         stattrakPlayersString = "&4☠ &7Убито игроков: &c";
         stattrakMobsString = "&4☠ &7Убито мобов: &c";
-        runesAmountString = "&5⚝ &7Слотов рун: &d%d";
+        runesAmountString = "&5⚝ &7Вмещается рун: &d%d";
         runeInfoString = "&5⚝ &7&n%d&7 руна: %s";
         rareInfoString = "&e★ &7Редкость: ";
-        categoryInfoString = "&1⚒ &7Тип: ";
+        categoryInfoString = "&1⚒ &7Категория: ";
         minLevelString = "&7➤ С &6%d &7уровня";
         stattrakBlocksString = "&c✄ &4Сломано блоков: &c";
     }

@@ -29,7 +29,9 @@ public class ItemManager {
     public void addPrisonItem(PrisonItem prisonItem) {
         prisonItem.setTechName(prisonItem.getVanillaName() + (prisonItem.getItemLevel() == 0 ? "" : "_" + prisonItem.getItemLevel()));
         ItemStack finalItem = prisonItem.getVanillaItem().clone();
-        ItemUtils.addLore(finalItem, "&r");
+        if(finalItem.getItemMeta().hasLore()) {
+            ItemUtils.addLore(finalItem, "&r");
+        }
         Map<Integer, Parameter> parameterMap = new TreeMap<>();
         prisonItem.getParameters().forEach(parameter -> parameterMap.put(parameter.getPriority(), parameter));
         if(prisonItem.getItemLevel() != 0) {
