@@ -222,14 +222,16 @@ public class Prison extends JavaPlugin {
         if(false) {
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
-                    .techName("pick_1") //техническое название предмета для его хранения и обработки в будущем
-                    .itemStack(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
+                    .vanillaName("pick") //тех. название предмета
+                    .itemLevel(1)//уровень предмета
+                    .minLevel(3)//мин лвл для использования предмета
+                    .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
                             .lore(new Lore.BuilderLore().addString("test").build()).build().item()) //билд предмета
                     .parameters(Arrays.asList( //параметры
                             parameterManager.getNodropParameter(), //предмет не выпадает
                             parameterManager.getOwnerParameter(), //предмет с владельцем
-                            parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //категория предмета
-                            parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //редкость предмета
+                            parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
+                            parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
                             parameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
                             parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
             getItemManager().addPrisonItem(prisonItem); //инициализация предмета

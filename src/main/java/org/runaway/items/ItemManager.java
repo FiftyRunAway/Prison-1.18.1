@@ -13,10 +13,7 @@ import org.runaway.runes.RuneManager;
 import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ItemManager {
     private Map<String, PrisonItem> prisonItemMap;
@@ -32,7 +29,7 @@ public class ItemManager {
         prisonItem.setTechName(prisonItem.getVanillaName() + (prisonItem.getItemLevel() == 0 ? "" : "_" + prisonItem.getItemLevel()));
         ItemStack finalItem = prisonItem.getVanillaItem().clone();
         ItemMeta itemMeta = finalItem.getItemMeta();
-        Map<Integer, Parameter> parameterMap = new HashMap<>();
+        Map<Integer, Parameter> parameterMap = new TreeMap<>();
         prisonItem.getParameters().forEach(parameter -> parameterMap.put(parameter.getPriority(), parameter));
         for (Parameter parameter : parameterMap.values()) {
             finalItem = parameter.getInitialParameterApplier().apply(finalItem);
