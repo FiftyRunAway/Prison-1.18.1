@@ -35,6 +35,7 @@ public class ItemManager {
             finalItem = parameter.getInitialParameterApplier().apply(finalItem);
         }
         ItemUtils.addItemTag(finalItem, "techName", prisonItem.getTechName());
+        prisonItem.setItemStack(finalItem);
         prisonItem.setName(itemMeta.hasDisplayName() ? itemMeta.getDisplayName() : itemMeta.getLocalizedName());
         prisonItemMap.put(prisonItem.getTechName(), prisonItem);
     }

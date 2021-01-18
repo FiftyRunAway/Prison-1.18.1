@@ -42,7 +42,7 @@ public class SQLite extends Database {
             statement.execute(sb.toString());
             for (Saveable saveable : saveables) {
                 try {
-                    statement.execute(String.format("ALTER TABLE %s ADD COLUMN %s %s NOT NULL", getDbName(), saveable.getColumnName(), saveable.getColumnType()));
+                    statement.execute(String.format("ALTER TABLE %s ADD COLUMN '%s' %s NOT NULL", getDbName(), saveable.getColumnName(), saveable.getColumnType()));
                     statement.execute(String.format("UPDATE %s players SET %s = '%s'", getDbName(), saveable.getColumnType(), saveable.getDefaultValue()));
                 } catch (SQLException e) {
                 }

@@ -226,7 +226,7 @@ public class Prison extends JavaPlugin {
                     .itemLevel(1)//уровень предмета
                     .minLevel(3)//мин лвл для использования предмета
                     .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
-                            .lore(new Lore.BuilderLore().addString("test").build()).build().item()) //билд предмета
+                            .lore(new Lore.BuilderLore().addString("&atest").build()).build().item()) //билд предмета
                     .parameters(Arrays.asList( //параметры
                             parameterManager.getNodropParameter(), //предмет не выпадает
                             parameterManager.getOwnerParameter(), //предмет с владельцем

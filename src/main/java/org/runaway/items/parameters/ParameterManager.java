@@ -34,9 +34,9 @@ public class ParameterManager {
         stattrakPlayersString = "&4☠ &7Убито игроков: &c";
         stattrakMobsString = "&4☠ &7Убито мобов: &c";
         runesAmountString = "&5⚝ &7Вмещается рун: &d%d";
-        runeInfoString = "&5⚝ &7&n%d&7 руна: ";
-        rareInfoString = "&e★ &7Тип редкости: %s";
-        categoryInfoString = "&1⚒ &7Категория: %s";
+        runeInfoString = "&5⚝ &7&n%d&7 руна: %s";
+        rareInfoString = "&e★ &7Тип редкости: ";
+        categoryInfoString = "&1⚒ &7Категория: ";
     }
 
     public Parameter getCategoryParameter(PrisonItem.Category category) {

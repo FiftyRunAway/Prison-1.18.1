@@ -17,7 +17,7 @@ public class ItemUtils {
     public static ItemStack addLore(@NonNull ItemStack item, String... lore) {
         ItemMeta itemMeta = item.getItemMeta();
         List<String> lore2 = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList();
-        lore2.addAll(Arrays.stream(lore).collect(Collectors.toList()));
+        lore2.addAll(Utils.color(Arrays.stream(lore).collect(Collectors.toList())));
         itemMeta.setLore(lore2);
         item.setItemMeta(itemMeta);
         return item;

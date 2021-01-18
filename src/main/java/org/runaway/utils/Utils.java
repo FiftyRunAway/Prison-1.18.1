@@ -134,6 +134,20 @@ public class Utils {
         return percents;
     }
 
+    public static List<String> color(List<String> strings) {
+        if (strings == null) {
+            return strings;
+        }
+        return strings.stream().map(Utils::colored).collect(Collectors.toList());
+    }
+
+    public static String[] color(String[] strings) {
+        if (strings == null) {
+            return strings;
+        }
+        return color(Arrays.asList(strings)).toArray(new String[strings.length]);
+    }
+
     public static String colored(String format) {
         if (format == null) {
             return "";
