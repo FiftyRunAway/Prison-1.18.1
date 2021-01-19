@@ -55,6 +55,7 @@ import org.runaway.events.*;
 import org.runaway.inventories.*;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
@@ -218,8 +219,10 @@ public class Prison extends JavaPlugin {
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
         this.itemManager = new ItemManager();
-        ParameterManager parameterManager = getItemManager().getParameterManager();
-        if(true) {
+        loadItems();
+
+        if(false) {
+            ParameterManager parameterManager = getItemManager().getParameterManager();
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
@@ -239,6 +242,59 @@ public class Prison extends JavaPlugin {
                             parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
             getItemManager().addPrisonItem(prisonItem); //инициализация предмета
         }
+    }
+
+    private void loadItems() {
+        ParameterManager parameterManager = getItemManager().getParameterManager();
+        EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades").getKeys(false).forEach(s -> {
+            ConfigurationSection section = EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades." + s);
+            PrisonItem.Category c = getCategory(section.getString("type"));
+            PrisonItem prisonItem = PrisonItem.builder()
+                    .vanillaName(s)
+                    .itemLevel(section.getInt("lorelevel"))
+                    .vanillaItem(new Item.Builder(Material.valueOf(section.getString("type")))
+                            .name(section.getString("name"))
+                            .build().item())
+                    .parameters(Arrays.asList(parameterManager.getNodropParameter(),
+                            parameterManager.getMinLevelParameter(section.getInt("min_level")),
+                            parameterManager.getRareParameter(getRare(section.getString("name"))),
+                            parameterManager.getCategoryParameter(c),
+                            parameterManager.getRunesParameter(1),
+                            parameterManager.getUpgradableParameter())).build();
+            getItemManager().addPrisonItem(prisonItem);
+        });
+    }
+
+    private PrisonItem.Rare getRare(String itemName) {
+        char s = itemName.toCharArray()[1];
+        switch (s) {
+            case 'a': {
+                return PrisonItem.Rare.COMMON;
+            }
+            case 'd': {
+                return PrisonItem.Rare.UNCOMMON;
+            }
+            case '6': {
+                return PrisonItem.Rare.RARE;
+            }
+            case 'c': {
+                return PrisonItem.Rare.VERY_RARE;
+            }
+            default: {
+                return PrisonItem.Rare.DEFAULT;
+            }
+        }
+    }
+
+    private PrisonItem.Category getCategory(String material) {
+        if (material.endsWith("PICKAXE") || material.endsWith("AXE") || material.endsWith("ROD") || material.endsWith("SPADE") || material.contains("SHEARS")) {
+            return PrisonItem.Category.TOOLS;
+        } else if (material.endsWith("SWORD") || material.contains("BOW")) {
+            return PrisonItem.Category.WEAPON;
+        } else if (material.endsWith("BOOTS") || material.endsWith("LEGGINGS") || material.endsWith("CHESTPLATE") || material.endsWith("HELMET")) {
+            return PrisonItem.Category.ARMOR;
+        }
+        return PrisonItem.Category.OTHER;
     }
 
     private void loadSQLite() {
