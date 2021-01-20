@@ -21,16 +21,11 @@ import java.util.*;
 
 public class ItemManager {
     @Getter
-    private Map<String, PrisonItem> prisonItemMap;
+    private static Map<String, PrisonItem> prisonItemMap;
     @Getter
-    private ParameterManager parameterManager;
+    private static ParameterManager parameterManager;
 
-    public ItemManager() {
-        this.prisonItemMap = new HashMap();
-        this.parameterManager = new ParameterManager();
-    }
-
-    public void addPrisonItem(PrisonItem prisonItem) {
+    public static void addPrisonItem(PrisonItem prisonItem) {
         prisonItem.setTechName(prisonItem.getVanillaName() + (prisonItem.getItemLevel() == 0 ? "" : "_" + prisonItem.getItemLevel()));
         ItemStack finalItem = prisonItem.getVanillaItem().clone();
         if(finalItem.getItemMeta().hasLore()) {
@@ -61,25 +56,25 @@ public class ItemManager {
         prisonItemMap.put(prisonItem.getTechName(), prisonItem);
     }
 
-    public PrisonItem getPrisonItem(ItemStack itemStack) {
+    public static PrisonItem getPrisonItem(ItemStack itemStack) {
         String techName = (String) ItemUtils.getNbtTag(itemStack, "techName", StatType.STRING);
         return getPrisonItem(techName);
     }
 
-    public PrisonItem getPrisonItem(String techName) {
+    public static PrisonItem getPrisonItem(String techName) {
         return prisonItemMap.get(techName);
     }
 
-    public Object getValueByNbt(ItemStack itemStack, String nbt, StatType statType) {
+    public static Object getValueByNbt(ItemStack itemStack, String nbt, StatType statType) {
         return ItemUtils.getNbtTag(itemStack, nbt, statType);
     }
 
-    public ItemStack initValue(ItemStack itemStack, String nbt, String loreString, String loreValue, String nbtValue) {
+    public static ItemStack initValue(ItemStack itemStack, String nbt, String loreString, String loreValue, String nbtValue) {
         ItemUtils.addLore(itemStack, loreString + loreValue);
         itemStack = ItemUtils.addItemTag(itemStack, nbt, nbtValue);
         return itemStack;
     }
-    public ItemStack setValue(ItemStack itemStack, String nbt, String loreString, String loreValue, String nbtValue) {
+    public static ItemStack setValue(ItemStack itemStack, String nbt, String loreString, String loreValue, String nbtValue) {
         loreString = Utils.colored(loreString);
         String loreStringStripped = ChatColor.stripColor(loreString).trim();
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -97,19 +92,19 @@ public class ItemManager {
         return itemStack;
     }
 
-    public String getOwner(ItemStack itemStack) {
+    public static String getOwner(ItemStack itemStack) {
         return parameterManager.getOwnerParameter().getParameterGetter().apply(itemStack, null).toString();
     }
 
-    public boolean isOwner(Gamer gamer, ItemStack itemStack) {
+    public static boolean isOwner(Gamer gamer, ItemStack itemStack) {
         return gamer.getName().equalsIgnoreCase(getOwner(itemStack));
     }
 
-    public ItemStack applyNewParameter(ItemStack itemStack, Parameter parameter, Object value) {
+    public static ItemStack applyNewParameter(ItemStack itemStack, Parameter parameter, Object value) {
         return parameter.changeValues(itemStack, value);
     }
 
-    public ItemStack initItem(ItemStack itemStack, Gamer gamer) {
+    public static ItemStack initItem(ItemStack itemStack, Gamer gamer) {
         itemStack = getParameterManager().getOwnerParameter().changeValues(itemStack, gamer.getName());
         return itemStack;
     }

@@ -24,6 +24,7 @@ import org.runaway.events.custom.TreasureFindEvent;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
+import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.KeyFirst;
 import org.runaway.passiveperks.perks.KeySecond;
@@ -60,7 +61,6 @@ public class BlockBreak implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
-        ItemManager itemManager = Prison.getInstance().getItemManager();
         if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         if (!event.isCancelled()) {
             String name = player.getInventory().getItemInMainHand().getType().toString();
@@ -103,9 +103,9 @@ public class BlockBreak implements Listener {
                 AutoSell(event, FindChest(event));
                 ItemStack itemStack = player.getInventory().getItemInMainHand();
                 if(itemStack == null) return;
-                PrisonItem prisonItem = itemManager.getPrisonItem(player.getInventory().getItemInMainHand());
+                PrisonItem prisonItem = ItemManager.getPrisonItem(player.getInventory().getItemInMainHand());
                 if(prisonItem == null) return;
-                Parameter stBlocksParameter = itemManager.getParameterManager().getStattrakBlocksParameter();
+                    Parameter stBlocksParameter = ParameterManager.getStattrakBlocksParameter();
                 if(!prisonItem.getParameters().contains(stBlocksParameter)) return;
 
                 double oldSTBlocks = (double) stBlocksParameter.getParameterGetter().

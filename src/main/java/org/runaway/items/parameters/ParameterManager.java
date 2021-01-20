@@ -9,14 +9,15 @@ import org.runaway.items.formatters.NbtFormatter;
 
 import java.util.List;
 
-@Getter
 public class ParameterManager {
-    private String ownerString, nodropString, upgradableString, stattrakPlayersString, stattrakMobsString, runesAmountString,
+    @Getter
+    private static String ownerString, nodropString, upgradableString, stattrakPlayersString, stattrakMobsString, runesAmountString,
             runeInfoString, categoryInfoString, rareInfoString, minLevelString, stattrakBlocksString;
-    Parameter ownerParameter, nodropParameter, upgradableParameter, stattrakPlayerParameter, stattrakMobsParameter,
+    @Getter
+    private static Parameter ownerParameter, nodropParameter, upgradableParameter, stattrakPlayerParameter, stattrakMobsParameter,
             stattrakBlocksParameter, runesAmountParameter, runesInfoParameter, minLevelParameter;
 
-    public ParameterManager() {
+    public static void init() {
         initValues();
         ownerParameter = DefaultParameter.builder().loreString(getOwnerString()).nbtString("owner")
                 .priority(30)
@@ -68,7 +69,7 @@ public class ParameterManager {
                 .build();
     }
 
-    private void initValues() {
+    private static void initValues() {
         ownerString = "&5☬ &7Владелец: &d";
         nodropString = "&a&l✪ &aНе выпадает";
         upgradableString = "&a✔ Можно улучшить";
@@ -82,14 +83,14 @@ public class ParameterManager {
         stattrakBlocksString = "&c✄ &4Сломано блоков: &c";
     }
 
-    public Parameter getCategoryParameter(PrisonItem.Category category) {
+    public static Parameter getCategoryParameter(PrisonItem.Category category) {
         return DefaultParameter.builder()
                 .defaultLoreFormatter(LoreFormatter.builder().loreString(getCategoryInfoString()).finalValue(category.getName()).build())
                 .priority(24)
                 .build();
     }
 
-    public Parameter getMinLevelParameter(int minLevel) {
+    public static Parameter getMinLevelParameter(int minLevel) {
         return DefaultParameter.builder()
                 .defaultLoreFormatter(LoreFormatter.builder().loreString(getMinLevelString()).replaceObjects(new Object[]{minLevel}).build())
                 .defaultNbtFormatter(NbtFormatter.builder().nbtString("minLevel").finalValue(minLevel).build())
@@ -97,7 +98,7 @@ public class ParameterManager {
                 .build();
     }
 
-    public Parameter getItemLevelParameter(int itemLevel) {
+    public static Parameter getItemLevelParameter(int itemLevel) {
         return DefaultParameter.builder()
                 .defaultNbtFormatter(NbtFormatter.builder().nbtString("itemLevel").finalValue(itemLevel).build())
                 .defaultNameFormatter(NameFormatter.builder().finalValue(" &6" + itemLevel + " LvL").build())
@@ -105,7 +106,7 @@ public class ParameterManager {
                 .build();
     }
 
-    public Parameter getRareParameter(PrisonItem.Rare rare) {
+    public static Parameter getRareParameter(PrisonItem.Rare rare) {
         return DefaultParameter.builder()
                 .preSpace(true)
                 .defaultLoreFormatter(LoreFormatter.builder().loreString(getRareInfoString()).finalValue(rare.getName()).build())
@@ -113,11 +114,11 @@ public class ParameterManager {
                 .build();
     }
 
-    public Parameter getRunesParameter(int amount, List<String> defaultRunes) {
+    public static Parameter getRunesParameter(int amount, List<String> defaultRunes) {
         return new RunesParameter("rune%d", 20, amount, defaultRunes);
     }
 
-    public Parameter getRunesParameter(int amount) {
+    public static Parameter getRunesParameter(int amount) {
         return getRunesParameter(amount, null);
     }
 }

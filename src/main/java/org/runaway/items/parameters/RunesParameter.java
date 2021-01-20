@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Prison;
+import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.formatters.Formatter;
 import org.runaway.items.formatters.LoreFormatter;
@@ -34,12 +35,11 @@ public class RunesParameter extends DefaultParameter {
 
     @Override
     public Function<PrisonItem, ItemStack> getInitialParameterApplier() {
-        ParameterManager parameterManager = Prison.getInstance().getItemManager().getParameterManager();
         return (prisonItem -> {
             ItemStack itemStack = prisonItem.getItemStack();
             Parameter amountParameter = DefaultParameter.builder()
                     .defaultNbtFormatter(NbtFormatter.builder().nbtString("runesAmount").finalValue(getAmount()).build())
-                    .defaultLoreFormatter(LoreFormatter.builder().loreString(parameterManager.getRunesAmountString()).finalValue(getAmount()).build())
+                    .defaultLoreFormatter(LoreFormatter.builder().loreString(ParameterManager.getRunesAmountString()).finalValue(getAmount()).build())
                     .preSpace(true)
                     .priority(20).build();
             itemStack = amountParameter.getInitialParameterApplier().apply(prisonItem);
@@ -54,7 +54,7 @@ public class RunesParameter extends DefaultParameter {
                 }
                 Parameter parameter = DefaultParameter.builder()
                         .defaultNbtFormatter(NbtFormatter.builder().nbtString("rune" + i).finalValue(rune == null ? "" : rune.getTechName()).build())
-                        .defaultLoreFormatter(LoreFormatter.builder().loreString(parameterManager.getRuneInfoString()).replaceObjects(new Object[]{i, rune == null ? "-" : rune.getName()}).build())
+                        .defaultLoreFormatter(LoreFormatter.builder().loreString(ParameterManager.getRuneInfoString()).replaceObjects(new Object[]{i, rune == null ? "-" : rune.getName()}).build())
                         .mutable(true)
                         .build();
                 itemStack = parameter.getInitialParameterApplier().apply(prisonItem);

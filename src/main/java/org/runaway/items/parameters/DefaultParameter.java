@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Prison;
 import org.runaway.enums.StatType;
+import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.formatters.Formatter;
 import org.runaway.items.formatters.LoreFormatter;
@@ -56,7 +57,7 @@ public class DefaultParameter implements Parameter {
     @Override
     public BiFunction<ItemStack, Object[], Object> getParameterGetter() {
         return ((itemStack, objects) -> {
-            return Prison.getInstance().getItemManager().getValueByNbt(itemStack, objects == null ?
+            return ItemManager.getValueByNbt(itemStack, objects == null ?
                     getDefaultNbtFormatter().getString() :
                     String.format(getDefaultNbtFormatter().getString(), objects), getStatType());
         });

@@ -23,6 +23,7 @@ import org.runaway.inventories.FractionMenu;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
+import org.runaway.items.parameters.ParameterManager;
 import org.runaway.menu.IMenu;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.passiveperks.PassivePerks;
@@ -55,7 +56,6 @@ import java.util.stream.Collectors;
 public class Gamer {
 
     private static final String bp_perm = "prison.battlepass";
-    private static final ItemManager itemManager = Prison.getInstance().getItemManager();
 
     public static ArrayList<UUID> tp = new ArrayList<>();
     private static final int teleportTimer = 3;
@@ -172,11 +172,11 @@ public class Gamer {
     }
 
     public PrisonItem getItemInMainHand() {
-        return itemManager.getPrisonItem(getPlayer().getInventory().getItemInMainHand());
+        return ItemManager.getPrisonItem(getPlayer().getInventory().getItemInMainHand());
     }
 
     public PrisonItem getItemInOffHand() {
-        return itemManager.getPrisonItem(getPlayer().getInventory().getItemInOffHand());
+        return ItemManager.getPrisonItem(getPlayer().getInventory().getItemInOffHand());
     }
 
     public int getAmount(PrisonItem prisonItem, boolean ignoreLvl) {
@@ -185,7 +185,7 @@ public class Gamer {
         int found = 0;
 
         for (ItemStack stack : ammo.values()) {
-            PrisonItem prisonItemTarget = itemManager.getPrisonItem(stack);
+            PrisonItem prisonItemTarget = ItemManager.getPrisonItem(stack);
             if (prisonItemTarget == null) continue;
             if (ItemUtils.containsNbtTag(stack, "event")) {
                 continue;
@@ -198,8 +198,8 @@ public class Gamer {
             if(!ignoreLvl && !prisonItemTarget.getTechName().equals(techName)) {
                 continue;
             }
-            if (prisonItem.getParameters().contains(itemManager.getParameterManager().getOwnerParameter())) {
-                if (itemManager.isOwner(this, stack)) found += stack.getAmount();
+            if (prisonItem.getParameters().contains(ParameterManager.getOwnerParameter())) {
+                if (ItemManager.isOwner(this, stack)) found += stack.getAmount();
             } else {
                 found += stack.getAmount();
             }
@@ -217,7 +217,7 @@ public class Gamer {
         final Map<Integer, ? extends ItemStack> ammo = getPlayer().getOpenInventory().getBottomInventory().all(material);
         for (Integer index : ammo.keySet()) {
             ItemStack stack = ammo.get(index);
-            PrisonItem prisonItemTarget = itemManager.getPrisonItem(stack);
+            PrisonItem prisonItemTarget = ItemManager.getPrisonItem(stack);
             if (prisonItemTarget == null) continue;
             if (ItemUtils.containsNbtTag(stack, "event")) {
                 continue;
@@ -231,8 +231,8 @@ public class Gamer {
                 continue;
             }
             boolean consume = false;
-            if (prisonItem.getParameters().contains(itemManager.getParameterManager().getOwnerParameter())) {
-                if (itemManager.isOwner(this, stack)) {
+            if (prisonItem.getParameters().contains(ParameterManager.getOwnerParameter())) {
+                if (ItemManager.isOwner(this, stack)) {
                     consume = true;
                 }
             } else {
@@ -476,9 +476,9 @@ public class Gamer {
     }
 
     public int getLevelItem(ItemStack item) {
-        PrisonItem prisonItem = Prison.getInstance().getItemManager().getPrisonItem(item);
+        PrisonItem prisonItem = ItemManager.getPrisonItem(item);
         if(prisonItem == null) return 0;
-        Parameter minLevelParameter = Prison.getInstance().getItemManager().getParameterManager().getMinLevelParameter();
+        Parameter minLevelParameter = ItemManager.getParameterManager().getMinLevelParameter();
         return (int) minLevelParameter.getParameterGetter().apply(item, null);
     }
 

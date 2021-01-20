@@ -18,11 +18,11 @@ public class NumberedPrisonItem {
     }
 
     public NumberedPrisonItem(String prisonItem, int amount) {
-        this(Prison.getInstance().getItemManager().getPrisonItem(prisonItem), amount);
+        this(ItemManager.getPrisonItem(prisonItem), amount);
     }
 
     public NumberedPrisonItem(String prisonItem) {
-        this(Prison.getInstance().getItemManager().getPrisonItem(prisonItem), 1);
+        this(ItemManager.getPrisonItem(prisonItem), 1);
     }
 
     String getName() {

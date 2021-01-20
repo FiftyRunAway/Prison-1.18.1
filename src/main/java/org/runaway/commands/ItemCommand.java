@@ -25,7 +25,6 @@ public class ItemCommand extends CommandManager {
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         Gamer gamer = GamerManager.getGamer(p);
-        ItemManager itemManager = Prison.getInstance().getItemManager();
         if(!p.hasPermission("prison.admin")) {
             gamer.sendMessage(EMessage.NOPERM);
             return;
@@ -37,7 +36,7 @@ public class ItemCommand extends CommandManager {
             case 1:
                 switch (args[0].toLowerCase()) {
                     case "give": case "list":
-                        itemManager.getPrisonItemMap().forEach((techName, prisonItem) -> {
+                        ItemManager.getPrisonItemMap().forEach((techName, prisonItem) -> {
                             gamer.sendMessage("Тех. название: " + techName + ";Предмет: " + prisonItem.getItemStack());
                         });
                         break;
@@ -63,12 +62,12 @@ public class ItemCommand extends CommandManager {
                 switch (args[0].toLowerCase()) {
                     case "give":
                         String techName = args[1];
-                        PrisonItem prisonItem = itemManager.getPrisonItem(techName);
+                        PrisonItem prisonItem = ItemManager.getPrisonItem(techName);
                         if(prisonItem == null) {
                             gamer.sendMessage("&4Предмет не найден.");
                             return;
                         }
-                        p.getInventory().addItem(itemManager.initItem(prisonItem.getItemStack(), gamer));
+                        p.getInventory().addItem(ItemManager.initItem(prisonItem.getItemStack(), gamer));
                         break;
                 }
         }

@@ -11,6 +11,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.UpgradeMenu;
+import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.managers.GamerManager;
 import org.runaway.upgrades.UpgradeMisc;
@@ -35,7 +36,7 @@ public class UpgradeCommand extends CommandManager {
         Gamer gamer = GamerManager.getGamer(p);
         if (args.length == 0) {
             ItemStack itemStack = p.getInventory().getItemInMainHand();
-            PrisonItem prisonItem = Prison.getInstance().getItemManager().getPrisonItem(itemStack);
+            PrisonItem prisonItem = ItemManager.getPrisonItem(itemStack);
             if(prisonItem == null) {
                 gamer.sendMessage("&cПредмета не существует.");
                 return;

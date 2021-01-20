@@ -153,9 +153,6 @@ public class Prison extends JavaPlugin {
     // Список норм боссов
     public static ArrayList<UUID> bosses = new ArrayList<>();
 
-    //Менеджер предметов
-    @Getter
-    private ItemManager itemManager;
     // Список шахт
     public static ArrayList<Mine> mines = new ArrayList<>();
 
@@ -231,14 +228,12 @@ public class Prison extends JavaPlugin {
             gamers.values().forEach(Gamer::savePlayer);
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
-        this.itemManager = new ItemManager();
         loadItems();
 
         String language = "ru_ru";
         this.downloadAndApplyLanguage(language);
 
         if(true) {
-            ParameterManager parameterManager = getItemManager().getParameterManager();
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
@@ -251,15 +246,15 @@ public class Prison extends JavaPlugin {
                     .upgradeRequireList(new RequireList(MoneyRequire.builder().amount(10000).build(),
                             BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.DIRT)).amount(256).build())) //что нужно для апгрейда
                     .parameters(Arrays.asList( //параметры
-                            parameterManager.getNodropParameter(), //предмет не выпадает
-                            parameterManager.getOwnerParameter(), //предмет с владельцем
-                            parameterManager.getMinLevelParameter(3), //мин лвл для использования предмета
-                            parameterManager.getStattrakBlocksParameter(), //статтрек блоков
-                            parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
-                            parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
-                            parameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
-                            parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
-            getItemManager().addPrisonItem(prisonItem); //инициализация предмета
+                            ParameterManager.getNodropParameter(), //предмет не выпадает
+                            ParameterManager.getOwnerParameter(), //предмет с владельцем
+                            ParameterManager.getMinLevelParameter(3), //мин лвл для использования предмета
+                            ParameterManager.getStattrakBlocksParameter(), //статтрек блоков
+                            ParameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
+                            ParameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
+                            ParameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
+                            ParameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
+            ItemManager.addPrisonItem(prisonItem); //инициализация предмета
 
             PrisonItem prisonItem2 = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
@@ -269,15 +264,15 @@ public class Prison extends JavaPlugin {
                             //.lore(new Lore.BuilderLore().addString("&atest").build())
                             .build().item()) //билд предмета
                     .parameters(Arrays.asList( //параметры
-                            parameterManager.getNodropParameter(), //предмет не выпадает
-                            parameterManager.getOwnerParameter(), //предмет с владельцем
-                            parameterManager.getMinLevelParameter(4), //мин лвл для использования предмета
-                            parameterManager.getStattrakBlocksParameter(), //статтрек блоков
-                            parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
-                            parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
-                            parameterManager.getRunesParameter(2), //кол-во рун (дефолтные руны как 2 параметр, если есть.
-                            parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
-            getItemManager().addPrisonItem(prisonItem2); //инициализация предмета
+                            ParameterManager.getNodropParameter(), //предмет не выпадает
+                            ParameterManager.getOwnerParameter(), //предмет с владельцем
+                            ParameterManager.getMinLevelParameter(4), //мин лвл для использования предмета
+                            ParameterManager.getStattrakBlocksParameter(), //статтрек блоков
+                            ParameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
+                            ParameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
+                            ParameterManager.getRunesParameter(2), //кол-во рун (дефолтные руны как 2 параметр, если есть.
+                            ParameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
+            ItemManager.addPrisonItem(prisonItem2); //инициализация предмета
         }
     }
 
@@ -309,7 +304,7 @@ public class Prison extends JavaPlugin {
     }
 
     private void loadItems() {
-        ParameterManager parameterManager = getItemManager().getParameterManager();
+        ParameterManager parameterManager = ItemManager.getParameterManager();
         EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades").getKeys(false).forEach(s -> {
             ConfigurationSection section = EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades." + s);
             PrisonItem.Category c = getCategory(section.getString("type"));
@@ -325,7 +320,7 @@ public class Prison extends JavaPlugin {
                             parameterManager.getCategoryParameter(c),
                             parameterManager.getRunesParameter(1),
                             parameterManager.getUpgradableParameter())).build();
-            getItemManager().addPrisonItem(prisonItem);
+            ItemManager.addPrisonItem(prisonItem);
         });
     }
 

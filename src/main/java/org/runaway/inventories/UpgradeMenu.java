@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Prison;
+import org.runaway.items.ItemManager;
 import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
 import org.runaway.requirements.RequireList;
@@ -41,7 +42,7 @@ public class UpgradeMenu implements IMenus {
             return;
         }
         List<String> upgradeLore = requireList.getLore(gamer);
-        ItemStack nextItem = Prison.getInstance().getItemManager().getPrisonItem(nextPrisonItem).getItemStack();
+        ItemStack nextItem = ItemManager.getPrisonItem(nextPrisonItem).getItemStack();
         nextItem = new ParameterMeta(p2.getInventory().getItemInMainHand()).applyTo(nextItem);
         ItemUtils.addLore(nextItem, "&r", "&dТребования:");
         inventory.setItem(2, ItemUtils.addLore(nextItem, upgradeLore));

@@ -14,25 +14,21 @@ import java.util.Map;
 @Getter @Setter
 public class ParameterMeta {
     private Map<Parameter, Object> parametersMap;
-    private ItemManager itemManager;
 
     public ParameterMeta() {
-        this.itemManager = Prison.getInstance().getItemManager();
         this.parametersMap = new HashMap();
     }
 
     public ParameterMeta(Map<Parameter, Object> parametersMap) {
-        this.itemManager = Prison.getInstance().getItemManager();
         this.parametersMap = parametersMap;
     }
 
     public ParameterMeta(ItemStack itemStack) {
-        this.itemManager = Prison.getInstance().getItemManager();
         getAllParameters(itemStack);
     }
 
     public ParameterMeta getAllParameters(ItemStack itemStack) {
-        PrisonItem prisonItem = getItemManager().getPrisonItem(itemStack);
+        PrisonItem prisonItem = ItemManager.getPrisonItem(itemStack);
         List<Parameter> mutableParameters = prisonItem.getMutableParameters();
         Map<Parameter, Object> result = new HashMap();
         mutableParameters.forEach(parameter -> {
