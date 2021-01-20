@@ -2,11 +2,14 @@ package org.runaway.items;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
 import org.runaway.Item;
+import org.runaway.enums.StatType;
+import org.runaway.items.formatters.LoreFormatter;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
 import org.runaway.runes.Rune;
@@ -17,6 +20,7 @@ import org.runaway.utils.Utils;
 import java.util.*;
 
 public class ItemManager {
+    @Getter
     private Map<String, PrisonItem> prisonItemMap;
     @Getter
     private ParameterManager parameterManager;
@@ -32,15 +36,21 @@ public class ItemManager {
         if(finalItem.getItemMeta().hasLore()) {
             ItemUtils.addLore(finalItem, "&r");
         }
+        prisonItem.setItemStack(finalItem);
+        prisonItem.setMutableParameters(new ArrayList());
         Map<Integer, Parameter> parameterMap = new TreeMap<>();
         prisonItem.getParameters().forEach(parameter -> parameterMap.put(parameter.getPriority(), parameter));
         if(prisonItem.getItemLevel() != 0) {
             parameterMap.put(0, parameterManager.getItemLevelParameter(prisonItem.getItemLevel()));
         }
         for (Parameter parameter : parameterMap.values()) {
-            finalItem = parameter.getInitialParameterApplier().apply(finalItem);
+            parameter.getInitialParameterApplier().apply(prisonItem);
+            if(parameter.isMutable()) {
+                prisonItem.getMutableParameters().add(parameter);
+            }
         }
-        ItemUtils.addItemTag(finalItem, "techName", prisonItem.getTechName());
+        finalItem = prisonItem.getItemStack();
+        finalItem = ItemUtils.addItemTag(finalItem, "techName", prisonItem.getTechName());
         ItemMeta itemMeta = finalItem.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE);
         itemMeta.setUnbreakable(true);
@@ -51,7 +61,7 @@ public class ItemManager {
     }
 
     public PrisonItem getPrisonItem(ItemStack itemStack) {
-        String techName = ItemUtils.getNbtTag(itemStack, "techName");
+        String techName = (String) ItemUtils.getNbtTag(itemStack, "techName", StatType.STRING);
         return getPrisonItem(techName);
     }
 
@@ -59,8 +69,8 @@ public class ItemManager {
         return prisonItemMap.get(techName);
     }
 
-    public String getValueByNbt(ItemStack itemStack, String nbt) {
-        return ItemUtils.getNbtTag(itemStack, nbt);
+    public Object getValueByNbt(ItemStack itemStack, String nbt, StatType statType) {
+        return ItemUtils.getNbtTag(itemStack, nbt, statType);
     }
 
     public ItemStack initValue(ItemStack itemStack, String nbt, String loreString, String loreValue, String nbtValue) {
@@ -92,5 +102,14 @@ public class ItemManager {
 
     public boolean isOwner(Gamer gamer, ItemStack itemStack) {
         return gamer.getName().equalsIgnoreCase(getOwner(itemStack));
+    }
+
+    public ItemStack applyNewParameter(ItemStack itemStack, Parameter parameter, Object value) {
+        return parameter.changeValues(itemStack, value);
+    }
+
+    public ItemStack initItem(ItemStack itemStack, Gamer gamer) {
+        itemStack = getParameterManager().getOwnerParameter().changeValues(itemStack, gamer.getName());
+        return itemStack;
     }
 }

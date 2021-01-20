@@ -1,11 +1,13 @@
 package org.runaway.utils;
 
+import com.gmail.filoghost.holographicdisplays.util.nbt.NBTTag;
 import lombok.NonNull;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagString;
+import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.runaway.enums.StatType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +25,24 @@ public class ItemUtils {
         return item;
     }
 
-    public static ItemStack addItemTag(ItemStack item, String stringTag, int value) {
-        return addItemTag(item, stringTag, value + "");
+    public static ItemStack setLoreValue(ItemStack itemStack, String loreString, String loreValue) {
+        loreString = Utils.colored(loreString);
+        String loreStringStripped = ChatColor.stripColor(loreString).trim();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        List<String> itemLore = itemMeta.getLore();
+        for(int index = 0; index < itemLore.size(); index++) {
+            String stringStripped = ChatColor.stripColor(itemLore.get(index));
+            if (stringStripped.startsWith(loreStringStripped)) {
+                itemLore.set(index, Utils.colored(loreString + loreValue));
+                itemMeta.setLore(itemLore);
+                itemStack.setItemMeta(itemMeta);
+                return itemStack;
+            }
+        }
+        return itemStack;
     }
 
-    public static ItemStack addItemTag(@NonNull ItemStack item, String stringTag, String value) {
+    public static ItemStack addItemTag(@NonNull ItemStack item, String stringTag, Object value) {
         net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (!nmsStack.hasTag()) {
@@ -36,10 +51,22 @@ public class ItemUtils {
         } else {
             tag = nmsStack.getTag();
         }
-        tag.remove(stringTag);
-        tag.set(stringTag, new NBTTagString(value));
+        NBTBase nbtBase = new NBTTagString(value.toString());
+        if(value instanceof Integer) {
+            nbtBase = new NBTTagInt((int) value);
+        } else if(value instanceof Double) {
+            nbtBase = new NBTTagDouble((double) value);
+        } else if(value instanceof Long) {
+            nbtBase = new NBTTagLong((long) value);
+        } else if(value instanceof Short) {
+            nbtBase = new NBTTagShort((short) value);
+        } else if(value instanceof Boolean) {
+            nbtBase = new NBTTagByte((byte)((boolean) value ? 1 : 0));
+        }
+        tag.set(stringTag, nbtBase);
         nmsStack.setTag(tag);
-        return CraftItemStack.asCraftMirror(nmsStack);
+        ItemStack result = CraftItemStack.asCraftMirror(nmsStack);
+        return result;
     }
 
     public static ItemStack addItemTag(ItemStack item, String stringTag) {
@@ -50,7 +77,7 @@ public class ItemUtils {
         return containsNbtTag(itemStack, tag, "1");
     }
 
-    public static String getNbtTag(@NonNull ItemStack itemStack, String tag) {
+    public static Object getNbtTag(@NonNull ItemStack itemStack, String tag, StatType statType) {
         net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound nbtTagCompound;
         if (!nmsStack.hasTag()) {
@@ -60,10 +87,20 @@ public class ItemUtils {
         } else {
             nbtTagCompound = nmsStack.getTag();
         }
-        if (nbtTagCompound.getString(tag) == null || nbtTagCompound.getString(tag).isEmpty()) {
+        if (!nbtTagCompound.hasKey(tag) || nbtTagCompound.get(tag).isEmpty()) {
             return "";
         } else {
-            return nbtTagCompound.getString(tag);
+            if(statType == StatType.STRING || statType == null) {
+                return nbtTagCompound.getString(tag);
+            } else if(statType == StatType.INTEGER) {
+                return nbtTagCompound.getInt(tag);
+            } else if(statType == StatType.DOUBLE) {
+                return nbtTagCompound.getDouble(tag);
+            } else if(statType == StatType.BOOLEAN) {
+                return nbtTagCompound.getBoolean(tag);
+            } else {
+                return nbtTagCompound.get(tag).toString();
+            }
         }
     }
 
@@ -77,7 +114,7 @@ public class ItemUtils {
         } else {
             nbtTagCompound = nmsStack.getTag();
         }
-        return nbtTagCompound.get(tag) != null && nbtTagCompound.getString(tag).equalsIgnoreCase(value);
+        return nbtTagCompound.get(tag) != null && nbtTagCompound.get(tag).toString().equalsIgnoreCase(value);
     }
 
 }

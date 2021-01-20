@@ -7,14 +7,26 @@ import org.runaway.utils.ItemUtils;
 
 @Getter @Builder
 public class NbtFormatter implements Formatter {
+    String nbtString;
     Object finalValue;
     Object[] replaceObjects;
+
+    @Override
+    public String getString() {
+        return getNbtString();
+    }
 
     public String format(String string) {
         return String.format(string, getReplaceObjects());
     }
 
-    public ItemStack apply(ItemStack itemStack, String string) {
-        return ItemUtils.addItemTag(itemStack, format(string), (getFinalValue() == null ? "" : getFinalValue().toString()));
+    @Override
+    public ItemStack apply(ItemStack itemStack) {
+        return apply(itemStack, (getFinalValue() == null ? "" : getFinalValue().toString()));
+    }
+
+    @Override
+    public ItemStack apply(ItemStack itemStack, Object customValue) {
+        return ItemUtils.addItemTag(itemStack, format(getNbtString()), customValue);
     }
 }

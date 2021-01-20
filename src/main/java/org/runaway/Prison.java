@@ -221,7 +221,7 @@ public class Prison extends JavaPlugin {
         this.itemManager = new ItemManager();
         loadItems();
 
-        if(false) {
+        if(true) {
             ParameterManager parameterManager = getItemManager().getParameterManager();
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()

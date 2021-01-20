@@ -1,6 +1,7 @@
 package org.runaway.items.parameters;
 
 import lombok.Getter;
+import org.runaway.enums.StatType;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.formatters.LoreFormatter;
 import org.runaway.items.formatters.NameFormatter;
@@ -17,25 +18,50 @@ public class ParameterManager {
 
     public ParameterManager() {
         initValues();
-        ownerParameter = DefaultParameter.builder().loreString(getOwnerString()).nbtString("owner").priority(30).build();
-        nodropParameter = DefaultParameter.builder().loreString(getNodropString()).nbtString("nodrop").defaultNbtFormatter(NbtFormatter.builder().finalValue(1).build()).priority(10).build();
-        upgradableParameter = DefaultParameter.builder().loreString(getUpgradableString()).priority(5).build();
-        stattrakMobsParameter = DefaultParameter.builder().loreString(getStattrakPlayersString()).nbtString("plKills")
+        ownerParameter = DefaultParameter.builder().loreString(getOwnerString()).nbtString("owner")
+                .priority(30)
+                .mutable(true)
+                .build();
+        nodropParameter = DefaultParameter.builder()
+                .loreString(getNodropString())
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("nodrop").finalValue(true).build())
+                .statType(StatType.BOOLEAN)
+                .priority(10)
                 .preSpace(true)
-                .defaultLoreFormatter(LoreFormatter.builder().finalValue(0).build())
-                .defaultNbtFormatter(NbtFormatter.builder().finalValue(0).build())
+                .build();
+        upgradableParameter = DefaultParameter.builder()
+                .loreString(getUpgradableString())
+                .priority(5)
+                .preSpace(true)
+                .build();
+        stattrakMobsParameter = DefaultParameter.builder()
+                .preSpace(true)
+                .statType(StatType.INTEGER)
+                .mutable(true)
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getStattrakPlayersString()).finalValue(0).build())
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("plKills").finalValue(0).build())
                 .priority(14).build();
-        stattrakMobsParameter = DefaultParameter.builder().loreString(getStattrakMobsString()).nbtString("mobKills")
-                .defaultLoreFormatter(LoreFormatter.builder().finalValue(0).build())
-                .defaultNbtFormatter(NbtFormatter.builder().finalValue(0).build())
+        stattrakMobsParameter = DefaultParameter.builder()
+                .mutable(true)
+                .statType(StatType.INTEGER)
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getStattrakMobsString()).finalValue(0).build())
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("mobKills").finalValue(0).build())
                 .priority(15).build();
-        stattrakBlocksParameter = DefaultParameter.builder().loreString(getStattrakBlocksString()).nbtString("stBlocks")
+        stattrakBlocksParameter = DefaultParameter.builder()
+                .mutable(true)
+                .statType(StatType.DOUBLE)
                 .preSpace(true)
-                .defaultLoreFormatter(LoreFormatter.builder().finalValue(0).build())
-                .defaultNbtFormatter(NbtFormatter.builder().finalValue(0).build())
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getStattrakBlocksString()).finalValue(0).build())
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("stBlocks").finalValue(0D).build())
                 .priority(15).build();
         runesInfoParameter = new RunesParameter("rune%d");
-        runesAmountParameter = DefaultParameter.builder().nbtString("runesAmount").priority(5).build();
+        runesAmountParameter = DefaultParameter.builder()
+                .nbtString("runesAmount")
+                .loreString(getRunesAmountString())
+                .statType(StatType.INTEGER)
+                .preSpace(true)
+                .priority(20)
+                .build();
     }
 
     private void initValues() {
@@ -44,8 +70,8 @@ public class ParameterManager {
         upgradableString = "&a✔ Можно улучшить";
         stattrakPlayersString = "&4☠ &7Убито игроков: &c";
         stattrakMobsString = "&4☠ &7Убито мобов: &c";
-        runesAmountString = "&5⚝ &7Вмещается рун: &d%d";
-        runeInfoString = "&5⚝ &7&n%d&7 руна: %s";
+        runesAmountString = "&5⚝ &7Вмещается рун: &d";
+        runeInfoString = " &5• &7&n%d&7 руна: %s";
         rareInfoString = "&e★ &7Редкость: ";
         categoryInfoString = "&1⚒ &7Категория: ";
         minLevelString = "&7➤ С &6%d &7уровня";
@@ -53,25 +79,34 @@ public class ParameterManager {
     }
 
     public Parameter getCategoryParameter(PrisonItem.Category category) {
-        return DefaultParameter.builder().loreString(getCategoryInfoString()).defaultLoreFormatter(LoreFormatter.builder().finalValue(category.getName()).build()).priority(24).build();
+        return DefaultParameter.builder()
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getCategoryInfoString()).finalValue(category.getName()).build())
+                .priority(24)
+                .build();
     }
 
     public Parameter getMinLevelParameter(int minLevel) {
-        return DefaultParameter.builder().loreString(getMinLevelString()).nbtString("minLevel")
-                .defaultLoreFormatter(LoreFormatter.builder().replaceObjects(new Object[]{minLevel}).build())
-                .defaultNbtFormatter(NbtFormatter.builder().finalValue(minLevel).build())
-                .priority(3).build();
+        return DefaultParameter.builder()
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getMinLevelString()).replaceObjects(new Object[]{minLevel}).build())
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("minLevel").finalValue(minLevel).build())
+                .priority(3)
+                .build();
     }
 
     public Parameter getItemLevelParameter(int itemLevel) {
-        return DefaultParameter.builder().nbtString("itemLevel")
-                .defaultNbtFormatter(NbtFormatter.builder().finalValue(itemLevel).build())
+        return DefaultParameter.builder()
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("itemLevel").finalValue(itemLevel).build())
                 .defaultNameFormatter(NameFormatter.builder().finalValue(" &6" + itemLevel + " LvL").build())
-                .priority(0).build();
+                .priority(0)
+                .build();
     }
 
     public Parameter getRareParameter(PrisonItem.Rare rare) {
-        return DefaultParameter.builder().preSpace(true).loreString(getRareInfoString()).defaultLoreFormatter(LoreFormatter.builder().finalValue(rare.getName()).build()).priority(25).build();
+        return DefaultParameter.builder()
+                .preSpace(true)
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getRareInfoString()).finalValue(rare.getName()).build())
+                .priority(25)
+                .build();
     }
 
     public Parameter getRunesParameter(int amount, List<String> defaultRunes) {

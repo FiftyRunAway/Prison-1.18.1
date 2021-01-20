@@ -21,6 +21,9 @@ import org.runaway.events.custom.BreakWoodEvent;
 import org.runaway.events.custom.DropKeyEvent;
 import org.runaway.events.custom.PlayerBlockBreakEvent;
 import org.runaway.events.custom.TreasureFindEvent;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.Parameter;
 import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.KeyFirst;
 import org.runaway.passiveperks.perks.KeySecond;
@@ -57,6 +60,7 @@ public class BlockBreak implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
+        ItemManager itemManager = Prison.getInstance().getItemManager();
         if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         if (!event.isCancelled()) {
             String name = player.getInventory().getItemInMainHand().getType().toString();
@@ -97,6 +101,17 @@ public class BlockBreak implements Listener {
                 gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf(gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
                 AutoSell(event, FindChest(event));
+                ItemStack itemStack = player.getInventory().getItemInMainHand();
+                if(itemStack == null) return;
+                PrisonItem prisonItem = itemManager.getPrisonItem(player.getInventory().getItemInMainHand());
+                if(prisonItem == null) return;
+                Parameter stBlocksParameter = itemManager.getParameterManager().getStattrakBlocksParameter();
+                if(!prisonItem.getParameters().contains(stBlocksParameter)) return;
+
+                double oldSTBlocks = (double) stBlocksParameter.getParameterGetter().
+                        apply(itemStack, null);
+                player.getInventory().setItemInMainHand(stBlocksParameter.changeValues(itemStack, BigDecimal.valueOf(oldSTBlocks + add).setScale(1, RoundingMode.UP).doubleValue()));
+
             } else {
                 gamer.sendMessage(EMessage.BREAKBYTOOLS);
                 event.setCancelled(true);

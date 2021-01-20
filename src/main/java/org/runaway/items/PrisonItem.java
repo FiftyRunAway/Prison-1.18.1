@@ -26,7 +26,8 @@ public class PrisonItem {
     private Rare rare;
     private int runesAmount, itemLevel;
     private List<String> defaultRunes;
-    private List<Parameter> parameters;
+    @Setter
+    private List<Parameter> parameters, mutableParameters;
     @Setter
     private ItemStack vanillaItem, itemStack;
 

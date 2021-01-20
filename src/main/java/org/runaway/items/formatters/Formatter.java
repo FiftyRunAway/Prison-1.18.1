@@ -7,5 +7,9 @@ public interface Formatter {
 
     Object[] getReplaceObjects();
 
-    ItemStack apply(ItemStack itemStack, String string);
+    String getString();
+
+    ItemStack apply(ItemStack itemStack);
+
+    ItemStack apply(ItemStack itemStack, Object customValue);
 }

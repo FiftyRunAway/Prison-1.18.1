@@ -2,55 +2,53 @@ package org.runaway.items.parameters;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Prison;
+import org.runaway.enums.StatType;
+import org.runaway.items.PrisonItem;
 import org.runaway.items.formatters.Formatter;
 import org.runaway.items.formatters.LoreFormatter;
 import org.runaway.items.formatters.NbtFormatter;
 import org.runaway.utils.ItemUtils;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 @Getter @Builder
 public class DefaultParameter implements Parameter {
     String loreString, nbtString;
+    @Setter
     Formatter defaultLoreFormatter, defaultNbtFormatter, defaultNameFormatter;
     int priority;
-    boolean preSpace;
+    boolean preSpace, mutable;
+    StatType statType;
 
     @Override
-    public UnaryOperator<ItemStack> getInitialParameterApplier() {
-        return (itemStack -> {
-            if(getLoreString() != null) {
-                if(getDefaultLoreFormatter() == null) {
-                    itemStack = ItemUtils.addLore(itemStack, "&r",
-                            loreString);
-                } else {
-                    if(preSpace) {
-                        itemStack = ItemUtils.addLore(itemStack, "&r");
-                    }
-                   itemStack = getDefaultLoreFormatter().apply(itemStack, loreString);
-                }
+    public Function<PrisonItem, ItemStack> getInitialParameterApplier() {
+        return (prisonItem -> {
+            ItemStack itemStack = prisonItem.getItemStack();
+            if(getLoreString() != null && getDefaultLoreFormatter() == null) {
+                setDefaultLoreFormatter(LoreFormatter.builder().loreString(getLoreString()).build());
             }
-            if(getNbtString() != null) {
-                if(getDefaultNbtFormatter() == null) {
-                    itemStack = ItemUtils.addItemTag(itemStack, "");
-                } else {
-                    itemStack = getDefaultNbtFormatter().apply(itemStack, nbtString);
-                }
+            if(preSpace) {
+                itemStack = ItemUtils.addLore(itemStack, "&r");
+            }
+            if(getDefaultLoreFormatter() != null) {
+                itemStack = getDefaultLoreFormatter().apply(itemStack);
+            }
+            if(getNbtString() != null && getDefaultNbtFormatter() == null) {
+                setDefaultNbtFormatter(NbtFormatter.builder().nbtString(getNbtString()).build());
+            }
+            if(getDefaultNbtFormatter() != null) {
+                itemStack = getDefaultNbtFormatter().apply(itemStack);
             }
             if(getDefaultNameFormatter() != null) {
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                String displayName;
-                if(itemMeta.hasDisplayName()) {
-                    displayName = itemMeta.getDisplayName();
-                } else {
-                    displayName = itemMeta.getLocalizedName();
-                }
-                itemStack = getDefaultNameFormatter().apply(itemStack, displayName);
+                itemStack = getDefaultNameFormatter().apply(itemStack);
             }
+            prisonItem.setItemStack(itemStack);
             return itemStack;
         });
     }
@@ -59,19 +57,21 @@ public class DefaultParameter implements Parameter {
     public BiFunction<ItemStack, Object[], Object> getParameterGetter() {
         return ((itemStack, objects) -> {
             return Prison.getInstance().getItemManager().getValueByNbt(itemStack, objects == null ?
-                    getNbtString() :
-                    String.format(getNbtString(), objects));
+                    getDefaultNbtFormatter().getString() :
+                    String.format(getDefaultNbtFormatter().getString(), objects), getStatType());
         });
     }
 
     @Override
-    public ItemStack applyNewValues(ItemStack itemStack, Formatter... formatters) {
-        for (Formatter formatter : formatters) {
-            if(formatter instanceof NbtFormatter) {
-                formatter.apply(itemStack, getNbtString());
-            } else if(formatter instanceof LoreFormatter) {
-                formatter.apply(itemStack, getLoreString());
-            }
+    public ItemStack changeValues(ItemStack itemStack, Object value) {
+        if(getDefaultLoreFormatter() != null) {
+            itemStack = getDefaultLoreFormatter().apply(itemStack, value);
+        }
+        if(getDefaultNbtFormatter() != null) {
+            itemStack = getDefaultNbtFormatter().apply(itemStack, value);
+        }
+        if(getDefaultNameFormatter() != null) {
+            itemStack = getDefaultNameFormatter().apply(itemStack, value);
         }
         return itemStack;
     }
