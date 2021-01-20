@@ -13,4 +13,6 @@ public interface IMobController {
 
     boolean isRare();
 
+    String getSpawnerUID();
+
 }

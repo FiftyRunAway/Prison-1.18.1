@@ -10,7 +10,6 @@ import org.runaway.enums.EStat;
 public class BlocksRequire implements Require {
     LocalizedBlock localizedBlock;
     int amount;
-    String normalName;
 
     @Override
     public RequireResult canAccess(Gamer gamer) {

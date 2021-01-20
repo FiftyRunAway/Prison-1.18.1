@@ -1,4 +1,44 @@
 package org.runaway.requirements;
 
-public class MobsRequire {
+import lombok.Builder;
+import lombok.Getter;
+import org.runaway.Gamer;
+import org.runaway.entity.MobManager;
+import org.runaway.enums.EStat;
+
+@Builder
+@Getter
+public class MobsRequire implements Require {
+    String mobName;
+    int amount;
+
+    @Override
+    public RequireResult canAccess(Gamer gamer) {
+        int mobKills = gamer.getMobKills(getMobName());
+        RequireResult requireResult = new RequireResult(mobKills >= getAmount(), mobKills);
+        return requireResult;
+    }
+
+    @Override
+    public String getName() {
+        return "Убейте " + MobManager.getAttributable(getMobName()).getName();
+    }
+
+    @Override
+    public Object getValue() {
+        return getAmount();
+    }
+
+    @Override
+    public String getLoreString(Gamer gamer) {
+        RequireResult requireResult = canAccess(gamer);
+        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
+    }
+
+    @Override
+    public void doAfter(Gamer gamer, RequireResult requireResult) {
+        if(!requireResult.isAccess()) {
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно убитых мобов.");
+        }
+    }
 }
