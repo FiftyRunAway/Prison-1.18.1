@@ -13,9 +13,12 @@ public class MobsRequire implements Require {
     int amount;
 
     @Override
-    public RequireResult canAccess(Gamer gamer) {
+    public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
         int mobKills = gamer.getMobKills(getMobName());
         RequireResult requireResult = new RequireResult(mobKills >= getAmount(), mobKills);
+        if(!requireResult.isAccess() && sendMessage) {
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно убитых мобов.");
+        }
         return requireResult;
     }
 
@@ -31,14 +34,7 @@ public class MobsRequire implements Require {
 
     @Override
     public String getLoreString(Gamer gamer) {
-        RequireResult requireResult = canAccess(gamer);
+        RequireResult requireResult = canAccess(gamer, false);
         return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
-    }
-
-    @Override
-    public void doAfter(Gamer gamer, RequireResult requireResult) {
-        if(!requireResult.isAccess()) {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно убитых мобов.");
-        }
     }
 }

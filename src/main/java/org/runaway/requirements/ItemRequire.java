@@ -12,9 +12,13 @@ public class ItemRequire implements Require {
     int amount;
 
     @Override
-    public RequireResult canAccess(Gamer gamer) {
+    public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
         int amount = gamer.getAmount(getPrisonItem(), isIgnoreLevel());
-        return new RequireResult(amount >= getAmount(), amount);
+        RequireResult requireResult = new RequireResult(amount >= getAmount(), amount);
+        if(!requireResult.isAccess() && sendMessage) {
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно предметов.");
+        }
+        return requireResult;
     }
 
     @Override
@@ -29,18 +33,14 @@ public class ItemRequire implements Require {
 
     @Override
     public String getLoreString(Gamer gamer) {
-        RequireResult requireResult = canAccess(gamer);
+        RequireResult requireResult = canAccess(gamer, false);
         return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
     }
 
     @Override
-    public void doAfter(Gamer gamer, RequireResult requireResult) {
-        if(requireResult.isAccess()) {
-            if(isTakeAfter()) {
-                gamer.removeItem(prisonItem, getAmount(), isIgnoreLevel());
-            }
-        } else {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно предметов.");
+    public void doAfter(Gamer gamer) {
+        if(isTakeAfter()) {
+            gamer.removeItem(prisonItem, getAmount(), isIgnoreLevel());
         }
     }
 }

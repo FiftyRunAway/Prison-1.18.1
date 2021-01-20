@@ -5,7 +5,7 @@ import org.runaway.Gamer;
 import java.util.function.Predicate;
 
 public interface Require {
-    RequireResult canAccess(Gamer gamer);
+    RequireResult canAccess(Gamer gamer, boolean sendMessage);
 
     String getName();
 
@@ -13,7 +13,7 @@ public interface Require {
 
     String getLoreString(Gamer gamer);
 
-    default void doAfter(Gamer gamer, RequireResult requireResult) {
+    default void doAfter(Gamer gamer) {
 
     }
 }

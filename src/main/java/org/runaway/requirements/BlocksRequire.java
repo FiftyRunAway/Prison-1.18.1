@@ -12,9 +12,12 @@ public class BlocksRequire implements Require {
     int amount;
 
     @Override
-    public RequireResult canAccess(Gamer gamer) {
+    public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
         int blocks = getLocalizedBlock() == null ? (int) gamer.getDoubleStatistics(EStat.BLOCKS) : getLocalizedBlock().getAmount(gamer);
         RequireResult requireResult = new RequireResult(blocks >= getAmount(), blocks);
+        if(!requireResult.isAccess() && sendMessage) {
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно вскопанных блоков.");
+        }
         return requireResult;
     }
 
@@ -30,14 +33,7 @@ public class BlocksRequire implements Require {
 
     @Override
     public String getLoreString(Gamer gamer) {
-        RequireResult requireResult = canAccess(gamer);
+        RequireResult requireResult = canAccess(gamer, false);
         return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
-    }
-
-    @Override
-    public void doAfter(Gamer gamer, RequireResult requireResult) {
-        if(!requireResult.isAccess()) {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно вскопанных блоков.");
-        }
     }
 }

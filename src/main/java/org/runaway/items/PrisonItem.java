@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
 import org.runaway.items.parameters.Parameter;
+import org.runaway.requirements.RequireList;
 import org.runaway.runes.Rune;
 import org.runaway.utils.Utils;
 
@@ -26,6 +27,8 @@ public class PrisonItem {
     private Rare rare;
     private int runesAmount, itemLevel;
     private List<String> defaultRunes;
+    private String nextPrisonItem;
+    private RequireList upgradeRequireList;
     @Setter
     private List<Parameter> parameters, mutableParameters;
     @Setter

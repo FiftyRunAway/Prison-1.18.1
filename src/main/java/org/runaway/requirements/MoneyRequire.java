@@ -10,8 +10,11 @@ public class MoneyRequire implements Require {
     boolean takeAfter;
 
     @Override
-    public RequireResult canAccess(Gamer gamer) {
+    public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
         RequireResult requireResult = new RequireResult(gamer.getMoney() >= getAmount(), (int) gamer.getMoney());
+        if(!requireResult.isAccess() && sendMessage) {
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно денег.");
+        }
         return requireResult;
     }
 
@@ -27,18 +30,14 @@ public class MoneyRequire implements Require {
 
     @Override
     public String getLoreString(Gamer gamer) {
-        RequireResult requireResult = canAccess(gamer);
+        RequireResult requireResult = canAccess(gamer, false);
         return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
     }
 
     @Override
-    public void doAfter(Gamer gamer, RequireResult requireResult) {
-        if(requireResult.isAccess()) {
-            if(isTakeAfter()) {
-                gamer.withdrawMoney(getAmount());
-            }
-        } else {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно денег.");
+    public void doAfter(Gamer gamer) {
+        if(isTakeAfter()) {
+            gamer.withdrawMoney(getAmount());
         }
     }
 }

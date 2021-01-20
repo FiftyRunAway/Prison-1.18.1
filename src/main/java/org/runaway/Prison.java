@@ -65,6 +65,10 @@ import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
 import org.runaway.quests.MinesQuest;
+import org.runaway.requirements.BlocksRequire;
+import org.runaway.requirements.LocalizedBlock;
+import org.runaway.requirements.MoneyRequire;
+import org.runaway.requirements.RequireList;
 import org.runaway.sqlite.Database;
 import org.runaway.sqlite.PreparedRequests;
 import org.runaway.sqlite.SQLite;
@@ -240,6 +244,9 @@ public class Prison extends JavaPlugin {
                             .name("&dАлмазная кирка")
                             //.lore(new Lore.BuilderLore().addString("&atest").build())
                             .build().item()) //билд предмета
+                    .nextPrisonItem("pick_2") //тех. название след. предмета
+                    .upgradeRequireList(new RequireList(MoneyRequire.builder().amount(10000).build(),
+                            BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.GRASS)).amount(256).build())) //что нужно для апгрейда
                     .parameters(Arrays.asList( //параметры
                             parameterManager.getNodropParameter(), //предмет не выпадает
                             parameterManager.getOwnerParameter(), //предмет с владельцем
