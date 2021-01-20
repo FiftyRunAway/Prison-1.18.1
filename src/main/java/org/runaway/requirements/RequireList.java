@@ -48,7 +48,9 @@ public class RequireList {
         List<String> loreList = new ArrayList();
         for (Require require : getRequireList()) {
             loreList.add(" &7• " + require.getLoreString(gamer));
+            loreList.add("&r");
         }
+        loreList.remove(loreList.size() - 1);
         return loreList;
     }
 
