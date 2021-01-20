@@ -234,6 +234,9 @@ public class Prison extends JavaPlugin {
         this.itemManager = new ItemManager();
         loadItems();
 
+        String language = "ru_ru";
+        this.downloadAndApplyLanguage(language);
+
         if(true) {
             ParameterManager parameterManager = getItemManager().getParameterManager();
             //EXAMPLE
@@ -246,7 +249,7 @@ public class Prison extends JavaPlugin {
                             .build().item()) //билд предмета
                     .nextPrisonItem("pick_2") //тех. название след. предмета
                     .upgradeRequireList(new RequireList(MoneyRequire.builder().amount(10000).build(),
-                            BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.GRASS)).amount(256).build())) //что нужно для апгрейда
+                            BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.DIRT)).amount(256).build())) //что нужно для апгрейда
                     .parameters(Arrays.asList( //параметры
                             parameterManager.getNodropParameter(), //предмет не выпадает
                             parameterManager.getOwnerParameter(), //предмет с владельцем
@@ -257,9 +260,25 @@ public class Prison extends JavaPlugin {
                             parameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
                             parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
             getItemManager().addPrisonItem(prisonItem); //инициализация предмета
+
+            PrisonItem prisonItem2 = PrisonItem.builder()
+                    .vanillaName("pick") //тех. название предмета
+                    .itemLevel(2)//уровень предмета
+                    .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
+                            .name("&dАлмазная кирка")
+                            //.lore(new Lore.BuilderLore().addString("&atest").build())
+                            .build().item()) //билд предмета
+                    .parameters(Arrays.asList( //параметры
+                            parameterManager.getNodropParameter(), //предмет не выпадает
+                            parameterManager.getOwnerParameter(), //предмет с владельцем
+                            parameterManager.getMinLevelParameter(4), //мин лвл для использования предмета
+                            parameterManager.getStattrakBlocksParameter(), //статтрек блоков
+                            parameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
+                            parameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
+                            parameterManager.getRunesParameter(2), //кол-во рун (дефолтные руны как 2 параметр, если есть.
+                            parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
+            getItemManager().addPrisonItem(prisonItem2); //инициализация предмета
         }
-        String language = "ru_ru";
-        this.downloadAndApplyLanguage(language);
     }
 
     private void downloadAndApplyLanguage(String lang) {

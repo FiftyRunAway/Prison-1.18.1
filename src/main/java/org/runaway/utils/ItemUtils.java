@@ -25,6 +25,15 @@ public class ItemUtils {
         return item;
     }
 
+    public static ItemStack addLore(@NonNull ItemStack item, List<String> lore) {
+        ItemMeta itemMeta = item.getItemMeta();
+        List<String> lore2 = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList();
+        lore2.addAll(Utils.color(lore));
+        itemMeta.setLore(lore2);
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
     public static ItemStack setLoreValue(ItemStack itemStack, String loreString, String loreValue) {
         loreString = Utils.colored(loreString);
         String loreStringStripped = ChatColor.stripColor(loreString).trim();

@@ -14,7 +14,7 @@ public class ParameterManager {
     private String ownerString, nodropString, upgradableString, stattrakPlayersString, stattrakMobsString, runesAmountString,
             runeInfoString, categoryInfoString, rareInfoString, minLevelString, stattrakBlocksString;
     Parameter ownerParameter, nodropParameter, upgradableParameter, stattrakPlayerParameter, stattrakMobsParameter,
-            stattrakBlocksParameter, runesAmountParameter, runesInfoParameter;
+            stattrakBlocksParameter, runesAmountParameter, runesInfoParameter, minLevelParameter;
 
     public ParameterManager() {
         initValues();
@@ -61,6 +61,10 @@ public class ParameterManager {
                 .statType(StatType.INTEGER)
                 .preSpace(true)
                 .priority(20)
+                .build();
+        minLevelParameter = DefaultParameter.builder()
+                .statType(StatType.INTEGER)
+                .defaultNbtFormatter(NbtFormatter.builder().nbtString("minLevel").build())
                 .build();
     }
 

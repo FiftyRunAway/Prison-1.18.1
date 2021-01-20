@@ -3,6 +3,7 @@ package org.runaway.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
 import org.runaway.Prison;
@@ -10,6 +11,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.UpgradeMenu;
+import org.runaway.items.PrisonItem;
 import org.runaway.managers.GamerManager;
 import org.runaway.upgrades.UpgradeMisc;
 
@@ -32,12 +34,17 @@ public class UpgradeCommand extends CommandManager {
     public void runCommand(Player p, String[] args, String cmdName) {
         Gamer gamer = GamerManager.getGamer(p);
         if (args.length == 0) {
-            String upgradeSection = UpgradeMisc.getSection(p);
-            if(upgradeSection == null) {
-                gamer.sendMessage("&cВы не можете улучшить данный предмет!");
+            ItemStack itemStack = p.getInventory().getItemInMainHand();
+            PrisonItem prisonItem = Prison.getInstance().getItemManager().getPrisonItem(itemStack);
+            if(prisonItem == null) {
+                gamer.sendMessage("&cПредмета не существует.");
                 return;
             }
-            if (gamer.getLevelItem(UpgradeMisc.buildItem(UpgradeMisc.getNext(upgradeSection), false, p, false)) > gamer.getIntStatistics(EStat.LEVEL)) {
+            if(prisonItem.getNextPrisonItem() == null || prisonItem.getUpgradeRequireList() == null) {
+                gamer.sendMessage("&cДанный предмет не имеет улучшений!");
+                return;
+            }
+            if (gamer.getLevelItem(itemStack) > gamer.getIntStatistics(EStat.LEVEL)) {
                 if (!confirm.contains(p.getName())) {
                     confirm.add(p.getName());
                     gamer.sendMessage(EMessage.UPGRADEATTENTION);
@@ -49,12 +56,11 @@ public class UpgradeCommand extends CommandManager {
                             confirm.remove(p.getName());
                         }
                     }.runTaskLater(Prison.getInstance(), 100L);
-
                     return;
                 }
                 confirm.remove(p.getName());
             }
-            new UpgradeMenu(p);
+            new UpgradeMenu(p, prisonItem.getNextPrisonItem(), prisonItem.getUpgradeRequireList());
         } else if (args.length == 1 && p.isOp()) {
             String item = String.valueOf(args[0]);
             if (EConfig.UPGRADE.getConfig().contains("upgrades." + item)) {

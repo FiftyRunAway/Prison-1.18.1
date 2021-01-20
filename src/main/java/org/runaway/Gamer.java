@@ -22,6 +22,7 @@ import org.runaway.fishing.EFishType;
 import org.runaway.inventories.FractionMenu;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.Parameter;
 import org.runaway.menu.IMenu;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.passiveperks.PassivePerks;
@@ -475,15 +476,10 @@ public class Gamer {
     }
 
     public int getLevelItem(ItemStack item) {
-        try {
-            if (!getPlayer().getGameMode().equals(GameMode.CREATIVE) && item.getItemMeta().getDisplayName() != null) {
-                String lore = ChatColor.stripColor(item.getItemMeta().getLore().get(0)).toLowerCase();
-                if (lore.contains("минимальный")) {
-                    return Integer.parseInt(lore.replace("минимальный уровень: ", ""));
-                }
-            }
-        } catch (Exception ignored) { return -1; }
-        return -1;
+        PrisonItem prisonItem = Prison.getInstance().getItemManager().getPrisonItem(item);
+        if(prisonItem == null) return 0;
+        Parameter minLevelParameter = Prison.getInstance().getItemManager().getParameterManager().getMinLevelParameter();
+        return (int) minLevelParameter.getParameterGetter().apply(item, null);
     }
 
     public int getDisplayLevel() {

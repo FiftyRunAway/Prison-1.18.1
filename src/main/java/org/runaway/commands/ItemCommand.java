@@ -55,8 +55,6 @@ public class ItemCommand extends CommandManager {
                         net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(p.getInventory().getItemInMainHand());
                         String result = nmsStack.a() + ".name";
                         p.sendMessage(Prison.getInstance().getKeys().getProperty(result));
-                        p.sendMessage(nmsStack.getName());
-                        p.sendMessage(p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName());
                         //TODO кликабельные голограммы, ап предметов, магазин, квесты, мобы
                         break;
                 }
