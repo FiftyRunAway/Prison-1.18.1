@@ -1,9 +1,10 @@
 package org.runaway.requirements;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.runaway.Gamer;
 
-@Getter
+@Builder @Getter
 public class MoneyRequire implements Require {
     double amount;
     boolean takeAfter;
@@ -16,21 +17,28 @@ public class MoneyRequire implements Require {
 
     @Override
     public String getName() {
-        return "null";
+        return (isTakeAfter() ? "Отдайте" : "Накопите") + " " + getAmount() + "$";
     }
 
     @Override
     public Object getValue() {
-        return null;
+        return getAmount();
     }
 
     @Override
     public String getLoreString(Gamer gamer) {
-        return null;
+        RequireResult requireResult = canAccess(gamer);
+        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
     }
 
     @Override
     public void doAfter(Gamer gamer, RequireResult requireResult) {
-
+        if(requireResult.isAccess()) {
+            if(isTakeAfter()) {
+                gamer.withdrawMoney(getAmount());
+            }
+        } else {
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно денег.");
+        }
     }
 }

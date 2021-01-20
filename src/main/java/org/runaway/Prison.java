@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardManager;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -75,6 +76,11 @@ import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -148,6 +154,9 @@ public class Prison extends JavaPlugin {
     private ItemManager itemManager;
     // Список шахт
     public static ArrayList<Mine> mines = new ArrayList<>();
+
+    @Getter
+    public final Properties keys = new Properties();
 
     public void onEnable() {
         instance = this;
@@ -241,6 +250,35 @@ public class Prison extends JavaPlugin {
                             parameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
                             parameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
             getItemManager().addPrisonItem(prisonItem); //инициализация предмета
+        }
+        String language = "ru_ru";
+        this.downloadAndApplyLanguage(language);
+    }
+
+    private void downloadAndApplyLanguage(String lang) {
+        File file = FileUtils.getFile(this.getDataFolder().toString(), "lang", lang + ".lang");
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            try {
+                new ResourceDownloader().downloadResource(lang, file);
+                this.loadLanguage(file);
+            } catch (IOException | IllegalArgumentException ex) {
+                this.keys.clear();
+                ex.printStackTrace();
+                return;
+            }
+        }
+        this.loadLanguage(file);
+    }
+
+    private void loadLanguage(File file) {
+        Charset charset = Charset.forName("UTF-8");
+        try (FileInputStream fis = new FileInputStream(file);
+             InputStreamReader is = new InputStreamReader(fis, charset)) {
+            this.keys.load(is);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            this.keys.clear();
         }
     }
 

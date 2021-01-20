@@ -2,6 +2,7 @@ package org.runaway.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Prison;
@@ -12,6 +13,8 @@ import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
 
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Properties;
 
 public class ItemCommand extends CommandManager {
 
@@ -47,6 +50,15 @@ public class ItemCommand extends CommandManager {
                     case "copy":
                         ParameterMeta parameterMeta = new ParameterMeta(p.getInventory().getItemInOffHand());
                         p.getInventory().setItemInMainHand(parameterMeta.applyTo(p.getInventory().getItemInMainHand()));
+                        break;
+                    case "name":
+                        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(p.getInventory().getItemInMainHand());
+                        String result = nmsStack.a() + ".name";
+                        p.sendMessage(Prison.getInstance().getKeys().getProperty(result));
+                        p.sendMessage(nmsStack.getName());
+                        p.sendMessage(p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName());
+                        //TODO кликабельные голограммы, ап предметов, магазин, квесты, мобы
+                        break;
                 }
                 break;
             case 2:

@@ -19,7 +19,7 @@ public class ItemRequire implements Require {
 
     @Override
     public String getName() {
-        return (isTakeAfter() ? "Отдайте" : "Найдите") + " " + prisonItem.getName() + " " + (getAmount() == 1 ? "" : "&6x" + getAmount());
+        return (isTakeAfter() ? "Отдайте" : "Найдите") + " " + prisonItem.getName();
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ItemRequire implements Require {
     @Override
     public String getLoreString(Gamer gamer) {
         RequireResult requireResult = canAccess(gamer);
-        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " " + requireResult.getAmount() + "/" + getAmount();
+        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemRequire implements Require {
                 gamer.removeItem(prisonItem, getAmount(), isIgnoreLevel());
             }
         } else {
-            gamer.sendMessage("&aУсловие " + getName() + " не выполнено! У вас недостаточно предметов.");
+            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно предметов.");
         }
     }
 }
