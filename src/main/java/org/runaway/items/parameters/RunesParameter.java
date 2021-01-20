@@ -43,7 +43,7 @@ public class RunesParameter extends DefaultParameter {
                     .preSpace(true)
                     .priority(20).build();
             itemStack = amountParameter.getInitialParameterApplier().apply(prisonItem);
-            prisonItem.getMutableParameters().add(amountParameter);
+            prisonItem.getParameters().add(amountParameter);
             for (int i = 1; i < (getAmount() + 1); i++) {
                 Rune rune = null;
                 if (getDefaultRunes() != null && getDefaultRunes().size() > (i - 1)) {
@@ -55,6 +55,7 @@ public class RunesParameter extends DefaultParameter {
                 Parameter parameter = DefaultParameter.builder()
                         .defaultNbtFormatter(NbtFormatter.builder().nbtString("rune" + i).finalValue(rune == null ? "" : rune.getTechName()).build())
                         .defaultLoreFormatter(LoreFormatter.builder().loreString(parameterManager.getRuneInfoString()).replaceObjects(new Object[]{i, rune == null ? "-" : rune.getName()}).build())
+                        .mutable(true)
                         .build();
                 itemStack = parameter.getInitialParameterApplier().apply(prisonItem);
                 prisonItem.getMutableParameters().add(parameter);

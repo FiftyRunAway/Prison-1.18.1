@@ -110,7 +110,7 @@ public class BlockBreak implements Listener {
 
                 double oldSTBlocks = (double) stBlocksParameter.getParameterGetter().
                         apply(itemStack, null);
-                player.getInventory().setItemInMainHand(stBlocksParameter.changeValues(itemStack, BigDecimal.valueOf(oldSTBlocks + add).setScale(1, RoundingMode.UP).doubleValue()));
+                stBlocksParameter.changeValues(itemStack, BigDecimal.valueOf(oldSTBlocks + add).setScale(1, RoundingMode.UP).doubleValue());
 
             } else {
                 gamer.sendMessage(EMessage.BREAKBYTOOLS);

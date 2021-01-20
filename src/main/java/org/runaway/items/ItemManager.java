@@ -38,6 +38,7 @@ public class ItemManager {
         }
         prisonItem.setItemStack(finalItem);
         prisonItem.setMutableParameters(new ArrayList());
+        prisonItem.setParameters(new ArrayList<>(prisonItem.getParameters()));
         Map<Integer, Parameter> parameterMap = new TreeMap<>();
         prisonItem.getParameters().forEach(parameter -> parameterMap.put(parameter.getPriority(), parameter));
         if(prisonItem.getItemLevel() != 0) {
@@ -50,7 +51,7 @@ public class ItemManager {
             }
         }
         finalItem = prisonItem.getItemStack();
-        finalItem = ItemUtils.addItemTag(finalItem, "techName", prisonItem.getTechName());
+        ItemUtils.addItemTag(finalItem, "techName", prisonItem.getTechName());
         ItemMeta itemMeta = finalItem.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE);
         itemMeta.setUnbreakable(true);

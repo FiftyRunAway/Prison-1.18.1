@@ -66,6 +66,7 @@ public class ItemUtils {
         tag.set(stringTag, nbtBase);
         nmsStack.setTag(tag);
         ItemStack result = CraftItemStack.asCraftMirror(nmsStack);
+        item.setItemMeta(result.getItemMeta());
         return result;
     }
 

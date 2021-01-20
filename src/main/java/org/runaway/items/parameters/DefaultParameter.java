@@ -65,13 +65,13 @@ public class DefaultParameter implements Parameter {
     @Override
     public ItemStack changeValues(ItemStack itemStack, Object value) {
         if(getDefaultLoreFormatter() != null) {
-            itemStack = getDefaultLoreFormatter().apply(itemStack, value);
+            getDefaultLoreFormatter().apply(itemStack, value);
         }
         if(getDefaultNbtFormatter() != null) {
-            itemStack = getDefaultNbtFormatter().apply(itemStack, value);
+            getDefaultNbtFormatter().apply(itemStack, value);
         }
         if(getDefaultNameFormatter() != null) {
-            itemStack = getDefaultNameFormatter().apply(itemStack, value);
+            getDefaultNameFormatter().apply(itemStack, value);
         }
         return itemStack;
     }
