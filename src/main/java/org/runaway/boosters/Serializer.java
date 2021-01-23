@@ -4,14 +4,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.enums.BoosterType;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
-import org.runaway.enums.EConfig;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Created by _RunAway_ on 30.1.2019

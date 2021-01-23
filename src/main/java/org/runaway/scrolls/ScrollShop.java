@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.inventories.Confirmation;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Lore;

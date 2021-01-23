@@ -13,7 +13,7 @@ public class MoneyRequire implements Require {
     public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
         RequireResult requireResult = new RequireResult(gamer.getMoney() >= getAmount(), (int) gamer.getMoney());
         if(!requireResult.isAccess() && sendMessage) {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно денег.");
+            gamer.sendMessage("&cУсловие \"" + getName() + "\" не выполнено! У вас недостаточно денег.");
         }
         return requireResult;
     }

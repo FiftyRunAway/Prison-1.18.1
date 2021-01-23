@@ -2,7 +2,7 @@ package org.runaway.fishing;
 
 import org.bukkit.Material;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.enums.MoneyType;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
@@ -10,7 +10,6 @@ import org.runaway.utils.Lore;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Fish {

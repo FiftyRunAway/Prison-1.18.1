@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;

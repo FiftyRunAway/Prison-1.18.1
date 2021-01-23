@@ -2,7 +2,7 @@ package org.runaway.battlepass;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.utils.Items;
 import org.runaway.utils.Lore;
 

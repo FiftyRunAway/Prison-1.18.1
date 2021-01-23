@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;

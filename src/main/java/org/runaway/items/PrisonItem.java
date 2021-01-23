@@ -76,7 +76,7 @@ public class PrisonItem {
             this.name = Utils.colored(description);
             this.defaultItem = defaultItem;
             this.isHidden = isHidden;
-            this.jediItems = new ArrayList();
+            this.jediItems = new ArrayList<>();
         }
     }
 
@@ -103,7 +103,7 @@ public class PrisonItem {
         Rare(String name, String color) {
             this.name = Utils.colored(name);
             this.color = Utils.colored(color);
-            this.prisonItems = new ArrayList();
+            this.prisonItems = new ArrayList<>();
         }
     }
 }

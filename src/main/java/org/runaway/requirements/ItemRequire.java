@@ -16,7 +16,7 @@ public class ItemRequire implements Require {
         int amount = gamer.getAmount(getPrisonItem(), isIgnoreLevel());
         RequireResult requireResult = new RequireResult(amount >= getAmount(), amount);
         if(!requireResult.isAccess() && sendMessage) {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно предметов.");
+            gamer.sendMessage("&cУсловие \"" + getName() + "\" не выполнено! У вас недостаточно предметов.");
         }
         return requireResult;
     }

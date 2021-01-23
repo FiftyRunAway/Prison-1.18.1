@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.events.BlockBreak;

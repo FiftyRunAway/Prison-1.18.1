@@ -2,14 +2,12 @@ package org.runaway.inventories;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.achievements.Achievement;
-import org.runaway.enums.EConfig;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
 

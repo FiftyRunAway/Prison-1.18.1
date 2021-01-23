@@ -9,9 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.button.DefaultButtons;
+import org.runaway.menu.button.IMenuButton;
+import org.runaway.menu.type.StandardMenu;
 import org.runaway.requirements.RequireList;
+import org.runaway.upgrades.Upgrade;
 import org.runaway.utils.ExampleItems;
 import org.runaway.enums.EMessage;
 import org.runaway.upgrades.UpgradeMisc;
@@ -27,11 +32,26 @@ import java.util.List;
 public class UpgradeMenu implements IMenus {
 
     public UpgradeMenu(Player p2, String nextPrisonItem, RequireList requireList) {
-        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, getName());
-        inventory.setItem(0, ExampleItems.glass(7));
-        inventory.setItem(1, ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "УЛУЧШИТЬ"));
-        inventory.setItem(3, ExampleItems.glass(14, ChatColor.RED + "" + ChatColor.BOLD + "ОТМЕНИТЬ"));
-        inventory.setItem(4, ExampleItems.glass(7));
+        StandardMenu menu = StandardMenu.create(getRows(), getName());
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass7").getItemStack()).setSlot(0));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass7").getItemStack()).setSlot(1));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass7").getItemStack()).setSlot(2));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass7").getItemStack()).setSlot(6));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass7").getItemStack()).setSlot(7));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass7").getItemStack()).setSlot(8));
+
+        PrisonItem pi = ItemManager.getPrisonItem("glass_upgrade");
+        pi.setName("&a&lУЛУЧШИТЬ");
+        IMenuButton button = DefaultButtons.FILLER.getButtonOfItemStack(pi.getItemStack()).setSlot(3);
+        button.setClickEvent(event ->
+                Upgrade.upgrade(event.getWhoClicked(), false));
+        menu.addButton(button);
+
+        button = DefaultButtons.FILLER.getButtonOfItemStack(ItemManager.getPrisonItem("glass_exit").getItemStack()).setSlot(5);
+        button.setClickEvent(event ->
+                event.getWhoClicked().closeInventory());
+        menu.addButton(button);
+
         Gamer gamer = GamerManager.getGamer(p2);
         if (p2.getInventory().getItemInMainHand().getItemMeta() == null || p2.getInventory().getItemInMainHand().getItemMeta().getLore() == null || p2.getInventory().getItemInMainHand().getItemMeta().getLore().size() < 1) {
             gamer.sendMessage(EMessage.NOLOREUPGRADE);
@@ -45,13 +65,14 @@ public class UpgradeMenu implements IMenus {
         ItemStack nextItem = ItemManager.getPrisonItem(nextPrisonItem).getItemStack();
         nextItem = new ParameterMeta(p2.getInventory().getItemInMainHand()).applyTo(nextItem);
         ItemUtils.addLore(nextItem, "&r", "&dТребования:");
-        inventory.setItem(2, ItemUtils.addLore(nextItem, upgradeLore));
-        p2.openInventory(inventory);
+
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemUtils.addLore(nextItem, upgradeLore)).setSlot(4));
+        p2.openInventory(menu.build());
     }
 
     @Override
     public int getRows() {
-        return 0;
+        return 1;
     }
 
     @Override

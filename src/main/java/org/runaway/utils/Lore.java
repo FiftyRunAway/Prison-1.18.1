@@ -8,7 +8,7 @@ public class Lore {
     private final ArrayList<String> newstring = new ArrayList<>();
 
     public static class BuilderLore {
-        private ArrayList<String> ns = new ArrayList<>();
+        private List<String> ns = new ArrayList<>();
 
         public BuilderLore addString(String string) {
             ns.add(string);

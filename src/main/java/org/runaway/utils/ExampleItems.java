@@ -2,7 +2,7 @@ package org.runaway.utils;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.Item;
+import org.runaway.items.Item;
 
 import java.util.ArrayList;
 import java.util.Collections;

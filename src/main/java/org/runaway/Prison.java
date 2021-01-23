@@ -1,6 +1,5 @@
 package org.runaway;
 
-import com.boydti.fawe.util.EditSessionBuilder;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -10,15 +9,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
-import com.sk89q.worldedit.function.pattern.BlockPattern;
-import com.sk89q.worldedit.function.pattern.RandomPattern;
-import com.sk89q.worldedit.patterns.Pattern;
 import lombok.Getter;
-import lombok.Setter;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.apache.commons.io.FileUtils;
@@ -65,10 +56,7 @@ import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
 import org.runaway.quests.MinesQuest;
-import org.runaway.requirements.BlocksRequire;
-import org.runaway.requirements.LocalizedBlock;
-import org.runaway.requirements.MoneyRequire;
-import org.runaway.requirements.RequireList;
+import org.runaway.requirements.*;
 import org.runaway.sqlite.Database;
 import org.runaway.sqlite.PreparedRequests;
 import org.runaway.sqlite.SQLite;
@@ -85,6 +73,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -228,17 +217,18 @@ public class Prison extends JavaPlugin {
             gamers.values().forEach(Gamer::savePlayer);
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
-        loadItems();
 
         String language = "ru_ru";
         this.downloadAndApplyLanguage(language);
 
-        if(true) {
+        ParameterManager.init();
+        loadItems();
+        if(false) {
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
                     .itemLevel(1)//уровень предмета
-                    .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
+                    .vanillaItem(new org.runaway.items.Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
                             .name("&dАлмазная кирка")
                             //.lore(new Lore.BuilderLore().addString("&atest").build())
                             .build().item()) //билд предмета
@@ -259,7 +249,7 @@ public class Prison extends JavaPlugin {
             PrisonItem prisonItem2 = PrisonItem.builder()
                     .vanillaName("pick") //тех. название предмета
                     .itemLevel(2)//уровень предмета
-                    .vanillaItem(new Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
+                    .vanillaItem(new org.runaway.items.Item.Builder(Material.DIAMOND_PICKAXE) //билд предмета
                             .name("&dАлмазная кирка")
                             //.lore(new Lore.BuilderLore().addString("&atest").build())
                             .build().item()) //билд предмета
@@ -293,7 +283,7 @@ public class Prison extends JavaPlugin {
     }
 
     private void loadLanguage(File file) {
-        Charset charset = Charset.forName("UTF-8");
+        Charset charset = StandardCharsets.UTF_8;
         try (FileInputStream fis = new FileInputStream(file);
              InputStreamReader is = new InputStreamReader(fis, charset)) {
             this.keys.load(is);
@@ -304,56 +294,130 @@ public class Prison extends JavaPlugin {
     }
 
     private void loadItems() {
-        ParameterManager parameterManager = ItemManager.getParameterManager();
-        EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades").getKeys(false).forEach(s -> {
-            ConfigurationSection section = EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades." + s);
-            PrisonItem.Category c = getCategory(section.getString("type"));
-            PrisonItem prisonItem = PrisonItem.builder()
-                    .vanillaName(s)
-                    .itemLevel(section.getInt("lorelevel"))
-                    .vanillaItem(new Item.Builder(Material.valueOf(section.getString("type")))
-                            .name(section.getString("name"))
-                            .build().item())
-                    .parameters(Arrays.asList(parameterManager.getNodropParameter(),
-                            parameterManager.getMinLevelParameter(section.getInt("min_level")),
-                            parameterManager.getRareParameter(getRare(section.getString("name"))),
-                            parameterManager.getCategoryParameter(c),
-                            parameterManager.getRunesParameter(1),
-                            parameterManager.getUpgradableParameter())).build();
-            ItemManager.addPrisonItem(prisonItem);
+        EConfig.ITEMS.getConfig().getKeys(false).forEach(s -> {
+            PrisonItem.Category category = s.equals("none") ? null : PrisonItem.Category.valueOf(s.toUpperCase());
+            EConfig.ITEMS.getConfig().getConfigurationSection(s).getKeys(false).forEach(item -> {
+                ConfigurationSection section = EConfig.ITEMS.getConfig().getConfigurationSection(s + "." + item);
+                List<String> parametrss = null;
+                if (section.contains("parameters")) {
+                    parametrss = Arrays.asList(section.getString("parameters")
+                            .replace("{", "")
+                            .replace("}", "").split(";"));
+                }
+                String[] type = section.getString("type").split(":");
+                int data = 0;
+                Material material;
+                try {
+                    if (type.length > 1) {
+                        material = Material.valueOf(type[0].toUpperCase());
+                        data = Integer.parseInt(type[1]);
+                    } else {
+                        material = Material.valueOf(section.getString("type"));
+                    }
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Unknown material type - " + section.getString("type"));
+                }
+                List<Parameter> parameters = getParameters(parametrss);
+                if (category != null) parameters.add(ParameterManager.getCategoryParameter(category));
+                PrisonItem.Rare rare = null;
+                if (section.contains("rarity")) {
+                    rare = PrisonItem.Rare.valueOf(section.getString("rarity").toUpperCase());
+                    parameters.add(ParameterManager.getRareParameter(rare));
+                }
+
+                PrisonItem prisonItem;
+                if (parameters.contains(ParameterManager.getUpgradableParameter())) {
+                    prisonItem = PrisonItem.builder()
+                            .vanillaName(item)
+                            .itemLevel(section.getInt("item_level"))
+                            .nextPrisonItem(section.contains("next") ? section.getString("next") + "_" + (section.getInt("item_level") + 1) : null)
+                            .upgradeRequireList(section.contains("next") ? getUpProperties(section.getString("next")) : null)
+                            .vanillaItem(new org.runaway.items.Item.Builder(material)
+                                    .data((short) data)
+                                    .enchantmentList(section.contains("enchants") ? UpgradeMisc.getEnchants(section.getString("enchants")) : null)
+                                    .name((rare != null ? rare.getColor() : "") + section.getString("name"))
+                                    .lore(section.contains("lore") ? new Lore.BuilderLore()
+                                            .addList(section.getStringList("lore"))
+                                            .build() : null)
+                                    .build().item())
+                            .parameters(parameters)
+                            .build();
+                } else {
+                    prisonItem = PrisonItem.builder()
+                            .vanillaName(item)
+                            .itemLevel(section.contains("item_level") ? section.getInt("item_level") : 0)
+                            .vanillaItem(new org.runaway.items.Item.Builder(material)
+                                    .data((short) data)
+                                    .enchantmentList(section.contains("enchants") ? UpgradeMisc.getEnchants(section.getString("enchants")) : null)                                    .name(section.getString("name"))
+                                    .lore(section.contains("lore") ? new Lore.BuilderLore()
+                                            .addList(section.getStringList("lore"))
+                                            .build() : null)
+                                    .build().item())
+                            .parameters(parameters)
+                            .build();
+                }
+                ItemManager.addPrisonItem(prisonItem);
+            });
         });
     }
 
-    private PrisonItem.Rare getRare(String itemName) {
-        char s = itemName.toCharArray()[1];
-        switch (s) {
-            case 'a': {
-                return PrisonItem.Rare.COMMON;
+    private RequireList getUpProperties(String cfg) {
+        RequireList requireList = new RequireList();
+        UpgradeMisc.getProperties(cfg).forEach((r, s) -> {
+            if (r == UpgradeProperty.COST) {
+                requireList.addRequire(MoneyRequire.builder().amount(Integer.parseInt(s)).takeAfter(true).build());
+            } else if (r == UpgradeProperty.RATS) {
+                requireList.addRequire(MobsRequire.builder().mobName("Тюремная крыса").amount(Integer.parseInt(s)).build());
+            } else if (r == UpgradeProperty.WOOD) {
+                requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.LOG_2)).build());
+            } else if (r == UpgradeProperty.BOW_KILL) {
+                requireList.addRequire(MobsRequire.builder().mobName("Зомби").amount(Integer.parseInt(s)).build());
+            } else {
+                requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.valueOf(r.name().toUpperCase()))).amount(Integer.parseInt(s)).build());
             }
-            case 'd': {
-                return PrisonItem.Rare.UNCOMMON;
-            }
-            case '6': {
-                return PrisonItem.Rare.RARE;
-            }
-            case 'c': {
-                return PrisonItem.Rare.VERY_RARE;
-            }
-            default: {
-                return PrisonItem.Rare.DEFAULT;
-            }
-        }
+        });
+        return requireList;
     }
 
-    private PrisonItem.Category getCategory(String material) {
-        if (material.endsWith("PICKAXE") || material.endsWith("AXE") || material.endsWith("ROD") || material.endsWith("SPADE") || material.contains("SHEARS")) {
-            return PrisonItem.Category.TOOLS;
-        } else if (material.endsWith("SWORD") || material.contains("BOW")) {
-            return PrisonItem.Category.WEAPON;
-        } else if (material.endsWith("BOOTS") || material.endsWith("LEGGINGS") || material.endsWith("CHESTPLATE") || material.endsWith("HELMET")) {
-            return PrisonItem.Category.ARMOR;
+    private List<Parameter> getParameters(List<String> string) {
+        if (string == null) return new ArrayList<>();
+        List<Parameter> parameters = new ArrayList<>();
+        string.forEach(s -> {
+            String[] spl = s.split(":");
+            if (spl.length > 1) parameters.add(getParameter(spl[0], spl[1]));
+            else parameters.add(getParameter(s, null));
+        });
+        return parameters;
+    }
+
+    private Parameter getParameter(String s, Object value) {
+        switch (s.toLowerCase()) {
+            case "upg": {
+                return ParameterManager.getUpgradableParameter();
+            }
+            case "nodrop": {
+                return ParameterManager.getNodropParameter();
+            }
+            case "owner": {
+                return ParameterManager.getOwnerParameter();
+            }
+            case "stblocks": {
+                return ParameterManager.getStattrakBlocksParameter();
+            }
+            case "stmobs": {
+                return ParameterManager.getStattrakMobsParameter();
+            }
+            case "stplayers": {
+                return ParameterManager.getStattrakPlayerParameter();
+            }
+            case "minlevel": {
+                return ParameterManager.getMinLevelParameter(Integer.parseInt(value.toString()));
+            }
+            case "runes": {
+                return ParameterManager.getRunesParameter(Integer.parseInt(value.toString()));
+            }
         }
-        return PrisonItem.Category.OTHER;
+        return null;
     }
 
     private void loadSQLite() {
@@ -538,7 +602,7 @@ public class Prison extends JavaPlugin {
                         }
                     }
                 });
-                ItemStack key = new Item.Builder(Material.valueOf(EConfig.CASES.getConfig().getString(st + ".key.material")))
+                ItemStack key = new org.runaway.items.Item.Builder(Material.valueOf(EConfig.CASES.getConfig().getString(st + ".key.material")))
                         .name(EConfig.CASES.getConfig().getString(st + ".key.name")).build().item();
                 Case c = new Case(EConfig.CASES.getConfig().getBoolean(st + ".animation"), drops, Utils.unserializeLocation(EConfig.CASES.getConfig().getString(st + ".location")), Utils.colored(EConfig.CASES.getConfig().getString(st + ".name")), key, Material.valueOf(EConfig.CASES.getConfig().getString(st + ".material")), EConfig.CASES.getConfig().getInt(st + ".money"), menu.build());
                 cases.add(c);

@@ -17,7 +17,7 @@ public class MobsRequire implements Require {
         int mobKills = gamer.getMobKills(getMobName());
         RequireResult requireResult = new RequireResult(mobKills >= getAmount(), mobKills);
         if(!requireResult.isAccess() && sendMessage) {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно убитых мобов.");
+            gamer.sendMessage("&cУсловие \"" + getName() + "\" не выполнено! У вас недостаточно убитых мобов.");
         }
         return requireResult;
     }

@@ -15,7 +15,7 @@ public class BlocksRequire implements Require {
         int blocks = getLocalizedBlock() == null ? (int) gamer.getDoubleStatistics(EStat.BLOCKS) : getLocalizedBlock().getAmount(gamer);
         RequireResult requireResult = new RequireResult(blocks >= getAmount(), blocks);
         if(!requireResult.isAccess() && sendMessage) {
-            gamer.sendMessage("&aУсловие \"" + getName() + "\" не выполнено! У вас недостаточно вскопанных блоков.");
+            gamer.sendMessage("&cУсловие \"" + getName() + "\" не выполнено! У вас недостаточно вскопанных блоков.");
         }
         return requireResult;
     }

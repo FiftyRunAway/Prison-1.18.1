@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
@@ -26,14 +26,14 @@ public class BoostersMenu implements IMenus {
         int i = 0;
         Gamer gamer = Prison.gamers.get(g.getUniqueId());
 
-        if (gamer.getPrivilege().getValue(new BoosterBlocks()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_NUGGET).name("&eУскоритель блоков донатера").lore(loreConstPrivilege(gamer, true)).build().item()).setSlot(i++));
-        if (gamer.getPrivilege().getValue(new BoosterMoney()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.IRON_NUGGET).name("&eУскоритель денег донатера").lore(loreConstPrivilege(gamer, false)).build().item()).setSlot(i++));
-        if (gamer.isActiveLocalBlocks()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND).name("&dⓁ &eускоритель блоков").lore(loreLocal(gamer, true)).build().item()).setSlot(i++));
-        if (gamer.isActiveLocalMoney()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_INGOT).name("&dⓁ &eускоритель денег").lore(loreLocal(gamer,false)).build().item()).setSlot(i++));
-        if (Prison.gMoney.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_BLOCK).name("&dⒼ &eускоритель денег").lore(loreGlobal(false)).build().item()).setSlot(i++));
-        if (Prison.gBlocks.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND_BLOCK).name("&dⒼ &eускоритель блоков").lore(loreGlobal(true)).build().item()).setSlot(i++));
-        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND_ORE).name("&cПостоянный &aускоритель денег").lore(loreConst(gamer, false)).build().item()).setSlot(7));
-        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.GOLD_ORE).name("&cПостоянный &aускоритель блоков").lore(loreConst(gamer, true)).build().item()).setSlot(6));
+        if (gamer.getPrivilege().getValue(new BoosterBlocks()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_NUGGET).name("&eУскоритель блоков донатера").lore(loreConstPrivilege(gamer, true)).build().item()).setSlot(i++));
+        if (gamer.getPrivilege().getValue(new BoosterMoney()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.IRON_NUGGET).name("&eУскоритель денег донатера").lore(loreConstPrivilege(gamer, false)).build().item()).setSlot(i++));
+        if (gamer.isActiveLocalBlocks()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND).name("&dⓁ &eускоритель блоков").lore(loreLocal(gamer, true)).build().item()).setSlot(i++));
+        if (gamer.isActiveLocalMoney()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_INGOT).name("&dⓁ &eускоритель денег").lore(loreLocal(gamer,false)).build().item()).setSlot(i++));
+        if (Prison.gMoney.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&dⒼ &eускоритель денег").lore(loreGlobal(false)).build().item()).setSlot(i++));
+        if (Prison.gBlocks.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_BLOCK).name("&dⒼ &eускоритель блоков").lore(loreGlobal(true)).build().item()).setSlot(i++));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_ORE).name("&cПостоянный &aускоритель денег").lore(loreConst(gamer, false)).build().item()).setSlot(7));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_ORE).name("&cПостоянный &aускоритель блоков").lore(loreConst(gamer, true)).build().item()).setSlot(6));
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(8);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));

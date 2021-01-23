@@ -20,10 +20,11 @@ public class Config {
 
     public static FileConfiguration upgrade, boss, donate, shop,
             talants, log, standart, boosters, messages, mines, mobs, modules, cases, achievs, trainer,
-            bp, bpData, rebirthData, quests, questsData, job;
+            bp, bpData, rebirthData, quests, questsData, job, items;
     public static File upgradeFile, bossFile, donateFile, shopFile,
             talantsFile, logFile, standartFile, boostersFile, messagesFile, minesFile, mobsFile, modulesFile, casesFile,
-            achievsFile, trainerFile, bpFile, bpDataFile, rebirthDataFile, questsFile, questsDataFile, jobFile;
+            achievsFile, trainerFile, bpFile, bpDataFile, rebirthDataFile, questsFile, questsDataFile, jobFile,
+            itemsFile;
 
     public void loadConfigs() {
         try {

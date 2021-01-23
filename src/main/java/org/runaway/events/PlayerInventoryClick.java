@@ -153,7 +153,7 @@ public class PlayerInventoryClick implements Listener {
                     }
                 }
             }
-            if (event.getInventory().getName().equals(ChatColor.YELLOW + "Прокачка предмета")) {
+            /*if (event.getInventory().getName().equals(ChatColor.YELLOW + "Прокачка предмета")) {
                 event.setCancelled(true);
                 if (event.getCurrentItem() == null || event.getCurrentItem().getAmount() == 0 || player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getAmount() == 0 || !player.getInventory().getItemInMainHand().hasItemMeta() || UpgradeMisc.getSection(player) == null) {
                     return;
@@ -168,7 +168,7 @@ public class PlayerInventoryClick implements Listener {
                         break;
                     }
                 }
-            }
+            }*/
             if (event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши достижения") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Вскопанные блоки") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Меню доната") ||

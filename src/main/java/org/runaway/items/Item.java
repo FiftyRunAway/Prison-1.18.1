@@ -1,4 +1,4 @@
-package org.runaway;
+package org.runaway.items;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +38,10 @@ public class Item extends Items {
         stack.setDurability(i.getData());
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(i.getName());
+        if (!i.getEnchantments().isEmpty()) {
+            i.getEnchantments().forEach((enchant, level) ->
+                    meta.addEnchant(enchant, level, true));
+        }
         if (i.getLore() != null) meta.setLore(i.getLore().getList());
         stack.setItemMeta(meta);
         return stack;

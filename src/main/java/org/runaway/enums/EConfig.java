@@ -31,7 +31,8 @@ public enum EConfig {
     REBIRTH_DATA("RData", Config.rebirthData, Config.rebirthDataFile, true, null),
     MINE_QUESTS("MineQuests", Config.quests, Config.questsFile, false, null),
     QUESTS_DATA("QuestsData", Config.questsData, Config.questsDataFile, true, null),
-    JOBS_DATA("JobsData", Config.job, Config.jobFile, true, null);
+    JOBS_DATA("JobsData", Config.job, Config.jobFile, true, null),
+    ITEMS("Items", Config.items, Config.itemsFile, false, ConfigHeaders.itemsHeader());
 
     private String name;
     private FileConfiguration configuration;

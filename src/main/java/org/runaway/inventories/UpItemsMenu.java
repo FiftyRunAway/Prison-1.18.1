@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
@@ -73,6 +73,8 @@ public class UpItemsMenu implements IMenus {
                 } else type += section.get("type").toString().toLowerCase();
                 if ((int)section.get("lorelevel") > 0) items.get(type).add(UpgradeMisc.buildItem(s, true, null, true));
             });
+
+
 
             AtomicInteger i = new AtomicInteger(0);
             items.get("helmet").forEach(itemStack -> {

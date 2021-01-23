@@ -35,7 +35,7 @@ public class ParameterManager {
                 .priority(5)
                 .preSpace(true)
                 .build();
-        stattrakMobsParameter = DefaultParameter.builder()
+        stattrakPlayerParameter = DefaultParameter.builder()
                 .preSpace(true)
                 .statType(StatType.INTEGER)
                 .mutable(true)

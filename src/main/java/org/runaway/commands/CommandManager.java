@@ -3,6 +3,7 @@ package org.runaway.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
+import org.bukkit.craftbukkit.v1_12_R1.command.CraftRemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -83,7 +84,7 @@ public abstract class CommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String str, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (sender instanceof ConsoleCommandSender || sender instanceof CraftRemoteConsoleCommandSender) {
             if (console) {
                 runConsoleCommand(sender, args, cmd.getName());
                 return true;

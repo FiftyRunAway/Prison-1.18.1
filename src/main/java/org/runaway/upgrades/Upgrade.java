@@ -10,7 +10,11 @@ import org.runaway.enums.EStat;
 import org.runaway.enums.UpgradeProperty;
 import org.runaway.events.custom.UpgradeEvent;
 import org.runaway.inventories.Confirmation;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
+import org.runaway.requirements.Require;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
@@ -27,19 +31,20 @@ public class Upgrade {
         try {
             if (player.isOnline()) {
                 Gamer gamer = GamerManager.getGamer(player);
-                String next = UpgradeMisc.getNext(UpgradeMisc.getSection(player));
+                String nextPrisonItem = ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getNextPrisonItem();
 
-                HashMap<UpgradeProperty, String> data = Upgrade.getData(gamer);
-                HashMap<UpgradeProperty, String> itemdata = UpgradeMisc.getProperties(next);
-                for (UpgradeProperty prop : itemdata.keySet()) {
-                    if (Double.parseDouble(data.get(prop)) < Double.parseDouble(itemdata.get(prop))) {
-                        gamer.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage()).replaceAll("%property%", prop.getForMessage()));
+                for (Require require : ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getUpgradeRequireList().getRequireList()) {
+                    if (!require.canAccess(gamer, true).isAccess()) {
                         player.closeInventory();
                         return;
                     }
                 }
-                ItemStack save = UpgradeMisc.buildItem(next, false, player, false);
-                if (!fastGet && gamer.getLevelItem(save) > gamer.getIntStatistics(EStat.LEVEL)) {
+                for (Require require : ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getUpgradeRequireList().getRequireList()) {
+                    require.doAfter(gamer);
+                }
+                ItemStack nextItem = ItemManager.getPrisonItem(nextPrisonItem).getItemStack();
+                nextItem = new ParameterMeta(player.getInventory().getItemInMainHand()).applyTo(nextItem);
+                /*if (!fastGet && gamer.getLevelItem(save) > gamer.getIntStatistics(EStat.LEVEL)) {
                     new Confirmation(player, null, null, () ->
                             Upgrade.upgrade(player, true));
                     return;
@@ -48,19 +53,18 @@ public class Upgrade {
                     if (prop.isTaken()) {
                         Upgrade.take(prop, Integer.parseInt(itemdata.get(prop)), player);
                     }
-                }
-                player.getInventory().setItemInMainHand(save);
+                }*/
+                player.getInventory().setItemInMainHand(nextItem);
                 gamer.sendMessage(EMessage.SUCCESSFULUPGRADE);
                 Bukkit.getServer().getPluginManager().callEvent(new UpgradeEvent(player));
                 player.closeInventory();
                 Achievement.FIRST_UPGRADE.get(player);
                 if (gamer.getTrainingLevel(TypeTrainings.UPGRADE.name()) > 0) {
-                    Utils.trainer.forEach(trainer -> {
-                        Trainer tr = (Trainer) trainer;
-                        if (tr.getType() != TypeTrainings.UPGRADE) return;
+                    /*Utils.trainer.forEach(trainer -> {
+                        if (trainer.getType() != TypeTrainings.UPGRADE) return;
                         if (UpgradeMisc.getSection(player) == null) return;
-                        if (Math.random() < tr.getValue(player)) {
-                            if (save.getItemMeta().equals(player.getInventory().getItemInMainHand().getItemMeta())) {
+                        if (Math.random() < trainer.getValue(player)) {
+                            if (nextItem.getItemMeta().equals(player.getInventory().getItemInMainHand().getItemMeta())) {
                                 String next2 = UpgradeMisc.getNext(UpgradeMisc.getSection(player));
                                 player.getInventory().setItemInMainHand(UpgradeMisc.buildItem(next2, false, player, false));
                                 gamer.sendMessage(EMessage.TRAINERUPGRADE);
@@ -68,7 +72,7 @@ public class Upgrade {
                                 gamer.sendMessage(EMessage.TRAINERUPGRADEDUPE);
                             }
                         }
-                    });
+                    });*/
                 }
             }
         } catch (Exception ex) {

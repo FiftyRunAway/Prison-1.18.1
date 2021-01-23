@@ -6,6 +6,7 @@ import org.runaway.battlepass.IReward;
 import org.runaway.battlepass.missions.EMissions;
 import org.runaway.battlepass.rewards.ERewards;
 import org.runaway.enums.ServerStatus;
+import org.runaway.items.PrisonItem;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -53,6 +54,14 @@ public class ConfigHeaders {
         sb.append("\nDate format: " + BattlePass.data_format);
         sb.append("\n=================================");
 
+        return sb.toString();
+    }
+
+    public static String itemsHeader() {
+        StringBuilder sb = new StringBuilder("Categories: ");
+        Arrays.stream(PrisonItem.Category.values()).forEach(category -> sb.append(category.name().toLowerCase()).append(" "));
+        sb.append("\nRarity: ");
+        Arrays.stream(PrisonItem.Rare.values()).forEach(rare -> sb.append(rare.name()).append(" "));
         return sb.toString();
     }
 }

@@ -4,14 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.runaway.Gamer;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public abstract class Job {
 

@@ -20,6 +20,7 @@ import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
 import org.runaway.fishing.EFishType;
 import org.runaway.inventories.FractionMenu;
+import org.runaway.items.Item;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
@@ -478,7 +479,7 @@ public class Gamer {
     public int getLevelItem(ItemStack item) {
         PrisonItem prisonItem = ItemManager.getPrisonItem(item);
         if(prisonItem == null) return 0;
-        Parameter minLevelParameter = ItemManager.getParameterManager().getMinLevelParameter();
+        Parameter minLevelParameter = ParameterManager.getMinLevelParameter();
         return (int) minLevelParameter.getParameterGetter().apply(item, null);
     }
 

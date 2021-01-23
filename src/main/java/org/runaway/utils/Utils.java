@@ -17,6 +17,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
 import org.runaway.managers.GamerManager;
+import org.runaway.trainer.Trainer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class Utils {
     public static LinkedList donate = new LinkedList();
 
     //Тренер
-    public static LinkedList trainer = new LinkedList();
+    public static LinkedList<Trainer> trainer = new LinkedList<>();
 
     //Списки, связанные с подарками
     private static HashMap<String, ItemStack> gift = new HashMap<>();

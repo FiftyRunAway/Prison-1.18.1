@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.runaway.Prison;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.BossNotify;
+import org.runaway.items.Item;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -100,7 +101,7 @@ public class Spawner {
         line.setTouchHandler(player -> {
             boolean has = false;
 
-            IMenuButton reset = DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(Material.DIAMOND).name("&aЗаспавнить сейчас").build().item());
+            IMenuButton reset = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND).name("&aЗаспавнить сейчас").build().item());
             reset.setClickEvent(event -> spawn());
             reset.setSlot(0);
             if (player.hasPermission("prison.admin")) menu.addButton(reset);
@@ -108,14 +109,14 @@ public class Spawner {
             Object obj = Privs.DEFAULT.getPrivilege(player).getValue(new BossNotify());
             if (obj != null) has = true;
             if (has) {
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(type.getIcon().getType())
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(type.getIcon().getType())
                         .name("&eУведомления о возрождении боссов")
                         .lore(new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7>> &aВключены").build())
                 .build().item()).setSlot(4));
             } else {
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new org.runaway.Item.Builder(type.getIcon().getType())
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(type.getIcon().getType())
                         .name("&eУведомления о возрождении боссов")
                         .lore(new Lore.BuilderLore()
                                 .addSpace()

@@ -3,7 +3,7 @@ package org.runaway.donate;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.Item;
+import org.runaway.items.Item;
 import org.runaway.donate.features.*;
 import org.runaway.enums.MoneyType;
 import org.runaway.utils.Lore;

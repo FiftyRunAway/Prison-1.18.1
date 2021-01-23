@@ -4,6 +4,13 @@ package org.runaway.utils;
  * Created by _RunAway_ on 23.1.2019
  */
 
+import org.bukkit.enchantments.Enchantment;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 public abstract class Items {
 
     private final short data;
@@ -11,6 +18,7 @@ public abstract class Items {
     private final String name;
     private final Lore lore;
     private final boolean unbreakable;
+    private final HashMap<Enchantment, Integer> enchantments;
 
     public abstract static class Builder<T extends Builder<T>> {
         private short data = 0;
@@ -18,6 +26,7 @@ public abstract class Items {
         private String name = "";
         private Lore lore = null;
         private boolean unbreakable = false;
+        private HashMap<Enchantment, Integer> enchantments = new HashMap<>();
 
         public T data(short data) {
             this.data = data;
@@ -44,6 +53,20 @@ public abstract class Items {
             return self();
         }
 
+        public T enchantment(Enchant enchant) {
+            enchantments.put(enchant.getEnchantment(), enchant.getLevel());
+            return self();
+        }
+
+        public T enchantmentList(HashMap<Enchantment, Integer> enchants) {
+            if (enchants != null) {
+                enchants.forEach((enchantment, integer) -> {
+                    enchantments.put(enchantment, integer);
+                });
+            }
+            return self();
+        }
+
         protected abstract T self();
 
         public abstract Items build();
@@ -55,6 +78,7 @@ public abstract class Items {
         name = builder.name;
         lore = builder.lore;
         unbreakable = builder.unbreakable;
+        enchantments = builder.enchantments;
     }
 
     public short getData() {
@@ -71,6 +95,10 @@ public abstract class Items {
 
     public String getName() {
         return name;
+    }
+
+    public HashMap<Enchantment, Integer> getEnchantments() {
+        return enchantments;
     }
 
     public boolean isUnbreakable() {
