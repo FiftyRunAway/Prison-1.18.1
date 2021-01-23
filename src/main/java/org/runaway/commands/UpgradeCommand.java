@@ -61,7 +61,7 @@ public class UpgradeCommand extends CommandManager {
                 }
                 confirm.remove(p.getName());
             }
-            new UpgradeMenu(p, prisonItem.getNextPrisonItem(), prisonItem.getUpgradeRequireList());
+            new UpgradeMenu(p, prisonItem.getNextPrisonItem(), ItemManager.getPrisonItem(prisonItem.getNextPrisonItem()).getUpgradeRequireList());
         } else if (args.length == 1 && p.isOp()) {
             String item = String.valueOf(args[0]);
             if (EConfig.UPGRADE.getConfig().contains("upgrades." + item)) {

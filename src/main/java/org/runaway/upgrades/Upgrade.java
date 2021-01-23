@@ -33,13 +33,13 @@ public class Upgrade {
                 Gamer gamer = GamerManager.getGamer(player);
                 String nextPrisonItem = ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getNextPrisonItem();
 
-                for (Require require : ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getUpgradeRequireList().getRequireList()) {
+                for (Require require : ItemManager.getPrisonItem(ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getNextPrisonItem()).getUpgradeRequireList().getRequireList()) {
                     if (!require.canAccess(gamer, true).isAccess()) {
                         player.closeInventory();
                         return;
                     }
                 }
-                for (Require require : ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getUpgradeRequireList().getRequireList()) {
+                for (Require require : ItemManager.getPrisonItem(ItemManager.getPrisonItem(player.getInventory().getItemInMainHand()).getNextPrisonItem()).getUpgradeRequireList().getRequireList()) {
                     require.doAfter(gamer);
                 }
                 ItemStack nextItem = ItemManager.getPrisonItem(nextPrisonItem).getItemStack();

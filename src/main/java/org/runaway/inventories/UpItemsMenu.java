@@ -11,11 +11,15 @@ import org.runaway.Prison;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.upgrades.UpgradeMisc;
+import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Vars;
 
 import java.util.ArrayList;
@@ -64,6 +68,32 @@ public class UpItemsMenu implements IMenus {
             items.put("sword", new ArrayList<>()); items.put("helmet", new ArrayList<>()); items.put("leggings", new ArrayList<>()); items.put("boots", new ArrayList<>());
             items.put("bow", new ArrayList<>()); items.put("axe", new ArrayList<>()); items.put("rod", new ArrayList<>()); items.put("shears", new ArrayList<>());
 
+//            EConfig.ITEMS.getConfig().getKeys(false).forEach(s -> {
+//                if (s.equals("none")) return;
+//                final String[] last = {EConfig.ITEMS.getConfig().getConfigurationSection(s).getKeys(false).toArray()[0].toString()};
+//                EConfig.ITEMS.getConfig().getConfigurationSection(s).getKeys(false).forEach(item -> {
+//                    ConfigurationSection section = EConfig.ITEMS.getConfig().getConfigurationSection(s + "." + item);
+//                    String type = "";
+//                    if (ChatColor.stripColor(section.get("name").toString()).contains("Улучшенная")) type += ("s");
+//                    if (section.get("type").toString().split("_").length > 1) {
+//                        type += section.get("type").toString().split("_")[1].toLowerCase();
+//                    } else type += section.get("type").toString().toLowerCase();
+//                    if (section.contains("item_level") && section.getInt("item_level") > 0) {
+//                        if (!item.equals(last[0])) {
+//                            last[0] = last[0] + "_" + (section.getInt("item_level") - 1);
+//                        }
+//
+//                        String i = item + "_" + section.getInt("item_level");
+//                        ItemStack stack = ItemManager.getPrisonItem(i).getItemStack();
+//                        if (section.getInt("item_level") > 1 && ItemManager.getPrisonItem(ItemManager.getPrisonItem(i).getNextPrisonItem()).getUpgradeRequireList() != null) {
+//                            ItemUtils.addLore(stack, "&r", "&dТребования:");
+//                            ItemUtils.addLore(stack, (ItemManager.getPrisonItem(ItemManager.getPrisonItem(i).getNextPrisonItem()).getUpgradeRequireList().getLore(null)));
+//                        }
+//                        items.get(type).add(stack);
+//                    }
+//                });
+//            });
+
             EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades").getKeys(false).forEach(s -> {
                 ConfigurationSection section = EConfig.UPGRADE.getConfig().getConfigurationSection("upgrades." + s);
                 String type = "";
@@ -71,10 +101,17 @@ public class UpItemsMenu implements IMenus {
                 if (section.get("type").toString().split("_").length > 1) {
                     type += section.get("type").toString().split("_")[1].toLowerCase();
                 } else type += section.get("type").toString().toLowerCase();
-                if ((int)section.get("lorelevel") > 0) items.get(type).add(UpgradeMisc.buildItem(s, true, null, true));
+                if (section.getInt("lorelevel") > 0) {
+                    PrisonItem pi = ItemManager.getPrisonItem(s + "_" + section.getInt("lorelevel"));
+
+                    ItemStack stack = pi.getItemStack();
+                    if (section.getInt("lorelevel") > 1) {
+                        ItemUtils.addLore(stack, "&r", "&dТребования:");
+                        ItemUtils.addLore(stack, pi.getUpgradeRequireList().getLore(null));
+                    }
+                    items.get(type).add(stack);
+                }
             });
-
-
 
             AtomicInteger i = new AtomicInteger(0);
             items.get("helmet").forEach(itemStack -> {

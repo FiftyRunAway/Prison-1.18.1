@@ -13,6 +13,7 @@ public class ItemRequire implements Require {
 
     @Override
     public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
+        if (gamer == null) return new RequireResult(true, 0);
         int amount = gamer.getAmount(getPrisonItem(), isIgnoreLevel());
         RequireResult requireResult = new RequireResult(amount >= getAmount(), amount);
         if(!requireResult.isAccess() && sendMessage) {

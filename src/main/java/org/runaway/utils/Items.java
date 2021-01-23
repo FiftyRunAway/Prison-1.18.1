@@ -53,8 +53,8 @@ public abstract class Items {
             return self();
         }
 
-        public T enchantment(Enchant enchant) {
-            enchantments.put(enchant.getEnchantment(), enchant.getLevel());
+        public T enchantment(Enchantment enchantment, int level) {
+            enchantments.put(enchantment, level);
             return self();
         }
 

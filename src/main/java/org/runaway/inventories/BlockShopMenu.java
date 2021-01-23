@@ -42,7 +42,7 @@ public class BlockShopMenu implements IMenus {
                     .name(name.replaceAll("_", " "))
                     .lore(new Lore.BuilderLore()
                             .addSpace()
-                            .addString("&7Цена на этот предмет &f• &e" + price + " " + MoneyType.RUBLES.getShortName()).build())
+                            .addString("&7Цена за 1 шт. &f• &e" + price + " " + MoneyType.RUBLES.getShortName()).build())
                     .build().item()).setSlot(i.getAndIncrement()));
         });
     }

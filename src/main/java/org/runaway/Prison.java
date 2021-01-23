@@ -172,7 +172,6 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("register.events")) registerEvents();
         if (loader.getBoolean("register.commands")) registerCommands();
         if (loader.getBoolean("loader.messages")) loadMessage();
-        if (loader.getBoolean("loader.inventories")) loadInventories();
         if (loader.getBoolean("loader.hd")) loadHolographicDisplays();
         if (loader.getBoolean("loader.bossbar")) loadBar();
         if (loader.getBoolean("loader.mines_menu")) Mines.loadMinesMenu();
@@ -189,8 +188,6 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.pex")) loadPermissionsEx();
         if (loader.getBoolean("loader.trainer")) loadTrainer();
         if (loader.getBoolean("loader.timer")) startTimer();
-        if (loader.getBoolean("loader.upmenu")) UpItemsMenu.load();
-        if (loader.getBoolean("loader.main_menu")) MainMenu.load();
         if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
         if (loader.getBoolean("loader.nametag")) loadNametagEdit();
         if (loader.getBoolean("loader.telegram")) loadTelegramBotsAPI();
@@ -331,7 +328,7 @@ public class Prison extends JavaPlugin {
                             .vanillaName(item)
                             .itemLevel(section.getInt("item_level"))
                             .nextPrisonItem(section.contains("next") ? section.getString("next") + "_" + (section.getInt("item_level") + 1) : null)
-                            .upgradeRequireList(section.contains("next") ? getUpProperties(section.getString("next")) : null)
+                            .upgradeRequireList(getUpProperties(item))
                             .vanillaItem(new org.runaway.items.Item.Builder(material)
                                     .data((short) data)
                                     .enchantmentList(section.contains("enchants") ? UpgradeMisc.getEnchants(section.getString("enchants")) : null)
@@ -359,6 +356,11 @@ public class Prison extends JavaPlugin {
                 ItemManager.addPrisonItem(prisonItem);
             });
         });
+
+        FileConfiguration loader = EConfig.MODULES.getConfig();
+        if (loader.getBoolean("loader.main_menu")) MainMenu.load();
+        if (loader.getBoolean("loader.upmenu")) UpItemsMenu.load();
+        if (loader.getBoolean("loader.inventories")) loadInventories();
     }
 
     private RequireList getUpProperties(String cfg) {
@@ -367,11 +369,11 @@ public class Prison extends JavaPlugin {
             if (r == UpgradeProperty.COST) {
                 requireList.addRequire(MoneyRequire.builder().amount(Integer.parseInt(s)).takeAfter(true).build());
             } else if (r == UpgradeProperty.RATS) {
-                requireList.addRequire(MobsRequire.builder().mobName("Тюремная крыса").amount(Integer.parseInt(s)).build());
+                requireList.addRequire(MobsRequire.builder().mobName("Rat").amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.WOOD) {
                 requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.LOG_2)).build());
             } else if (r == UpgradeProperty.BOW_KILL) {
-                requireList.addRequire(MobsRequire.builder().mobName("Зомби").amount(Integer.parseInt(s)).build());
+                requireList.addRequire(MobsRequire.builder().mobName("Zombie").amount(Integer.parseInt(s)).build());
             } else {
                 requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.valueOf(r.name().toUpperCase()))).amount(Integer.parseInt(s)).build());
             }

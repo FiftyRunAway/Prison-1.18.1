@@ -3,6 +3,7 @@ package org.runaway.requirements;
 import lombok.Builder;
 import lombok.Getter;
 import org.runaway.Gamer;
+import org.runaway.enums.MoneyType;
 
 @Builder @Getter
 public class MoneyRequire implements Require {
@@ -11,6 +12,7 @@ public class MoneyRequire implements Require {
 
     @Override
     public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
+        if (gamer == null) return new RequireResult(true, 0);
         RequireResult requireResult = new RequireResult(gamer.getMoney() >= getAmount(), (int) gamer.getMoney());
         if(!requireResult.isAccess() && sendMessage) {
             gamer.sendMessage("&cУсловие \"" + getName() + "\" не выполнено! У вас недостаточно денег.");
@@ -20,7 +22,7 @@ public class MoneyRequire implements Require {
 
     @Override
     public String getName() {
-        return (isTakeAfter() ? "Отдайте" : "Накопите") + " " + getAmount() + "$";
+        return (isTakeAfter() ? "Отдайте" : "Накопите") + " " + getAmount() + " " + MoneyType.RUBLES.getShortName();
     }
 
     @Override

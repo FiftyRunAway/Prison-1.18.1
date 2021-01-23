@@ -1,6 +1,5 @@
 package org.runaway.upgrades;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
 import org.runaway.managers.GamerManager;
-import org.runaway.utils.Enchant;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.UpgradeProperty;
@@ -49,24 +47,6 @@ public class UpgradeMisc {
         } catch (Exception e) { return null; }
     }
 
-    private static ArrayList<Enchant> getEnchantsByString(String ench) {
-        ArrayList<Enchant> list = new ArrayList<>();
-        if (ench == null) {
-            return list;
-        }
-        ench = ench.replace("{", "").replace("}", "");
-        if (!ench.contains(";")) {
-            String[] tempmas = ench.split(":");
-            list.add(new Enchant(Enchantment.getByName(tempmas[0]), Integer.parseInt(tempmas[1])));
-        } else {
-            String[] split = ench.split(";");
-            for (String str : split) {
-                String[] tempmas = str.split(":");
-                list.add(new Enchant(Enchantment.getByName(tempmas[0]), Integer.parseInt(tempmas[1])));
-            }
-        }
-        return list;
-    }
 
     public static HashMap<Enchantment, Integer> getEnchants(String ench) {
         HashMap<Enchantment, Integer> map = new HashMap<>();

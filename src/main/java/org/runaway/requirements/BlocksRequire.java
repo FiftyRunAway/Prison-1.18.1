@@ -12,6 +12,7 @@ public class BlocksRequire implements Require {
 
     @Override
     public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
+        if (gamer == null) return new RequireResult(true, 0);
         int blocks = getLocalizedBlock() == null ? (int) gamer.getDoubleStatistics(EStat.BLOCKS) : getLocalizedBlock().getAmount(gamer);
         RequireResult requireResult = new RequireResult(blocks >= getAmount(), blocks);
         if(!requireResult.isAccess() && sendMessage) {

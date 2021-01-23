@@ -14,6 +14,7 @@ public class MobsRequire implements Require {
 
     @Override
     public RequireResult canAccess(Gamer gamer, boolean sendMessage) {
+        if (gamer == null) return new RequireResult(true, 0);
         int mobKills = gamer.getMobKills(getMobName());
         RequireResult requireResult = new RequireResult(mobKills >= getAmount(), mobKills);
         if(!requireResult.isAccess() && sendMessage) {
@@ -24,7 +25,7 @@ public class MobsRequire implements Require {
 
     @Override
     public String getName() {
-        return "Убейте " + MobManager.getAttributable(getMobName()).getName();
+        return "Убейте " /*+ MobManager.getAttributable(getMobName()).getName()*/;
     }
 
     @Override
