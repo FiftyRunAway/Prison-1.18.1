@@ -8,7 +8,10 @@ import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
+import org.runaway.items.ItemManager;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.IMenuButton;
+import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EStat;
@@ -22,10 +25,10 @@ import org.runaway.menu.type.StandardMenu;
 public class BoostersMenu implements IMenus {
 
     public BoostersMenu(Player g) {
-        StandardMenu menu = StandardMenu.create(1, "&eВаши активные ускорители");
-        int i = 0;
-        Gamer gamer = Prison.gamers.get(g.getUniqueId());
+        StandardMenu menu = StandardMenu.create(1, "&eАктивные ускорители");
+        Gamer gamer = GamerManager.getGamer(g);
 
+        int i = 0;
         if (gamer.getPrivilege().getValue(new BoosterBlocks()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_NUGGET).name("&eУскоритель блоков донатера").lore(loreConstPrivilege(gamer, true)).build().item()).setSlot(i++));
         if (gamer.getPrivilege().getValue(new BoosterMoney()) != null) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.IRON_NUGGET).name("&eУскоритель денег донатера").lore(loreConstPrivilege(gamer, false)).build().item()).setSlot(i++));
         if (gamer.isActiveLocalBlocks()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND).name("&dⓁ &eускоритель блоков").lore(loreLocal(gamer, true)).build().item()).setSlot(i++));
@@ -34,8 +37,8 @@ public class BoostersMenu implements IMenus {
         if (Prison.gBlocks.isActive()) menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_BLOCK).name("&dⒼ &eускоритель блоков").lore(loreGlobal(true)).build().item()).setSlot(i++));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_ORE).name("&cПостоянный &aускоритель денег").lore(loreConst(gamer, false)).build().item()).setSlot(7));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_ORE).name("&cПостоянный &aускоритель блоков").lore(loreConst(gamer, true)).build().item()).setSlot(6));
-
-        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(8);
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(
+                ItemManager.getPrisonItem("back").getItemStack()).setSlot(8);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 
@@ -77,6 +80,6 @@ public class BoostersMenu implements IMenus {
 
     @Override
     public String getName() {
-        return ChatColor.YELLOW + "Ваши активные ускорители";
+        return ChatColor.YELLOW + "Активные ускорители";
     }
 }

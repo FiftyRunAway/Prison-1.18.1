@@ -177,7 +177,7 @@ public class PlayerInventoryClick implements Listener {
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Список шахт") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Тренер") ||
                     event.getInventory().getName().contains(ChatColor.YELLOW + "Выберите предмет прокачки") ||
-                    event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши активные ускорители") ||
+                    event.getInventory().getName().equals(ChatColor.YELLOW + "Активные ускорители") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Активация ускорителей") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Аукцион") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Уведомления") ||

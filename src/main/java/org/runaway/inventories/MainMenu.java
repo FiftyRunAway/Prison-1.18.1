@@ -30,26 +30,38 @@ public class MainMenu implements IMenus {
         try {
             menu = StandardMenu.create(6, ChatColor.YELLOW + "Профиль");
 
-            IMenuButton ups = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_upg").getItemStack())
+            IMenuButton ups = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.WOOD_AXE)
+                    .name("&aПрокачки")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(22);
             ups.setClickEvent(event -> new UpItemsMenu(event.getWhoClicked()));
             menu.addButton(ups);
 
-            IMenuButton perks = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_passive").getItemStack())
+            IMenuButton perks = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.REDSTONE)
+                    .name("&aПассивные умения")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(14);
             perks.setClickEvent(event -> event.getWhoClicked().openInventory(PassivePerksMenu.getMenu(event.getWhoClicked()).build()));
             menu.addButton(perks);
 
-            IMenuButton achievs = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_achieves").getItemStack())
+            IMenuButton achievs = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.STORAGE_MINECART)
+                    .name("&aДостижения")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(23);
             achievs.setClickEvent(event -> new AchievementsMenu(event.getWhoClicked()));
             menu.addButton(achievs);
 
-            IMenuButton exp = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_lvl").getItemStack())
+            IMenuButton exp = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.EXP_BOTTLE)
+                    .name("&aПовысить уровень")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(21);
             exp.setClickEvent(event -> {
                 Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
@@ -61,33 +73,51 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(exp);
 
-            IMenuButton ah = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_ah").getItemStack())
+            IMenuButton ah = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.ENDER_CHEST)
+                    .name("&aАукционы")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(12);
-            ah.setClickEvent(event ->
-                    event.getWhoClicked().performCommand("ah"));
+            ah.setClickEvent(event -> {
+                event.getWhoClicked().closeInventory();
+                event.getWhoClicked().performCommand("ah");
+            });
             menu.addButton(ah);
 
-            IMenuButton rebirth = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_rebirth").getItemStack())
+            IMenuButton rebirth = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.EYE_OF_ENDER)
+                    .name("&aМеню переождения")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(49);
             rebirth.setClickEvent(event -> event.getWhoClicked().openInventory(RebirthMenu.getMenu(event.getWhoClicked())));
             menu.addButton(rebirth);
 
-            IMenuButton donate = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_donate").getItemStack())
+            IMenuButton donate = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND)
+                    .name("&aПожертвования")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(13);
             donate.setClickEvent(event -> new DonateMenu(event.getWhoClicked()));
             menu.addButton(donate);
 
-            IMenuButton mines = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_mines").getItemStack())
+            IMenuButton mines = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GRASS)
+                    .name("&aЛокации")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(31);
             mines.setClickEvent(event -> new MinesMenu(event.getWhoClicked()));
             menu.addButton(mines);
 
-            IMenuButton boosters = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_boosters").getItemStack())
+            IMenuButton boosters = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK)
+                    .name("&aБустеры")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Активировать бустер")
+                            .addString("&7<< Открыть меню активных").build()).build().item())
                     .setSlot(39);
             boosters.setClickEvent(event -> {
                 if (event.getClickType().equals(ClickType.LEFT)) {
@@ -98,14 +128,20 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(boosters);
 
-            IMenuButton blocks = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_blocks").getItemStack())
+            IMenuButton blocks = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.SIGN)
+                    .name("&aСписок сломанных блоков")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(41);
             blocks.setClickEvent(event -> new BrockenBlocksMenu(event.getWhoClicked()));
             menu.addButton(blocks);
 
-            IMenuButton trash = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_trash").getItemStack())
+            IMenuButton trash = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.MINECART)
+                    .name("&eПеремещение на свалку-аукцион")
+                    .lore(new Lore.BuilderLore()
+                            .addString("&cТолько &41.15.2+!")
+                            .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(0);
             trash.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
@@ -114,14 +150,20 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(trash);
 
-            IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_base").getItemStack())
+            IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.NETHER_STAR)
+                    .name("&eПеремещение на базу")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(8);
             base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
             menu.addButton(base);
 
-            IMenuButton spawn = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_spawn").getItemStack())
+            IMenuButton spawn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DOUBLE_PLANT)
+                    .name("&eПеремещение на спавн")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(45);
             spawn.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
@@ -129,8 +171,11 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(spawn);
 
-            IMenuButton sell = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_sell").getItemStack())
+            IMenuButton sell = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.PAPER)
+                    .name("&cПродать все блоки в инвентаре")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Продать").build()).build().item())
                     .setSlot(40);
             sell.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
@@ -138,8 +183,11 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(sell);
 
-            IMenuButton quests = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_quests").getItemStack())
+            IMenuButton quests = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.COMPASS)
+                    .name("&cКвесты")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Посмотреть").build()).build().item())
                     .setSlot(32);
             quests.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
@@ -147,8 +195,11 @@ public class MainMenu implements IMenus {
             });
             menu.addButton(quests);
 
-            IMenuButton bp = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("main_bp").getItemStack())
+            IMenuButton bp = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.TNT)
+                    .name("&eБоевой пропуск &d(НОВИНКА!)")
+                    .lore(new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7>> Открыть").build()).build().item())
                     .setSlot(30);
             bp.setClickEvent(event -> new BattlePassMenu(event.getWhoClicked()));
             menu.addButton(bp);

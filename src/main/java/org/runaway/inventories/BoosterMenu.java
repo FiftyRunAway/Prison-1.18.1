@@ -33,11 +33,11 @@ public class BoosterMenu implements IMenus {
 
         Gamer gamer = GamerManager.getGamer(player);
 
-        MenuButton bl = DefaultButtons.OPEN.getButtonOfItemStack(ItemManager.getPrisonItem("bblocks").getItemStack(), "&eАктивация ускорителей &7• &eУскорители блоков");
+        MenuButton bl = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_BLOCK).name("&eУскорители блоков").build().item(), "&eАктивация ускорителей &7• &eУскорители блоков");
         bl.setSlot(3); bl.setClickEvent(event -> loadMenu(gamer, blocks, BoosterType.BLOCKS));
         menu.addButton(bl);
 
-        MenuButton mn = DefaultButtons.OPEN.getButtonOfItemStack(ItemManager.getPrisonItem("bmoney").getItemStack(), "&eАктивация ускорителей &7• &eУскорители денег");
+        MenuButton mn = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&eУскорители денег").build().item(), "&eАктивация ускорителей &7• &eУскорители денег");
         mn.setSlot(5); mn.setClickEvent(event -> loadMenu(gamer, money, BoosterType.MONEY));
         menu.addButton(mn);
 

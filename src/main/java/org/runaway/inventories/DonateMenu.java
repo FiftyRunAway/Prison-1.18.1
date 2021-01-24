@@ -5,16 +5,20 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
+import org.runaway.enums.EStat;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.donate.Donate;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
+import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
@@ -63,7 +67,7 @@ public class DonateMenu implements IMenus {
             mn.setClickEvent(event -> buy(donate, event.getWhoClicked(), menu.build()));
             menu.addButton(mn);
         }
-        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(ItemManager.getPrisonItem("back").getItemStack()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 
@@ -86,9 +90,7 @@ public class DonateMenu implements IMenus {
                     Donate.donate(gamer, Integer.parseInt(message));
                 } catch (Exception exception) {
                     gamer.sendMessage(EMessage.INTERROR);
-                    return;
                 }
-                return;
             });
         });
         menu.addButton(dm.setSlot(39));

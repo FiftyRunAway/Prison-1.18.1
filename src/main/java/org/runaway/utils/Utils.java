@@ -161,7 +161,7 @@ public class Utils {
 
     public static void sendClickableMessage(Gamer gamer, String message, String command) {
         FancyText text = new FancyText("", EnumChatFormat.AQUA);
-        text.addClickableText(Utils.colored(message + " &7[&b&nПодробнее&7]")).runCommand("/" + command).close();
+        text.addClickableText(Utils.colored("&7[&4&lPrison&7] &r" + message + " &7[&b&nПодробнее&7]")).runCommand("/" + command).close();
         text.closeText();
         text.sendText(gamer.getPlayer());
     }

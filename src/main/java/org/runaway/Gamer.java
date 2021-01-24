@@ -834,7 +834,7 @@ public class Gamer {
     }
 
     public void sendFishingTitle(String main) {
-        getPlayer().sendTitle(Utils.colored(main), Utils.colored(ChatColor.YELLOW + "      КРУТИ КАТУШКУ!"), 0, 2, 0);
+        getPlayer().sendTitle(Utils.colored(main), Utils.colored(ChatColor.YELLOW + "КРУТИ КАТУШКУ!"), 0, 2, 0);
     }
 
     public void sendFishRewardTitle(EFishType type) {

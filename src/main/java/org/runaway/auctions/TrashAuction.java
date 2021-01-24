@@ -4,6 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TouchableLine;
+import com.mysql.fabric.xmlrpc.base.Param;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,6 +22,10 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.MoneyType;
 import org.runaway.events.BlockBreak;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.Parameter;
+import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
@@ -49,7 +54,16 @@ public class TrashAuction {
 
     public static void load() {
         ConfigurationSection section = EConfig.CONFIG.getConfig().getConfigurationSection("auction-trash");
-        section.getStringList("items").forEach(s -> items.put(UpgradeMisc.buildItem(s.split(" ")[0], false, null, false), Double.parseDouble(s.split(" ")[1])));
+
+        section.getStringList("items").forEach(s -> {
+            PrisonItem pi = ItemManager.getPrisonItem(s.split(" ")[0] + "_" +
+                    EConfig.UPGRADE.getConfig().getInt("upgrades." + s.split(" ")[0] + ".lorelevel"));
+            List<Parameter> f = pi.getParameters();
+            f.remove(ParameterManager.getNodropParameter());
+            pi.setParameters(f);
+
+            items.put(pi.getItemStack(), Double.parseDouble(s.split(" ")[1]));
+        });
 
         Arrays.stream(section.getString("times").split(" ")).forEach(s -> times.add(Integer.parseInt(s)));
         section.getStringList("locations").forEach(s -> locs.add(Utils.unserializeLocation(s)));
@@ -75,7 +89,7 @@ public class TrashAuction {
             ItemMeta meta = real.getItemMeta();
             meta.setUnbreakable(false);
 
-            List<String> l = is.getItemMeta().getLore();
+            /*List<String> l = is.getItemMeta().getLore();
             if (ChatColor.stripColor(l.get(0)).toLowerCase().contains("минимальный")) {
                 List<String> lore = new ArrayList<>();
                 int min = Math.round(Integer.parseInt(ChatColor.stripColor(l.get(0)).toLowerCase().replace("минимальный уровень: ", "")) / 2);
@@ -86,7 +100,7 @@ public class TrashAuction {
                 meta.setLore(lore);
             } else {
                 meta.setLore(is.getItemMeta().getLore());
-            }
+            }*/
 
             meta.setDisplayName(is.getItemMeta().getDisplayName());
             is.getItemMeta().getEnchants().forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
@@ -187,7 +201,8 @@ public class TrashAuction {
             this.menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(itemStack).setSlot(4));
 
             // Exit item
-            IMenuButton exit = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(14, ChatColor.RED + "" + ChatColor.BOLD + "ВЫЙТИ"));
+            IMenuButton exit = DefaultButtons.FILLER.getButtonOfItemStack(
+                    ItemManager.getPrisonItem("glass_exit").getItemStack());
             exit.setClickEvent(event -> event.getWhoClicked().closeInventory());
             for (int i = 0; i < 4; i++) {
                 this.menu.addButton(exit.clone().setSlot(i));

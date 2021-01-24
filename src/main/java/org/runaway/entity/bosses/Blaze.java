@@ -234,8 +234,8 @@ public class Blaze extends EntityMonster {
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
 
             World world = this.spawner.getSpawnLocation().getWorld();
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(2) + 1).build().item());
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(12).build().item());
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().getItemStack(ThreadLocalRandom.current().nextInt(2) + 1));
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().getItemStack(12));
 
             for (String key : percents.keySet()) {
                 double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();

@@ -184,8 +184,8 @@ public class Spider extends EntityMonster {
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
 
             World world = this.spawner.getSpawnLocation().getWorld();
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().amount(8).build().item());
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(1) + 1).build().item());
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getKeyBuilder().getItemStack(8));
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().getItemStack(ThreadLocalRandom.current().nextInt(1) + 1));
 
             for (String key : percents.keySet()) {
                 double money = new BigDecimal(percents.get(key) * this.money).setScale(2, RoundingMode.UP).doubleValue();

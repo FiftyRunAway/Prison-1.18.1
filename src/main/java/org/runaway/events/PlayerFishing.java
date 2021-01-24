@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Gamer;
 import org.runaway.Prison;
+import org.runaway.achievements.Achievement;
 import org.runaway.events.custom.PlayerFishingEvent;
 import org.runaway.fishing.EFishType;
 import org.runaway.fishing.Fish;
@@ -55,7 +56,7 @@ public class PlayerFishing implements Listener {
         FishHook fh = event.getHook();
         Gamer gamer = GamerManager.getGamer(player);
         EFishType reward;
-        if (!player.getInventory().getItemInMainHand().hasItemMeta()) {
+        if (player.getInventory().getItemInMainHand().hasItemMeta()) {
             if (event.getState() != PlayerFishEvent.State.FISHING) {
                 fisherman.remove(player.getUniqueId());
             }
@@ -64,6 +65,9 @@ public class PlayerFishing implements Listener {
                 reward = this.fishingList.get(player.getUniqueId()).getValue();
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerFishingEvent(player, reward));
                 gamer.sendTitle(reward.getName(), reward.getRewardName());
+                if (reward == EFishType.LEGENDARY) {
+                    Achievement.FIRST_FISH.get(player);
+                }
                 this.fishingList.get(player.getUniqueId()).setKey(false);
             } else if (this.uuidLongMap.containsKey(player.getUniqueId())) {
                 this.uuidLongMap.remove(player.getUniqueId());
@@ -71,7 +75,8 @@ public class PlayerFishing implements Listener {
                 UUID un = UUID.randomUUID();
                 fisherman.put(player.getUniqueId(), un);
                 new SyncTask(() -> {
-                    if (fisherman.containsKey(player.getUniqueId()) && fisherman.containsValue(un)) {
+                    if (fisherman.containsKey(player.getUniqueId())
+                            && fisherman.containsValue(un)) {
                         if (fh != null) {
                             fisherman.remove(player.getUniqueId());
                             Location location = fh.getLocation();
@@ -140,7 +145,11 @@ public class PlayerFishing implements Listener {
                     return;
                 }
                 uuidLongMap.remove(p.getUniqueId());
+                if (p.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
+                    return;
+                }
                 fishingList.put(p.getUniqueId(), new Pair<>(true, EFishType.NONE_REWARD));
+
                 new BukkitRunnable() {
                     public void run() {
                         if (!fishingList.get(p.getUniqueId()).getKey()) {

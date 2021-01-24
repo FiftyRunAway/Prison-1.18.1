@@ -43,7 +43,7 @@ public class FishSellMenu implements IMenus {
                 }
                 if (f > 0) {
                     gamer.depositMoney(price);
-                    p.sendMessage(Utils.colored(EMessage.FISHSELLING.getMessage())
+                    gamer.sendMessage(Utils.colored(EMessage.FISHSELLING.getMessage())
                             .replace("%name%", fs.getType().getColor() + fs.getName() + " (" + f + " шт.)")
                             .replace("%money%", new BigDecimal(price).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
                 }

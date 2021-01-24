@@ -17,7 +17,7 @@ public class KeysReward extends IReward {
 
     @Override
     protected void getReward(Gamer gamer) {
-        gamer.getPlayer().getInventory().addItem(ExampleItems.getKeyBuilder().amount(this.value).build().item());
+        gamer.getPlayer().getInventory().addItem(ExampleItems.getKeyBuilder().getItemStack(this.value));
     }
 
     @Override

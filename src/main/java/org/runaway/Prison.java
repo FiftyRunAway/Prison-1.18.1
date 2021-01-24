@@ -171,6 +171,8 @@ public class Prison extends JavaPlugin {
         loadTasks();
         if (loader.getBoolean("register.events")) registerEvents();
         if (loader.getBoolean("register.commands")) registerCommands();
+        ParameterManager.init();
+        loadItems();
         if (loader.getBoolean("loader.messages")) loadMessage();
         if (loader.getBoolean("loader.hd")) loadHolographicDisplays();
         if (loader.getBoolean("loader.bossbar")) loadBar();
@@ -188,7 +190,6 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.pex")) loadPermissionsEx();
         if (loader.getBoolean("loader.trainer")) loadTrainer();
         if (loader.getBoolean("loader.timer")) startTimer();
-        if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
         if (loader.getBoolean("loader.nametag")) loadNametagEdit();
         if (loader.getBoolean("loader.telegram")) loadTelegramBotsAPI();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
@@ -218,8 +219,6 @@ public class Prison extends JavaPlugin {
         String language = "ru_ru";
         this.downloadAndApplyLanguage(language);
 
-        ParameterManager.init();
-        loadItems();
         if(false) {
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
@@ -361,6 +360,7 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.main_menu")) MainMenu.load();
         if (loader.getBoolean("loader.upmenu")) UpItemsMenu.load();
         if (loader.getBoolean("loader.inventories")) loadInventories();
+        if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
     }
 
     private RequireList getUpProperties(String cfg) {

@@ -190,7 +190,7 @@ public class Slime extends EntityMonster {
             ));
 
             World world = this.spawner.getSpawnLocation().getWorld();
-            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().amount(ThreadLocalRandom.current().nextInt(3) + 1).build().item());
+            world.dropItemNaturally(getBukkitEntity().getLocation(), ExampleItems.getNetherStarBuilder().getItemStack(ThreadLocalRandom.current().nextInt(3) + 1));
 
             HashMap<String, Double> percents = Utils.calculatePercents(this.attackers, this.totalDamage);
             for (String key : percents.keySet()) {

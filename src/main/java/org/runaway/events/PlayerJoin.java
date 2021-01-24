@@ -15,6 +15,8 @@ import org.runaway.achievements.Achievement;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.board.Board;
 import org.runaway.enums.*;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
 import org.runaway.managers.GamerManager;
 import org.runaway.needs.Needs;
 import org.runaway.passiveperks.PassivePerks;
@@ -75,15 +77,15 @@ public class PlayerJoin implements Listener {
     }
 
     private void addPaper(Player player) {
-        ItemStack is = new Item.Builder(Material.PAPER).name("&aМеню").lore(new Lore.BuilderLore().addSpace().addString("&7>> &bОткрыть").build()).build().item();
+        ItemStack is = ItemManager.getPrisonItem("menu").getItemStack();
         if (!player.getInventory().contains(is)) {
             player.getInventory().addItem(is);
         }
     }
 
     private void startKit(Player player) {
-        player.getInventory().addItem(UpgradeMisc.buildItem("waxe0", false, player, false));
-        player.getInventory().addItem(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").amount(8).build().item());
+        player.getInventory().addItem(ItemManager.getPrisonItem("waxe0_1").getItemStack());
+        player.getInventory().addItem(ItemManager.getPrisonItem("steak").getItemStack(8));
     }
 
     private boolean isAccess(PlayerJoinEvent event) {

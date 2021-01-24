@@ -3,14 +3,16 @@ package org.runaway.utils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.items.Item;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class ExampleItems {
 
-    private static Item.Builder key = new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку");
-    private static Item.Builder nether_star = new Item.Builder(Material.NETHER_STAR).name("&aЗвёздочка");
+    private static PrisonItem key = ItemManager.getPrisonItem("default_key");
+    private static PrisonItem nether_star = ItemManager.getPrisonItem("star");
 
     public static ItemStack glass(int data, String name) {
         return new Item.Builder(Material.STAINED_GLASS_PANE).data((short) data).name(name).build().item();
@@ -20,11 +22,11 @@ public class ExampleItems {
         return glass(data, " ");
     }
 
-    public static Item.Builder getKeyBuilder() {
+    public static PrisonItem getKeyBuilder() {
         return key;
     }
 
-    public static Item.Builder getNetherStarBuilder() {
+    public static PrisonItem getNetherStarBuilder() {
         return nether_star;
     }
 

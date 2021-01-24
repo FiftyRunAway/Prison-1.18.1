@@ -18,7 +18,7 @@ public class TrainerMenu implements IMenus {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         AtomicInteger i = new AtomicInteger(1);
         Utils.trainer.forEach(trainer -> {
-            menu.addButton(((Trainer) trainer).getMenuIcon(player).setSlot(i.getAndIncrement()));
+            menu.addButton(trainer.getMenuIcon(player).setSlot(i.getAndIncrement()));
             i.incrementAndGet();
         });
         player.openInventory(menu.build());
