@@ -587,7 +587,7 @@ public class Prison extends JavaPlugin {
                     String[] strings = s.split(":");
                     switch (strings[0].toLowerCase()) {
                         case "config": {
-                            ItemStack is = UpgradeMisc.buildItem(strings[1], false, null, false);
+                            ItemStack is = ItemManager.getPrisonItem(strings[1]).getItemStack();
                             drops.put(is, Float.valueOf(strings[2]));
                             menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(is).setSlot(i.getAndIncrement()));
                             break;

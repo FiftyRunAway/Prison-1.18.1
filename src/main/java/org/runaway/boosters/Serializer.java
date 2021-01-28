@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Serializer {
 
-    public String unserial(ItemStack itemStack, Gamer gamer, BoosterType types) {
+    public static String unserial(ItemStack itemStack, Gamer gamer, BoosterType types) {
         String num = ChatColor.stripColor(itemStack.getItemMeta().getDisplayName()).replace("Ускоритель " + types.getName() + " #", "");
         int number = Integer.parseInt(num);
         String configString = gamer.getBoosters().get(number);
@@ -28,7 +28,7 @@ public class Serializer {
         return multiplier + "-" + time;
     }
 
-    public ItemStack unserializeBooster(String string, int i, BoosterType types) {
+    public static ItemStack unserializeBooster(String string, int i, BoosterType types) {
         String[] var = string.split("-");
         String type = String.valueOf(var[1]).toLowerCase();
         double multiplier = Double.parseDouble(var[2]);

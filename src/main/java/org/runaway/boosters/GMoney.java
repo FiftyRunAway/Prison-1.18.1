@@ -29,7 +29,7 @@ public class GMoney extends Booster {
 
         timer = Bukkit.getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
             if (getTime() == 0) {
-                Utils.getPlayers().forEach(s -> Bukkit.getPlayer(s).sendTitle(ChatColor.RED + "Бустер ускоритель " + multiplier + "x", ChatColor.RED + "закончился", 20, 20, 20));
+                Utils.getPlayers().forEach(s -> Bukkit.getPlayer(s).sendTitle(ChatColor.RED + "Ускоритель " + multiplier + "x", ChatColor.RED + "закончился", 20, 20, 20));
                 active = false;
                 Prison.MoneyBar.setVisible(false);
                 Bukkit.getScheduler().cancelTask(timer);

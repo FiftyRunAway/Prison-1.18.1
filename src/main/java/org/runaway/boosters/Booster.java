@@ -6,7 +6,7 @@ package org.runaway.boosters;
 
 abstract public class Booster {
 
-    abstract void start(String owner, long time, double multiplier);
+    public abstract void start(String owner, long time, double multiplier);
 
     public abstract long getTime();
 
@@ -14,5 +14,5 @@ abstract public class Booster {
 
     public abstract double getMultiplier();
 
-    abstract boolean isActive();
+    abstract public boolean isActive();
 }

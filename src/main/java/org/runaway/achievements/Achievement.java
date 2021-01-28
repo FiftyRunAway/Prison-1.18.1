@@ -35,6 +35,10 @@ public enum Achievement {
             new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(48)),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 3600, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 3600, false)}, true),
+    TWENTYFIFTH_LEVEL("&aПолучить 25 уровень","Зэк магистр", new Reward[]{
+            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(64)),
+            new BoosterReward().setReward(BoosterType.MONEY, 2.0, 3600, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 3600, false)}, true),
     REBIRTH("&aПереродитесь впервые","Иисус", new Reward[]{
             new BoosterReward().setReward(BoosterType.MONEY, 1.5, 10800, true),
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.5, 10800, true)}, false),

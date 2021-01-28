@@ -33,55 +33,7 @@ public class PlayerInventoryClick implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         try {
-            if (event.getInventory().getName().equals(Utils.colored("&eАктивация ускорителей &7• &eУскорители блоков"))) {
-                event.setCancelled(true);
-                if (event.getCurrentItem() != null) {
-                    Gamer gamer = GamerManager.getGamer(player);
-                    if (event.getCurrentItem().getType().isBlock()) {
-                        if (!Prison.gBlocks.isActive()) {
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split("-");
-                            Prison.gBlocks.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
-                            player.closeInventory();
-                        } else {
-                            gamer.sendMessage(EMessage.BOOSTERALREADYACTIVE);
-                        }
-                    } else {
-                        if (!gamer.isActiveLocalBlocks()) {
-                            LBlocks blocks = new LBlocks();
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.BLOCKS).split("-");
-                            blocks.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
-                            player.closeInventory();
-                        } else {
-                            gamer.sendMessage(EMessage.BOOSTERALREADYACTIVE);
-                        }
-                    }
-                }
-            }
-            if (event.getInventory().getName().equals(Utils.colored("&eАктивация ускорителей &7• &eУскорители денег"))) {
-                event.setCancelled(true);
-                if (event.getCurrentItem() != null) {
-                    Gamer gamer = GamerManager.getGamer(player);
-                    if (event.getCurrentItem().getType().isBlock()) {
-                        if (!Prison.gMoney.isActive()) {
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split("-");
-                            Prison.gMoney.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
-                            player.closeInventory();
-                        } else {
-                            gamer.sendMessage(EMessage.BOOSTERALREADYACTIVE);
-                        }
-                    } else {
-                        if (!gamer.isActiveLocalMoney()) {
-                            LMoney money = new LMoney();
-                            String[] var = new Serializer().unserial(event.getCurrentItem(), gamer, BoosterType.MONEY).split("-");
-                            money.start(player.getName(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
-                            player.closeInventory();
-                        } else {
-                            gamer.sendMessage(EMessage.BOOSTERALREADYACTIVE);
-                        }
-                    }
-                }
-            }
-            if (event.getInventory().getName().equals(ChatColor.YELLOW + "Повышение уровня")) {
+            /*if (event.getInventory().getName().equals(ChatColor.YELLOW + "Повышение уровня")) {
                 event.setCancelled(true);
                 if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
                     Gamer gamer = GamerManager.getGamer(player);
@@ -105,6 +57,8 @@ public class PlayerInventoryClick implements Listener {
                                 Achievement.FIFTEEN_LEVEL.get(player);
                             } else if (newLevel == 20) {
                                 Achievement.TWENTY_LEVEL.get(player);
+                            } else if (newLevel == 25) {
+                                Achievement.TWENTYFIFTH_LEVEL.get(player);
                             }
                         } else {
                             gamer.sendMessage(EMessage.LEVELNEEDBLOCKS);
@@ -115,7 +69,7 @@ public class PlayerInventoryClick implements Listener {
                         player.closeInventory();
                     }
                 }
-            }
+            }*/
             if (event.getInventory().getName().contains(ChatColor.YELLOW +  "Магазин")) {
                 event.setCancelled(true);
                 if (event.getCurrentItem().getItemMeta().hasLore()) {
@@ -153,22 +107,6 @@ public class PlayerInventoryClick implements Listener {
                     }
                 }
             }
-            /*if (event.getInventory().getName().equals(ChatColor.YELLOW + "Прокачка предмета")) {
-                event.setCancelled(true);
-                if (event.getCurrentItem() == null || event.getCurrentItem().getAmount() == 0 || player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getAmount() == 0 || !player.getInventory().getItemInMainHand().hasItemMeta() || UpgradeMisc.getSection(player) == null) {
-                    return;
-                }
-                switch (event.getCurrentItem().getData().getData()) {
-                    case 5: {
-                        Upgrade.upgrade(player, false);
-                        break;
-                    }
-                    case 14: {
-                        player.closeInventory();
-                        break;
-                    }
-                }
-            }*/
             if (event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши достижения") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Вскопанные блоки") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Меню доната") ||

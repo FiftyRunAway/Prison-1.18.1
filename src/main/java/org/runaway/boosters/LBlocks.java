@@ -58,7 +58,7 @@ public class LBlocks extends Booster {
     }
 
     @Override
-    boolean isActive() {
+    public boolean isActive() {
         return false;
     }
 }

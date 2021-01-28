@@ -64,8 +64,7 @@ public class MainMenu implements IMenus {
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(21);
             exp.setClickEvent(event -> {
-                Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
-                if (!gamer.needRebirth()) {
+                if (!GamerManager.getGamer(event.getWhoClicked().getUniqueId()).needRebirth()) {
                     new LevelMenu(event.getWhoClicked());
                 } else {
                     event.getWhoClicked().openInventory(RebirthMenu.getMenu(event.getWhoClicked()));
@@ -140,13 +139,12 @@ public class MainMenu implements IMenus {
             IMenuButton trash = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.MINECART)
                     .name("&eПеремещение на свалку-аукцион")
                     .lore(new Lore.BuilderLore()
-                            .addString("&cТолько &41.15.2+!")
+                            .addSpace()
                             .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(0);
             trash.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
-                Gamer gamer = Prison.gamers.get(event.getWhoClicked().getUniqueId());
-                gamer.teleportTrashAuction();
+                GamerManager.getGamer(event.getWhoClicked().getUniqueId()).teleportTrashAuction();
             });
             menu.addButton(trash);
 
@@ -167,7 +165,7 @@ public class MainMenu implements IMenus {
                     .setSlot(45);
             spawn.setClickEvent(event -> {
                 event.getWhoClicked().closeInventory();
-                Prison.gamers.get(event.getWhoClicked().getUniqueId()).teleport(Prison.SPAWN);
+                GamerManager.getGamer(event.getWhoClicked().getUniqueId()).teleport(Prison.SPAWN);
             });
             menu.addButton(spawn);
 

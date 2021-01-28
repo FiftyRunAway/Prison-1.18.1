@@ -201,8 +201,7 @@ public class TrashAuction {
             this.menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(itemStack).setSlot(4));
 
             // Exit item
-            IMenuButton exit = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ItemManager.getPrisonItem("glass_exit").getItemStack());
+            IMenuButton exit = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(14, ChatColor.RED + "" + ChatColor.BOLD + "ВЫЙТИ"));
             exit.setClickEvent(event -> event.getWhoClicked().closeInventory());
             for (int i = 0; i < 4; i++) {
                 this.menu.addButton(exit.clone().setSlot(i));

@@ -4,6 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
+import org.runaway.Prison;
+import org.runaway.boosters.Booster;
+import org.runaway.boosters.LBlocks;
+import org.runaway.boosters.LMoney;
 import org.runaway.items.Item;
 import org.runaway.enums.BoosterType;
 import org.runaway.enums.EStat;
@@ -57,7 +61,30 @@ public class BoosterMenu implements IMenus {
             AtomicInteger ser = new AtomicInteger(0);
             gamer.getBoosters().forEach(s -> {
                 if (type.name().equals(s.split("-")[0].toUpperCase())) {
-                    IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Serializer().unserializeBooster(s, i.get(), type)).setSlot(ser.getAndIncrement());
+                    IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(Serializer.unserializeBooster(s, i.get(), type)).setSlot(ser.getAndIncrement());
+                    btn.setClickEvent(event -> {
+                        Gamer g = GamerManager.getGamer(event.getWhoClicked());
+                        if (event.getClickedButton().getItem().getType().isBlock()) {
+                            Booster booster = type == BoosterType.MONEY ? Prison.gMoney : Prison.gBlocks;
+                            if (!booster.isActive()) {
+                                String[] var = Serializer.unserial(event.getClickedButton().getItem(), g, type).split("-");
+                                booster.start(g.getGamer(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
+                                event.getWhoClicked().closeInventory();
+                            } else {
+                                g.sendMessage(EMessage.BOOSTERALREADYACTIVE);
+                            }
+                        } else {
+                            if ((type == BoosterType.BLOCKS && g.isActiveLocalBlocks()) ||
+                                    (type == BoosterType.MONEY && g.isActiveLocalMoney())) {
+                                g.sendMessage(EMessage.BOOSTERALREADYACTIVE);
+                            } else {
+                                Booster booster = type == BoosterType.MONEY ? new LMoney() : new LBlocks();
+                                String[] var = Serializer.unserial(event.getClickedButton().getItem(), g, type).split("-");
+                                booster.start(g.getGamer(), Long.parseLong(var[1]), Double.parseDouble(var[0]));
+                                event.getWhoClicked().closeInventory();
+                            }
+                        }
+                    });
                     menu.addButton(btn);
                 }
                 i.getAndIncrement();
