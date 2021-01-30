@@ -39,7 +39,7 @@ public class LevelMenu implements IMenus {
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(7)).setSlot(8));
         Gamer gamer = GamerManager.getGamer(player);
         IMenuButton lvl = DefaultButtons.FILLER.getButtonOfItemStack(
-                new Item.Builder(Material.NETHER_STAR).name("&eПовысить уровень:").lore(new Lore.BuilderLore().addList(lore(gamer)).build()).build().item()).setSlot(4);
+                new Item.Builder(Material.NETHER_STAR).name("&eПовысить уровень:").lore(new Lore.BuilderLore().addList(lore(gamer)).build()).build().item());
         lvl.setClickEvent(event -> {
             Player p = event.getWhoClicked();
             Gamer g = GamerManager.getGamer(p);
@@ -75,19 +75,17 @@ public class LevelMenu implements IMenus {
                 p.closeInventory();
             }
         });
-        menu.addButton(lvl);
-        IMenuButton btn;
+        menu.addButton(lvl.setSlot(4));
+        ItemStack btn;
         if (hasAccessToNextLevel(gamer)) {
-            btn = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "МОЖНО"));
+            btn = ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "МОЖНО");
         } else {
-            btn = DefaultButtons.FILLER.getButtonOfItemStack(
-                    ExampleItems.glass(14, ChatColor.RED + "" + ChatColor.BOLD + "НЕЛЬЗЯ"));
+            btn = ExampleItems.glass(14, ChatColor.RED + "" + ChatColor.BOLD + "НЕЛЬЗЯ");
         }
-        menu.addButton(btn.setSlot(2));
-        menu.addButton(btn.setSlot(3));
-        menu.addButton(btn.setSlot(5));
-        menu.addButton(btn.setSlot(6));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(btn).setSlot(2));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(btn).setSlot(3));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(btn).setSlot(5));
+        menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(btn).setSlot(6));
 
         player.openInventory(menu.build());
     }
@@ -155,7 +153,7 @@ public class LevelMenu implements IMenus {
 
     @Override
     public int getRows() {
-        return 0;
+        return 1;
     }
 
     @Override

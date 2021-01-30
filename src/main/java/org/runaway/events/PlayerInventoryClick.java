@@ -1,27 +1,9 @@
 package org.runaway.events;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.runaway.Gamer;
-import org.runaway.Prison;
-import org.runaway.Requires;
-import org.runaway.achievements.Achievement;
-import org.runaway.boosters.LBlocks;
-import org.runaway.boosters.LMoney;
-import org.runaway.boosters.Serializer;
-import org.runaway.enums.*;
-import org.runaway.managers.GamerManager;
-import org.runaway.upgrades.Upgrade;
-import org.runaway.upgrades.UpgradeMisc;
-import org.runaway.utils.Utils;
-
-import java.util.ArrayList;
 
 /*
  * Created by _RunAway_ on 23.1.2019
@@ -31,82 +13,7 @@ public class PlayerInventoryClick implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
         try {
-            /*if (event.getInventory().getName().equals(ChatColor.YELLOW + "Повышение уровня")) {
-                event.setCancelled(true);
-                if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
-                    Gamer gamer = GamerManager.getGamer(player);
-                    double price = new Requires(gamer).costNextLevel();
-                    if (gamer.getMoney() >= price) {
-                        double blocks = new Requires(gamer).blocksNextLevel();
-                        if (gamer.getDoubleStatistics(EStat.BLOCKS) >= blocks) {
-                            gamer.sendTitle(ChatColor.YELLOW + "Поздравляем", ChatColor.YELLOW + "с повышением уровня!");
-                            gamer.withdrawMoney(price);
-                            gamer.increaseIntStatistics(EStat.LEVEL);
-                            player.closeInventory();
-                            gamer.setLevelBar();
-                            gamer.setExpProgress();
-                            gamer.setHearts();
-                            int newLevel = gamer.getIntStatistics(EStat.LEVEL);
-                            if (newLevel == 5) {
-                                Achievement.FIVE_LEVEL.get(player);
-                            } else if (newLevel == 10) {
-                                Achievement.TEN_LEVEL.get(player);
-                            } else if (newLevel == 15) {
-                                Achievement.FIFTEEN_LEVEL.get(player);
-                            } else if (newLevel == 20) {
-                                Achievement.TWENTY_LEVEL.get(player);
-                            } else if (newLevel == 25) {
-                                Achievement.TWENTYFIFTH_LEVEL.get(player);
-                            }
-                        } else {
-                            gamer.sendMessage(EMessage.LEVELNEEDBLOCKS);
-                            player.closeInventory();
-                        }
-                    } else {
-                        gamer.sendMessage(EMessage.MONEYNEEDS);
-                        player.closeInventory();
-                    }
-                }
-            }*/
-            if (event.getInventory().getName().contains(ChatColor.YELLOW +  "Магазин")) {
-                event.setCancelled(true);
-                if (event.getCurrentItem().getItemMeta().hasLore()) {
-                    Gamer gamer = GamerManager.getGamer(player);
-                    if (!gamer.isInventory()) {
-                        gamer.sendMessage(EMessage.NOINVENTORY);
-                        return;
-                    }
-                    String last_lore;
-                    ItemStack item = event.getCurrentItem().clone();
-                    if (EConfig.SHOP.getConfig().getString("event") != null && item.getItemMeta().getLore().get(item.getItemMeta().getLore().size() - 1).contains(ChatColor.RED + "")) {
-                        last_lore = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getLore().get(event.getCurrentItem().getItemMeta().getLore().size() - 2)).toLowerCase();
-                    } else {
-                        last_lore = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getLore().get(event.getCurrentItem().getItemMeta().getLore().size() - 1)).toLowerCase();
-                    }
-                    if (last_lore.contains("цена")) {
-                        float cost = Float.parseFloat(last_lore.replace("•", "").replace("цена", "").replace(MoneyType.RUBLES.getShortName(), ""));
-                        if (gamer.getMoney() < cost) {
-                            gamer.sendMessage(EMessage.MONEYNEEDS);
-                            player.closeInventory();
-                            return;
-                        }
-                        ItemMeta meta = item.getItemMeta();
-                        ArrayList<String> lore = new ArrayList<>(meta.getLore());
-                        if (EConfig.SHOP.getConfig().getString("event") != null && item.getItemMeta().getLore().get(item.getItemMeta().getLore().size() - 1).contains(ChatColor.RED + "")) {
-                            lore.remove(meta.getLore().size() - 3); lore.remove(meta.getLore().size() - 4);
-                        }
-                        lore.remove(meta.getLore().size() - 1); lore.remove(meta.getLore().size() - 2);
-                        meta.setLore(lore);
-                        item.setItemMeta(meta);
-
-                        player.getInventory().addItem(item);
-                        gamer.withdrawMoney(cost);
-                        gamer.sendMessage(EMessage.SUCCESSFULBUY);
-                    }
-                }
-            }
             if (event.getInventory().getName().equals(ChatColor.YELLOW + "Ваши достижения") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Вскопанные блоки") ||
                     event.getInventory().getName().equals(ChatColor.YELLOW + "Меню доната") ||

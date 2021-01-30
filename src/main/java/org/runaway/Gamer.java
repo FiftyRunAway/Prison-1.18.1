@@ -403,9 +403,9 @@ public class Gamer {
     }
 
     public void teleportBase() {
-        getPlayer().closeInventory();
         if (!getFaction().equals(FactionType.DEFAULT)) {
             teleport(Utils.unserializeLocation(EConfig.CONFIG.getConfig().getString("locations.base_" + getFaction().toString().toLowerCase())));
+            getPlayer().closeInventory();
         } else {
             sendMessage(EMessage.NOFACTION);
         }

@@ -78,10 +78,8 @@ public class MainMenu implements IMenus {
                             .addSpace()
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(12);
-            ah.setClickEvent(event -> {
-                event.getWhoClicked().closeInventory();
-                event.getWhoClicked().performCommand("ah");
-            });
+            ah.setClickEvent(event ->
+                    event.getWhoClicked().performCommand("ah"));
             menu.addButton(ah);
 
             IMenuButton rebirth = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.EYE_OF_ENDER)

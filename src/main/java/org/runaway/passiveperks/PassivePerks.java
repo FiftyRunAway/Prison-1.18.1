@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
+import org.runaway.inventories.PassivePerksMenu;
 import org.runaway.items.Item;
 import org.runaway.enums.EStat;
 import org.runaway.inventories.Confirmation;
@@ -50,7 +51,7 @@ public abstract class PassivePerks {
                     || g.hasPassivePerk(getAnotherPerk(getLevel()))) {
                 return;
             }
-            new Confirmation(p, null, null, () -> {
+            new Confirmation(p, PassivePerksMenu.getMenu(p).build(), null, () -> {
                 g.addPassivePerk(this);
                 g.sendTitle("&bВы получили", "&bпассивный навык!");
                 this.getPerkAction(g);

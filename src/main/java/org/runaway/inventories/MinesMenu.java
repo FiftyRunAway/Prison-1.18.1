@@ -28,6 +28,7 @@ public class MinesMenu implements IMenus {
     public MinesMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         Gamer gamer = GamerManager.getGamer(player);
+
         Mines.icons.forEach((mines, mineIcon) -> {
             IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(mines.getPrisonIcon(gamer))
                     .setSlot(mines.getMinLevel() - 1);
@@ -47,6 +48,7 @@ public class MinesMenu implements IMenus {
             });
             menu.addButton(bt);
         });
+
         for (EJobs job : EJobs.values()) {
             Job j = job.getJob();
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(j.getButton(gamer).item()).setSlot(j.getLevel() - 1);
@@ -61,18 +63,7 @@ public class MinesMenu implements IMenus {
                 }
             });
             menu.addButton(btn);
-        }/*
-        ConfigurationSection levels = EConfig.CONFIG.getConfig().getConfigurationSection("levels");
-        int maxLevel = levels.getKeys(false).size();
-        for (int s = 0; s < maxLevel; s++) {
-            if (menu.getInventory().getItem(s) == null) {
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.STAINED_GLASS_PANE)
-                        .data((short) 12)
-                        .name("&cСкоро").lore(new Lore.BuilderLore()
-                                .addString("&7Совсем скоро эта шахта")
-                                .addString("&7&nпоявится&r&7 на сервере!").build()).build().item()).setSlot(s));
-            }
-        }*/
+        }
 
         IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.NETHER_STAR).name("&6База")
                 .lore(new Lore.BuilderLore()

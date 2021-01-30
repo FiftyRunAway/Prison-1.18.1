@@ -3,70 +3,79 @@ package org.runaway.inventories;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.runaway.Gamer;
+import org.runaway.enums.EMessage;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.managers.GamerManager;
+import org.runaway.menu.button.DefaultButtons;
+import org.runaway.menu.button.IMenuButton;
+import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Prison;
+import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.MoneyType;
 import org.runaway.upgrades.UpgradeMisc;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopMenu implements IMenus {
 
-    private static Inventory inventory;
+    private static StandardMenu inventory;
 
     public ShopMenu(Player player) {
-        if (player != null) player.openInventory(inventory);
+        if (player != null) player.openInventory(inventory.build());
     }
 
     public void load() {
-        String event_shop = EConfig.SHOP.getConfig().getString("event");
-        if (event_shop != null) {
-            inventory = Bukkit.createInventory(null, getRows() * 9, Utils.colored(getName() + " &7| &eСобытие: " + event_shop));
-        } else {
-            inventory = Bukkit.createInventory(null, getRows() * 9, getName());
-        }
+        final String event_shop = EConfig.SHOP.getConfig().getString("event");
+        String name = event_shop != null ? Utils.colored(getName() + " &7| &eСобытие: " + event_shop) : getName();
+        StandardMenu menu = StandardMenu.create(getRows(), name);
+
         for (int i = 0; i < 9; i++) {
-            inventory.setItem(i, ExampleItems.glass(7));
+            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(7)).setSlot(i));
         }
         for (int i = 27; i < 36; i++) {
-            inventory.setItem(i, ExampleItems.glass(7));
+            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(7)).setSlot(i));
         }
-        Prison.value_shopitems = EConfig.CONFIG.getConfig().getInt("values.shop_items");
-        for (int i = 1; i < Prison.value_shopitems + 1; i++) {
-            ItemStack item;
-            if (EConfig.SHOP.getConfig().contains("items." + i + ".config")) {
-                item = UpgradeMisc.buildItem(EConfig.SHOP.getConfig().getString("items." + i + ".config"), false, null, false);
-                ItemMeta meta = item.getItemMeta();
-                ArrayList<String> lore = new ArrayList<>(meta.getLore());
-                lore.add(" ");
-                lore.add(Utils.colored("&fЦена &7• &f" + EConfig.SHOP.getConfig().getInt("items." + i + ".cost") + " " + MoneyType.RUBLES.getShortName()));
-                if (event_shop != null && EConfig.SHOP.getConfig().contains("items." + i + ".event")) {
-                    lore.add(Utils.colored("&cВременный предмет"));
-                }
-                meta.setLore(lore);
-                meta.spigot().setUnbreakable(true);
-                item.setItemMeta(meta);
-            } else {
-                item = new ItemStack(Material.valueOf(EConfig.SHOP.getConfig().getString("items." + i + ".material")), EConfig.SHOP.getConfig().getInt("items." + i + ".amount"));
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(Utils.colored(EConfig.SHOP.getConfig().getString("items." + i + ".name")));
-                ArrayList<String> lore = new ArrayList<>();
-                lore.add("");
-                lore.add(Utils.colored("&fЦена &7• &f" + EConfig.SHOP.getConfig().getInt("items." + i + ".cost") + " " + MoneyType.RUBLES.getShortName()));
-                if (event_shop != null && EConfig.SHOP.getConfig().contains("items." + i + ".event")) {
-                    lore.add(Utils.colored("&cВременный предмет"));
-                }
-                meta.setLore(lore);
-                item.setItemMeta(meta);
+        AtomicInteger i = new AtomicInteger(9);
+        EConfig.SHOP.getConfig().getConfigurationSection("items").getKeys(false).forEach(s -> {
+            ConfigurationSection section = EConfig.SHOP.getConfig().getConfigurationSection("items." + s);
+
+            ItemStack itemStack, menubtn;
+            double cost = section.getInt("cost");
+            itemStack = ItemManager.getPrisonItem(section.getString("config")).getItemStack(
+                    section.contains("amount") ? section.getInt("amount") : 1);
+            menubtn = itemStack.clone();
+            ItemUtils.addLore(itemStack, " ", "&eСтоимость &7• &f&n" + cost + "&r " + MoneyType.RUBLES.getShortName());
+            if (event_shop != null && section.contains("event")) {
+                ItemUtils.addLore(itemStack, "&cТолько для события - &r" + event_shop);
             }
-            inventory.setItem(i + 8, item);
-        }
+
+            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(itemStack);
+            btn.setClickEvent(event -> {
+                Player player = event.getWhoClicked();
+                Gamer gamer = GamerManager.getGamer(player);
+                if (gamer.getMoney() < cost) {
+                    gamer.sendMessage(EMessage.MONEYNEEDS);
+                    player.closeInventory();
+                    return;
+                }
+                player.getInventory().addItem(menubtn);
+                gamer.withdrawMoney(cost);
+                gamer.sendMessage(EMessage.SUCCESSFULBUY);
+            });
+            menu.addButton(btn.setSlot(i.getAndIncrement()));
+        });
+        inventory = menu;
     }
 
     @Override
