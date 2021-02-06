@@ -163,6 +163,8 @@ public class Prison extends JavaPlugin {
 
     private void loader() {
         new Config().loadConfigs();
+        String language = "ru_ru";
+        this.downloadAndApplyLanguage(language);
         FileConfiguration loader = EConfig.MODULES.getConfig();
         loadSQLite();
         loadTasks();
@@ -213,8 +215,6 @@ public class Prison extends JavaPlugin {
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
 
-        String language = "ru_ru";
-        this.downloadAndApplyLanguage(language);
 
         if(false) {
             //EXAMPLE

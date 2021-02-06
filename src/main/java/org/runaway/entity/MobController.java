@@ -59,6 +59,7 @@ public class MobController implements IMobController {
             }, 20);
         }
         MobManager.uidMobControllerMap.put(getUID(), this);
+        MobManager.attributableMap.put(attributable.getTechName(), attributable);
     }
 
     @Override
