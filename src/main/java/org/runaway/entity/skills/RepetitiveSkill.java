@@ -23,6 +23,6 @@ public class RepetitiveSkill extends CustomSkill {
     public void apply(IMobController iMobController) {
         iMobController.getMobTasks().add(new SyncRepeatTask(() -> {
             getConsumer().accept(iMobController.getNmsEntity(), null);
-        }, ticks));
+        }, ticks, ticks));
     }
 }
