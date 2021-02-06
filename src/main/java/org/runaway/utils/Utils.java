@@ -91,6 +91,10 @@ public class Utils {
         }
     }
 
+    public static String generateUID() {
+        return UUID.randomUUID().toString().substring(0, 13);
+    }
+
     public static Location getLocation(String name) {
         String l = EConfig.CONFIG.getConfig().getString("locations." + name);
         return unserializeLocation(l);

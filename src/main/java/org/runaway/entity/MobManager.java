@@ -1,6 +1,5 @@
 package org.runaway.entity;
 
-import com.nametagedit.plugin.utils.Utils;
 import net.minecraft.server.v1_12_R1.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,6 +14,7 @@ import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.RepetitiveSkill;
 import org.runaway.enums.MobType;
 import org.runaway.items.ItemManager;
+import org.runaway.utils.Utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,17 +49,17 @@ public class MobManager {
                     .build();
 
             MobController mobController = MobController.builder()
-                    .attributable(attributable)
+                    .attributable(attributable) //тут паттерн моба
                     .mobRandom(new Random())
                     .mobSkillList(Arrays.asList(
-                            new DamageSkill((entity, player) -> {
+                            new DamageSkill((entity, player) -> { //умение при атаке со стороны игрока
                                 LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
                                 if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
                                     player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 1));
                                     player.damage(2);
                                 }
                             }),
-                            new RepetitiveSkill(entity -> {
+                            new RepetitiveSkill(entity -> { //повторяющееся умение
                                 entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
                                         .filter(entity1 -> entity1 instanceof LivingEntity)
                                         .map(entity1 -> (LivingEntity) entity1)
@@ -72,7 +72,8 @@ public class MobManager {
                     ))
                     .spawnLocation(new Location(Bukkit.getWorld("Prison"), 680, 75, -540))
                     .respawnTime(30) //sec
-                    .UID(Utils.generateUUID())
+                    .lastDeathTime(-1)
+                    .UID(Utils.generateUID())
                     .build();
             mobController.init();
         }

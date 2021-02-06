@@ -212,6 +212,7 @@ public class MobController implements IMobController {
             createHologram();
         }
         getMobTasks().forEach(Cancellable::stop);
+        save();
     }
 
     public void save() {
