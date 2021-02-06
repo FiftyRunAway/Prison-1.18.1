@@ -41,6 +41,7 @@ import org.runaway.configs.Config;
 import org.runaway.donate.Donate;
 import org.runaway.donate.DonateIcon;
 import org.runaway.donate.Privs;
+import org.runaway.entity.MobManager;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
@@ -49,6 +50,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuListener;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.type.StandardMenu;
@@ -84,13 +86,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Prison extends JavaPlugin {
 
-    public static HashMap<UUID, Gamer> gamers = new HashMap<>();
-
     private static Prison instance;
     public static Prison getInstance() {
         return instance;
     }
-
+    
     //SQLite
     private Map<String, Database> databases = new HashMap<>();
     public final String stat_table = "Statistics";
@@ -138,9 +138,6 @@ public class Prison extends JavaPlugin {
     // кэш /tip`a
     public static ArrayList<String> THXersBlocks = new ArrayList<>();
     public static ArrayList<String> THXersMoney = new ArrayList<>();
-
-    // Список норм боссов
-    public static ArrayList<UUID> bosses = new ArrayList<>();
 
     // Список шахт
     public static ArrayList<Mine> mines = new ArrayList<>();
@@ -212,7 +209,7 @@ public class Prison extends JavaPlugin {
             }
         });
         new AsyncRepeatTask(() -> {
-            gamers.values().forEach(Gamer::savePlayer);
+            GamerManager.gamers.values().forEach(Gamer::savePlayer);
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
 
@@ -498,6 +495,7 @@ public class Prison extends JavaPlugin {
             new Utils().RegisterEvent(new SignChange());
             new Utils().RegisterEvent(new AsyncChat());
             new Utils().RegisterEvent(new PlayerInteract());
+            new Utils().RegisterEvent(new MobDamage());
             new Utils().RegisterEvent(new PlayerInventoryClick());
             new Utils().RegisterEvent(new PlayerInventoryClose());
             new Utils().RegisterEvent(new PlayerDeath());
@@ -563,10 +561,12 @@ public class Prison extends JavaPlugin {
     //Регистрация мобов
     private static void registerMobs() {
         try {
-            Mobs.registerMobs();
+            MobType.registerMobs();
+            /*
             Spawner.SpawnerUtils.init();
             new Spawner.SpawnerUpdater().runTaskTimer(getInstance(), 20L, 600L);
-
+             */
+            new MobManager();
             //removeEntities();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering mobs!");
@@ -707,7 +707,7 @@ public class Prison extends JavaPlugin {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Utils.getPlayers().forEach(s -> gamers.get(Bukkit.getPlayer(s).getUniqueId()).setNametag());
+                    Utils.getPlayers().forEach(s -> GamerManager.getGamer(Bukkit.getPlayer(s)).setNametag());
                 }
             }.runTaskTimer(instance, 20L, 1200L);
         } else {
@@ -802,7 +802,7 @@ public class Prison extends JavaPlugin {
             Bukkit.getServer().getScheduler().runTaskTimer(getInstance(), () -> {
                 if (Utils.getPlayers().isEmpty()) return;
                 Utils.getPlayers().forEach(s -> {
-                    Gamer gamer = gamers.get(Bukkit.getPlayer(s).getUniqueId());
+                    Gamer gamer = GamerManager.getGamer(Bukkit.getPlayer(s));
                     int get = gamer.getIntStatistics(EStat.PLAYEDTIME) + 1;
                     gamer.setStatistics(EStat.PLAYEDTIME, get);
                     if (get == 30) Achievement.TIME_30.get(gamer.getPlayer());
@@ -840,7 +840,7 @@ public class Prison extends JavaPlugin {
             money = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
             blocks = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
             level = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
-            rats = getPreparedRequests().getTop(EStat.BOSSES.getColumnName(), 10);
+            rats = getPreparedRequests().getTop(EStat.KILLS.getColumnName(), 10);
             rebirth = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
             keys = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
             dm = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
@@ -866,7 +866,7 @@ public class Prison extends JavaPlugin {
         Map<String, Long> money1 = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
         Map<String, Long> blocks1 = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
         Map<String, Long> level1 = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
-        Map<String, Long> rats1 = getPreparedRequests().getTop(EStat.BOSSES.getColumnName(), 10);
+        Map<String, Long> rats1 = getPreparedRequests().getTop(EStat.KILLS.getColumnName(), 10);
         Map<String, Long> rebirth1 = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
         Map<String, Long> keys1 = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
         Map<String, Long> dm1 = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
@@ -1056,6 +1056,10 @@ public class Prison extends JavaPlugin {
     //Удаление мобов
     private static void removeEntities() {
         try {
+            MobManager.mobControllerMap.values().forEach(iMobController -> {
+                iMobController.getNmsEntity().getBukkitEntity().remove();
+            });
+
             for (World w : Bukkit.getWorlds()) {
                 for (Entity e : w.getEntities()) {
                     if (!(e instanceof ArmorStand) &&

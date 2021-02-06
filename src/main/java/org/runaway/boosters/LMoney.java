@@ -19,7 +19,7 @@ public class LMoney extends Booster {
 
     @Override
     public void start(String owner, long time, double multiplier) {
-        Gamer gamer = Prison.gamers.get(Bukkit.getOfflinePlayer(owner).getUniqueId());
+        Gamer gamer = GamerManager.getGamer(Bukkit.getOfflinePlayer(owner).getUniqueId());
         if (!Utils.getlMoneyTime().containsKey(owner)) {
             Date target = new Date();
             target = DateUtils.addSeconds(target, (int)time);

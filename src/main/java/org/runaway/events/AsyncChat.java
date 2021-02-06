@@ -59,12 +59,12 @@ public class AsyncChat implements Listener {
             if (!start) {
                 event.getRecipients().forEach(players -> {
                     if (!outOfRange(event.getPlayer().getLocation(), player.getLocation()) || player.hasPermission("prison.spy")) {
-                        send(Prison.gamers.get(players.getUniqueId()), format + message);
+                        send(GamerManager.getGamer(players.getUniqueId()), format + message);
                     }
                 });
             } else {
                 event.getRecipients().forEach(players ->
-                        send(Prison.gamers.get(players.getUniqueId()), format + message.replace("!", "")));
+                        send(GamerManager.getGamer(players.getUniqueId()), format + message.replace("!", "")));
             }
             return;
         }
@@ -80,7 +80,7 @@ public class AsyncChat implements Listener {
         final String format = gamer.getFaction().getColor() + gamer.getFaction().getName() + ChatColor.GRAY + " | " + prefix + player.getName() + ChatColor.GRAY + " » " + ChatColor.BLUE;
         Bukkit.getConsoleSender().sendMessage(format + message.replace("@", ""));
         event.getRecipients().forEach(players -> {
-            Gamer g = Prison.gamers.get(players.getUniqueId());
+            Gamer g = GamerManager.getGamer(players.getUniqueId());
             if (gamer.getFaction().equals(g.getFaction()) || players.hasPermission("prison.spy")) {
                 send(g, format + message.replace("@", ""));
             }

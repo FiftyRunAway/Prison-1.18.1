@@ -30,7 +30,7 @@ public class PlayerAttack implements Listener {
             if (event.getDamager() instanceof Player) damager = (Player) event.getDamager();
             if (event.getDamager() instanceof Projectile) damager = (Player) ((Projectile) event.getDamager()).getShooter();
             if (!canAttack(damager, (Player)event.getEntity())) {
-                Prison.gamers.get(damager.getUniqueId()).sendMessage(EMessage.FRIENDATTACK);
+                GamerManager.getGamer(damager.getUniqueId()).sendMessage(EMessage.FRIENDATTACK);
                 event.setCancelled(true);
             } else {
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerDamageEvent(damager, (Player)event.getEntity()));
@@ -67,8 +67,8 @@ public class PlayerAttack implements Listener {
     }
 
     private boolean canAttack(Player attacker, Player getDamager) {
-        Gamer at = Prison.gamers.get(attacker.getUniqueId());
-        Gamer get = Prison.gamers.get(getDamager.getUniqueId());
+        Gamer at = GamerManager.getGamer(attacker.getUniqueId());
+        Gamer get = GamerManager.getGamer(getDamager.getUniqueId());
         if (at.getFaction().equals(get.getFaction())) {
             if (!at.getFaction().equals(FactionType.DEFAULT)) {
                 return false;

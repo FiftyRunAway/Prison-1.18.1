@@ -126,7 +126,7 @@ public class Utils {
         for (Map.Entry<String, Integer> entry : attackers.entrySet()) {
             double to_add = 1;
             if (Utils.getPlayers().contains(entry.getKey())) {
-                Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(entry.getKey()).getUniqueId());
+                Gamer gamer = GamerManager.getGamer(Bukkit.getPlayer(entry.getKey()).getUniqueId());
                 Object obj = gamer.getPrivilege().getValue(new BossMoney());
                 if (obj != null) to_add += (double) Integer.parseInt(obj.toString()) / 100;
             }

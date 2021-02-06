@@ -55,7 +55,7 @@ public class PlayerDeath implements Listener {
         if (gamer.getIntStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player);
         gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
         if (event.getEntity().getKiller() != null) {
-            Gamer gamerKiller = Prison.gamers.get(event.getEntity().getKiller().getUniqueId());
+            Gamer gamerKiller = GamerManager.getGamer(event.getEntity().getKiller().getUniqueId());
             gamerKiller.increaseDoubleStatistics(EStat.KILLS);
             if (gamerKiller.getIntStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer());
             if (gamerKiller.getIntStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer());
@@ -68,7 +68,7 @@ public class PlayerDeath implements Listener {
             if (gamerKiller.getPlayer().hasPermission("*")) Achievement.KILL_ADMIN.get(gamerKiller.getPlayer());
         } else if (event.getEntity() instanceof Projectile && ((Projectile)event.getEntity()).getShooter() instanceof Player) {
             if (event.getEntity().getKiller().getName().equals(event.getEntity().getName())) Achievement.KILL_ARROW.get(player);
-            Gamer gamerKiller = Prison.gamers.get(event.getEntity().getKiller().getUniqueId());
+            Gamer gamerKiller = GamerManager.getGamer(event.getEntity().getKiller().getUniqueId());
             gamerKiller.increaseIntStatistics(EStat.BOW_KILL);
         }
     }

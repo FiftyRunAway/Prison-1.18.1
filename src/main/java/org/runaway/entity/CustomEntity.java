@@ -7,11 +7,10 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.runaway.Prison;
-import org.runaway.enums.Mobs;
+import org.runaway.enums.MobType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,23 +19,24 @@ public class CustomEntity extends RegistryMaterials {
     private static CustomEntity instance = null;
 
     private final BiMap<MinecraftKey, Class<? extends Entity>> customEntities = HashBiMap.create();
-    private final BiMap<Class<? extends Entity>, MinecraftKey> customEntityClasses = this.customEntities.inverse();
+    private final Map<Class<? extends Entity>, MinecraftKey> customEntityClasses = this.customEntities.inverse();
     private final Map<Class<? extends Entity>, Integer> customEntityIds = new HashMap<>();
     private final RegistryMaterials wrapped;
-
-    public static ArrayList<String> monsters = new ArrayList<>();
 
     private CustomEntity(RegistryMaterials original) {
         this.wrapped = original;
     }
 
-    public static void spawnEntity(Mobs entityType, Location location, Spawner spawner) {
+    public static Entity spawnEntity(MobType entityType, Location location, IMobController mobController) {
         try {
-            Entity entity = entityType.getCustom().getConstructor(Spawner.class).newInstance(spawner);
-            entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-            ((CraftWorld)location.getWorld()).getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
-            Prison.bosses.add(entity.getUniqueID());
-        } catch (Exception ex) { }
+            Entity entity = entityType.getCustom().getConstructor(IMobController.class).newInstance(mobController);
+            entity.setPosition(location.getX(), location.getY(), location.getZ());
+            ((CraftWorld) location.getWorld()).getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            return entity;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     public static CustomEntity getInstance() {
@@ -68,10 +68,14 @@ public class CustomEntity extends RegistryMaterials {
     }
 
     private void putCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
-        MinecraftKey minecraftKey = new MinecraftKey(entityName);
 
-        this.customEntities.put(minecraftKey, entityClass);
-        this.customEntityIds.put(entityClass, entityId);
+        try {
+            MinecraftKey minecraftKey = new MinecraftKey(entityName);
+            this.customEntities.put(minecraftKey, entityClass);
+            this.customEntityIds.put(entityClass, entityId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

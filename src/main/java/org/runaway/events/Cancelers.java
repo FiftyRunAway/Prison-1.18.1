@@ -20,6 +20,7 @@ import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 
 public class Cancelers implements Listener {
@@ -46,7 +47,7 @@ public class Cancelers implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEquip(ArmorEquipEvent e) {
         if(e.getNewArmorPiece() != null && e.getNewArmorPiece().getType() != Material.AIR) {
-                Gamer gamer = Prison.gamers.get(e.getPlayer().getUniqueId());
+                Gamer gamer = GamerManager.getGamer(e.getPlayer().getUniqueId());
                 if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem(e.getNewArmorPiece())) {
                     e.setCancelled(true);
                     e.getPlayer().sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));

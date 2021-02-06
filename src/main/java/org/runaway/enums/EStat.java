@@ -33,7 +33,6 @@ public enum EStat implements Saveable {
     BOOSTERMONEY("boost_money", 1.0, StatType.DOUBLE),
     BOOSTERBLOCKS("boost_blocks", 1.0, StatType.DOUBLE),
     PLAYEDTIME("played_time", 0, StatType.INTEGER),
-    BOSSES("bosses", 0, StatType.INTEGER),
     AUTOSELL("autosell", false, StatType.BOOLEAN),
     REBIRTH("rebirth_level", 0, StatType.INTEGER),
     HELPER("helper", 0, StatType.INTEGER),

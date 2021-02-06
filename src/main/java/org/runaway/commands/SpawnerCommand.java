@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.Mobs;
+import org.runaway.enums.MobType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,15 +32,15 @@ public class SpawnerCommand extends CommandManager {
                 p.sendMessage(Utils.colored("&cОшибка: Встаньте на землю!"));
                 return;
             }
-            Mobs entity;
+            MobType entity;
             try {
-                entity = Mobs.valueOf(args[1].toUpperCase());
+                entity = MobType.valueOf(args[1].toUpperCase());
             } catch (Exception ex) {
                 p.sendMessage(Utils.colored("&cОшибка: Нет такого вида моба!"));
                 return;
             }
             ConfigurationSection section;
-            if (entity.isMultispawn()) {
+            if (true) {
                 AtomicInteger num = new AtomicInteger(1);
                 EConfig.MOBS.getConfig().getConfigurationSection("mobs").getKeys(false).forEach(s -> {
                     if (s.contains(args[1].toLowerCase())) {
@@ -61,7 +61,7 @@ public class SpawnerCommand extends CommandManager {
             EConfig.MOBS.saveConfig();
         } else {
             List<String> mobs = new ArrayList<>();
-            Arrays.stream(Mobs.values()).forEach(m -> mobs.add(m.name().toLowerCase()));
+            Arrays.stream(MobType.values()).forEach(m -> mobs.add(m.name().toLowerCase()));
             p.sendMessage(Utils.colored("&cИспользование: /" + cmdName + " <debug, set> " + mobs.toString()));
         }
     }

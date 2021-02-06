@@ -382,7 +382,7 @@ public class TrashAuction {
             this.hologram.appendTextLine(Utils.colored("&cЭтот аукцион окончен"));
             this.hologram.appendItemLine(itemStack);
 
-            Gamer gamer = Prison.gamers.get(Bukkit.getPlayer(last).getUniqueId());
+            Gamer gamer = GamerManager.getGamer(Bukkit.getPlayer(last));
             gamer.withdrawMoney(now);
             gamer.getPlayer().getInventory().addItem(itemStack);
 
@@ -390,7 +390,7 @@ public class TrashAuction {
 
             auctions.remove(this);
             bought = true;
-            if (auctions.size() == 0) {
+            if (auctions.isEmpty()) {
                 Bukkit.broadcastMessage(EMessage.AUCTIONCLOSE.getMessage());
                 new BukkitRunnable() {
                     @Override
@@ -399,7 +399,7 @@ public class TrashAuction {
                         holograms.forEach(Hologram::delete);
                         Utils.getPlayers().forEach(s -> {
                             if (BlockBreak.isLocation(Bukkit.getPlayer(s).getLocation(), "auction")) {
-                                Prison.gamers.get(Bukkit.getPlayer(s).getUniqueId()).teleport(Prison.SPAWN);
+                                GamerManager.getGamer(Bukkit.getPlayer(s)).teleport(Prison.SPAWN);
                             }
                         });
                     }

@@ -3,6 +3,8 @@ package org.runaway;
 import com.nametagedit.plugin.NametagEdit;
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -166,6 +168,58 @@ public class Gamer {
         }
         return ended;
     }
+
+    public void increaseQuestValue(String quest, int value) {
+        if (this.player == null) return;
+        getOfflineValues().put(quest, String.valueOf(getIntQuestValue(quest) + value));
+    }
+
+    public int getIntQuestValue(String quest) {
+        if (getOfflineValues().isEmpty()) {
+            return 0;
+        }
+        return Integer.valueOf(getQuestValue(quest));
+    }
+
+    public String getQuestValue(String quest) {
+        if (getOfflineValues().isEmpty()) {
+            return "0";
+        }
+        return getOfflineValues().getOrDefault(quest, "0");
+    }
+
+    public void setQuestValue(String quest, String value) {
+        getOfflineValues().put(quest, value);
+    }
+
+    public void setQuestValue(String quest, int value) {
+        getOfflineValues().put(quest, String.valueOf(value));
+    }
+
+    public int getLevel() {
+        return getIntStatistics(EStat.LEVEL);
+    }
+
+    public boolean hasPermission(String permission) {
+        return getPlayer().hasPermission("prison." + permission) || getPlayer().hasPermission(permission);
+    }
+
+    public void debug(String message) {
+        if(hasPermission("admin")) return;
+        getPlayer().sendMessage(Utils.colored("&7[&aDEBUG&7] &a" + message));
+    }
+
+    public void addItem(ItemStack itemStack) {
+        addItem(itemStack, "CUSTOM");
+    }
+    public void addItem(ItemStack itemStack, String source) {
+        if(getPlayer().getInventory().firstEmpty() == -1) {
+            getPlayer().getWorld().dropItem(getPlayer().getLocation(), itemStack);
+            return;
+        }
+        getPlayer().getInventory().addItem(itemStack);
+    }
+
 
     public void addCooldown(String name, long cooldown) {
         if (this.cooldowns.containsKey(name)) return;
@@ -851,6 +905,6 @@ public class Gamer {
     }
 
     public void sendActionbar(String msg) {
-        //sendTitle(new TextComponent(Utils.colored(msg)));
+        getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Utils.colored(msg)));
     }
 }

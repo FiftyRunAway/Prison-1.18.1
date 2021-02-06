@@ -35,7 +35,7 @@ public class PlayerQuit implements Listener {
         }
         Needs.onQuit(event);
         Gamer.tp.remove(player.getUniqueId());
-        Prison.gamers.remove(player.getUniqueId());
+        GamerManager.getGamers().remove(player.getUniqueId());
         BlockBreak.to_break.remove(player.getName());
         BattlePassMenu.data.remove(player.getName());
     }

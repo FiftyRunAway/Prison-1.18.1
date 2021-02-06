@@ -20,7 +20,7 @@ import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.Mobs;
+import org.runaway.enums.MobType;
 import org.runaway.enums.TypeMessage;
 
 public class Spawner {
@@ -28,7 +28,7 @@ public class Spawner {
     private static final FileConfiguration config = EConfig.MOBS.getConfig();
     public static Map<UUID, Spawner> spawners = new HashMap<>();
     private Location location;
-    private Mobs type;
+    private MobType type;
     private Entity current;
     private long deathTime;
     private int interval;
@@ -36,7 +36,7 @@ public class Spawner {
     private BukkitTask holoTask;
     private Hologram hologram;
 
-    private Spawner(Location location, Mobs type, int interval) {
+    private Spawner(Location location, MobType type, int interval) {
         this.location = location;
         this.current = null;
         this.deathTime = System.currentTimeMillis();
@@ -50,7 +50,7 @@ public class Spawner {
     private void spawn() {
         try {
             if (this.location != null && this.location.getChunk() != null && this.location.getChunk().isLoaded()) {
-                CustomEntity.spawnEntity(this.type, this.location.clone().add(0.0, 2.5, 0.0), this);
+                CustomEntity.spawnEntity(this.type, this.location.clone().add(0.0, 2.5, 0.0), null);
                 if (this.holoTask != null) {
                     this.holoTask.cancel();
                     this.holoTask = null;
@@ -72,14 +72,12 @@ public class Spawner {
     }
 
     private void createHologram() {
-        if (!this.type.isMultispawn()) {
-            (this.hologram = HologramsAPI.createHologram(Prison.getInstance(), this.location.clone().add(0.5, 2.5, 0.5))).setAllowPlaceholders(true);
-            this.hologram.getVisibilityManager().setVisibleByDefault(true);
-            this.holoTask = Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
-                this.updateHolo();
-                this.update();
-            }, 0L, 1200L);
-        }
+        (this.hologram = HologramsAPI.createHologram(Prison.getInstance(), this.location.clone().add(0.5, 2.5, 0.5))).setAllowPlaceholders(true);
+        this.hologram.getVisibilityManager().setVisibleByDefault(true);
+        this.holoTask = Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
+            this.updateHolo();
+            this.update();
+        }, 0L, 1200L);
     }
 
     private void updateHolo() {
@@ -164,7 +162,7 @@ public class Spawner {
         return this.uuid;
     }
 
-    public Mobs getType() {
+    public MobType getType() {
         return this.type;
     }
 
@@ -181,7 +179,7 @@ public class Spawner {
             for (String currentSpawn : section.getKeys(false)) {
                 ConfigurationSection path = section.getConfigurationSection(currentSpawn);
                 Location loc = Utils.unserializeLocation(path.getString("location"));
-                Mobs type = Mobs.valueOf(path.getString("type").toUpperCase());
+                MobType type = MobType.valueOf(path.getString("type").toUpperCase());
                 int interval = EConfig.MOBS.getConfig().getInt(path.getString("type") + ".interval");
                 new Spawner(loc, type, interval).update();
             }

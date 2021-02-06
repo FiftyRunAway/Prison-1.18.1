@@ -27,7 +27,7 @@ public class PayCommand extends CommandManager {
                 return;
             }
             Player pl = Bukkit.getPlayer(args[0]);
-            Gamer get = Prison.gamers.get(pl.getUniqueId());
+            Gamer get = GamerManager.getGamer(pl.getUniqueId());
             if (pl.getName().equals(p.getName())) {
                 gamer.sendMessage(EMessage.VALUEBAD);
                 return;
