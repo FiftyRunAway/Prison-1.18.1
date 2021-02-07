@@ -12,4 +12,5 @@ public class LootItem {
     private PrisonItem prisonItem;
     private float chance;
     private int minAmount, maxAmount;
+    private int probability;
 }

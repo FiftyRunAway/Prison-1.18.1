@@ -26,7 +26,7 @@ public enum MobType {
     }
 
     public static void registerMobs() {
-        Arrays.stream(values()).forEach(mobs -> CustomEntity.registerCustomEntity(mobs.id, mobs.name().toLowerCase(), mobs.custom));
+        Arrays.stream(values()).forEach(mobs -> CustomEntity.registerCustomEntity(mobs.id, mobs.custom.getSimpleName().toLowerCase(), mobs.custom));
     }
 
     public Class<? extends Entity> getCustom() {

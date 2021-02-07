@@ -8,8 +8,12 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.runaway.Prison;
 import org.runaway.enums.MobType;
+import org.runaway.utils.NMS;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,36 +50,29 @@ public class CustomEntity extends RegistryMaterials {
         instance = new CustomEntity(EntityTypes.b);
         try {
             //TODO: Update name on version change (RegistryMaterials)
-            Field registryMaterialsField = EntityTypes.class.getDeclaredField("b");
-            registryMaterialsField.setAccessible(true);
-
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(registryMaterialsField, registryMaterialsField.getModifiers() & ~Modifier.FINAL);
-
-            registryMaterialsField.set(null, instance);
+            MethodHandle setter = NMS.getFinalSetter(EntityTypes.class, "b", false);
+            setter.invoke(instance);  
         } catch (Exception e) {
             instance = null;
-
-            throw new RuntimeException("Unable to override the old entity RegistryMaterials", e);
+            e.printStackTrace();
+            throw null;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
 
         return instance;
     }
+
 
     public static void registerCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
         getInstance().putCustomEntity(entityId, entityName, entityClass);
     }
 
     private void putCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
+        MinecraftKey minecraftKey = new MinecraftKey(entityName);
 
-        try {
-            MinecraftKey minecraftKey = new MinecraftKey(entityName);
-            this.customEntities.put(minecraftKey, entityClass);
-            this.customEntityIds.put(entityClass, entityId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.customEntities.put(minecraftKey, entityClass);
+        this.customEntityIds.put(entityClass, entityId);
     }
 
     @Override
