@@ -128,7 +128,15 @@ public class MobController implements IMobController {
             }
             updateCustomName();
         }, getAttributable().getRegenerationDelay()));
-
+        getMobTasks().add(new SyncRepeatTask(() -> {
+            if (!isAlive()) {
+                return;
+            }
+            double distance = getSpawnLocation().distance(getBukkitEntity().getLocation());
+            if(distance > 20) {
+                getNmsEntity().setPosition(getSpawnLocation().getX(), getSpawnLocation().getY(),getSpawnLocation().getZ());
+            }
+        }, 20 * 10));
     }
 
     public void kill() {

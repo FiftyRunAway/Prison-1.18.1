@@ -2,7 +2,7 @@ package org.runaway.entity;
 
 import org.bukkit.Location;
 import org.runaway.Gamer;
-import org.runaway.LootItem;
+import org.runaway.rewards.LootItem;
 
 import java.util.List;
 import java.util.Map;

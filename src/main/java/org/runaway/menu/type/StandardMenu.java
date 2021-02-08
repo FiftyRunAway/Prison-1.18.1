@@ -11,6 +11,7 @@ public class StandardMenu extends IMenu {
         setTitle(title);
         setInventorySize(rows);
     }
+
     public static StandardMenu create(int rows, String title){
         return new StandardMenu(rows,title);
     }
@@ -21,7 +22,7 @@ public class StandardMenu extends IMenu {
             return getInventory();
         }
         created = true;
-        Inventory inv = Bukkit.createInventory(this, getSize(),getTitle());
+        Inventory inv = Bukkit.createInventory(this, getSize(), getTitle());
         setDummies(inv);
         setInventory(inv);
         return inv;

@@ -5,7 +5,7 @@ package org.runaway.enums;
  */
 
 public enum MoneyType {
-    RUBLES("р.");
+    RUBLES("$");
 
     private String shortname;
 

@@ -7,10 +7,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.PagedButton;
 import org.runaway.menu.design.MenuDesigner;
 import org.runaway.menu.events.ButtonClickEvent;
+import org.runaway.utils.ExampleItems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,9 +64,11 @@ public abstract class IMenu implements InventoryHolder {
     }
 
     public void open(Gamer gamer) {
+        build();
         gamer.setCurrentIMenu(this);
         gamer.getPlayer().openInventory(getInventory());
     }
+
     private Consumer<ButtonClickEvent> buttonClickListener;
     private Consumer<InventoryCloseEvent> closeListener;
     private Consumer<InventoryOpenEvent> openListener;
@@ -137,6 +141,10 @@ public abstract class IMenu implements InventoryHolder {
         return this;
     }
 
+
+    public IMenu setItem(int slot, ItemStack itemStack) {
+        return addButton(DefaultButtons.FILLER.getButtonOfItemStack(itemStack).setSlot(slot));
+    }
     /**
      * Tries to find a {@link IMenuButton} by {@link ItemStack}
      *

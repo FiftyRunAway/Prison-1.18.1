@@ -22,6 +22,7 @@ public class ParameterManager {
         ownerParameter = DefaultParameter.builder().loreString(getOwnerString()).nbtString("owner")
                 .priority(30)
                 .mutable(true)
+                .statType(StatType.STRING)
                 .build();
         nodropParameter = DefaultParameter.builder()
                 .loreString(getNodropString())
@@ -32,6 +33,7 @@ public class ParameterManager {
                 .build();
         upgradableParameter = DefaultParameter.builder()
                 .loreString(getUpgradableString())
+                .statType(StatType.BOOLEAN)
                 .priority(5)
                 .preSpace(true)
                 .build();
