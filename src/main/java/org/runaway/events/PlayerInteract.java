@@ -34,66 +34,77 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerInteract implements Listener {
 
-    private static HashMap<String, Double> prices = new HashMap<>();
+    private static final HashMap<String, Double> prices = new HashMap<>();
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
-        Block block = event.getClickedBlock();
-        if (player.getInventory().getItemInMainHand().getType().equals(Material.PAPER) &&
-                player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().contains("Меню") &&
-                (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-            new MainMenu(player);
-        }
 
-        // Локации
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
-                event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            Location.locations.forEach(location -> location.getLocation(gamer));
-        }
-
-        if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
-            if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
-                if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
-                    player.sendMessage(Vars.getPrefix() + Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
-                    event.setCancelled(true);
-                    return;
-                }
+        ItemStack main = player.getInventory().getItemInMainHand();
+        if (main != null && main.hasItemMeta()) {
+            if (Prison.getInstance().fish_food.contains(ChatColor.stripColor(main.getItemMeta().getDisplayName()))) {
+                gamer.sendMessage(EMessage.SELLTIT);
+                event.setCancelled(true);
+                return;
             }
-        }
-
-        if (block == null) return;
-        Prison.cases.forEach(aCase -> aCase.open(event));
-        if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
-            Sign sign = (Sign)block.getState();
-            String[] lines = sign.getLines();
-            if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {
-                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                    sellAll(player);
-                } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                    new BlockShopMenu(player);
-                }
+            if (main.getType() == Material.PAPER &&
+                    main.getItemMeta().getDisplayName().contains("Меню") &&
+                    (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+                new MainMenu(player);
+                return;
             }
-        }
 
-        //Сундук (сокровища)
-        if (block.getType().equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            try {
-                if (!BlockBreak.chests.containsKey(player.getName())) return;
-                if (BlockBreak.chests.get(player.getName()).equals(block.getLocation())) {
-                    block.setType(Material.AIR);
-                    int money = (ThreadLocalRandom.current().nextInt(6) + 5) * gamer.getIntStatistics(EStat.LEVEL);
-                    player.sendMessage(Utils.colored(EMessage.TREASUREOPEN.getMessage()).replace("%reward%", Board.FormatMoney(money)));
-                    if (BlockBreak.treasure_holo.containsKey(player.getName())) {
-                        BlockBreak.treasure_holo.get(player.getName()).delete();
-                        BlockBreak.treasure_holo.remove(player.getName());
+            if (main.getType().equals(Material.FISHING_ROD)) {
+                if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
+                    if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
+                        player.sendMessage(Vars.getPrefix() + Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
+                        event.setCancelled(true);
+                        return;
                     }
-                    gamer.depositMoney(money);
-                    BlockBreak.chests.remove(player.getName());
-                    BlockBreak.chests_tasks.remove(player.getName());
                 }
-            } catch (Exception ex) { }
+            }
+            // Локации
+            if (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
+                    event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                Location.locations.forEach(location -> location.getLocation(gamer));
+                return;
+            }
+        }
+
+        Block block = event.getClickedBlock();
+        if (block != null) {
+            Prison.cases.forEach(aCase -> aCase.open(event));
+            if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
+                Sign sign = (Sign)block.getState();
+                String[] lines = sign.getLines();
+                if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {
+                    if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                        sellAll(player);
+                    } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                        new BlockShopMenu(player);
+                    }
+                }
+            }
+
+            //Сундук (сокровища)
+            if (block.getType().equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                try {
+                    if (!BlockBreak.chests.containsKey(player.getName())) return;
+                    if (BlockBreak.chests.get(player.getName()).equals(block.getLocation())) {
+                        block.setType(Material.AIR);
+                        int money = (ThreadLocalRandom.current().nextInt(6) + 5) * gamer.getIntStatistics(EStat.LEVEL);
+                        player.sendMessage(Utils.colored(EMessage.TREASUREOPEN.getMessage()).replace("%reward%", Board.FormatMoney(money)));
+                        if (BlockBreak.treasure_holo.containsKey(player.getName())) {
+                            BlockBreak.treasure_holo.get(player.getName()).delete();
+                            BlockBreak.treasure_holo.remove(player.getName());
+                        }
+                        gamer.depositMoney(money);
+                        BlockBreak.chests.remove(player.getName());
+                        BlockBreak.chests_tasks.remove(player.getName());
+                    }
+                } catch (Exception ignored) { }
+            }
         }
     }
 

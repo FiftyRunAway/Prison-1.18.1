@@ -45,43 +45,45 @@ public class SimpleMobLoot implements MobLoot {
                 gamer.debug("kill " + needToKill);
             }
         });
-        List<NumberedPrisonItem> numberedItems = new ArrayList();
-        Map<Gamer, List<String>> itemsString = new HashMap();
-        lootItems.forEach(lootItem -> {
-            int amount = lootItem.getMinAmount() == lootItem.getMaxAmount() ? lootItem.getMaxAmount() : threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount());
-            PrisonItem prisonItem = lootItem.getPrisonItem();
-            if (threadLocalRandom.nextFloat() <= lootItem.getChance()) {
-                numberedItems.add(new NumberedPrisonItem(prisonItem, amount));
-                damageList.forEach((gamer, damagePercent) -> {
-                    double damageChance = damagePercent;
-                    if (threadLocalRandom.nextFloat() <= damageChance) {
-                        int result = amount;
-                        if (amount > damageList.size()) {
-                            result = (int) (amount * damagePercent);
-                            if (result == 0) result = 1;
-                        }
-                        double amountBooster = 1;
-                        {
-                            //ITEMS BOOSTER
-                        }
-                        int finalAmount = (int) (result * amountBooster);
-                        if (finalAmount == 1 && amountBooster > 1) {
-                            if (threadLocalRandom.nextFloat() <= 0.5) {
-                                finalAmount = 2;
+        if (lootItems != null) {
+            List<NumberedPrisonItem> numberedItems = new ArrayList();
+            Map<Gamer, List<String>> itemsString = new HashMap();
+            lootItems.forEach(lootItem -> {
+                int amount = lootItem.getMinAmount() == lootItem.getMaxAmount() ? lootItem.getMaxAmount() : threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount());
+                PrisonItem prisonItem = lootItem.getPrisonItem();
+                if (threadLocalRandom.nextFloat() <= lootItem.getChance()) {
+                    numberedItems.add(new NumberedPrisonItem(prisonItem, amount));
+                    damageList.forEach((gamer, damagePercent) -> {
+                        double damageChance = damagePercent;
+                        if (threadLocalRandom.nextFloat() <= damageChance) {
+                            int result = amount;
+                            if (amount > damageList.size()) {
+                                result = (int) (amount * damagePercent);
+                                if (result == 0) result = 1;
                             }
+                            double amountBooster = 1;
+                            {
+                                //ITEMS BOOSTER
+                            }
+                            int finalAmount = (int) (result * amountBooster);
+                            if (finalAmount == 1 && amountBooster > 1) {
+                                if (threadLocalRandom.nextFloat() <= 0.5) {
+                                    finalAmount = 2;
+                                }
+                            }
+                            gamer.addItem(prisonItem.getItemStack(finalAmount), "MOB_LOOT");
+                            if (!itemsString.containsKey(gamer)) {
+                                itemsString.put(gamer, new ArrayList<>());
+                            }
+                            itemsString.get(gamer).add(prisonItem.getName() + "&a x" + finalAmount + (amountBooster > 1 ? " &7[&5x" + amountBooster + "&7]" : ""));
                         }
-                        gamer.addItem(prisonItem.getItemStack(finalAmount), "MOB_LOOT");
-                        if (!itemsString.containsKey(gamer)) {
-                            itemsString.put(gamer, new ArrayList<>());
-                        }
-                        itemsString.get(gamer).add(prisonItem.getName() + "&a x" + finalAmount + (amountBooster > 1 ? " &7[&5x" + amountBooster + "&7]" : ""));
-                    }
-                });
-            }
-        });
-        itemsString.forEach(((gamer, strings) -> {
-            gamer.sendMessage("Вам выпало: " + String.join(", ", strings));
-        }));
+                    });
+                }
+            });
+            itemsString.forEach(((gamer, strings) -> {
+                gamer.sendMessage("Вам выпало: " + String.join(", ", strings));
+            }));
+        }
         ComponentBuilder killsBuilder = new ComponentBuilder("§aНападавшие:");
         damageList.forEach((gamer, damagePercent) -> {
             killsBuilder.append(Utils.colored("\n  &7• " + "&c" + gamer.getName() + " &4" + (int) (damagePercent.doubleValue() * 100) + "%"));

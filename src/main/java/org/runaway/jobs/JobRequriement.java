@@ -2,6 +2,8 @@ package org.runaway.jobs;
 
 public enum JobRequriement {
     LEGENDARY_FISH("Легендарные рыбы", "leg_fish", true),
+    BOXES("Ящиков", "boxes", true),
+    LEVEL("Уровень", null, false),
     MONEY("Деньги", null, true);
 
     private String name;

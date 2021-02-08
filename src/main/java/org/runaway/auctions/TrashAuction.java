@@ -102,6 +102,7 @@ public class TrashAuction {
                 meta.setLore(is.getItemMeta().getLore());
             }*/
 
+            meta.setLore(is.getItemMeta().getLore());
             meta.setDisplayName(is.getItemMeta().getDisplayName());
             is.getItemMeta().getEnchants().forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
             real.setItemMeta(meta);

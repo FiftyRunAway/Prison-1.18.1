@@ -6,12 +6,14 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.entity.CustomEntity;
 import org.runaway.entity.mobs.CustomMonsterEntity;
 import org.runaway.entity.mobs.RatEntity;
+import org.runaway.entity.mobs.SpiderEntity;
 
 import java.util.Arrays;
 
 public enum MobType {
     RAT(60, RatEntity.class, null),
-    ZOMBIE(54, CustomMonsterEntity.class, null);
+    ZOMBIE(54, CustomMonsterEntity.class, null),
+    SPIDER(52, SpiderEntity.class, Material.WEB);
 
     String name;
     int id;

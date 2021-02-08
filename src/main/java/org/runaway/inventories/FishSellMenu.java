@@ -1,6 +1,7 @@
 package org.runaway.inventories;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
@@ -8,6 +9,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.enums.MoneyType;
 import org.runaway.fishing.EFish;
 import org.runaway.fishing.Fish;
+import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
@@ -50,6 +52,9 @@ public class FishSellMenu implements IMenus {
             });
             menu.addButton(btn);
         }
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВыйти").build().item()).setSlot(26);
+        back.setClickEvent(event -> event.getWhoClicked().closeInventory());
+        menu.addButton(back);
         player.openInventory(menu.build());
     }
 

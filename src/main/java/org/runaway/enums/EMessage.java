@@ -127,11 +127,12 @@ public enum  EMessage {
     DEPOSITDONATE("DonateDeposit", "&bВы пополнили ваш донат-счёт на &a%money%!"),
     FISHSELLING("SellFish", "&aВы продали %name% &aна &e%money%"),
     JOBUPGRADE("JobUpgrade", "&aВы повысили уровень своей работы - &e%job%!"),
-    JOBLEVEL("JobLevel", "&cЭта работа доступна только с &4%level% уровня"),
+    JOBLEVEL("JobLevel", "&cЭта работа доступна только с &4%level% &cуровня"),
     GIFTCHANGING("GiftChanging", "&cИнвентарь отправителя изменился. Не пытайтесь обмануть!"),
     STREAMSBUYING("StreamsBuying", "&eВведите в чат сумму, которую хотите внести на счёт. \n&eДля отмены действия напишите слово &4'отмена'"),
     INTERROR("IntError", "&cВы можете ввести &c&nтолько целое&r&c число стримов! \n&cПопробуйте ещё раз либо напишите слово &4'отмена'"),
-    DONATINGSTOP("StopDonating", "&cВы отменили пополнение счёта!");
+    DONATINGSTOP("StopDonating", "&cВы отменили пополнение счёта!"),
+    SELLTIT("SellIt", "&cЛучше продайте это у главного рыбака!");
 
     private String config, defaults;
     private EMessageType eMessageType;

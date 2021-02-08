@@ -1,9 +1,11 @@
 package org.runaway.jobs;
 
 import org.runaway.jobs.job.Fisherman;
+import org.runaway.jobs.job.Mover;
 
 public enum EJobs {
-    FISHERMAN(new Fisherman());
+    FISHERMAN(new Fisherman()),
+    MOVER(new Mover());
 
     private Job job;
 

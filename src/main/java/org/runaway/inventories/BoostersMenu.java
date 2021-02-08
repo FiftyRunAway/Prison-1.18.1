@@ -38,7 +38,7 @@ public class BoostersMenu implements IMenus {
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND_ORE).name("&cПостоянный ускоритель денег").lore(loreConst(gamer, false)).build().item()).setSlot(7));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_ORE).name("&cПостоянный ускоритель блоков").lore(loreConst(gamer, true)).build().item()).setSlot(6));
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(
-                ItemManager.getPrisonItem("back").getItemStack()).setSlot(8);
+                new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(8);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 

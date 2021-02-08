@@ -95,7 +95,6 @@ public class Spawner {
         this.hologram.appendTextLine(" ");
         ItemLine line = this.hologram.appendItemLine(type.getIcon());
         StandardMenu menu = StandardMenu.create(1, "&eУведомления");
-
         line.setTouchHandler(player -> {
             boolean has = false;
 

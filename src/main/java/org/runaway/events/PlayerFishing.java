@@ -47,9 +47,14 @@ public class PlayerFishing implements Listener {
     @EventHandler
     public void onPlayerFishing(PlayerFishEvent event) {
         event.setExpToDrop(0);
+
         if (event.getState() != PlayerFishEvent.State.FISHING &&
-                event.getCaught() != null && (Item)event.getCaught() != null) {
-            ((Item) event.getCaught()).setItemStack(new ItemStack(Material.AIR));
+                event.getCaught() != null) {
+            if (event.getCaught() instanceof Item) {
+                ((Item) event.getCaught()).setItemStack(new ItemStack(Material.AIR));
+            } else if (event.getCaught() instanceof Player) {
+                return;
+            }
         }
         Player player = event.getPlayer();
         if (!BlockBreak.isLocation(player.getLocation(), "fisherman")) return;
@@ -157,7 +162,7 @@ public class PlayerFishing implements Listener {
                             fishingList.remove(p.getUniqueId());
                             return;
                         }
-                        if (count[0] == 4) {
+                        if (p.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD || count[0] == 4) {
                             this.cancel();
                             //FishNoCatchEvent event = new FishNoCatchEvent(p);
                             //Bukkit.getPluginManager().callEvent((Event)event);

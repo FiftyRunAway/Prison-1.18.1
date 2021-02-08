@@ -1,25 +1,28 @@
 package org.runaway.entity;
 
 import net.minecraft.server.v1_12_R1.Entity;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Spider;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.runaway.LootItem;
+import org.bukkit.util.Vector;
+import org.runaway.entity.mobs.SpiderEntity;
 import org.runaway.entity.skills.DamageSkill;
+import org.runaway.entity.skills.MobSkill;
 import org.runaway.entity.skills.RepetitiveSkill;
+import org.runaway.enums.EConfig;
 import org.runaway.enums.MobType;
 import org.runaway.items.ItemManager;
+import org.runaway.rewards.LootItem;
+import org.runaway.tasks.SyncTask;
 import org.runaway.utils.Utils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MobManager {
     public static Map<Integer, Entity> idEntityMap = new HashMap();
@@ -28,7 +31,10 @@ public class MobManager {
     public static Map<String, Attributable> attributableMap = new HashMap();
 
     public MobManager() {
-        if(true) { //test
+        rats();
+        spider();
+
+        if(false) { //test
             MobLoot mobLoot = SimpleMobLoot.builder().minMoney(100).maxMoney(200)
                     .lootItems(Arrays.asList(
                             LootItem.builder().chance(0.2f).maxAmount(1).prisonItem(ItemManager.getPrisonItem("spickaxe3_7")).build(),
@@ -36,7 +42,7 @@ public class MobManager {
                     )).build();
             Attributable attributable = PrisonMobPattern.builder()
                     .mobLevel(3).damage(2).boss(false).health(50).speed(0.3)
-                    .regenerationDelay(15).regenerationValue(1)
+                    .regenerationDelay(15).regenerationValue(3)
                     .name("&aЗомби").techName("zombie")
                     .mobType(MobType.RAT)
                     .mobLoot(mobLoot)
@@ -77,6 +83,106 @@ public class MobManager {
                     .build();
             mobController.init();
         }
+    }
+
+    private void spider() {
+        ConfigurationSection section = getInfoSection(MobType.SPIDER);
+        int money = section.getInt("money");
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(money - 25).maxMoney(money).lootItems(
+                Arrays.asList(
+                        LootItem.builder().chance(0.6f).maxAmount(1).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("default_key")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(2).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
+                .regenerationDelay(30).regenerationValue(1)
+                .name(section.getString("name")).techName("spider")
+                .mobType(MobType.SPIDER)
+                .mobLoot(mobLoot)
+                .build();
+        List<MobSkill> skills = new ArrayList<>();
+        skills.add(new DamageSkill((entity, player) -> {
+            LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
+            if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
+                player.damage(2);
+                return;
+            }
+            if (ThreadLocalRandom.current().nextFloat() < 0.2) {
+                entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
+                        .filter(entity1 -> entity1 instanceof LivingEntity)
+                        .map(entity1 -> (LivingEntity) entity1)
+                        .forEach(le -> {
+                            le.damage(4);
+                            le.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1));
+                        });
+            }
+        }));
+        skills.add(new RepetitiveSkill((entity) -> {
+            entity.getBukkitEntity().getWorld().playEffect(entity.getBukkitEntity().getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
+            entity.getBukkitEntity().setVelocity(new Vector(0, 1, 0).multiply(1));
+
+            entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
+                    .filter(entity1 -> entity1 instanceof LivingEntity)
+                    .map(entity1 -> (LivingEntity) entity1)
+                    .forEach(livingEntity -> {
+                        livingEntity.damage(2);
+                        new SyncTask(() -> {
+                            livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+                            livingEntity.setVelocity(livingEntity.getVelocity().add(livingEntity.getLocation().getDirection()).multiply(-2));
+                        }, 25);
+                    });
+        }, 20 * 40));
+        addController(attributable, skills);
+    }
+
+    private void rats() {
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0).maxMoney(1).lootItems(null).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(1).damage(2).boss(false).health(12).speed(0.3)
+                .regenerationDelay(15).regenerationValue(1)
+                .name("&aТюремная крыса").techName("rat")
+                .mobType(MobType.RAT)
+                .mobLoot(mobLoot)
+                .build();
+        addController(attributable);
+    }
+
+    private static void addController(Attributable attributable) {
+        addController(attributable, null);
+    }
+
+    private static void addController(Attributable attributable, List<MobSkill> skills) {
+        if (!EConfig.MOBS.getConfig().contains("mobs")) return;
+        EConfig.MOBS.getConfig().getConfigurationSection("mobs").getKeys(false).forEach(s -> {
+            ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("mobs." + s);
+            if (!section.getString("type").equals(attributable.getMobType().name().toLowerCase())) return;
+            MobController mobController;//тут паттерн моба
+            if (skills != null) {
+                mobController = MobController.builder()
+                        .attributable(attributable) //тут паттерн моба
+                        .mobRandom(new Random())
+                        .mobSkillList(skills)
+                        .spawnLocation(Utils.unserializeLocation(section.getString("location")))
+                        .respawnTime(EConfig.MOBS.getConfig().getInt(attributable.getMobType().name().toLowerCase() + ".interval")) //sec
+                        .lastDeathTime(section.getLong("lastDeathTime"))
+                        .UID(s)
+                        .build();
+            } else {
+                mobController = MobController.builder()
+                        .attributable(attributable) //тут паттерн моба
+                        .mobRandom(new Random())
+                        .spawnLocation(Utils.unserializeLocation(section.getString("location")))
+                        .respawnTime(EConfig.MOBS.getConfig().getInt(attributable.getMobType().name().toLowerCase() + ".interval")) //sec
+                        .lastDeathTime(section.getLong("lastDeathTime"))
+                        .UID(s)
+                        .build();
+            }
+            mobController.init();
+        });
+    }
+
+    private static ConfigurationSection getInfoSection(MobType type) {
+        return EConfig.MOBS.getConfig().getConfigurationSection(type.name().toLowerCase());
     }
 
     public static Attributable getAttributable(String techName) {

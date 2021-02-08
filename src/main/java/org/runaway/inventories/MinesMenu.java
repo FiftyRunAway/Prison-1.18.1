@@ -59,7 +59,7 @@ public class MinesMenu implements IMenus {
                     g.teleport(j.getLocation(j));
                     p.closeInventory();
                 } else {
-                    gamer.sendMessage(Utils.colored(EMessage.MINELEVEL.getMessage().replaceAll("%level%", j.getLevel() + "")));
+                    gamer.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replaceAll("%level%", j.getLevel() + "")));
                 }
             });
             menu.addButton(btn);
@@ -76,7 +76,7 @@ public class MinesMenu implements IMenus {
         base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
         menu.addButton(base);
 
-        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(ItemManager.getPrisonItem("back").getItemStack()).setSlot(44);
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 

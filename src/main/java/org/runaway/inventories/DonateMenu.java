@@ -67,7 +67,7 @@ public class DonateMenu implements IMenus {
             mn.setClickEvent(event -> buy(donate, event.getWhoClicked(), menu.build()));
             menu.addButton(mn);
         }
-        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(ItemManager.getPrisonItem("back").getItemStack()).setSlot(44);
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 

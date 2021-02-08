@@ -71,11 +71,12 @@ public abstract class Job {
     }
 
     public static void removeStatistics(Gamer gamer, JobReq requriement) {
-        gamer.getJobValues().put(requriement.getRequriement().getName(),
+        gamer.getJobValues().put(requriement.getRequriement().getConfig(),
                 getStatistics(gamer, requriement.getRequriement()) - requriement.getValue());
     }
 
     public static boolean hasStatistics(Gamer gamer, JobReq req) {
+        if (req.getRequriement() == JobRequriement.LEVEL) return gamer.getIntStatistics(EStat.LEVEL) >= req.getValue();
         if (req.getRequriement() == JobRequriement.MONEY) return gamer.getDoubleStatistics(EStat.MONEY) >= req.getValue();
         return getStatistics(gamer, req.getRequriement()) >= req.getValue();
     }

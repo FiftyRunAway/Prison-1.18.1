@@ -11,7 +11,7 @@ public interface IReward {
 
     String getName();
 
-    default double getChance() {
+    default float getChance() {
         throw new UnsupportedOperationException();
     }
 

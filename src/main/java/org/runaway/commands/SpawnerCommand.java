@@ -1,6 +1,7 @@
 package org.runaway.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.runaway.utils.Utils;
@@ -40,23 +41,14 @@ public class SpawnerCommand extends CommandManager {
                 return;
             }
             ConfigurationSection section;
-            if (true) {
-                AtomicInteger num = new AtomicInteger(1);
-                EConfig.MOBS.getConfig().getConfigurationSection("mobs").getKeys(false).forEach(s -> {
-                    if (s.contains(args[1].toLowerCase())) {
-                        int i = Integer.parseInt(s.replace(args[1], ""));
-                        if (i > num.get()) num.set(i);
-                    }
-                });
-                int next = num.get() + 1;
-                EConfig.MOBS.getConfig().getConfigurationSection("mobs").createSection(args[1].toLowerCase() + next);
-                section = EConfig.MOBS.getConfig().getConfigurationSection("mobs." + args[1].toLowerCase() + next);
-            } else {
-                EConfig.MOBS.getConfig().getConfigurationSection("mobs").createSection(args[1].toLowerCase());
-                section = EConfig.MOBS.getConfig().getConfigurationSection("mobs." + args[1].toLowerCase());
-            }
+            String uid = Utils.generateUID();
+            Configuration cfg = EConfig.MOBS.getConfig();
+            if (!cfg.contains("mobs")) cfg.createSection("mobs");
+            section = cfg.createSection("mobs." + uid);
+
             section.set("location", Utils.serializeLocation(p.getLocation()));
             section.set("type", args[1].toLowerCase());
+            section.set("lastDeathTime", -1);
             p.sendMessage(Utils.colored("&aВы успешно установили спавнер &2" + args[1].toUpperCase()));
             EConfig.MOBS.saveConfig();
         } else {

@@ -45,10 +45,10 @@ public class BoosterMenu implements IMenus {
         mn.setSlot(5); mn.setClickEvent(event -> loadMenu(gamer, money, BoosterType.MONEY));
         menu.addButton(mn);
 
-        MenuButton button = DefaultButtons.RETURN.getButtonOfItemStack(ItemManager.getPrisonItem("back").getItemStack());
+        MenuButton button = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item());
         button.setSlot(26); blocks.addButton(button); money.addButton(button);
 
-        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(ItemManager.getPrisonItem("back").getItemStack()).setSlot(8);
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(8);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 

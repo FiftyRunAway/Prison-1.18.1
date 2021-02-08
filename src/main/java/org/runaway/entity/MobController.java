@@ -18,6 +18,7 @@ import org.runaway.Prison;
 import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.MobSkill;
 import org.runaway.entity.skills.RepetitiveSkill;
+import org.runaway.enums.EConfig;
 import org.runaway.managers.GamerManager;
 import org.runaway.tasks.Cancellable;
 import org.runaway.tasks.SyncRepeatTask;
@@ -226,7 +227,8 @@ public class MobController implements IMobController {
 
     public void save() {
         if (getRespawnTime() == 0) return;
-        // save death time config.set("spawners." + uid + ".lastDeathTime", getLastDeathTime());
+        EConfig.MOBS.getConfig().set("mobs." + getUID() + ".lastDeathTime", getLastDeathTime());
+        EConfig.MOBS.saveConfig();
     }
 
     @Override

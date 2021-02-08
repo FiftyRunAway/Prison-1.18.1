@@ -2,6 +2,7 @@ package org.runaway.inventories;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.items.Item;
@@ -43,7 +44,7 @@ public class JobUpgradeMenu implements IMenus {
             Gamer g = GamerManager.getGamer(player);
             for (JobReq jobReq : job.getLevels().get(Job.getLevel(g, job))) {
                 if (!Job.hasStatistics(g, jobReq)) {
-                    g.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName())));
+                    g.sendMessage(Utils.colored(EMessage.NOTENOUGHPROPERTY.getMessage().replace("%property%", jobReq.getRequriement().getName().toLowerCase())));
                     player.closeInventory();
                     return;
                 } else {
@@ -54,6 +55,7 @@ public class JobUpgradeMenu implements IMenus {
             }
             Job.addStatistics(g, job.getClass().getSimpleName().toLowerCase());
             player.sendMessage(Utils.colored(EMessage.JOBUPGRADE.getMessage().replace("%job%", job.getName())));
+            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_FALL, 10, 10);
             g.sendTitle("&b" + job.getName(), "&eповышен уровень работы!");
             player.closeInventory();
         });
@@ -73,6 +75,9 @@ public class JobUpgradeMenu implements IMenus {
                         .build())
                 .build().item()).setSlot(15);
         menu.addButton(desc);
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВыйти").build().item()).setSlot(26);
+        back.setClickEvent(event -> event.getWhoClicked().closeInventory());
+        menu.addButton(back);
         return menu;
     }
 

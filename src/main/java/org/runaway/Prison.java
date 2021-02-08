@@ -13,10 +13,7 @@ import lombok.Getter;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -45,6 +42,8 @@ import org.runaway.entity.MobManager;
 import org.runaway.entity.Spawner;
 import org.runaway.enums.*;
 import org.runaway.events.*;
+import org.runaway.fishing.EFish;
+import org.runaway.fishing.EFishType;
 import org.runaway.inventories.*;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
@@ -115,7 +114,7 @@ public class Prison extends JavaPlugin {
     public static boolean useBannerBoard;
     public static boolean useTelegramBots;
 
-    public static TrashAuction trashAuction;
+    public List<String> fish_food = new ArrayList<>();
 
     //Telegram
     public String bot_username;
@@ -199,6 +198,7 @@ public class Prison extends JavaPlugin {
 
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
         SPAWN = Utils.getLocation("spawn");
+        Arrays.stream(EFish.values()).forEach(fish -> fish_food.add(ChatColor.stripColor(fish.getFish().getName())));
         Bukkit.getServer().getWorlds().forEach(world -> world.setGameRuleValue("announceAdvancements", "false"));
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.MONITOR, PacketType.Play.Client.USE_ENTITY) {
             @Override
