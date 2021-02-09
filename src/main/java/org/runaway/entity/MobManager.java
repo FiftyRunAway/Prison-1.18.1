@@ -87,7 +87,7 @@ public class MobManager {
         int money = section.getInt("money");
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(money - 25).maxMoney(money).lootItems(
                 Arrays.asList(
-                        LootItem.builder().chance(0.6f).maxAmount(1).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.6f).amount(1).prisonItem(ItemManager.getPrisonItem("star")).build(),
                         LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("default_key")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()

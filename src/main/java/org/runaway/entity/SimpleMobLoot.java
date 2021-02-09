@@ -49,7 +49,8 @@ public class SimpleMobLoot implements MobLoot {
             List<NumberedPrisonItem> numberedItems = new ArrayList();
             Map<Gamer, List<String>> itemsString = new HashMap();
             lootItems.forEach(lootItem -> {
-                int amount = lootItem.getMinAmount() == lootItem.getMaxAmount() ? lootItem.getMaxAmount() : threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount());
+                //int amount = lootItem.getMinAmount() == lootItem.getMaxAmount() ? lootItem.getMaxAmount() : threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount());
+                int amount = lootItem.getAmount() == 0 ? threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount()) : lootItem.getAmount();
                 PrisonItem prisonItem = lootItem.getPrisonItem();
                 if (threadLocalRandom.nextFloat() <= lootItem.getChance()) {
                     numberedItems.add(new NumberedPrisonItem(prisonItem, amount));
@@ -57,7 +58,7 @@ public class SimpleMobLoot implements MobLoot {
                         double damageChance = damagePercent;
                         if (threadLocalRandom.nextFloat() <= damageChance) {
                             int result = amount;
-                            if (amount >= damageList.size()) {
+                            if (amount > damageList.size()) {
                                 result = (int) (amount * damagePercent);
                                 if (result == 0) result = 1;
                             }
