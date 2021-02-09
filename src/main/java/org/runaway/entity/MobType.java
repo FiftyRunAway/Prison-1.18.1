@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.entity.mobs.CustomMonsterEntity;
 import org.runaway.entity.mobs.SilverfishEntity;
+import org.runaway.entity.mobs.SlimeEntity;
 import org.runaway.entity.mobs.SpiderEntity;
 
 import java.util.Arrays;
@@ -12,7 +13,8 @@ import java.util.Arrays;
 public enum MobType {
     SILVERFISH(60, SilverfishEntity.class, null),
     ZOMBIE(54, CustomMonsterEntity.class, null),
-    SPIDER(52, SpiderEntity.class, Material.WEB);
+    SPIDER(52, SpiderEntity.class, Material.WEB),
+    SLIME(55, SlimeEntity.class, Material.SLIME_BALL);
 
     String name;
     int id;

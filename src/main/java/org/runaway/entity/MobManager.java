@@ -1,9 +1,11 @@
 package org.runaway.entity;
 
 import net.minecraft.server.v1_12_R1.Entity;
+import net.minecraft.server.v1_12_R1.EntitySlime;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Slime;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -14,6 +16,7 @@ import org.runaway.entity.skills.MobSkill;
 import org.runaway.entity.skills.RepetitiveSkill;
 import org.runaway.enums.EConfig;
 import org.runaway.items.ItemManager;
+import org.runaway.managers.GamerManager;
 import org.runaway.rewards.LootItem;
 import org.runaway.tasks.SyncTask;
 import org.runaway.utils.Utils;
@@ -30,62 +33,55 @@ public class MobManager {
     public MobManager() {
         rats();
         spider();
-        initAllControllers();
-        if(false) { //test
-            MobLoot mobLoot = SimpleMobLoot.builder().minMoney(100).maxMoney(200)
-                    .lootItems(Arrays.asList(
-                            LootItem.builder().chance(0.2f).maxAmount(1).prisonItem(ItemManager.getPrisonItem("spickaxe3_7")).build(),
-                            LootItem.builder().chance(0.3f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("shears0_1")).build()
-                    )).build();
-            Attributable attributable = PrisonMobPattern.builder()
-                    .mobLevel(3).damage(2).boss(false).health(50).speed(0.3)
-                    .regenerationDelay(15).regenerationValue(3)
-                    .name("&aЗомби").techName("zombie")
-                    .mobType(MobType.SILVERFISH)
-                    .mobLoot(mobLoot)
-                    .boss(true)
-                    .onSpawnConsumer(livingEntity -> {
-                        EntityEquipment entityEquipment = livingEntity.getEquipment();
-                        entityEquipment.setHelmet(new ItemStack(Material.IRON_HELMET));
-                        entityEquipment.setItemInMainHand(new ItemStack(Material.IRON_SWORD));
-                    })
-                    .build();
+        slime();
 
-            MobController mobController = MobController.builder()
-                    .attributable(attributable) //тут паттерн моба
-                    .mobRandom(new Random())
-                    .mobSkillList(Arrays.asList(
-                            new DamageSkill((entity, player) -> { //умение при атаке со стороны игрока
-                                LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
-                                if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
-                                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 1));
-                                    player.damage(2);
-                                }
-                            }),
-                            new RepetitiveSkill(entity -> { //повторяющееся умение
-                                entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
-                                        .filter(entity1 -> entity1 instanceof LivingEntity)
-                                        .map(entity1 -> (LivingEntity) entity1)
-                                        .forEach(livingEntity -> {
-                                            livingEntity.damage(4);
-                                            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 10));
-                                            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 2));
-                                        });
-                            }, 20 * 30)
-                    ))
-                    .spawnLocation(new Location(Bukkit.getWorld("Prison"), 680, 75, -540))
-                    .respawnTime(30) //sec
-                    .lastDeathTime(-1)
-                    .UID(Utils.generateUID())
-                    .build();
-            mobController.init();
-        }
+        initAllControllers();
+    }
+
+    private void slime() {
+        ConfigurationSection section = getInfoSection("slime");
+        int money = section.getInt("money");
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
+                Arrays.asList(
+                        LootItem.builder().chance(0.6f).minAmount(0).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.8f).minAmount(6).maxAmount(12).prisonItem(ItemManager.getPrisonItem("default_key")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(3).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
+                .regenerationDelay(25).regenerationValue(1)
+                .name(section.getString("name")).techName("slime")
+                .mobType(MobType.SLIME)
+                .mobLoot(mobLoot)
+                .build();
+        List<MobSkill> skills = new ArrayList<>();
+        skills.add(new DamageSkill(((entity, player) -> {
+            LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
+            if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 220, 1));
+                player.damage(4);
+            }
+        })));
+        skills.add(new RepetitiveSkill(entity ->
+                entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
+                .filter(entity1 -> entity1 instanceof LivingEntity)
+                .map(entity1 -> (LivingEntity) entity1)
+                .forEach(livingEntity -> {
+                    livingEntity.damage(2);
+                    new SyncTask(() -> {
+                        GamerManager.getGamer(livingEntity.getUniqueId()).sendMessage("&eНе ожидали от меня такого?");
+                        livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_SPLASH_POTION_BREAK, 1.0f, 1.0f);
+                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 140, 2));
+                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 140, 2));
+                    }, 25);
+                }), 20 * 75));
+        attributable.setMobSkills(skills);
+        addController(attributable);
     }
 
     private void spider() {
-        ConfigurationSection section = getInfoSection(MobType.SPIDER);
+        ConfigurationSection section = getInfoSection("spider");
         int money = section.getInt("money");
-        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(money - 25).maxMoney(money).lootItems(
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.6f).amount(1).prisonItem(ItemManager.getPrisonItem("star")).build(),
                         LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("default_key")).build()
@@ -162,14 +158,18 @@ public class MobManager {
         });
     }
 
+    private static int getMinMoney(int maximum) {
+        return maximum - Math.round((float) maximum / 10);
+    }
+
     public static void addController(Attributable attributable) {
         if(!attributableMap.containsKey(attributable.getTechName())) {
             attributableMap.put(attributable.getTechName(), attributable);
         }
     }
 
-    private static ConfigurationSection getInfoSection(MobType type) {
-        return EConfig.MOBS.getConfig().getConfigurationSection(type.name().toLowerCase());
+    private static ConfigurationSection getInfoSection(String mobName) {
+        return EConfig.MOBS.getConfig().getConfigurationSection(mobName);
     }
 
     public static Attributable getAttributable(String techName) {
