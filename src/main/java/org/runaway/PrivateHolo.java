@@ -26,6 +26,10 @@ public class PrivateHolo {
         this(player, loc.add(0d, st.getToRemove(), 0d), String.format(st.getText(), value), 50);
     }
 
+    public PrivateHolo(Player player, Location loc, StandType st, double value) {
+        this(player, loc.add(0d, st.getToRemove(), 0d), String.format(st.getText(), value), 50);
+    }
+
     public PrivateHolo(Player player, Location loc, String value, int delay) {
         WorldServer s = ((CraftWorld) loc.getWorld()).getHandle();
         EntityArmorStand stand = new EntityArmorStand(s);
@@ -58,7 +62,7 @@ public class PrivateHolo {
 
     @Getter
     public enum StandType {
-        MONEY("§b+%s$", 0.2),
+        MONEY("§b+%.2f$", 0.2),
         ANOTHER("§d+%s", -0.1);
 
         double toRemove;

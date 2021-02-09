@@ -47,8 +47,9 @@ public class MobController implements IMobController {
     private List<Cancellable> mobTasks;
     private MobRare mobRare;
 
-    public void init() {
+    public MobController init() {
         setMobRare(MobRare.DEFAULT);
+        setMobRandom(new Random());
         setMobTasks(new ArrayList());
         setDamageMap(new HashMap());
         initFirstSpawn();
@@ -61,6 +62,7 @@ public class MobController implements IMobController {
         }
         MobManager.uidMobControllerMap.put(getUID(), this);
         MobManager.attributableMap.put(attributable.getTechName(), attributable);
+        return this;
     }
 
     @Override

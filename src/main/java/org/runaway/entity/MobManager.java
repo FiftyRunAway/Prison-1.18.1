@@ -33,7 +33,7 @@ public class MobManager {
     public MobManager() {
         rats();
         spider();
-
+        initAllControllers();
         if(false) { //test
             MobLoot mobLoot = SimpleMobLoot.builder().minMoney(100).maxMoney(200)
                     .lootItems(Arrays.asList(
@@ -132,11 +132,12 @@ public class MobManager {
                         }, 25);
                     });
         }, 20 * 40));
-        addController(attributable, skills);
+        attributable.setMobSkills(skills);
+        addController(attributable);
     }
 
     private void rats() {
-        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0).maxMoney(1).lootItems(null).build();
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0).maxMoney(1).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(1).damage(2).boss(false).health(12).speed(0.3)
                 .regenerationDelay(15).regenerationValue(1)
@@ -147,38 +148,27 @@ public class MobManager {
         addController(attributable);
     }
 
-    private static void addController(Attributable attributable) {
-        addController(attributable, null);
-    }
-
-    private static void addController(Attributable attributable, List<MobSkill> skills) {
+    private static void initAllControllers() {
         if (!EConfig.MOBS.getConfig().contains("mobs")) return;
         EConfig.MOBS.getConfig().getConfigurationSection("mobs").getKeys(false).forEach(s -> {
             ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("mobs." + s);
-            if (!section.getString("type").equals(attributable.getMobType().name().toLowerCase())) return;
-            MobController mobController;//тут паттерн моба
-            if (skills != null) {
-                mobController = MobController.builder()
-                        .attributable(attributable) //тут паттерн моба
-                        .mobRandom(new Random())
-                        .mobSkillList(skills)
-                        .spawnLocation(Utils.unserializeLocation(section.getString("location")))
-                        .respawnTime(EConfig.MOBS.getConfig().getInt(attributable.getMobType().name().toLowerCase() + ".interval")) //sec
-                        .lastDeathTime(section.getLong("lastDeathTime"))
-                        .UID(s)
-                        .build();
-            } else {
-                mobController = MobController.builder()
-                        .attributable(attributable) //тут паттерн моба
-                        .mobRandom(new Random())
-                        .spawnLocation(Utils.unserializeLocation(section.getString("location")))
-                        .respawnTime(EConfig.MOBS.getConfig().getInt(attributable.getMobType().name().toLowerCase() + ".interval")) //sec
-                        .lastDeathTime(section.getLong("lastDeathTime"))
-                        .UID(s)
-                        .build();
-            }
-            mobController.init();
+            Attributable attributable = getAttributable(section.getString("type"));
+            MobController.builder()
+                    .attributable(attributable) //тут паттерн моба
+                    .spawnLocation(Utils.unserializeLocation(section.getString("location")))
+                    .respawnTime(section.getInt("respawnTime")) //sec
+                    .lastDeathTime(section.getLong("lastDeathTime"))
+                    .UID(s)
+                    .mobSkillList(attributable.getMobSkills())
+                    .build()
+                    .init();
         });
+    }
+
+    public static void addController(Attributable attributable) {
+        if(!attributableMap.containsKey(attributable.getTechName())) {
+            attributableMap.put(attributable.getTechName(), attributable);
+        }
     }
 
     private static ConfigurationSection getInfoSection(MobType type) {
