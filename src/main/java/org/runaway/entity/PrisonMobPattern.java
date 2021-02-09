@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.runaway.entity.skills.MobSkill;
-import org.runaway.enums.MobType;
 
 import java.util.List;
 import java.util.function.Consumer;

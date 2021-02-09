@@ -4,18 +4,15 @@ import net.minecraft.server.v1_12_R1.Entity;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Spider;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.runaway.entity.mobs.SpiderEntity;
 import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.MobSkill;
 import org.runaway.entity.skills.RepetitiveSkill;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.MobType;
 import org.runaway.items.ItemManager;
 import org.runaway.rewards.LootItem;
 import org.runaway.tasks.SyncTask;
@@ -44,7 +41,7 @@ public class MobManager {
                     .mobLevel(3).damage(2).boss(false).health(50).speed(0.3)
                     .regenerationDelay(15).regenerationValue(3)
                     .name("&aЗомби").techName("zombie")
-                    .mobType(MobType.RAT)
+                    .mobType(MobType.SILVERFISH)
                     .mobLoot(mobLoot)
                     .boss(true)
                     .onSpawnConsumer(livingEntity -> {
@@ -142,7 +139,7 @@ public class MobManager {
                 .mobLevel(1).damage(2).boss(false).health(12).speed(0.3)
                 .regenerationDelay(15).regenerationValue(1)
                 .name("&aТюремная крыса").techName("rat")
-                .mobType(MobType.RAT)
+                .mobType(MobType.SILVERFISH)
                 .mobLoot(mobLoot)
                 .build();
         addController(attributable);

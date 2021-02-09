@@ -9,13 +9,11 @@ import org.runaway.entity.MobController;
 import org.runaway.entity.MobManager;
 import org.runaway.utils.Utils;
 import org.runaway.enums.EConfig;
-import org.runaway.enums.MobType;
+import org.runaway.entity.MobType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpawnerCommand extends CommandManager {
 

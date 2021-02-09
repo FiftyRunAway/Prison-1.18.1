@@ -1,17 +1,16 @@
-package org.runaway.enums;
+package org.runaway.entity;
 
 import net.minecraft.server.v1_12_R1.Entity;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.runaway.entity.CustomEntity;
 import org.runaway.entity.mobs.CustomMonsterEntity;
-import org.runaway.entity.mobs.RatEntity;
+import org.runaway.entity.mobs.SilverfishEntity;
 import org.runaway.entity.mobs.SpiderEntity;
 
 import java.util.Arrays;
 
 public enum MobType {
-    RAT(60, RatEntity.class, null),
+    SILVERFISH(60, SilverfishEntity.class, null),
     ZOMBIE(54, CustomMonsterEntity.class, null),
     SPIDER(52, SpiderEntity.class, Material.WEB);
 

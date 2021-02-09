@@ -3,7 +3,6 @@ package org.runaway.entity;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import org.runaway.enums.MobType;
 
 import java.util.HashMap;
 
