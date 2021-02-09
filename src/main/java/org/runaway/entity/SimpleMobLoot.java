@@ -35,7 +35,7 @@ public class SimpleMobLoot implements MobLoot {
             if (money != 0) {
                 gamer.depositMoney(money * damagePercent);
             }
-            new PrivateHolo(gamer.getPlayer(), location, PrivateHolo.StandType.MONEY, String.format("%.2f", money * damagePercent));
+            new PrivateHolo(gamer.getPlayer(), location, PrivateHolo.StandType.MONEY, money * damagePercent);
             if (damagePercent * 100 > needToKill) {
                 gamer.increaseQuestValue(attributable.getTechName() + "Kill", 1);
                 gamer.increaseQuestValue("mobKills", 1);
@@ -57,7 +57,7 @@ public class SimpleMobLoot implements MobLoot {
                         double damageChance = damagePercent;
                         if (threadLocalRandom.nextFloat() <= damageChance) {
                             int result = amount;
-                            if (amount > damageList.size()) {
+                            if (amount >= damageList.size()) {
                                 result = (int) (amount * damagePercent);
                                 if (result == 0) result = 1;
                             }

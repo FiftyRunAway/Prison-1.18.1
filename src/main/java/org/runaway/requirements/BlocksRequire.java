@@ -23,7 +23,7 @@ public class BlocksRequire implements Require {
 
     @Override
     public String getName() {
-        return "Вскопайте " + (getLocalizedBlock() != null ? "блок " + getLocalizedBlock().getNormalName() : "блоки");
+        return "Вскопайте " + (getLocalizedBlock() != null ? getLocalizedBlock().getNormalName() : "блоки");
     }
 
     @Override
