@@ -6,6 +6,7 @@ import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Prison;
+import org.runaway.auctions.TrashAuction;
 import org.runaway.enums.EMessage;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
@@ -39,6 +40,9 @@ public class ItemCommand extends CommandManager {
                         ItemManager.getPrisonItemMap().forEach((techName, prisonItem) -> {
                             gamer.sendMessage("Тех. название: " + techName + ";Предмет: " + prisonItem.getItemStack());
                         });
+                        break;
+                    case "auction":
+                        TrashAuction.startAuction();
                         break;
                     case "info":
                         gamer.sendMessage("&aИнформация о предмете:");
