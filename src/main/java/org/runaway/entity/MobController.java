@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.v1_12_R1.DamageSource;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -67,6 +68,9 @@ public class MobController implements IMobController {
 
     @Override
     public void spawn() {
+        if(getMobRandom().nextFloat() <= 0.2) {
+            setMobRare(MobRare.RARE);
+        }
         net.minecraft.server.v1_12_R1.Entity entity = CustomEntity.spawnEntity(getAttributable().getMobType(), getSpawnLocation(), this);
         if (getRespawnTime() != 0) {
             if (getInfoHologram() != null) {
@@ -107,7 +111,8 @@ public class MobController implements IMobController {
 
     public void updateCustomName() {
         if(!isAlive()) return;
-        getBukkitEntity().setCustomName(Utils.colored("&7[" + attributable.getMobLevel() + "&7] " + attributable.getName() + "&4 ❤ " + (int) getBukkitEntity().getHealth()));
+        String mobName = getMobRare() == MobRare.DEFAULT ? attributable.getName() : getMobRare().getNamePrefix() + ChatColor.stripColor(attributable.getName()) + " &4&l☠";
+        getBukkitEntity().setCustomName(Utils.colored("&7[" + attributable.getMobLevel() + "&7] " + mobName + "&4 ❤ " + (int) getBukkitEntity().getHealth()));
     }
 
     public void initSkills() {
@@ -190,6 +195,7 @@ public class MobController implements IMobController {
             MobManager.uidMobControllerMap.remove(getUID());
             if (getSpawnTask() != null) getSpawnTask().stop();
         }
+        setMobRare(MobRare.DEFAULT);
         getDamageMap().forEach((nickname, damage) -> {
             if (getTotalDamage() == 0) {
                 setTotalDamage(1);

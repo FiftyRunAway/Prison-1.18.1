@@ -17,7 +17,6 @@ public class CustomMonsterEntity extends EntityMonster {
         super(((CraftWorld) mobController.getSpawnLocation().getWorld()).getHandle());
         this.iMobController = mobController;
         this.attributable = iMobController.getAttributable();
-        this.setCustomName(Utils.colored(attributable.getName()));
         double health = attributable.getHealth();
         double damage = attributable.getDamage();
         double speed = attributable.getSpeed();
@@ -46,6 +45,7 @@ public class CustomMonsterEntity extends EntityMonster {
         this.canPickUpLoot = false;
         this.fireProof = true;
         this.persistent = true;
+        mobController.getSpawnLocation().getChunk().load();
     }
 
     public boolean damageEntity(DamageSource damagesource, float f) {
