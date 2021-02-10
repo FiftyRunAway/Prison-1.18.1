@@ -151,6 +151,7 @@ public class Prison extends JavaPlugin {
         String language = "ru_ru";
         this.downloadAndApplyLanguage(language);
         FileConfiguration loader = EConfig.MODULES.getConfig();
+        if (loader.getBoolean("register.mobs")) registerMobs();
         loadSQLite();
         loadTasks();
         if (loader.getBoolean("register.events")) registerEvents();
@@ -180,7 +181,6 @@ public class Prison extends JavaPlugin {
 
         if (loader.getBoolean("loader.battlepass")) BattlePass.load();
 
-        if (loader.getBoolean("register.mobs")) registerMobs();
 
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
         SPAWN = Utils.getLocation("spawn");

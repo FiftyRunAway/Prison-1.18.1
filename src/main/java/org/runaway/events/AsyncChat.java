@@ -77,7 +77,7 @@ public class AsyncChat implements Listener {
             gamer.sendMessage(EMessage.NOMESSAGE);
             return;
         }
-        final String format = gamer.getFaction().getColor() + gamer.getFaction().getName() + ChatColor.GRAY + " | " + prefix + player.getName() + ChatColor.GRAY + " » " + ChatColor.BLUE;
+        final String format = gamer.getFaction().getColor() + gamer.getFaction().getName() + ChatColor.GRAY + " | " + prefix + player.getName() + ChatColor.GRAY + " > " + ChatColor.BLUE;
         Bukkit.getConsoleSender().sendMessage(format + message.replace("@", ""));
         event.getRecipients().forEach(players -> {
             Gamer g = GamerManager.getGamer(players.getUniqueId());

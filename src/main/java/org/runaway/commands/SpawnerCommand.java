@@ -30,9 +30,9 @@ public class SpawnerCommand extends CommandManager {
             return;
         }
         if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
-            MobType entity;
+            Attributable attributable;
             try {
-                entity = MobType.valueOf(args[1].toUpperCase());
+                attributable = MobManager.getAttributable(args[1]);
             } catch (Exception ex) {
                 p.sendMessage(Utils.colored("&cОшибка: Нет такого вида моба!"));
                 return;
@@ -49,7 +49,6 @@ public class SpawnerCommand extends CommandManager {
             section.set("lastDeathTime", -1);
             p.sendMessage(Utils.colored("&aВы успешно установили спавнер &2" + args[1].toUpperCase()));
             EConfig.MOBS.saveConfig();
-            Attributable attributable = MobManager.getAttributable(args[1]);
             MobController.builder()
                     .attributable(attributable) //тут паттерн моба
                     .spawnLocation(p.getLocation())

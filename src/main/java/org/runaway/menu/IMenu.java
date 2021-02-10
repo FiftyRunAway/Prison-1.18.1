@@ -69,6 +69,9 @@ public abstract class IMenu implements InventoryHolder {
     }
 
     public void open(Gamer gamer) {
+        if(gamer.getCurrentIMenu() != null) {
+            gamer.getPlayer().closeInventory();
+        }
         build();
         gamer.setCurrentIMenu(this);
         gamer.getPlayer().openInventory(getInventory());
