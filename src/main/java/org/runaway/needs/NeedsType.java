@@ -6,7 +6,9 @@ import java.util.ArrayList;
 
 public enum NeedsType {
 
-    WASH, TOILET, SLEEP;
+    WASH,
+    //TOILED,
+    SLEEP;
 
     public static ArrayList<String> getProperties(NeedsType type) {
         ArrayList<String> list = new ArrayList<>();
@@ -16,11 +18,11 @@ public enum NeedsType {
                 list.add("Срочно идите в душ!%/spawn и налево");
                 list.add("&cСрочно помойтесь.");
                 break;
-            case TOILET:
+            /*case TOILET:
                 list.add("Туалет");
                 list.add("Срочно сходите в туалет!%/spawn и налево");
                 list.add("&cБегите в туалет.");
-                break;
+                break; */
             case SLEEP:
                 list.add("Сон");
                 list.add("Закрываются глаза!%Вы хотите спать");
@@ -36,8 +38,8 @@ public enum NeedsType {
         switch (type) {
             case WASH:
                 return PotionEffectType.CONFUSION;
-            case TOILET:
-                return PotionEffectType.SLOW;
+            /*case TOILET:
+                return PotionEffectType.SLOW; */
             case SLEEP:
                 return PotionEffectType.SLOW_DIGGING;
         }
@@ -48,8 +50,8 @@ public enum NeedsType {
         switch (type) {
             case WASH:
                 return 1;
-            case TOILET:
-                return 2;
+            /*case TOILET:
+                return 2; */
             case SLEEP:
                 return 3;
         }
