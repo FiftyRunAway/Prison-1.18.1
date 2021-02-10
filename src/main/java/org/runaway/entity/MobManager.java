@@ -34,6 +34,7 @@ public class MobManager {
 
     public MobManager() {
         rats();
+        zombie();
         spider();
         slime();
         golem();
@@ -206,12 +207,28 @@ public class MobManager {
     }
 
     private void rats() {
-        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0).maxMoney(1).build();
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0.1).maxMoney(0.50).build();
         Attributable attributable = PrisonMobPattern.builder()
-                .mobLevel(1).damage(2).boss(false).health(12).speed(0.3)
+                .mobLevel(1).damage(2).boss(false).health(12).speed(0.025)
                 .regenerationDelay(15).regenerationValue(1)
                 .name("&aТюремная крыса").techName("rat")
                 .mobType(MobType.SILVERFISH)
+                .mobLoot(mobLoot)
+                .build();
+        addController(attributable);
+    }
+
+    private void zombie() {
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0.8).maxMoney(1.25)
+                .lootItems(Arrays.asList(
+                        LootItem.builder().chance(0.08f).amount(1).prisonItem(ItemManager.getPrisonItem("gapple")).build(),
+                        LootItem.builder().chance(0.12f).minAmount(1).maxAmount(4).prisonItem(ItemManager.getPrisonItem("arrow")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(1).damage(4).boss(false).health(50).speed(0.025)
+                .regenerationDelay(30).regenerationValue(1)
+                .name("&aЗомби").techName("zombie")
+                .mobType(MobType.ZOMBIE)
                 .mobLoot(mobLoot)
                 .build();
         addController(attributable);
