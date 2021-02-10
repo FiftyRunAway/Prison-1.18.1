@@ -70,12 +70,6 @@ public class PlayerInteract implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (main.getType() == Material.PAPER &&
-                    main.getItemMeta().getDisplayName().contains("Меню") &&
-                    (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-                new MainMenu(player);
-                return;
-            }
 
             if (main.getType().equals(Material.FISHING_ROD)) {
                 if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {

@@ -244,6 +244,10 @@ public class Gamer {
         return ItemManager.getPrisonItem(getPlayer().getInventory().getItemInOffHand());
     }
 
+    public int getAmount(PrisonItem prisonItem) {
+        return getAmount(prisonItem, false);
+    }
+
     public int getAmount(PrisonItem prisonItem, boolean ignoreLvl) {
         ItemStack itemStack = prisonItem.getItemStack();
         final Map<Integer, ? extends ItemStack> ammo = getPlayer().getOpenInventory().getBottomInventory().all(itemStack.getType());
@@ -577,11 +581,9 @@ public class Gamer {
         Achievement.JOIN.get(player);
         Achievement.REBIRTH.get(player);
 
-        ItemStack is = new Item.Builder(Material.PAPER).name("&aМеню").lore(new Lore.BuilderLore().addSpace().addString("&7>> &bОткрыть").build()).build().item();
-        if (!player.getInventory().contains(is)) {
-            player.getInventory().setItem(8, is);
+        if(getAmount(ItemManager.getPrisonItem("menu")) == 0) {
+            addItem("menu");
         }
-
         addItem("waxe0_1");
         addItem("steak", 8);
     }

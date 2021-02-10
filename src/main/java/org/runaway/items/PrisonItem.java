@@ -24,6 +24,7 @@ public class PrisonItem {
     private String vanillaName, techName, name;
     private Material material;
     private short data;
+    @Setter
     private Consumer<Gamer> consumerOnClick;
     private Category category;
     private Rare rare;

@@ -258,6 +258,9 @@ public class Prison extends JavaPlugin {
                             ParameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
             ItemManager.addPrisonItem(prisonItem2); //инициализация предмета
         }
+        ItemManager.getPrisonItem("menu").setConsumerOnClick(gamer -> {
+            new MainMenu(gamer.getPlayer());
+        });
     }
 
     private void downloadAndApplyLanguage(String lang) {
