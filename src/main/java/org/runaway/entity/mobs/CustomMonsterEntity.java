@@ -45,7 +45,6 @@ public class CustomMonsterEntity extends EntityMonster {
         this.canPickUpLoot = false;
         this.fireProof = true;
         this.persistent = true;
-        mobController.getSpawnLocation().getChunk().load();
     }
 
     public boolean damageEntity(DamageSource damagesource, float f) {

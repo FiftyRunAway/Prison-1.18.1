@@ -546,7 +546,9 @@ public class Gamer {
         PrisonItem prisonItem = ItemManager.getPrisonItem(item);
         if(prisonItem == null) return 0;
         Parameter minLevelParameter = ParameterManager.getMinLevelParameter();
-        return (int) minLevelParameter.getParameterGetter().apply(item, null);
+        String levelString = minLevelParameter.getParameterGetter().apply(item, null).toString();
+        if(levelString.equals("")) return 0;
+        return Integer.parseInt(minLevelParameter.getParameterGetter().apply(item, null).toString());
     }
 
     public int getDisplayLevel() {

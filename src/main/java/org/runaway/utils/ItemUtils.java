@@ -38,7 +38,7 @@ public class ItemUtils {
         loreString = Utils.colored(loreString);
         String loreStringStripped = ChatColor.stripColor(loreString).trim();
         ItemMeta itemMeta = itemStack.getItemMeta();
-        List<String> itemLore = itemMeta.getLore();
+        List<String> itemLore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList();
         for(int index = 0; index < itemLore.size(); index++) {
             String stringStripped = ChatColor.stripColor(itemLore.get(index));
             if (stringStripped.startsWith(loreStringStripped)) {
