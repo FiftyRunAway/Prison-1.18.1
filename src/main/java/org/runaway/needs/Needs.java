@@ -42,8 +42,12 @@ public class Needs implements Listener {
         if (obj != null) {
             cooldown = Integer.parseInt(obj.toString());
         }
-        if (GamerManager.getGamer(player).hasPassivePerk(new Vaccine())) cooldown *= 1.5;
+        Gamer gamer = GamerManager.getGamer(player);
+        if (gamer.hasPassivePerk(new Vaccine())) cooldown *= 1.5;
         tasks.put(player.getName(), Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
+            if(!player.hasPlayedBefore() || !gamer.isEndedCooldown("newPlayer")) {
+                return;
+            }
             if (player.getName() == null || needs.containsKey(player.getName())) return;
             int type = ThreadLocalRandom.current().nextInt(NeedsType.values().length);
             NeedsType t = NeedsType.values()[type];
