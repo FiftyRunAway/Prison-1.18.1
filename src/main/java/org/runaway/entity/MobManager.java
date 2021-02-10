@@ -36,8 +36,85 @@ public class MobManager {
         rats();
         spider();
         slime();
+        golem();
 
         initAllControllers();
+    }
+
+    private void blaze() {
+        ConfigurationSection section = getInfoSection("blaze");
+        int money = section.getInt("money");
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
+                Arrays.asList(
+                        LootItem.builder().chance(0.6f).minAmount(1).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.9f).minAmount(8).maxAmount(12).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(4).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
+                .regenerationDelay(30).regenerationValue(2)
+                .name(section.getString("name")).techName("blaze")
+                .mobType(MobType.BLAZE)
+                .mobLoot(mobLoot)
+                .build();
+        List<MobSkill> skills = new ArrayList<>();
+        skills.add(new DamageSkill((entity, player) -> {
+
+        }));
+        attributable.setMobSkills(skills);
+        addController(attributable);
+    }
+
+    private void golem() {
+        ConfigurationSection section = getInfoSection("golem");
+        int money = section.getInt("money");
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
+                Arrays.asList(
+                        LootItem.builder().chance(0.55f).minAmount(1).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.8f).minAmount(6).maxAmount(12).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(5).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
+                .regenerationDelay(20).regenerationValue(1)
+                .name(section.getString("name")).techName("golem")
+                .mobType(MobType.GOLEM)
+                .mobLoot(mobLoot)
+                .build();
+        List<MobSkill> skills = new ArrayList<>();
+        skills.add(new DamageSkill((entity, player) -> {
+            LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
+            if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
+                player.damage(2);
+                return;
+            }
+            if (ThreadLocalRandom.current().nextFloat() < 0.12) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 200, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1));
+                livingEntity.getLocation().getWorld().playEffect(livingEntity.getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
+                Gamer gamer = GamerManager.getGamer(player);
+                if(gamer == null) return;
+                gamer.sendMessage("&eВы попали в капкан");
+            }
+        }));
+        skills.add(new RepetitiveSkill(entity -> {
+            entity.getBukkitEntity().getWorld().playEffect(entity.getBukkitEntity().getLocation(), Effect.SMOKE, 10);
+            entity.getBukkitEntity().setVelocity(new Vector(0, 1.05, 0).multiply(1));
+
+            entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
+                    .filter(entity1 -> entity1 instanceof Player)
+                    .map(entity1 -> (Player) entity1)
+                    .forEach(livingEntity -> {
+                        livingEntity.damage(4);
+                        new SyncTask(() -> {
+                            livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+                            livingEntity.setVelocity(livingEntity.getVelocity().normalize().add(livingEntity.getLocation().getDirection()).multiply(-2));
+                            Gamer gamer = GamerManager.getGamer(livingEntity);
+                            if(gamer == null) return;
+                            gamer.sendMessage("&eПока!");
+                        }, 25);
+                    });
+        }, 20 * 45));
+        attributable.setMobSkills(skills);
+        addController(attributable);
     }
 
     private void slime() {
@@ -45,8 +122,8 @@ public class MobManager {
         int money = section.getInt("money");
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
-                        LootItem.builder().chance(0.6f).minAmount(0).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.8f).minAmount(6).maxAmount(12).prisonItem(ItemManager.getPrisonItem("default_key")).build()
+                        LootItem.builder().chance(0.6f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.8f).minAmount(6).maxAmount(12).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(3).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -58,9 +135,9 @@ public class MobManager {
         List<MobSkill> skills = new ArrayList<>();
         skills.add(new DamageSkill(((entity, player) -> {
             LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
-            if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
+            if(livingEntity.getHealth() < attributable.getHealth() * 0.2) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 220, 1));
-                player.damage(4);
+                player.damage(3);
             }
         })));
         skills.add(new RepetitiveSkill(entity ->
@@ -77,7 +154,7 @@ public class MobManager {
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 140, 2));
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 140, 2));
                     }, 25);
-                }), 20 * 75));
+                }), 20 * 65));
         attributable.setMobSkills(skills);
         addController(attributable);
     }
@@ -88,7 +165,7 @@ public class MobManager {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.6f).amount(1).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("default_key")).build()
+                        LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(2).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -104,14 +181,9 @@ public class MobManager {
                 player.damage(2);
                 return;
             }
-            if (ThreadLocalRandom.current().nextFloat() < 0.2) {
-                entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
-                        .filter(entity1 -> entity1 instanceof LivingEntity)
-                        .map(entity1 -> (LivingEntity) entity1)
-                        .forEach(le -> {
-                            le.damage(4);
-                            le.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1));
-                        });
+            if (ThreadLocalRandom.current().nextFloat() < 0.3) {
+                player.damage(4);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1));
             }
         }));
         skills.add(new RepetitiveSkill((entity) -> {

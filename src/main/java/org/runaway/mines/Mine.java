@@ -112,7 +112,6 @@ public class Mine {
         });
         int left = (int) Math.round((double)((mine.will_reset - System.currentTimeMillis()) / 1000));
         this.hologram.appendTextLine(Utils.colored("&fОбновится через &7• &a" + Math.round(Math.ceil((double) left / 60)) + " мин."));
-        //this.hologram.appendTextLine(Utils.colored("&fБлоков вскопано &7• &a100%"));
         this.hologram.appendTextLine(Utils.colored("&fPVP &7• &a" + (this.pvp ? "Есть" : "&cНет")));
 
         updateHolo();

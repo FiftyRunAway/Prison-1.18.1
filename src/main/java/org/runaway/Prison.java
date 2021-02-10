@@ -1,14 +1,5 @@
 package org.runaway;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import lombok.Getter;
 import me.bigteddy98.bannerboard.api.BannerBoardAPI;
 import me.bigteddy98.bannerboard.api.BannerBoardManager;
@@ -20,8 +11,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
@@ -197,7 +186,7 @@ public class Prison extends JavaPlugin {
         SPAWN = Utils.getLocation("spawn");
         Arrays.stream(EFish.values()).forEach(fish -> fish_food.add(ChatColor.stripColor(fish.getFish().getName())));
         Bukkit.getServer().getWorlds().forEach(world -> world.setGameRuleValue("announceAdvancements", "false"));
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.MONITOR, PacketType.Play.Client.USE_ENTITY) {
+        /*ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.MONITOR, PacketType.Play.Client.USE_ENTITY) {
             @Override
             public void onPacketReceiving(PacketEvent event) {
                 if (event.getPacketType() == PacketType.Play.Client.USE_ENTITY) {
@@ -206,7 +195,7 @@ public class Prison extends JavaPlugin {
 
                 }
             }
-        });
+        });*/
         new AsyncRepeatTask(() -> {
             GamerManager.gamers.values().forEach(Gamer::savePlayer);
         }, 20 * 60 * 20, 20 * 60 * 20);
