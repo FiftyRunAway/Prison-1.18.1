@@ -35,7 +35,7 @@ public class UpItemsMenu implements IMenus {
     private static HashMap<String, ArrayList<ItemStack>> items = new HashMap<>();
 
     UpItemsMenu(Player gamer) {
-        gamer.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(gamer));
     }
 
     public static void load() {
@@ -200,40 +200,40 @@ public class UpItemsMenu implements IMenus {
             });
 
             MenuButton h = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.LEATHER_HELMET).name("&aШлем").build().item(), "&eВыберите предмет прокачки &7• &eШлем");
-            h.setSlot(11); h.setClickEvent(event -> event.getWhoClicked().openInventory(helmet.build())); menu.addButton(h);
+            h.setSlot(11); h.setClickEvent(event -> helmet.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(h);
 
             MenuButton ch = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.LEATHER_CHESTPLATE).name("&aНагрудник").build().item(), "&eВыберите предмет прокачки &7• &eНагрудник");
-            ch.setSlot(20); ch.setClickEvent(event -> event.getWhoClicked().openInventory(chestplate.build())); menu.addButton(ch);
+            ch.setSlot(20); ch.setClickEvent(event -> chestplate.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(ch);
 
             MenuButton leg = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.LEATHER_LEGGINGS).name("&aШтаны").build().item(), "&eВыберите предмет прокачки &7• &eШтаны");
-            leg.setSlot(29); leg.setClickEvent(event -> event.getWhoClicked().openInventory(legs.build())); menu.addButton(leg);
+            leg.setSlot(29); leg.setClickEvent(event -> legs.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(leg);
 
             MenuButton boot = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.LEATHER_BOOTS).name("&aБотинки").build().item(), "&eВыберите предмет прокачки &7• &eБотинки");
-            boot.setSlot(38); boot.setClickEvent(event -> event.getWhoClicked().openInventory(boots.build())); menu.addButton(boot);
+            boot.setSlot(38); boot.setClickEvent(event -> boots.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(boot);
 
             MenuButton sw = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.WOOD_SWORD).name("&aМеч").build().item(), "&eВыберите предмет прокачки &7• &eМеч");
-            sw.setSlot(21); sw.setClickEvent(event -> event.getWhoClicked().openInventory(sword.build())); menu.addButton(sw);
+            sw.setSlot(21); sw.setClickEvent(event -> sword.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(sw);
 
             MenuButton pic = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.WOOD_PICKAXE).name("&aКирка").build().item(), "&eВыберите предмет прокачки &7• &eКирка");
-            pic.setSlot(19); pic.setClickEvent(event -> event.getWhoClicked().openInventory(pickaxe.build())); menu.addButton(pic);
+            pic.setSlot(19); pic.setClickEvent(event -> pickaxe.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(pic);
 
             MenuButton spic = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.GOLD_PICKAXE).name("&aУлучшенная кирка").build().item(), "&eВыберите предмет прокачки &7• &eУлучшенная кирка");
-            spic.setSlot(14); spic.setClickEvent(event -> event.getWhoClicked().openInventory(spickaxe.build())); menu.addButton(spic);
+            spic.setSlot(14); spic.setClickEvent(event -> spickaxe.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(spic);
 
             MenuButton ax = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.WOOD_AXE).name("&aТопор").build().item(), "&eВыберите предмет прокачки &7• &eТопор");
-            ax.setSlot(15); ax.setClickEvent(event -> event.getWhoClicked().openInventory(axe.build())); menu.addButton(ax);
+            ax.setSlot(15); ax.setClickEvent(event -> axe.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(ax);
 
             MenuButton fish = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.FISHING_ROD).name("&aУдочка").build().item(), "&eВыберите предмет прокачки &7• &eУдочка");
-            fish.setSlot(16); fish.setClickEvent(event -> event.getWhoClicked().openInventory(fish_rod.build())); menu.addButton(fish);
+            fish.setSlot(16); fish.setClickEvent(event -> fish_rod.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(fish);
 
             MenuButton b = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.BOW).name("&aЛук").build().item(), "&eВыберите предмет прокачки &7• &eЛук");
-            b.setSlot(23); b.setClickEvent(event -> event.getWhoClicked().openInventory(bow.build())); menu.addButton(b);
+            b.setSlot(23); b.setClickEvent(event -> bow.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(b);
 
             MenuButton sp = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.WOOD_SPADE).name("&aЛопата").build().item(), "&eВыберите предмет прокачки &7• &eЛопата");
-            sp.setSlot(24); sp.setClickEvent(event -> event.getWhoClicked().openInventory(spade.build())); menu.addButton(sp);
+            sp.setSlot(24); sp.setClickEvent(event -> spade.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(sp);
 
             MenuButton sh = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.SHEARS).name("&aНожницы").build().item(), "&eВыберите предмет прокачки &7• &eНожницы");
-            sh.setSlot(25); sh.setClickEvent(event -> event.getWhoClicked().openInventory(shears.build())); menu.addButton(sh);
+            sh.setSlot(25); sh.setClickEvent(event -> shears.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(sh);
 
             MenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()); back.setSlot(26);
             spade.addButton(back); axe.addButton(back); pickaxe.addButton(back); spickaxe.addButton(back);

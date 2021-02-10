@@ -6,11 +6,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.items.ItemManager;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
+import org.runaway.menu.IMenu;
 import org.runaway.utils.ExampleItems;
 
 import java.util.Arrays;
@@ -25,29 +28,29 @@ public class Confirmation {
 
     private static StandardMenu confirmed, closed;
 
-    public Confirmation(Player player, Inventory startMenu, Inventory redirectMenu, Runnable runnable) {
+    public Confirmation(Player player, Runnable runnable) {
         StandardMenu menu = StandardMenu.create(5, ChatColor.YELLOW + "" + ChatColor.ITALIC + "Вы уверены?");
-
+        Gamer gamer = GamerManager.getGamer(player);
         // Closing confirmation
         IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(close_btn);
-        btn.setClickEvent(event -> clickRun(event.getWhoClicked(), false, runnable, startMenu, redirectMenu));
+        btn.setClickEvent(event -> clickRun(event.getWhoClicked(), false, runnable, gamer.getCurrentIMenu()));
         Arrays.stream(close_buttons).forEach(i -> menu.addButton(btn.clone().setSlot(i)));
 
         // Accepting confirmation
         IMenuButton btn_confirm = DefaultButtons.FILLER.getButtonOfItemStack(accept_btn);
-        btn_confirm.setClickEvent(event -> clickRun(event.getWhoClicked(), true, runnable, startMenu, redirectMenu));
+        btn_confirm.setClickEvent(event -> clickRun(event.getWhoClicked(), true, runnable, gamer.getCurrentIMenu()));
         Arrays.stream(accept_buttons).forEach(i -> menu.addButton(btn_confirm.clone().setSlot(i)));
 
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
-    private void clickRun(Player player, boolean confirm, Runnable runnable, Inventory start, Inventory redirect) {
+    private void clickRun(Player player, boolean confirm, Runnable runnable, IMenu start) {
         if (confirm) {
             runnable.run();
-            player.openInventory(confirmed.build());
+            confirmed.open(GamerManager.getGamer(player));
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         } else {
-            player.openInventory(closed.build());
+            closed.open(GamerManager.getGamer(player));
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
         }
         inMenu.put(player.getName(), confirm);
@@ -59,10 +62,9 @@ public class Confirmation {
                     inMenu.remove(player.getName());
 
                     if (confirm) {
-                        if (redirect != null) player.openInventory(redirect);
-                        else player.closeInventory();
+                        player.closeInventory();
                     } else {
-                        if (start != null) player.openInventory(start);
+                        if (start != null) start.open(GamerManager.getGamer(player));
                         else player.closeInventory();
                     }
                 }

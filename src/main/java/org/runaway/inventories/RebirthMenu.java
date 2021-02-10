@@ -23,7 +23,7 @@ public class RebirthMenu implements IMenus {
     private static StandardMenu menu;
     private static int[] pass;
 
-    public static Inventory getMenu(Player player) {
+    public static StandardMenu getMenu(Player player) {
         StandardMenu inventory = menu;
         AtomicInteger i = new AtomicInteger(0);
 
@@ -33,7 +33,7 @@ public class RebirthMenu implements IMenus {
                 .name("&fОчки перерождения: &d" + GamerManager.getGamer(player).getStatistics(EStat.REBIRTH_SCORE) + " ОП")
                 .build().item()).setSlot(40));
 
-        return inventory.build();
+        return inventory;
     }
 
     public static void load() {

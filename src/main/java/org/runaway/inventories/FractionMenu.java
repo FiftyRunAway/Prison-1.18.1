@@ -4,14 +4,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
+import org.runaway.enums.*;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.FractionDiscount;
-import org.runaway.enums.EConfig;
-import org.runaway.enums.EStat;
-import org.runaway.enums.FactionType;
-import org.runaway.enums.MoneyType;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
@@ -35,7 +32,7 @@ public class FractionMenu implements IMenus {
                 .addString("&fЦена &7• &aБесплатно")
                 .build()).build().item()).setSlot(8);
         btn.setClickEvent(event ->
-                new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
+                new Confirmation(event.getWhoClicked(), () ->
                     GamerManager.getGamer(event.getWhoClicked()).inFraction(FactionType.DEFAULT, true, 0)));
         menu.addButton(btn);
         //Скидка
@@ -59,12 +56,17 @@ public class FractionMenu implements IMenus {
                             .addSpace()
                             .addString("&fЦена &7• &a" + cost + " " + MoneyType.RUBLES.getShortName() + (finalSale > 0 ? (" &7(&bСкидка " + (1 - finalSale) * 100 + "%&7)") : ("")))
                             .build()).build().item()).setSlot(i.getAndIncrement());
-            button.setClickEvent(event ->
-                    new Confirmation(event.getWhoClicked(), menu.build(), null, () ->
-                        GamerManager.getGamer(event.getWhoClicked()).inFraction(factionType, false, cost)));
+            button.setClickEvent(event -> {
+                if(!gamer.hasMoney(cost)) {
+                    gamer.sendMessage(EMessage.MONEYNEEDS);
+                    return;
+                }
+                new Confirmation(event.getWhoClicked(), () ->
+                        gamer.inFraction(factionType, false, cost));
+            });
             menu.addButton(button);
         });
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     @Override

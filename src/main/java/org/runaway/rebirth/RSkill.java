@@ -37,7 +37,7 @@ public abstract class RSkill {
             Gamer gamer = GamerManager.getGamer(p);
             String name = p.getName();
             if (getLevel(name) + 1 < getMaximumLevel() && gamer.getIntStatistics(EStat.REBIRTH_SCORE) >= getCost(name)) {
-                new Confirmation(p, RebirthMenu.getMenu(p), null, () -> {
+                new Confirmation(p, () -> {
                     levelUp(name);
                     gamer.setStatistics(EStat.REBIRTH_SCORE, gamer.getIntStatistics(EStat.REBIRTH_SCORE) - getCost(name));
                     p.closeInventory();

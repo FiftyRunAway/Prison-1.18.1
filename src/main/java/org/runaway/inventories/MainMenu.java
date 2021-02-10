@@ -23,7 +23,7 @@ public class MainMenu implements IMenus {
     private static StandardMenu menu;
 
     public MainMenu(Player player) {
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     public static void load() {
@@ -45,7 +45,7 @@ public class MainMenu implements IMenus {
                             .addSpace()
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(14);
-            perks.setClickEvent(event -> event.getWhoClicked().openInventory(PassivePerksMenu.getMenu(event.getWhoClicked()).build()));
+            perks.setClickEvent(event -> PassivePerksMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked())));
             menu.addButton(perks);
 
             IMenuButton achievs = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.STORAGE_MINECART)
@@ -67,7 +67,7 @@ public class MainMenu implements IMenus {
                 if (!GamerManager.getGamer(event.getWhoClicked().getUniqueId()).needRebirth()) {
                     new LevelMenu(event.getWhoClicked());
                 } else {
-                    event.getWhoClicked().openInventory(RebirthMenu.getMenu(event.getWhoClicked()));
+                    RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked()));
                 }
             });
             menu.addButton(exp);
@@ -88,7 +88,7 @@ public class MainMenu implements IMenus {
                             .addSpace()
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(49);
-            rebirth.setClickEvent(event -> event.getWhoClicked().openInventory(RebirthMenu.getMenu(event.getWhoClicked())));
+            rebirth.setClickEvent(event -> RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked())));
             menu.addButton(rebirth);
 
             IMenuButton donate = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND)

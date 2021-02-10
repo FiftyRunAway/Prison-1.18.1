@@ -22,6 +22,7 @@ public class StandardMenu extends IMenu {
             return getInventory();
         }
         created = true;
+        setCancelClickEvent(true);
         Inventory inv = Bukkit.createInventory(this, getSize(), getTitle());
         setDummies(inv);
         setInventory(inv);

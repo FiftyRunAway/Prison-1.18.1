@@ -122,7 +122,7 @@ public class BattlePassMenu implements IMenus {
             }
         }
 
-        gamer.getPlayer().openInventory(menu.build());
+        menu.open(gamer);
     }
 
     private static void openStartPage(Gamer gamer) {
@@ -281,7 +281,7 @@ public class BattlePassMenu implements IMenus {
         back.setClickEvent(event -> new BattlePassMenu(event.getWhoClicked()));
         menu.addButton(back);
 
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     private String progresBarLevel(Gamer gamer) {
@@ -334,8 +334,7 @@ public class BattlePassMenu implements IMenus {
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(35);
         back.setClickEvent(event -> openMissionsMenu(event.getWhoClicked(), missionsMenu));
         menu.addButton(back);
-
-        gamer.getPlayer().openInventory(menu.build());
+        menu.open(gamer);
     }
 
     @Override

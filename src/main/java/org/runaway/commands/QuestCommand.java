@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.enums.TypeMessage;
 import org.runaway.inventories.MinesQuestMenu;
+import org.runaway.managers.GamerManager;
 import org.runaway.quests.MinesQuest;
 import org.runaway.utils.Vars;
 
@@ -33,7 +34,8 @@ public class QuestCommand extends CommandManager {
 
 
         try {
-            player.openInventory(MinesQuestMenu.getMenu(player, quest).build());
+
+            MinesQuestMenu.getMenu(player, quest).open(GamerManager.getGamer(player));
         } catch (Exception e) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Problem with loading quest menu for " + player.getName());
             e.printStackTrace();

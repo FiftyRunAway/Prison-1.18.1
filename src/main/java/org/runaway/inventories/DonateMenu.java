@@ -37,7 +37,7 @@ public class DonateMenu implements IMenus {
             gamer.sendMessage(EMessage.TRANSACTIONFAILED);
             return;
         }
-        new Confirmation(player, menu, null, () -> {
+        new Confirmation(player, () -> {
             if (Donate.withdrawDonateMoney(player.getName(), donate.getFinalPrice())) {
                 player.sendMessage(Utils.colored(EMessage.TRANSACTIONSUCCESS.getMessage()
                         .replace("%donate%", ChatColor.UNDERLINE + donate.getIcon().getItemMeta().getDisplayName())
@@ -96,7 +96,7 @@ public class DonateMenu implements IMenus {
         menu.addButton(dm.setSlot(39));
         menu.addButton(dm.clone().setSlot(41));
 
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     @Override

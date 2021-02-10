@@ -2,6 +2,7 @@ package org.runaway.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -22,7 +23,9 @@ public class TrashCommand extends CommandManager {
         for (int i = 27; i < 36; i++) {
             menu.addButton(btn.setSlot(i).clone());
         }
-        p.openInventory(menu.build());
+        menu.build();
+        menu.setCancelClickEvent(false);
+        menu.open(GamerManager.getGamer(p));
     }
 
     private IMenuButton closeButton() {

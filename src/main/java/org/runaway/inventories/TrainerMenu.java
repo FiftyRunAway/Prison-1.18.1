@@ -2,6 +2,7 @@ package org.runaway.inventories;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.trainer.Trainer;
@@ -21,7 +22,7 @@ public class TrainerMenu implements IMenus {
             menu.addButton(trainer.getMenuIcon(player).setSlot(i.getAndIncrement()));
             i.incrementAndGet();
         });
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     @Override

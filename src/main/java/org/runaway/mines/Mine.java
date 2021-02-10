@@ -107,7 +107,7 @@ public class Mine {
         ItemLine line = this.hologram.appendItemLine(new ItemStack(this.material));
         line.setTouchHandler(player -> {
             if (player.isOp()) {
-                player.openInventory(this.adminMenu.build());
+                this.adminMenu.open(GamerManager.getGamer(player));
             }
         });
         int left = (int) Math.round((double)((mine.will_reset - System.currentTimeMillis()) / 1000));

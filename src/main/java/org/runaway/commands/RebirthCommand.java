@@ -3,6 +3,7 @@ package org.runaway.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.inventories.RebirthMenu;
+import org.runaway.managers.GamerManager;
 
 import java.util.Collections;
 
@@ -18,7 +19,7 @@ public class RebirthCommand extends CommandManager {
 
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
-        p.openInventory(RebirthMenu.getMenu(p));
+        RebirthMenu.getMenu(p).open(GamerManager.getGamer(p));
     }
 
     @Override

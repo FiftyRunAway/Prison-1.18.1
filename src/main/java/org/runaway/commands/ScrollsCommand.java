@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.scrolls.ScrollShop;
 
@@ -29,7 +30,8 @@ public class ScrollsCommand extends CommandManager {
             }
             Player player = Bukkit.getPlayer(args[0]);
             if (player != null) {
-                player.openInventory(ScrollShop.getMenu(player).build());
+                ScrollShop.getMenu(player).open(GamerManager.getGamer(player));
+
             } else {
                 cs.sendMessage(ChatColor.RED + "Player is not online");
             }

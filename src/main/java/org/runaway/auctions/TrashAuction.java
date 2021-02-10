@@ -256,9 +256,9 @@ public class TrashAuction {
                 return;
             }
             this.hologram.clearLines();
-             this.hologram.appendTextLine(Utils.colored("&fПредмет &7• " + this.itemStack.getItemMeta().getDisplayName())).setTouchHandler(player -> player.openInventory(menu.build()));
+             this.hologram.appendTextLine(Utils.colored("&fПредмет &7• " + this.itemStack.getItemMeta().getDisplayName())).setTouchHandler(player -> menu.open(GamerManager.getGamer(player)));
             ItemLine item = this.hologram.appendItemLine(this.itemStack);
-            item.setTouchHandler(player -> player.openInventory(menu.build()));
+            item.setTouchHandler(player -> menu.open(GamerManager.getGamer(player)));
             this.hologram.appendTextLine(Utils.colored("&7(&eПКМ&7 по предмету)"));
 
             this.hologram.appendTextLine(Utils.colored("&fКупить сейчас &7• &a" + fastbuy + " " + MoneyType.RUBLES.getShortName()));

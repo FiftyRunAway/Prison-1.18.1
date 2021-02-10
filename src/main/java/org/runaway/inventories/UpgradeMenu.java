@@ -61,7 +61,7 @@ public class UpgradeMenu implements IMenus {
         ItemUtils.addLore(nextItem, "&r", "&dТребования:");
 
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemUtils.addLore(nextItem, upgradeLore)).setSlot(4));
-        p2.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(p2));
     }
 
     @Override

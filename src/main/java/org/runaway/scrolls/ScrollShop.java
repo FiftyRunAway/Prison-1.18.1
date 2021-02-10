@@ -86,7 +86,7 @@ public enum ScrollShop {
                             gamer.sendMessage(EMessage.NOINVENTORY);
                             return;
                         }
-                        new Confirmation(event.getWhoClicked(), menu.build(), null, () -> {
+                        new Confirmation(event.getWhoClicked(), () -> {
                             Arrays.stream(s.drop).forEach(item -> gamer.addItem(item.item()));
                             gamer.setStatistics(EStat.SCROLLS, gamer.getIntStatistics(EStat.SCROLLS) - s.price);
                             gamer.sendMessage(EMessage.SUCCESSFULBUY);

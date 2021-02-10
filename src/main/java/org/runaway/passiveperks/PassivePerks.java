@@ -51,7 +51,7 @@ public abstract class PassivePerks {
                     || g.hasPassivePerk(getAnotherPerk(getLevel()))) {
                 return;
             }
-            new Confirmation(p, PassivePerksMenu.getMenu(p).build(), null, () -> {
+            new Confirmation(p, () -> {
                 g.addPassivePerk(this);
                 g.sendTitle("&bВы получили", "&bпассивный навык!");
                 this.getPerkAction(g);

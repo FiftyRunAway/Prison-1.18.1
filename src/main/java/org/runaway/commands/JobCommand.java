@@ -38,7 +38,7 @@ public class JobCommand extends CommandManager {
             gamer.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", job.getLevel() + "")));
             return;
         }
-        player.openInventory(JobUpgradeMenu.getMenu(
-                gamer, job).build());
+        JobUpgradeMenu.getMenu(
+                gamer, job).open(gamer);
     }
 }

@@ -55,7 +55,7 @@ public class FishSellMenu implements IMenus {
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВыйти").build().item()).setSlot(26);
         back.setClickEvent(event -> event.getWhoClicked().closeInventory());
         menu.addButton(back);
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     @Override

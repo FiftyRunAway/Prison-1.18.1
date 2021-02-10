@@ -32,7 +32,7 @@ public class ShopMenu implements IMenus {
     private static StandardMenu inventory;
 
     public ShopMenu(Player player) {
-        if (player != null) player.openInventory(inventory.build());
+        if (player != null) inventory.open(GamerManager.getGamer(player));
     }
 
     public void load() {

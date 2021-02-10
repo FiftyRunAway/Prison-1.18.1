@@ -25,6 +25,9 @@ public class PlayerInventoryClose implements Listener {
             if (event.getInventory().getName().equalsIgnoreCase(ChatColor.YELLOW + "Выбор сложности") && gamer.getStatistics(EStat.MODE).equals("default")) {
                 new ModeMenu();
             }
+            if(gamer.getCurrentIMenu() != null) {
+                gamer.setCurrentIMenu(null);
+            }
             if(Confirmation.inMenu != null && Confirmation.inMenu.containsKey(player.getName())) {
                 Confirmation.inMenu.remove(player.getName());
             }

@@ -31,6 +31,7 @@ public class PagedMenu extends IMenu {
         if(created && getInventory() != null) {
             return getInventory();
         }
+        setCancelClickEvent(true);
         created = true;
         List<PagedButton> pagedButtons = getButtons().values().stream().filter(button -> button instanceof PagedButton)
                 .map(button -> (PagedButton) button).collect(Collectors.toList());

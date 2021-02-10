@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.runaway.items.Item;
 import org.runaway.donate.Privs;
 import org.runaway.enums.MoneyType;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -33,7 +34,7 @@ public class PrivilageMenu implements IMenus {
         back.setClickEvent(event -> new DonateMenu(event.getWhoClicked()));
         menu.addButton(back);
 
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     @Override

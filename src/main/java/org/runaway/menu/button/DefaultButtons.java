@@ -3,6 +3,8 @@ package org.runaway.menu.button;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
+
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.IMenu;
 import org.runaway.menu.MenuLang;
 import org.runaway.menu.design.MenuDesigner;
@@ -61,7 +63,6 @@ public enum DefaultButtons {
                 menu.assignData("closeReason", "switchPage");
                 event.getWhoClicked().closeInventory();
                 event.getWhoClicked().openInventory(toOpen);
-
             }
 
         }
@@ -81,12 +82,12 @@ public enum DefaultButtons {
 
         if (allMenus.containsKey(nameOfInventory)) {
 
-            Inventory toOpen = allMenus.get(nameOfInventory).getInventory();
+            IMenu toOpen = allMenus.get(nameOfInventory);
             if (toOpen != null) {
 
                 event.getClickedMenu().assignData("closeReason", "switchMenu");
                 event.getWhoClicked().closeInventory();
-                event.getWhoClicked().openInventory(toOpen);
+                toOpen.open(GamerManager.getGamer(event.getWhoClicked()));
 
             } else {
                 event.getWhoClicked().sendMessage(MenuLang.PAGE_NOT_FOUND.getLang().replace("%name%", nameOfInventory));
@@ -115,12 +116,12 @@ public enum DefaultButtons {
 
     RETURN("return", event -> {
 
-        Inventory toOpen = event.getClickedMenu().getParent().getInventory();
+        IMenu toOpen = event.getClickedMenu().getParent();
         if (toOpen != null) {
 
             event.getClickedMenu().assignData("closeReason", "return");
             event.getWhoClicked().closeInventory();
-            event.getWhoClicked().openInventory(toOpen);
+            toOpen.open(GamerManager.getGamer(event.getWhoClicked()));
 
         } else
             event.getWhoClicked().sendMessage(MenuLang.PAGE_NOT_FOUND.getLang().replace("%name%", "null"));

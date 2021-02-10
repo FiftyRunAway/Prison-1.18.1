@@ -96,7 +96,7 @@ public class GiftCommand extends CommandManager {
                 }
 
                 menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(Utils.getGifts().get(p.getName())).setSlot(4));
-                p.openInventory(menu.build());
+                menu.open(gamer);
                 return;
             }
             gamer.sendMessage(ChatColor.RED + "Использование: /" + cmdName + " [получатель]");

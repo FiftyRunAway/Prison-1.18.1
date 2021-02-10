@@ -42,7 +42,7 @@ public class BoostersMenu implements IMenus {
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 
-        g.openInventory(menu.build());
+        menu.open(gamer);
     }
 
     private static Lore loreGlobal(boolean blocks) {

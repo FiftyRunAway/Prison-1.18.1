@@ -1,5 +1,7 @@
 package org.runaway.menu;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
@@ -42,6 +44,9 @@ public abstract class IMenu implements InventoryHolder {
      */
 
     private Map<String, IMenu> childs = new HashMap<>();
+
+    @Setter @Getter
+    boolean cancelClickEvent;
 
     public void setButtonClickListener(Consumer<ButtonClickEvent> buttonClickListener) {
         this.buttonClickListener = buttonClickListener;

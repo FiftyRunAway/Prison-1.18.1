@@ -52,7 +52,7 @@ public class BoosterMenu implements IMenus {
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
         menu.addButton(back);
 
-        player.openInventory(menu.build());
+        menu.open(gamer);
     }
 
     private static void loadMenu(Gamer gamer, StandardMenu menu, BoosterType type) {
@@ -89,7 +89,7 @@ public class BoosterMenu implements IMenus {
                 }
                 i.getAndIncrement();
             });
-            gamer.getPlayer().openInventory(menu.build());
+            menu.open(gamer);
         } else gamer.sendMessage(EMessage.NOBOOSTERS);
     }
 

@@ -87,7 +87,7 @@ public class LevelMenu implements IMenus {
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(btn).setSlot(5));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(btn).setSlot(6));
 
-        player.openInventory(menu.build());
+        menu.open(GamerManager.getGamer(player));
     }
 
     private static ArrayList<String> lore(Gamer gamer) {
