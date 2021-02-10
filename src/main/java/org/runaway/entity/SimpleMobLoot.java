@@ -24,12 +24,12 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter @Builder
 public class SimpleMobLoot implements MobLoot {
     List<LootItem> lootItems;
-    int minMoney, maxMoney;
+    double minMoney, maxMoney;
 
     @Override
     public void drop(Map<Gamer, Double> damageList, Location location, Attributable attributable) {
         ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
-        int money = threadLocalRandom.nextInt(minMoney, maxMoney);
+        double money = threadLocalRandom.nextDouble(minMoney, maxMoney);
         double needToKill = (100 / damageList.size()) * 0.7;
         damageList.forEach((gamer, damagePercent) -> {
             if (money != 0) {
@@ -37,7 +37,7 @@ public class SimpleMobLoot implements MobLoot {
             }
             new PrivateHolo(gamer.getPlayer(), location, PrivateHolo.StandType.MONEY, money * damagePercent);
             if (damagePercent * 100 > needToKill) {
-                gamer.increaseQuestValue(attributable.getTechName() + "Kill", 1);
+                gamer.addMobKill(attributable.getTechName());
                 gamer.increaseQuestValue("mobKills", 1);
                 if(attributable.isBoss()) {
                     gamer.increaseQuestValue("bossKills", 1);

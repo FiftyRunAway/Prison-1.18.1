@@ -12,9 +12,9 @@ public interface MobLoot {
 
     List<LootItem> getLootItems();
 
-    int getMinMoney();
+    double getMinMoney();
 
-    int getMaxMoney();
+    double getMaxMoney();
 
     List<String> getLootLore();
 

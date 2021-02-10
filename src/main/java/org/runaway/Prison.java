@@ -355,11 +355,11 @@ public class Prison extends JavaPlugin {
             if (r == UpgradeProperty.COST) {
                 requireList.addRequire(MoneyRequire.builder().amount(Integer.parseInt(s)).takeAfter(true).build());
             } else if (r == UpgradeProperty.RATS) {
-                requireList.addRequire(MobsRequire.builder().mobName("Rat").amount(Integer.parseInt(s)).build());
+                requireList.addRequire(MobsRequire.builder().mobName("rat").amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.WOOD) {
                 requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.LOG_2)).build());
             } else if (r == UpgradeProperty.BOW_KILL) {
-                requireList.addRequire(MobsRequire.builder().mobName("Zombie").amount(Integer.parseInt(s)).build());
+                requireList.addRequire(MobsRequire.builder().mobName("zombie").amount(Integer.parseInt(s)).build());
             } else {
                 requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.valueOf(r.name().toUpperCase()))).amount(Integer.parseInt(s)).build());
             }

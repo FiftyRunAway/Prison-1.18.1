@@ -359,6 +359,10 @@ public class Gamer {
         return getMobKills().getOrDefault(mobName, 0);
     }
 
+    public void addMobKill(String mobName) {
+        getMobKills().put(mobName, getMobKills(mobName) + 1);
+    }
+
     public Map<String, Integer> getJobValues() {
         return jobValues;
     }

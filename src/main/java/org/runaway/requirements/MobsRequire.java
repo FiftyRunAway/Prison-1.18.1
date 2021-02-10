@@ -3,6 +3,7 @@ package org.runaway.requirements;
 import lombok.Builder;
 import lombok.Getter;
 import org.runaway.Gamer;
+import org.runaway.entity.Attributable;
 import org.runaway.entity.MobManager;
 import org.runaway.enums.EStat;
 
@@ -25,7 +26,11 @@ public class MobsRequire implements Require {
 
     @Override
     public String getName() {
-        return "Убейте " /*+ MobManager.getAttributable(getMobName()).getName()*/;
+        Attributable attributable = MobManager.getAttributable(getMobName());
+        if(attributable == null) {
+            return "Моба еще не существует";
+        }
+        return "Убейте " + attributable.getName();
     }
 
     @Override
@@ -36,6 +41,6 @@ public class MobsRequire implements Require {
     @Override
     public String getLoreString(Gamer gamer) {
         RequireResult requireResult = canAccess(gamer, false);
-        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
+        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount() + (requireResult.isAccess() ? "" : "&4✘");
     }
 }

@@ -34,6 +34,6 @@ public class BlocksRequire implements Require {
     @Override
     public String getLoreString(Gamer gamer) {
         RequireResult requireResult = canAccess(gamer, false);
-        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount();
+        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount() + (requireResult.isAccess() ? "" : "&4✘");
     }
 }
