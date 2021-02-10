@@ -79,7 +79,6 @@ public class Gamer {
     private Map<String, Integer> mobKills;
     private List<PassivePerks> passivePerks;
     private List<String> boosters;
-    private List<String> locations;
     private List<Achievement> achievements;
     private Map<String, Integer> jobValues;
     private Map<String, Integer> trainings;
@@ -120,8 +119,6 @@ public class Gamer {
         });
         boosters = new ArrayList<>();
         boosters.addAll(Utils.fromStringToList(getStringStatistics(EStat.BOOSTERS)));
-        locations = new ArrayList<>();
-        locations.addAll(Utils.fromStringToList(getStringStatistics(EStat.LOCATIONS)));
         achievements = new ArrayList<>();
         Utils.fromStringToList(getStringStatistics(EStat.ACHIEVEMENTS)).forEach(achievement ->
                 achievements.add(Achievement.valueOf(achievement)));
@@ -141,7 +138,6 @@ public class Gamer {
         setStatistics(EStat.ACHIEVEMENTS, Utils.fromListToString(getAchievements().stream().map(Enum::name).collect(Collectors.toList())));
         setStatistics(EStat.MOB_KILLS, Utils.fromMapToString(mobKills));
         setStatistics(EStat.BOOSTERS, Utils.fromListToString(boosters));
-        setStatistics(EStat.LOCATIONS, Utils.fromListToString(locations));
         setStatistics(EStat.JOB, Utils.fromMapToString(jobValues));
         setStatistics(EStat.TRAINER, Utils.fromMapToString(trainings));
         if(isExist) {
@@ -355,10 +351,6 @@ public class Gamer {
 
     public List<String> getBoosters() {
         return boosters;
-    }
-
-    public List<String> getLocations() {
-        return locations;
     }
 
     public int getMobKills(String mobName) {

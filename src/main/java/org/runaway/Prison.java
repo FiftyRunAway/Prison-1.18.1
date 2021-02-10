@@ -33,7 +33,6 @@ import org.runaway.boosters.GBlocks;
 import org.runaway.boosters.GMoney;
 import org.runaway.boosters.LBlocks;
 import org.runaway.boosters.LMoney;
-import org.runaway.cases.Case;
 import org.runaway.cases.CaseManager;
 import org.runaway.commands.*;
 import org.runaway.configs.Config;
@@ -98,9 +97,6 @@ public class Prison extends JavaPlugin {
     private PreparedRequests preparedRequests;
 
     private ServerStatus status = null;
-
-    //Кейсы
-    public static ArrayList<Case> cases = new ArrayList<>();
 
     public static BossBar MoneyBar, BlocksBar;
     public static GBlocks gBlocks = new GBlocks();
@@ -184,7 +180,6 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.auto_restart")) new AutoRestart().loadAutoRestarter();
         if (loader.getBoolean("loader.mines")) loadMines();
         if (loader.getBoolean("loader.shop_items")) loadShopItems();
-        if (loader.getBoolean("loader.cases")) loadCases();
         if (loader.getBoolean("loader.achievements")) Achievement.JOIN.load();
         if (loader.getBoolean("loader.donate_menu")) loadDonates();
         if (loader.getBoolean("loader.pex")) loadPermissionsEx();
@@ -589,51 +584,6 @@ public class Prison extends JavaPlugin {
         }
     }
 
-    //Подгрузка кейсов
-    private static void loadCases() {
-        try {
-            EConfig.CASES.getConfig().getKeys(false).forEach(st -> {
-                HashMap<ItemStack, Float> drops = new HashMap<>();
-                StandardMenu menu = StandardMenu.create(5, Utils.colored(EConfig.CASES.getConfig().getString(st + ".name") + " &7• &eПросмотр"));
-                AtomicInteger i = new AtomicInteger();
-                EConfig.CASES.getConfig().getStringList(st + ".drop").forEach(s -> {
-                    String[] strings = s.split(":");
-                    switch (strings[0].toLowerCase()) {
-                        case "config": {
-                            ItemStack is = ItemManager.getPrisonItem(strings[1]).getItemStack();
-                            drops.put(is, Float.valueOf(strings[2]));
-                            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(is).setSlot(i.getAndIncrement()));
-                            break;
-                        } case "item": {
-                            ItemStack is = ExampleItems.unserializerString(strings[1]);
-                            drops.put(is, Float.valueOf(strings[2]));
-                            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(is).setSlot(i.getAndIncrement()));
-                            break;
-                        }
-                    }
-                });
-                ItemStack key = new org.runaway.items.Item.Builder(Material.valueOf(EConfig.CASES.getConfig().getString(st + ".key.material")))
-                        .name(EConfig.CASES.getConfig().getString(st + ".key.name")).build().item();
-                Case c = new Case(EConfig.CASES.getConfig().getBoolean(st + ".animation"), drops, Utils.unserializeLocation(EConfig.CASES.getConfig().getString(st + ".location")), Utils.colored(EConfig.CASES.getConfig().getString(st + ".name")), key, Material.valueOf(EConfig.CASES.getConfig().getString(st + ".material")), EConfig.CASES.getConfig().getInt(st + ".money"), menu.build());
-                cases.add(c);
-                if (useHolographicDisplays) {
-                    Hologram hologram = HologramsAPI.createHologram(Prison.getInstance(), c.getLocation().getBlock().getLocation().add(0.5, 2, 0.5));
-                    if (hologram == null) {
-                        System.out.println("hologram is null. but Why?...");
-                        return;
-                    }
-                    hologram.insertTextLine(0, Utils.colored(c.getName()));
-                }
-                Vars.sendSystemMessage(TypeMessage.INFO, "Case '" + st + "' was loaded");
-            });
-        } catch (Exception ex) {
-            Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load cases informations!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
-            Prison.getInstance().setStatus(ServerStatus.ERROR);
-            ex.printStackTrace();
-        }
-    }
-
     //Подгрузка босс-бара
     private void loadBar() {
         try {
@@ -889,7 +839,7 @@ public class Prison extends JavaPlugin {
             } else if ("rats".equals(s)) {
                 Prison.tops.get(s).setTopValues(rats1);
             } else if ("rebirths".equals(s)) {
-                //Prison.tops.get(s).setTopValues(rebirth1);
+                Prison.tops.get(s).setTopValues(rebirth1);
             } else if ("keys".equals(s)) {
                 Prison.tops.get(s).setTopValues(keys1);
             } else if ("donate".equals(s)) {

@@ -2,6 +2,7 @@ package org.runaway.sqlite;
 
 import com.google.common.base.Joiner;
 import org.runaway.enums.Saveable;
+import org.runaway.utils.Utils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -119,6 +120,41 @@ public class PreparedRequests {
             }
         }
         return null;
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Collections.reverseOrder(Map.Entry.comparingByValue()));
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+
+    public Map<String, Long> getTopByOfflineValues(String orderBy, int limit) {
+        try {
+            Map<String, Long> top = new TreeMap();
+            PreparedStatement preparedStatement = database.getSQLConnection().prepareStatement(String.format("SELECT * FROM %s", getDbName()));
+            ResultSet set = preparedStatement.executeQuery();
+            while (set.next()) {
+                String name = set.getString("full_name");
+                String offlineValues = set.getString("offline_values");
+                Map<String, String> valuesMap = Utils.fromStringToMap(offlineValues);
+                String resultString = valuesMap.getOrDefault(orderBy, "0");
+                long result = Long.parseLong(resultString);
+                top.put(name, result);
+            }
+            Map<String, Long> sortedTop = sortByValue(top);
+            LinkedHashMap<String, Long> resultTop = sortedTop.entrySet().stream()
+                    .limit(limit)
+                    .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
+            return resultTop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Map<String, Long> getTop(String orderBy, int limit) {

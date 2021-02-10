@@ -41,7 +41,6 @@ public enum EStat implements Saveable {
     REBIRTH_SCORE("rebirth_score", 0, StatType.INTEGER),
     BATTLEPASS_SCORE("battlepass_score", 0, StatType.INTEGER),
     BATTLEPASS_LEVEL("battlepass_level", 0, StatType.INTEGER),
-    LOCATIONS("locations", "", StatType.STRING),
     JOB("job", "", StatType.STRING);
 
     private String title;
