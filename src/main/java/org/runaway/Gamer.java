@@ -48,6 +48,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -100,6 +101,7 @@ public class Gamer {
         if(!preparedRequests.isExist("player", getPlayer().getName())) {
             isExist = false;
             getPlayer().teleport(Prison.SPAWN);
+            addCooldown("newPlayer", TimeUnit.HOURS.toMillis(8));
         }
         statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values(), isExist);
         setStatistics(EStat.UUID, getPlayer().getUniqueId());

@@ -10,8 +10,8 @@ import org.bukkit.Material;
 public enum FactionType {
     DEFAULT(-1, "Нет", ChatColor.WHITE, "default", null),
     WHITE(0, "Белые", ChatColor.GRAY, "white", Material.IRON_SWORD),
-    BLACK(1, "Негры", ChatColor.DARK_GRAY, "black", Material.STONE_SWORD),
-    YELLOW(2, "Азиаты", ChatColor.YELLOW, "yellow", Material.GOLD_SWORD);
+    BLACK(1, "Чёрные", ChatColor.DARK_GRAY, "black", Material.STONE_SWORD),
+    YELLOW(2, "Мексиканцы", ChatColor.YELLOW, "yellow", Material.GOLD_SWORD);
 
     private int id;
     private ChatColor color;
