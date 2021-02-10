@@ -103,7 +103,7 @@ public class PlayerInteract implements Listener {
             if (block.getType().equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 try {
                     if (!BlockBreak.chests.containsKey(player.getName())) return;
-                    if (BlockBreak.chests.get(player.getName()).equals(block.getLocation())) {
+                    if (BlockBreak.chests.get(player.getName()).equals(block)) {
                         block.setType(Material.AIR);
                         int money = (ThreadLocalRandom.current().nextInt(6) + 5) * gamer.getIntStatistics(EStat.LEVEL);
                         player.sendMessage(Utils.colored(EMessage.TREASUREOPEN.getMessage()).replace("%reward%", Board.FormatMoney(money)));

@@ -1005,7 +1005,7 @@ public class Prison extends JavaPlugin {
     private static void removeEntities() {
         try {
             MobManager.mobControllerMap.values().forEach(iMobController -> {
-                iMobController.getNmsEntity().getBukkitEntity().remove();
+                iMobController.kill();
             });
 
             for (World w : Bukkit.getWorlds()) {

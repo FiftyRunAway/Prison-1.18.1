@@ -43,7 +43,7 @@ import java.util.*;
 public class BlockBreak implements Listener {
 
     //private static final List<Material> blocktolog = new ArrayList<>();
-    static HashMap<String, Location> chests = new HashMap<>();
+    static HashMap<String, Block> chests = new HashMap<>();
     static HashMap<String, BukkitTask> chests_tasks = new HashMap<>();
 
     private static int LeftChest;
@@ -183,14 +183,14 @@ public class BlockBreak implements Listener {
         Gamer gamer = GamerManager.getGamer(player);
         if (Math.random() < 0.00015 && !block.getType().isTransparent()) { // 0.00015
             if (chests.containsKey(player.getName())) {
-                chests.get(player.getName()).getBlock().setType(Material.AIR);
+                chests.get(player.getName()).setType(Material.AIR);
                 chests.remove(player.getName());
                 chests_tasks.remove(player.getName());
                 treasure_holo.get(player.getName()).delete();
                 gamer.sendMessage(EMessage.DELETECHEST);
             }
             gamer.sendTitle (ChatColor.RED + "Да ты везунчик!", ChatColor.RED + "Вы откопали клад (" + LeftChest + " сек)");
-            chests.put(player.getName(), block.getLocation());
+            chests.put(player.getName(), block);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
             Bukkit.getServer().getPluginManager().callEvent(new TreasureFindEvent(player));
             chests_tasks.put(player.getName(), Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
