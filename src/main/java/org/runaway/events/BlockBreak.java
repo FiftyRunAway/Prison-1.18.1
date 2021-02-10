@@ -96,7 +96,6 @@ public class BlockBreak implements Listener {
                 if (gamer.hasPassivePerk(new KeySecond())) boost += 1;
                 if (Math.random() < (0.005 * (gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + boost)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
-                    event.getPlayer().getInventory().addItem(new Item.Builder(Material.GHAST_TEAR).name("&7Ключ к обычному сундуку").build().item());
                     gamer.addItem("defaultKey");
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
                     gamer.setStatistics(EStat.KEYS, gamer.getIntStatistics(EStat.KEYS) + 1);

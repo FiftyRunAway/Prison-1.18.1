@@ -239,6 +239,7 @@ public class MobManager {
         EConfig.MOBS.getConfig().getConfigurationSection("mobs").getKeys(false).forEach(s -> {
             ConfigurationSection section = EConfig.MOBS.getConfig().getConfigurationSection("mobs." + s);
             Attributable attributable = getAttributable(section.getString("type"));
+            if(attributable == null) return;
             MobController.builder()
                     .attributable(attributable) //тут паттерн моба
                     .spawnLocation(Utils.unserializeLocation(section.getString("location")))
