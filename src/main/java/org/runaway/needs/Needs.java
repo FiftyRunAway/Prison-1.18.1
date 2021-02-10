@@ -128,7 +128,7 @@ public class Needs implements Listener {
             for (PotionEffect effect : player.getActivePotionEffects()) {
                 /*if (effect.getType().equals(NeedsType.getEffect(NeedsType.TOILET))) {
                     player.removePotionEffect(effect.getType());
-                } */ 
+                } */
             }
         }
     }

@@ -151,9 +151,9 @@ public class Prison extends JavaPlugin {
         String language = "ru_ru";
         this.downloadAndApplyLanguage(language);
         FileConfiguration loader = EConfig.MODULES.getConfig();
-        if (loader.getBoolean("register.mobs")) registerMobs();
-        loadSQLite();
         loadTasks();
+        loadSQLite();
+        if (loader.getBoolean("register.mobs")) registerMobs();
         if (loader.getBoolean("register.events")) registerEvents();
         if (loader.getBoolean("register.commands")) registerCommands();
         ParameterManager.init();
