@@ -2,6 +2,7 @@ package org.runaway.cases;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.items.ItemManager;
@@ -21,7 +22,8 @@ import java.util.Random;
 
 @Getter @Builder
 public class SimpleCase implements CaseRefactored {
-    List<IReward> rewardItems;
+    @Setter
+    List<IReward> rewardItems, originalRewards;
     String name, techName;
     int rollTimes, minLevel, stopAfter;
     Random random;
@@ -30,9 +32,9 @@ public class SimpleCase implements CaseRefactored {
 
     public void init() {
         this.random = new Random();
-        List<IReward> rewardsCopy = new ArrayList<>(getRewardItems());
+        setOriginalRewards(getRewardItems());
         rewardItems = new ArrayList<>();
-        rewardsCopy.forEach(iReward -> {
+        getOriginalRewards().forEach(iReward -> {
             for(int i = 0;i < iReward.getProbability();i++) {
                 getRewardItems().add(iReward);
             }

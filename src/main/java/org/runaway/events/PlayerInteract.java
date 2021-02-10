@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,17 +51,21 @@ public class PlayerInteract implements Listener {
         }
         Block block = event.getClickedBlock();
         if (block != null) {
-            if(block.getType() == Material.CHEST) {
+            if(block.getType() == Material.CHEST && ((Chest) block.getState()).getBlockInventory().getName().equals("case")) {
                 if(prisonItem == null) return;
                 if(prisonItem.getCategory() != PrisonItem.Category.KEYS) return;
                 CaseRefactored caseRefactored = CaseManager.getCase(prisonItem.getTechName());
                 if(caseRefactored == null) return;
                 event.setCancelled(true);
-                caseRefactored.open(gamer);
-                if(main.getAmount() == 1) {
-                    player.getInventory().setItemInMainHand(null);
-                } else {
-                    main.setAmount(main.getAmount() - 1);
+                if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    caseRefactored.open(gamer);
+                    if(main.getAmount() == 1) {
+                        player.getInventory().setItemInMainHand(null);
+                    } else {
+                        main.setAmount(main.getAmount() - 1);
+                    }
+                } else if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    caseRefactored.getChancesMenu(gamer).open(gamer);
                 }
             }
 

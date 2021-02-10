@@ -607,6 +607,16 @@ public class Gamer {
         return getIntStatistics(EStat.LEVEL) % toRebirth == 0;
     }
 
+    public boolean isOwner(ItemStack itemStack) {
+        if(itemStack == null) return false;
+        String owner = ItemManager.getOwner(itemStack);
+        return getName().equalsIgnoreCase(owner);
+    }
+
+    public boolean isOwner() {
+        return isOwner(getPlayer().getInventory().getItemInMainHand());
+    }
+
     public void inFraction(FactionType type, boolean isRandom, int cost) {
         FactionType in = type;
         boolean money = true;

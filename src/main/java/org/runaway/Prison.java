@@ -168,7 +168,6 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("register.commands")) registerCommands();
         ParameterManager.init();
         loadItems();
-        CaseManager.initAllCases();
         if (loader.getBoolean("loader.messages")) loadMessage();
         if (loader.getBoolean("loader.hd")) loadHolographicDisplays();
         if (loader.getBoolean("loader.bossbar")) loadBar();
@@ -179,6 +178,7 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.block_shop")) new PlayerInteract().loadShop();
         if (loader.getBoolean("loader.auto_restart")) new AutoRestart().loadAutoRestarter();
         if (loader.getBoolean("loader.mines")) loadMines();
+        CaseManager.initAllCases();
         if (loader.getBoolean("loader.shop_items")) loadShopItems();
         if (loader.getBoolean("loader.achievements")) Achievement.JOIN.load();
         if (loader.getBoolean("loader.donate_menu")) loadDonates();

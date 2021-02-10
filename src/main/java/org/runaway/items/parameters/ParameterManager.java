@@ -23,6 +23,7 @@ public class ParameterManager {
         ownerParameter = DefaultParameter.builder().loreString(getOwnerString()).nbtString("owner")
                 .priority(30)
                 .mutable(true)
+                .preSpace(true)
                 .statType(StatType.STRING)
                 .build();
         nodropParameter = DefaultParameter.builder()

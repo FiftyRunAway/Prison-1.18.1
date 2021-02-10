@@ -65,7 +65,12 @@ public class BlockBreak implements Listener {
         if (!event.isCancelled()) {
             String name = player.getInventory().getItemInMainHand().getType().toString();
             if ((name.contains("AXE") || name.contains("SHOVEL") || name.contains("PICKAXE") || name.contains("SHEARS") || name.contains("SPADE"))) {
-                Block block = event.getBlock();
+                if(!gamer.isOwner()) {
+                    gamer.sendMessage("&4Это не ваш предмет!");
+                    event.setCancelled(true);
+                    return;
+                }
+                 Block block = event.getBlock();
                 if (name.contains("PICKAXE") && !canbreak.get(player.getInventory().getItemInMainHand().getType()).contains(block.getType())) {
                     //event.setCancelled(true);
                     return;

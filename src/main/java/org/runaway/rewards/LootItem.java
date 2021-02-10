@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.items.PrisonItem;
+import org.runaway.utils.ItemBuilder;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,7 +25,7 @@ public class LootItem implements IReward {
         if(getAmount() == 0 && getMaxAmount() == 0) {
             return getPrisonItem().getItemStack(1);
         } else if(getAmount() == 0) {
-            return getPrisonItem().getItemStack(getMaxAmount());
+            return new ItemBuilder(getPrisonItem().getItemStack()).name(getPrisonItem().getName() + " &6x" + getMinAmount() + "-" + getMaxAmount()).build();
         } else {
             return getPrisonItem().getItemStack(getAmount());
         }

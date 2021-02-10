@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public interface CaseRefactored {
     List<IReward> getRewardItems();
 
+    List<IReward> getOriginalRewards();
+
     String getTechName();
 
     String getName();
@@ -146,14 +148,16 @@ public interface CaseRefactored {
         Random random = getRandom();
         return getRewardItems().get(random.nextInt(getRewardItems().size()));
     }
+
     default IMenu getChancesMenu(Gamer gamer) {
-        List<IReward> rewards = getRewardItems();
-        IMenu standardMenu = StandardMenu.create((rewards.size() / 9) + 1, getName() + " Шансы");
-        for (int i = 0; i < rewards.size(); i++) {
-            ItemStack rewardItem = rewards.get(i).getItemStack();
-            ItemStack itemChance = rewardItem.clone();
-            ItemUtils.addLore(itemChance, "&r", "&bШанс выпадения: " + String.format("§a%.2f", (rewards.get(i).getProbability() / rewards.size()) * 100) + "%");
-            standardMenu.getInventory().setItem(i, itemChance);
+        List<IReward> originalRewards = getOriginalRewards();
+        IMenu standardMenu = StandardMenu.create((originalRewards.size() / 9) + 1, getName() + " Шансы");
+        for (int i = 0; i < originalRewards.size(); i++) {
+            ItemStack rewardItem = originalRewards.get(i).getItemStack();
+            ItemStack itemChance = rewardItem.clone(); //
+            double chance = ((double) originalRewards.get(i).getProbability() / getRewardItems().size()) * 100;
+            ItemUtils.addLore(itemChance, "&r", "&bШанс выпадения: " + String.format("§a%.2f", chance) + "%");
+            standardMenu.setItem(i, itemChance);
         }
         standardMenu.open(gamer);
         return standardMenu;

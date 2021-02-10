@@ -2,6 +2,7 @@ package org.runaway.items;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -9,6 +10,7 @@ import org.runaway.Gamer;
 import org.runaway.enums.StatType;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
+import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Utils;
 
@@ -55,6 +57,16 @@ public class ItemManager {
     }
 
     public static PrisonItem getPrisonItem(String techName) {
+        if(!prisonItemMap.containsKey(techName)) {
+            PrisonItem prisonItem = PrisonItem.builder()
+                    .itemStack(new ItemBuilder(Material.BARRIER).name("&4" + techName + " Не найдено").build())
+                    .category(PrisonItem.Category.HIDDEN)
+                    .techName(techName + "NF")
+                    .name("&4" + techName + " Не найдено")
+                    .build();
+            prisonItemMap.put(techName + "NF", prisonItem);
+            return prisonItem;
+        }
         return prisonItemMap.get(techName);
     }
 
@@ -86,6 +98,8 @@ public class ItemManager {
     }
 
     public static String getOwner(ItemStack itemStack) {
+        PrisonItem prisonItem = getPrisonItem(itemStack);
+        if(prisonItem == null) return null;
         return ParameterManager.getOwnerParameter().getParameterGetter().apply(itemStack, null).toString();
     }
 

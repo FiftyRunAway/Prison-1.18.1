@@ -1,6 +1,7 @@
 package org.runaway.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
+import org.runaway.utils.ItemBuilder;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -43,6 +45,9 @@ public class ItemCommand extends CommandManager {
                         break;
                     case "auction":
                         TrashAuction.startAuction();
+                        break;
+                    case "case":
+                        p.getInventory().addItem(new ItemBuilder(Material.CHEST).name("case").build());
                         break;
                     case "info":
                         gamer.sendMessage("&aИнформация о предмете:");

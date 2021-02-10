@@ -18,13 +18,13 @@ public class CaseManager {
                 .name("&7Обычный ключ")
                 .rare(PrisonItem.Rare.RARE)
                 .techName("defaultKey")
-                .rollTimes(5)
-                .stopAfter(15)
+                .rollTimes(10)
+                .stopAfter(16)
                 .rewardItems(Arrays.asList(
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("star")).minAmount(1).maxAmount(2).probability(6).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("steak")).probability(50).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("apple")).minAmount(2).maxAmount(8).probability(100).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("arrow")).minAmount(2).maxAmount(6).probability(25).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("steak")).probability(70).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("apple")).minAmount(2).maxAmount(8).probability(120).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("arrow")).minAmount(2).maxAmount(6).probability(35).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("gapple")).amount(2).probability(6).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("podvalPass")).probability(3).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("wspade0_1")).probability(13).build(),
@@ -41,7 +41,7 @@ public class CaseManager {
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("lleggings0_1")).probability(7).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("lboots0_1")).probability(7).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("fishing0_1")).probability(6).build(),
-                        MoneyReward.builder().amount(2).probability(35).build()))
+                        MoneyReward.builder().amount(2).probability(45).build()))
                 .build().init();
     }
     public static CaseRefactored getCase(String techName) {
