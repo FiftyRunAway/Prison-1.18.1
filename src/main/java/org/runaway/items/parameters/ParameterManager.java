@@ -90,6 +90,7 @@ public class ParameterManager {
         return DefaultParameter.builder()
                 .defaultLoreFormatter(LoreFormatter.builder().loreString(getCategoryInfoString()).finalValue(category.getName()).build())
                 .priority(24)
+                .preSpace(true)
                 .build();
     }
 
