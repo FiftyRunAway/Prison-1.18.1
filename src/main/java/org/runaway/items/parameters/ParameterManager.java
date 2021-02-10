@@ -12,10 +12,11 @@ import java.util.List;
 public class ParameterManager {
     @Getter
     private static String ownerString, nodropString, upgradableString, stattrakPlayersString, stattrakMobsString, runesAmountString,
-            runeInfoString, categoryInfoString, rareInfoString, minLevelString, stattrakBlocksString;
+            runeInfoString, categoryInfoString, rareInfoString, minLevelString;
     @Getter
     private static Parameter ownerParameter, nodropParameter, upgradableParameter, stattrakPlayerParameter, stattrakMobsParameter,
-            stattrakBlocksParameter, runesAmountParameter, runesInfoParameter, minLevelParameter;
+            //stattrakBlocksParameter,
+            runesAmountParameter, runesInfoParameter, minLevelParameter;
 
     public static void init() {
         initValues();
@@ -50,13 +51,13 @@ public class ParameterManager {
                 .defaultLoreFormatter(LoreFormatter.builder().loreString(getStattrakMobsString()).finalValue(0).build())
                 .defaultNbtFormatter(NbtFormatter.builder().nbtString("mobKills").finalValue(0).build())
                 .priority(15).build();
-        stattrakBlocksParameter = DefaultParameter.builder()
+        /*stattrakBlocksParameter = DefaultParameter.builder()
                 .mutable(true)
                 .statType(StatType.DOUBLE)
                 .preSpace(true)
                 .defaultLoreFormatter(LoreFormatter.builder().loreString(getStattrakBlocksString()).finalValue(0).build())
                 .defaultNbtFormatter(NbtFormatter.builder().nbtString("stBlocks").finalValue(0D).build())
-                .priority(15).build();
+                .priority(15).build(); */
         runesInfoParameter = new RunesParameter("rune%d");
         runesAmountParameter = DefaultParameter.builder()
                 .nbtString("runesAmount")
@@ -82,7 +83,7 @@ public class ParameterManager {
         rareInfoString = "&e★ &7Редкость: ";
         categoryInfoString = "&1⚒ &7Категория: ";
         minLevelString = "&7➤ С &6%d &7уровня";
-        stattrakBlocksString = "&c✄ &4Сломано блоков: &c";
+        //stattrakBlocksString = "&c✄ &4Сломано блоков: &c";
     }
 
     public static Parameter getCategoryParameter(PrisonItem.Category category) {

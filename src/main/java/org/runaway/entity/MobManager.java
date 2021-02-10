@@ -5,12 +5,14 @@ import net.minecraft.server.v1_12_R1.EntitySlime;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.runaway.Gamer;
 import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.MobSkill;
 import org.runaway.entity.skills.RepetitiveSkill;
@@ -63,12 +65,14 @@ public class MobManager {
         })));
         skills.add(new RepetitiveSkill(entity ->
                 entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
-                .filter(entity1 -> entity1 instanceof LivingEntity)
-                .map(entity1 -> (LivingEntity) entity1)
+                .filter(entity1 -> entity1 instanceof Player)
+                .map(entity1 -> (Player) entity1)
                 .forEach(livingEntity -> {
                     livingEntity.damage(2);
                     new SyncTask(() -> {
-                        GamerManager.getGamer(livingEntity.getUniqueId()).sendMessage("&eНе ожидали от меня такого?");
+                        Gamer gamer = GamerManager.getGamer(livingEntity);
+                        if(gamer == null) return;
+                        gamer.sendMessage("&eНе ожидали от меня такого?");
                         livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_SPLASH_POTION_BREAK, 1.0f, 1.0f);
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 140, 2));
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 140, 2));

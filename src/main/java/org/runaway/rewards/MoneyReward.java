@@ -1,5 +1,6 @@
 package org.runaway.rewards;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +10,7 @@ import org.runaway.items.Item;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-@Getter
+@Getter @Builder
 public class MoneyReward implements IReward {
     private double amount, minAmount, maxAmount;
     private float chance;

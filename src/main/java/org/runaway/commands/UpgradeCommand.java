@@ -65,7 +65,7 @@ public class UpgradeCommand extends CommandManager {
         } else if (args.length == 1 && p.isOp()) {
             String item = String.valueOf(args[0]);
             if (EConfig.UPGRADE.getConfig().contains("upgrades." + item)) {
-                p.getInventory().addItem(UpgradeMisc.buildItem(item, false, p, false));
+                gamer.addItem(item);
                 gamer.sendMessage(ChatColor.GREEN + "Вы получили " + ChatColor.YELLOW + item + ChatColor.GREEN + "!");
             } else gamer.sendMessage(ChatColor.RED + "Такого предмета нет в конфиге Upgrade.yml");
         }

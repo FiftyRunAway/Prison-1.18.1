@@ -27,7 +27,7 @@ public abstract class IMenu implements InventoryHolder {
      * A list of {@link IMenuButton} they are set later when {@link IMenu#build()}
      * is ran
      */
-    private List<IMenuButton> buttons = new ArrayList<>();
+    private Map<Integer, IMenuButton> buttons = new HashMap();
 
     /**
      * A map which stores data for the inventory.
@@ -105,11 +105,9 @@ public abstract class IMenu implements InventoryHolder {
 
     @Override
     public Inventory getInventory() {
-        if (inventory != null)
-            return inventory;
-        else
-            return build();
+        return inventory;
     }
+
 
     /**
      * @param rebuild
@@ -137,10 +135,16 @@ public abstract class IMenu implements InventoryHolder {
 
     public IMenu addButton(IMenuButton button) {
 
-        buttons.add(button);
+        buttons.put(button.getSlot(), button);
+        if(getInventory() != null) {
+            getInventory().setItem(button.getSlot(), button.getItem());
+        }
         return this;
     }
 
+    public IMenuButton getButton(int slot) {
+        return getButtons().get(slot);
+    }
 
     public IMenu setItem(int slot, ItemStack itemStack) {
         return addButton(DefaultButtons.FILLER.getButtonOfItemStack(itemStack).setSlot(slot));
@@ -155,11 +159,11 @@ public abstract class IMenu implements InventoryHolder {
      */
 
     IMenuButton findButtonByItem(ItemStack compare) {
-        return buttons.stream().filter(item -> item.equalsItem(compare)).findFirst().orElse(null);
+        return buttons.values().stream().filter(item -> item.equalsItem(compare)).findFirst().orElse(null);
     }
 
     public IMenuButton findButtonByData(String key) {
-        return buttons.stream().filter(item -> item.containsData(key)).findFirst().orElse(null);
+        return buttons.values().stream().filter(item -> item.containsData(key)).findFirst().orElse(null);
     }
 
     /**
@@ -171,7 +175,7 @@ public abstract class IMenu implements InventoryHolder {
      */
 
     private IMenuButton findButtonByIdentifier(String identifier) {
-        return buttons.stream().filter(item -> item.getIdentifier().equalsIgnoreCase(identifier)).findFirst()
+        return buttons.values().stream().filter(item -> item.getIdentifier().equalsIgnoreCase(identifier)).findFirst()
                 .orElse(null);
     }
 
@@ -311,7 +315,7 @@ public abstract class IMenu implements InventoryHolder {
      * @return a list of {@link IMenuButton} all available buttons
      */
 
-    public List<IMenuButton> getButtons() {
+    public Map<Integer, IMenuButton> getButtons() {
         return buttons;
     }
 
@@ -429,7 +433,7 @@ public abstract class IMenu implements InventoryHolder {
 
     public int amountOfDummiesInMenu() {
 
-        return buttons.stream().filter(IMenuButton::isDummy).collect(Collectors.toList()).size();
+        return (int) buttons.values().stream().filter(IMenuButton::isDummy).count();
 
     }
 
@@ -444,7 +448,7 @@ public abstract class IMenu implements InventoryHolder {
         /*
          * First we gotta set filler dummies
          */
-        for (IMenuButton button : getButtons().stream().filter(it -> it.isDummy() && it.isFiller())
+        for (IMenuButton button : getButtons().values().stream().filter(it -> it.isDummy() && it.isFiller())
                 .collect(Collectors.toList())) {
             if (button instanceof PagedButton)
                 continue;
@@ -455,7 +459,7 @@ public abstract class IMenu implements InventoryHolder {
         /*
          * Then we set everything else
          */
-        for (IMenuButton button : getButtons().stream().filter(it -> !it.isDummy() && !it.isFiller())
+        for (IMenuButton button : getButtons().values().stream().filter(it -> !it.isDummy() && !it.isFiller())
                 .collect(Collectors.toList())) {
             if (button instanceof PagedButton)
                 continue;

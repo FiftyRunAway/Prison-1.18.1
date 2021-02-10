@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.runaway.Gamer;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.enums.EConfig;
@@ -14,6 +15,7 @@ import org.runaway.enums.TypeMessage;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.ParameterMeta;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
@@ -253,7 +255,8 @@ public class UpItemsMenu implements IMenus {
 
     private static void give(ItemStack is, Player player) {
         if (player.hasPermission("prison.admin")) {
-            player.getInventory().addItem(is);
+            Gamer gamer = GamerManager.getGamer(player);
+            gamer.addItem(ItemManager.getPrisonItem(is).getItemStack());
             player.playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 15, 15);
         }
     }

@@ -3,6 +3,7 @@ package org.runaway.battlepass.rewards;
 import org.bukkit.Material;
 import org.runaway.Gamer;
 import org.runaway.battlepass.IReward;
+import org.runaway.items.ItemManager;
 import org.runaway.utils.ExampleItems;
 
 public class KeysReward extends IReward {
@@ -17,7 +18,7 @@ public class KeysReward extends IReward {
 
     @Override
     protected void getReward(Gamer gamer) {
-        gamer.getPlayer().getInventory().addItem(ExampleItems.getKeyBuilder().getItemStack(this.value));
+        gamer.addItem(ItemManager.getPrisonItem("defaultKey").getItemStack(this.value));
     }
 
     @Override

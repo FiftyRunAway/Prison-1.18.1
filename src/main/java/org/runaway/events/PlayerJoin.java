@@ -77,15 +77,18 @@ public class PlayerJoin implements Listener {
     }
 
     private void addPaper(Player player) {
-        ItemStack is = ItemManager.getPrisonItem("menu").getItemStack();
-        if (!player.getInventory().contains(is)) {
-            player.getInventory().addItem(is);
+        Gamer gamer = GamerManager.getGamer(player);
+        if(gamer.getAmount(ItemManager.getPrisonItem("menu"), false) == 0) {
+            gamer.addItem("menu");
         }
     }
 
     private void startKit(Player player) {
-        player.getInventory().addItem(ItemManager.getPrisonItem("waxe0_1").getItemStack());
-        player.getInventory().addItem(ItemManager.getPrisonItem("steak").getItemStack(8));
+        Gamer gamer = GamerManager.getGamer(player);
+
+        gamer.addItem("waxe0_1");
+
+        gamer.addItem("steak", 8);
     }
 
     private boolean isAccess(PlayerJoinEvent event) {

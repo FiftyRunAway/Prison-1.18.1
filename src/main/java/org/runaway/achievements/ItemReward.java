@@ -2,6 +2,7 @@ package org.runaway.achievements;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.runaway.managers.GamerManager;
 
 public class ItemReward implements Reward {
 
@@ -25,7 +26,7 @@ public class ItemReward implements Reward {
 
     @Override
     public void giveReward(Player player) {
-        player.getInventory().addItem((ItemStack) getReward());
+        GamerManager.getGamer(player).addItem((ItemStack) getReward());
     }
 
     @Override

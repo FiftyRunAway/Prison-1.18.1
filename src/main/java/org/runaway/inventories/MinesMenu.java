@@ -35,15 +35,8 @@ public class MinesMenu implements IMenus {
             bt.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
                 Gamer g = GamerManager.getGamer(p);
-                if (g.getIntStatistics(EStat.LEVEL) >= mines.getMinLevel()) {
-                    if (mines.needPerm()) {
-                        if (g.getLocations().contains(mines.getLocName()) || p.isOp()) {
-                            g.teleport(mines.getSpawn());
-                        } else g.sendMessage(EMessage.MINENEEDPERM);
-                    } else g.teleport(mines.getSpawn());
-                    p.closeInventory();
-                } else {
-                    gamer.sendMessage(Utils.colored(EMessage.MINELEVEL.getMessage().replaceAll("%level%", mines.getMinLevel() + "")));
+                if(mines.canTeleport(gamer, true)) {
+                    g.teleport(mines.getSpawn());
                 }
             });
             menu.addButton(bt);

@@ -35,7 +35,7 @@ import org.runaway.utils.Utils;
 
 public class Mine {
 
-    private String name;
+    private String techName, name;
     private int mlevel;
     private boolean pvp;
     private int height;
@@ -64,7 +64,8 @@ public class Mine {
     private long will_reset;
     private StandardMenu adminMenu;
 
-    public Mine(String name, int mlevel, boolean pvp, int height, int diametr, World world, int x, int y, int z, int delay, String types, Material material, int tpx, int tpy, int tpz, Location holo, boolean tpSpawn, Material surface) {
+    public Mine(String techName, String name, int mlevel, boolean pvp, int height, int diametr, World world, int x, int y, int z, int delay, String types, Material material, int tpx, int tpy, int tpz, Location holo, boolean tpSpawn, Material surface) {
+        this.techName = techName;
         this.name = name;
         this.material = material;
         this.mlevel = mlevel;

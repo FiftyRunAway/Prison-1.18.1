@@ -20,6 +20,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,6 +34,7 @@ import org.runaway.boosters.GMoney;
 import org.runaway.boosters.LBlocks;
 import org.runaway.boosters.LMoney;
 import org.runaway.cases.Case;
+import org.runaway.cases.CaseManager;
 import org.runaway.commands.*;
 import org.runaway.configs.Config;
 import org.runaway.donate.Donate;
@@ -170,6 +172,7 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("register.commands")) registerCommands();
         ParameterManager.init();
         loadItems();
+        CaseManager.initAllCases();
         if (loader.getBoolean("loader.messages")) loadMessage();
         if (loader.getBoolean("loader.hd")) loadHolographicDisplays();
         if (loader.getBoolean("loader.bossbar")) loadBar();
@@ -214,7 +217,6 @@ public class Prison extends JavaPlugin {
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
 
-
         if(false) {
             //EXAMPLE
             PrisonItem prisonItem = PrisonItem.builder()
@@ -231,7 +233,7 @@ public class Prison extends JavaPlugin {
                             ParameterManager.getNodropParameter(), //предмет не выпадает
                             ParameterManager.getOwnerParameter(), //предмет с владельцем
                             ParameterManager.getMinLevelParameter(3), //мин лвл для использования предмета
-                            ParameterManager.getStattrakBlocksParameter(), //статтрек блоков
+                            //ParameterManager.getStattrakBlocksParameter(), //статтрек блоков
                             ParameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
                             ParameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
                             ParameterManager.getRunesParameter(1), //кол-во рун (дефолтные руны как 2 параметр, если есть.
@@ -249,7 +251,7 @@ public class Prison extends JavaPlugin {
                             ParameterManager.getNodropParameter(), //предмет не выпадает
                             ParameterManager.getOwnerParameter(), //предмет с владельцем
                             ParameterManager.getMinLevelParameter(4), //мин лвл для использования предмета
-                            ParameterManager.getStattrakBlocksParameter(), //статтрек блоков
+                            //ParameterManager.getStattrakBlocksParameter(), //статтрек блоков
                             ParameterManager.getRareParameter(PrisonItem.Rare.DEFAULT), //редкость предмета
                             ParameterManager.getCategoryParameter(PrisonItem.Category.TOOLS), //категория предмета
                             ParameterManager.getRunesParameter(2), //кол-во рун (дефолтные руны как 2 параметр, если есть.
@@ -286,6 +288,7 @@ public class Prison extends JavaPlugin {
     }
 
     private void loadItems() {
+
         EConfig.ITEMS.getConfig().getKeys(false).forEach(s -> {
             PrisonItem.Category category = s.equals("none") ? null : PrisonItem.Category.valueOf(s.toUpperCase());
             EConfig.ITEMS.getConfig().getConfigurationSection(s).getKeys(false).forEach(item -> {
@@ -382,8 +385,15 @@ public class Prison extends JavaPlugin {
         List<Parameter> parameters = new ArrayList<>();
         string.forEach(s -> {
             String[] spl = s.split(":");
-            if (spl.length > 1) parameters.add(getParameter(spl[0], spl[1]));
-            else parameters.add(getParameter(s, null));
+            if (spl.length > 1) {
+                Parameter parameter = getParameter(spl[0], spl[1]);
+                if(parameter != null)
+                parameters.add(getParameter(spl[0], spl[1]));
+            } else {
+                Parameter parameter =getParameter(s, null);
+                if(parameter != null)
+                parameters.add(getParameter(s, null));
+            }
         });
         return parameters;
     }
@@ -400,7 +410,8 @@ public class Prison extends JavaPlugin {
                 return ParameterManager.getOwnerParameter();
             }
             case "stblocks": {
-                return ParameterManager.getStattrakBlocksParameter();
+                //return ParameterManager.getStattrakBlocksParameter();
+                return null;
             }
             case "stmobs": {
                 return ParameterManager.getStattrakMobsParameter();
@@ -592,11 +603,6 @@ public class Prison extends JavaPlugin {
                             break;
                         } case "item": {
                             ItemStack is = ExampleItems.unserializerString(strings[1]);
-                            drops.put(is, Float.valueOf(strings[2]));
-                            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(is).setSlot(i.getAndIncrement()));
-                            break;
-                        } case "location": {
-                            ItemStack is = ExampleItems.unserializerLocationItem(strings[1]);
                             drops.put(is, Float.valueOf(strings[2]));
                             menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(is).setSlot(i.getAndIncrement()));
                             break;
@@ -897,7 +903,8 @@ public class Prison extends JavaPlugin {
                 ConfigurationSection file = EConfig.CONFIG.getFileConfigurationConfig().getConfigurationSection("mines." + s);
                 Material surface = Material.AIR;
                 if (!file.getString("surface").equals("none")) surface = Material.valueOf(file.getString("surface"));
-                Mine mine = new Mine(file.getString("name"),
+                Mine mine = new Mine(file.getString("techName"),
+                        file.getString("name"),
                         file.getInt("min_level"),
                         file.getBoolean("pvp"),
                         file.getInt("h"),

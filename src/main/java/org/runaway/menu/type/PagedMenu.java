@@ -28,11 +28,11 @@ public class PagedMenu extends IMenu {
 
     @Override
     public Inventory build() {
-        if(created) {
+        if(created && getInventory() != null) {
             return getInventory();
         }
         created = true;
-        List<PagedButton> pagedButtons = getButtons().stream().filter(button -> button instanceof PagedButton)
+        List<PagedButton> pagedButtons = getButtons().values().stream().filter(button -> button instanceof PagedButton)
                 .map(button -> (PagedButton) button).collect(Collectors.toList());
         int pagesRequired = 0;
         int size = 0;
@@ -46,7 +46,7 @@ public class PagedMenu extends IMenu {
 
         size = getSize();
 
-        if (getEmptySlots() % pagedButtons.size() == 0) {
+        if (pagedButtons.size() != 0 && getEmptySlots() % pagedButtons.size() == 0) {
             pagesRequired = pagedButtons.size() / getEmptySlots();
         } else if (pagedButtons.size() <= getEmptySlots()) {
             pagesRequired = 1;

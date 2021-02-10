@@ -27,6 +27,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
+import org.runaway.managers.GamerManager;
 import org.runaway.menu.IMenu;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.passiveperks.PassivePerks;
@@ -209,15 +210,24 @@ public class Gamer {
         getPlayer().sendMessage(Utils.colored("&7[&aDEBUG&7] &a" + message));
     }
 
+    public void addItem(String techName) {
+        addItem(techName, 1);
+    }
+
+    public void addItem(String techName, int amount) {
+        addItem(ItemManager.getPrisonItem(techName).getItemStack(amount), "CUSTOM");
+    }
+
     public void addItem(ItemStack itemStack) {
         addItem(itemStack, "CUSTOM");
     }
+
     public void addItem(ItemStack itemStack, String source) {
         if(getPlayer().getInventory().firstEmpty() == -1) {
             getPlayer().getWorld().dropItem(getPlayer().getLocation(), itemStack);
             return;
         }
-        getPlayer().getInventory().addItem(itemStack);
+        getPlayer().getInventory().addItem(ItemManager.initItem(itemStack, this));
     }
 
 
@@ -571,8 +581,9 @@ public class Gamer {
         if (!player.getInventory().contains(is)) {
             player.getInventory().setItem(8, is);
         }
-        player.getInventory().addItem(UpgradeMisc.buildItem("waxe0", false, player, false));
-        player.getInventory().addItem(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").amount(8).build().item());
+
+        addItem("waxe0_1");
+        addItem("steak", 8);
     }
 
     private void resetQuests() {

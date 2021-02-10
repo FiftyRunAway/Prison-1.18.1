@@ -71,7 +71,7 @@ public class ItemCommand extends CommandManager {
                             gamer.sendMessage("&4Предмет не найден.");
                             return;
                         }
-                        p.getInventory().addItem(ItemManager.initItem(prisonItem.getItemStack(), gamer));
+                        gamer.addItem(prisonItem.getItemStack());
                         break;
                 }
         }

@@ -69,7 +69,7 @@ public class ShopMenu implements IMenus {
                     player.closeInventory();
                     return;
                 }
-                player.getInventory().addItem(menubtn);
+                gamer.addItem(menubtn);
                 gamer.withdrawMoney(cost);
                 gamer.sendMessage(EMessage.SUCCESSFULBUY);
             });

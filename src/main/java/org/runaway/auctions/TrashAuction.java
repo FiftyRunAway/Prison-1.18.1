@@ -385,7 +385,7 @@ public class TrashAuction {
 
             Gamer gamer = GamerManager.getGamer(Bukkit.getPlayer(last));
             gamer.withdrawMoney(now);
-            gamer.getPlayer().getInventory().addItem(itemStack);
+            gamer.addItem(itemStack);
 
             gamer.sendMessage(EMessage.AUCTIONWIN);
 

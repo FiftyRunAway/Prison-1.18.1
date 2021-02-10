@@ -10,6 +10,7 @@ import org.runaway.Prison;
 import org.runaway.enums.BoosterType;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
+import org.runaway.items.ItemManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Vars;
@@ -24,26 +25,26 @@ public enum Achievement {
     FIVE_LEVEL("&aПолучить 5 уровень","Начинающий зэк", new Reward[]{
             new ItemReward().setReward(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").build().item()) }, true),
     TEN_LEVEL("&aПолучить 10 уровень","Опытный зэк", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(12)),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(12)),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 1200, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 1200, false)}, true),
     FIFTEEN_LEVEL("&aПолучить 15 уровень","Зэк-ветеран", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(24)),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(24)),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 1800, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 1800, false)}, true),
     TWENTY_LEVEL("&aПолучить 20 уровень","Надёжный зэк", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(48)),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(48)),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 3600, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 3600, false)}, true),
     TWENTYFIFTH_LEVEL("&aПолучить 25 уровень","Зэк магистр", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(64)),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(64)),
             new BoosterReward().setReward(BoosterType.MONEY, 2.0, 3600, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 2.0, 3600, false)}, true),
     REBIRTH("&aПереродитесь впервые","Иисус", new Reward[]{
             new BoosterReward().setReward(BoosterType.MONEY, 1.5, 10800, true),
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.5, 10800, true)}, false),
     FIRST_TREASURE("&aНайти свой первый клад","Сыщик I", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(4)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(4)) }, false),
     SPIDER_KILL("&aВы убили матку впервые", "Ведьмак", new Reward[]{
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.4, 900, false),
             new MoneyReward().setReward(50) }, false),
@@ -55,30 +56,30 @@ public enum Achievement {
             new MoneyReward().setReward(100) }, true),
     FIFTEEN_RATS("&aВы убили 15 крыс", "Крысолов I", new Reward[]{
             new MoneyReward().setReward(10),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(10)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(10)) }, false),
     RARE_RAT("&aВы убили редкую крысу", "Супер крысолов", new Reward[]{
             new MoneyReward().setReward(15),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(4)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(4)) }, false),
     FIFTEEN_ZOMBIES("&aВы убили 15 зомби", "Зомболов I", new Reward[]{
             new MoneyReward().setReward(50),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(16)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(16)) }, false),
     FIRST_TRAINER("&aПрокачаться у тренера", "Хороший ученик", new Reward[]{
             new MoneyReward().setReward(150) }, false),
     KILL_ADMIN("&cУбить администратора", "Самоубийца", new Reward[]{
             new MoneyReward().setReward(50),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(16)) }, true),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(16)) }, true),
     EMPTY_SERVER("&aЗайти на пустой сервер", "Одиночество", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(4)) }, true),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(4)) }, true),
     FIRST_UPGRADE("&aУлучшите один инструмент", "Освоение I", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(4)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(4)) }, false),
     GET_15("&aЗаработать 15 руб.", "Копатель онлайн", new Reward[]{
             new MoneyReward().setReward(2),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(2)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(2)) }, false),
     GET_100("&aЗаработать 100 руб.", "Повелитель мыла", new Reward[]{
             new MoneyReward().setReward(10),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(8)) }, true),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(8)) }, true),
     FIRST_FISH("&aПоймать первую легендарную рыбу", "Рыболоff", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(12)) }, false),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(12)) }, false),
     DEAD_5("&aУмереть 5 раз", "Как же так...", new Reward[]{
             new MoneyReward().setReward(10) }, false),
     DEAD_100("&aУмереть 100 раз", "Что с вами не так?", new Reward[]{
@@ -97,9 +98,9 @@ public enum Achievement {
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.5, 1800, true) }, true),
     KILL_ARROW("&aУбить себя из лука", "Хмм.. Молодец)", new Reward[]{
             new BoosterReward().setReward(BoosterType.MONEY, 1.4, 600, false),
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(12)) }, true),
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(12)) }, true),
     FIRST_LOCATION("&aОткрыть новую локацию", "Крупно повезло", new Reward[]{
-            new ItemReward().setReward(ExampleItems.getKeyBuilder().getItemStack(12)) }, false);
+            new ItemReward().setReward(ItemManager.getPrisonItem("defaultKey").getItemStack(12)) }, false);
 
     String name;
     String title;

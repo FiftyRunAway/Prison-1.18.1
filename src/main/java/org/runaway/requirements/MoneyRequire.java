@@ -22,7 +22,7 @@ public class MoneyRequire implements Require {
 
     @Override
     public String getName() {
-        return (isTakeAfter() ? "Отдайте" : "Накопите") + " " + getAmount() + " " + MoneyType.RUBLES.getShortName();
+        return (isTakeAfter() ? "Заплатите" : "Накопите") + " " + getAmount() + " " + MoneyType.RUBLES.getShortName();
     }
 
     @Override

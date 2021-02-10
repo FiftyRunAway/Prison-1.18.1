@@ -21,7 +21,9 @@ public class LootItem implements IReward {
 
     @Override
     public ItemStack getItemStack() {
-        if(getAmount() == 0) {
+        if(getAmount() == 0 && getMaxAmount() == 0) {
+            return getPrisonItem().getItemStack(1);
+        } else if(getAmount() == 0) {
             return getPrisonItem().getItemStack(getMaxAmount());
         } else {
             return getPrisonItem().getItemStack(getAmount());
@@ -34,6 +36,7 @@ public class LootItem implements IReward {
         if(getMinAmount() != 0) {
             amount = ThreadLocalRandom.current().nextInt(getMinAmount(), getMaxAmount());
         }
+        if(amount == 0) amount = 1;
         gamer.addItem(getPrisonItem().getItemStack(amount), "REWARD");
     }
 

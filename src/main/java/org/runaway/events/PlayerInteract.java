@@ -14,15 +14,17 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.board.Board;
+import org.runaway.cases.CaseManager;
+import org.runaway.cases.CaseRefactored;
 import org.runaway.enums.*;
 import org.runaway.inventories.BlockShopMenu;
 import org.runaway.inventories.MainMenu;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
 import org.runaway.jobs.EJobs;
 import org.runaway.managers.GamerManager;
-import org.runaway.mines.Location;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -42,6 +44,26 @@ public class PlayerInteract implements Listener {
         Gamer gamer = GamerManager.getGamer(player);
 
         ItemStack main = player.getInventory().getItemInMainHand();
+        PrisonItem prisonItem = ItemManager.getPrisonItem(main);
+        if(prisonItem != null && prisonItem.getConsumerOnClick() != null) {
+            prisonItem.getConsumerOnClick().accept(gamer);
+        }
+        Block block = event.getClickedBlock();
+        if (block != null) {
+            if(block.getType() == Material.CHEST) {
+                if(prisonItem == null) return;
+                if(prisonItem.getCategory() != PrisonItem.Category.KEYS) return;
+                CaseRefactored caseRefactored = CaseManager.getCase(prisonItem.getTechName());
+                if(caseRefactored == null) return;
+                event.setCancelled(true);
+                caseRefactored.open(gamer);
+                if(main.getAmount() == 1) {
+                    player.getInventory().setItemInMainHand(null);
+                } else {
+                    main.setAmount(main.getAmount() - 1);
+                }
+            }
+
         if (main != null && main.hasItemMeta()) {
             if (Prison.getInstance().fish_food.contains(ChatColor.stripColor(main.getItemMeta().getDisplayName()))) {
                 gamer.sendMessage(EMessage.SELLTIT);
@@ -64,17 +86,8 @@ public class PlayerInteract implements Listener {
                     }
                 }
             }
-            // Локации
-            if (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
-                    event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                Location.locations.forEach(location -> location.getLocation(gamer));
-                return;
-            }
         }
 
-        Block block = event.getClickedBlock();
-        if (block != null) {
-            Prison.cases.forEach(aCase -> aCase.open(event));
             if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
                 Sign sign = (Sign)block.getState();
                 String[] lines = sign.getLines();

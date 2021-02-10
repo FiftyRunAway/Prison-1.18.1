@@ -41,6 +41,8 @@ public class PrisonItem {
     }
 
     public ItemStack getItemStack(int amount) {
+        if(amount == 0) amount = 1;
+        if(amount > 64) amount = 64;
         ItemStack resultItem = this.itemStack.clone();
         resultItem.setAmount(amount);
         return resultItem;
@@ -54,6 +56,7 @@ public class PrisonItem {
         UTILS("&eУтилиты", new ItemStack(Material.ENDER_CHEST)),
         QUEST("&bКвест", new ItemStack(Material.BOOK_AND_QUILL)),
         UPGRADES("&2Улучшения", new ItemStack(Material.FIREWORK_CHARGE)),
+        ACCESS("&dДоступы", new ItemStack(Material.BOOK)),
         RUNES("&5Руны", new ItemStack(Material.NETHER_STAR)),
         ARMOR("&aБроня", new ItemStack(Material.DIAMOND_CHESTPLATE)),
         MONEY("&aДеньги", new ItemStack(Material.EMERALD), true),
