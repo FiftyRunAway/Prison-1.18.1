@@ -38,12 +38,13 @@ public class MobManager {
         spider();
         slime();
         golem();
+        blaze();
 
         initAllControllers();
     }
 
     private void blaze() {
-        ConfigurationSection section = getInfoSection("blaze");
+        ConfigurationSection section = getInfoSection("magma");
         int money = section.getInt("money");
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
@@ -59,8 +60,32 @@ public class MobManager {
                 .build();
         List<MobSkill> skills = new ArrayList<>();
         skills.add(new DamageSkill((entity, player) -> {
-
+            if (ThreadLocalRandom.current().nextFloat() < 0.15) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 1));
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0f, 1.0f);
+                player.setFireTicks(85);
+            }
         }));
+        skills.add(new RepetitiveSkill(entity -> {
+            LivingEntity e = (LivingEntity) entity.getBukkitEntity();
+            e.getWorld().playEffect(e.getLocation(), Effect.MOBSPAWNER_FLAMES, 10);
+            e.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 120, 0));
+            e.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 120, 1));
+            e.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 120, 0));
+            entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
+                    .filter(entity1 -> entity1 instanceof Player)
+                    .map(entity1 -> (Player) entity1)
+                    .forEach(livingEntity -> {
+                        livingEntity.damage(2);
+                        e.getWorld().playSound(e.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.4f, 1f);
+                        livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_AMBIENT, 1.0f, 1.0f);
+                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 120, 2));
+                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 2));
+                        Gamer gamer = GamerManager.getGamer(livingEntity);
+                        if(gamer == null) return;
+                        gamer.sendMessage("&eЯ РАЗЪЯРЁЁЁН!");
+                    });
+        }, 20 * 30));
         attributable.setMobSkills(skills);
         addController(attributable);
     }
@@ -107,7 +132,7 @@ public class MobManager {
                         livingEntity.damage(4);
                         new SyncTask(() -> {
                             livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-                            livingEntity.setVelocity(livingEntity.getVelocity().normalize().add(livingEntity.getLocation().getDirection()).multiply(-2));
+                            livingEntity.setVelocity(livingEntity.getVelocity().add(livingEntity.getLocation().getDirection()).multiply(-1));
                             Gamer gamer = GamerManager.getGamer(livingEntity);
                             if(gamer == null) return;
                             gamer.sendMessage("&eПока!");
@@ -155,7 +180,7 @@ public class MobManager {
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 140, 2));
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 140, 2));
                     }, 25);
-                }), 20 * 65));
+                }), 20 * 55));
         attributable.setMobSkills(skills);
         addController(attributable);
     }
