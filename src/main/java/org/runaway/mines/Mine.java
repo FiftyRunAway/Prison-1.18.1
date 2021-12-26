@@ -112,6 +112,8 @@ public class Mine {
         });
         int left = (int) Math.round((double)((mine.will_reset - System.currentTimeMillis()) / 1000));
         this.hologram.appendTextLine(Utils.colored("&fОбновится через &7• &a" + Math.round(Math.ceil((double) left / 60)) + " мин."));
+        this.hologram.appendTextLine(Utils.colored("&fБлоков осталось &7• &a" + percent() + "%"));
+        this.hologram.appendTextLine("");
         this.hologram.appendTextLine(Utils.colored("&fPVP &7• &a" + (this.pvp ? "Есть" : "&cНет")));
 
         updateHolo();
@@ -130,13 +132,13 @@ public class Mine {
         int left = (int) Math.round((double)((will_reset - System.currentTimeMillis()) / 1000));
         hologram.removeLine(2);
         hologram.insertTextLine(2, Utils.colored("&fОбновится через &7• &a" + Math.round(Math.ceil((double) left / 60)) + " мин."));
-        /*long p = percent();
+        long p = percent();
         hologram.removeLine(3);
-        hologram.insertTextLine(3, Utils.colored("&fБлоков вскопано &7• &a" + p + "%"));*/
+        hologram.insertTextLine(3, Utils.colored("&fБлоков осталось &7• &a" + p + "%"));
     }
 
     private long percent() {
-        int broken = 0, blocks = 0;
+        double broken = 0, blocks = 0;
         Location loc = new Location(this.world, this.x, this.y, this.z);
         for (int i = 0; i < this.height; i++) {
             for (int q = 0; q < this.diametr; q++) {
@@ -155,11 +157,11 @@ public class Mine {
             }
             loc.subtract(0.0, 1.0, 0.0);
         }
-        System.out.println(blocks + " / " + broken);
-        int s = blocks - broken;
-        double nm = Math.ceil((double) s / blocks);
-        System.out.println(nm);
-        return Math.round(nm) * 100;
+        if (broken == 0) return 100;
+        double s = blocks - broken;
+        float nm = (float) (s / blocks);
+
+        return Math.round(nm * 100);
     }
 
     private void forceReset(Mine mine) {

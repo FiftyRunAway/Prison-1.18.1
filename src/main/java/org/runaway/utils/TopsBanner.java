@@ -201,14 +201,14 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
         int s = this.top.keySet().size();
         this.top.forEach((name, score) -> {
             if (i.get() >= (s - 10)) {
-                int pos = 10 - k.get();
+                int pos = k.get() + 1;
                 String score_string = score.toString() + " " + desc;
                 if (this.desc.equalsIgnoreCase("блоков")) {
                     score_string = Board.FormatBlocks(score.toString()) + " " + desc;
                 } else if (this.desc.equalsIgnoreCase(MoneyType.RUBLES.getShortName())) {
                     score_string = FormatMoney(score) + " " + MoneyType.RUBLES.getShortName();
                 } else if (this.desc.equalsIgnoreCase("рублей")) {
-                    score_string = FormatMoney(score) + " стримов";
+                    score_string = FormatMoney(score) + " рублей";
                 }
                 g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), pos + ". " + name, font, textColor, blurColor, strokeThickness, null, null), finalXOffset - 110,
                         finalYOffset + (k.get() * 27) - 200 + (k.get() * 2), null);

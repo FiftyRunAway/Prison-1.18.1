@@ -41,10 +41,10 @@ public class UpgradeCommand extends CommandManager {
                 gamer.sendMessage("&cПредмета не существует.");
                 return;
             }
-            if(!gamer.isOwner()) {
+            /*if(!gamer.isOwner()) {
                 gamer.sendMessage("&4Не ваш предмет!");
                 return;
-            }
+            }*/
             if(prisonItem.getNextPrisonItem() == null || prisonItem.getUpgradeRequireList() == null) {
                 gamer.sendMessage("&cДанный предмет не имеет улучшений!");
                 return;

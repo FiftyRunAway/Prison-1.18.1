@@ -27,10 +27,10 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MobManager {
-    public static Map<Integer, Entity> idEntityMap = new HashMap();
-    public static Map<Integer, IMobController> mobControllerMap = new HashMap();
-    public static Map<String, IMobController> uidMobControllerMap = new HashMap();
-    public static Map<String, Attributable> attributableMap = new HashMap();
+    public static Map<Integer, Entity> idEntityMap = new HashMap<>();
+    public static Map<Integer, IMobController> mobControllerMap = new HashMap<>();
+    public static Map<String, IMobController> uidMobControllerMap = new HashMap<>();
+    public static Map<String, Attributable> attributableMap = new HashMap<>();
 
     public MobManager() {
         rats();

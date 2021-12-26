@@ -30,7 +30,7 @@ public class SimpleMobLoot implements MobLoot {
     public void drop(Map<Gamer, Double> damageList, Location location, Attributable attributable) {
         ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
         double money = threadLocalRandom.nextDouble(minMoney, maxMoney);
-        double needToKill = (100 / damageList.size()) * 0.7;
+        double needToKill = (100 / (damageList.size() > 0 ? damageList.size() : (damageList.size() + 1))) * 0.7;
         damageList.forEach((gamer, damagePercent) -> {
             if (money != 0) {
                 gamer.depositMoney(money * damagePercent);
@@ -98,18 +98,22 @@ public class SimpleMobLoot implements MobLoot {
                 if (gamer.getIntQuestValue("bsPT") == 1 && !damageList.containsKey(gamer)) {
                     return;
                 }
-                gamer.getPlayer().spigot().sendMessage(bc);
+                try {
+                    gamer.getPlayer().spigot().sendMessage(bc);
+                } catch (Exception e) { }
             });
         } else {
             damageList.keySet().forEach(gamer -> {
-                gamer.getPlayer().spigot().sendMessage(bc);
+                try {
+                    gamer.getPlayer().spigot().sendMessage(bc);
+                } catch (Exception e) { }
             });
         }
     }
 
     @Override
     public List<String> getLootLore() {
-        List<String> lore = new ArrayList();
+        List<String> lore = new ArrayList<>();
         for (LootItem lootItem : getLootItems()) {
             int level = lootItem.getPrisonItem().getItemStack().getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
             lore.add("  &7• " + lootItem.getPrisonItem().getName() + " &6x" +

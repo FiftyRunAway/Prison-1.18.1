@@ -11,7 +11,7 @@ public class ListPing implements Listener {
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         if (Prison.getInstance().getStatus() != null) {
-            event.setMotd(Utils.colored("&6&lStreamCraft &4&lPrison"));
+            event.setMotd(Utils.colored("&4&lPrison"));
         }
     }
 }

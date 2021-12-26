@@ -27,6 +27,8 @@ public class MineIcon extends Items {
             return this;
         }
 
+
+
         @Override
         public MineIcon build() {
             return new MineIcon(this);
@@ -44,7 +46,7 @@ public class MineIcon extends Items {
         ArrayList<String> reqs = new ArrayList<>();
         reqs.add("&7• " + (access ? ChatColor.GREEN : ChatColor.RED) + "Минимальный уровень • " + mine.getMinLevel());
         if (mine.needPerm) reqs.add("&7• &4&nСпециальный доступ");
-        return new Item.Builder(mine.icon).name(mine.name).lore(
+        return new Item.Builder(mine.icon).data(mine.subId).name(mine.name).lore(
                 new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7Требования к доступу:")

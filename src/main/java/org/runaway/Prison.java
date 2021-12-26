@@ -78,6 +78,8 @@ public class Prison extends JavaPlugin {
     public static Prison getInstance() {
         return instance;
     }
+
+    public static boolean isDisabling;
     
     //SQLite
     private Map<String, Database> databases = new HashMap<>();
@@ -137,11 +139,12 @@ public class Prison extends JavaPlugin {
 
     public void onDisable() {
         if (getStatus().equals(ServerStatus.ERROR)) return;
+        isDisabling = true;
+        removeEntities();
         Utils.DisableKick();
         new Config().unloadConfigs();
         TrashAuction.closeAll();
         saveBoosters();
-        removeEntities();
 
         Vars.sendSystemMessage(TypeMessage.SUCCESS, "Plugin was successful disabled!");
     }
@@ -153,7 +156,6 @@ public class Prison extends JavaPlugin {
         FileConfiguration loader = EConfig.MODULES.getConfig();
         loadTasks();
         loadSQLite();
-        if (loader.getBoolean("register.mobs")) registerMobs();
         if (loader.getBoolean("register.events")) registerEvents();
         if (loader.getBoolean("register.commands")) registerCommands();
         ParameterManager.init();
@@ -169,6 +171,7 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.auto_restart")) new AutoRestart().loadAutoRestarter();
         if (loader.getBoolean("loader.mines")) loadMines();
         CaseManager.initAllCases();
+        if (loader.getBoolean("register.mobs")) registerMobs();
         if (loader.getBoolean("loader.shop_items")) loadShopItems();
         if (loader.getBoolean("loader.achievements")) Achievement.JOIN.load();
         if (loader.getBoolean("loader.donate_menu")) loadDonates();
@@ -180,7 +183,6 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
         if (loader.getBoolean("loader.battlepass")) BattlePass.load();
-
 
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
         SPAWN = Utils.getLocation("spawn");
@@ -559,10 +561,10 @@ public class Prison extends JavaPlugin {
     private static void registerMobs() {
         try {
             MobType.registerMobs();
-            /*
-            Spawner.SpawnerUtils.init();
-            new Spawner.SpawnerUpdater().runTaskTimer(getInstance(), 20L, 600L);
-             */
+//
+//            Spawner.SpawnerUtils.init();
+//            new Spawner.SpawnerUpdater().runTaskTimer(getInstance(), 20L, 600L);
+//
             new MobManager();
             //removeEntities();
         } catch (Exception ex) {
@@ -1004,21 +1006,12 @@ public class Prison extends JavaPlugin {
     //Удаление мобов
     private static void removeEntities() {
         try {
-            MobManager.mobControllerMap.values().forEach(iMobController -> {
-                iMobController.kill();
+            Bukkit.getWorlds().forEach((world) -> {
+                world.getEntities().stream().filter((entity) ->
+                        entity.getType() != EntityType.PLAYER &&
+                                entity.getType() != EntityType.ITEM_FRAME)
+                        .forEachOrdered(Entity::remove);
             });
-
-            for (World w : Bukkit.getWorlds()) {
-                for (Entity e : w.getEntities()) {
-                    if (!(e instanceof ArmorStand) &&
-                            !(e instanceof org.bukkit.entity.Item) &&
-                            !(e instanceof Player) &&
-                            !(e instanceof ItemFrame)) {
-                        e.setCustomName("toDelete");
-                        e.remove();
-                    }
-                }
-            }
             Vars.sendSystemMessage(TypeMessage.INFO, "Entities removed");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in delete entities! Please, don`t use /reload. Use /stop or /restart");

@@ -5,7 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
+import org.runaway.board.Board;
 import org.runaway.enums.EStat;
+import org.runaway.enums.MoneyType;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.donate.Donate;
@@ -18,16 +20,14 @@ import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.utils.ItemUtils;
-import org.runaway.utils.Lore;
-import org.runaway.utils.Utils;
+import org.runaway.utils.*;
 
 public class DonateMenu implements IMenus {
 
     private void buy(Donate donate, Player player, Inventory menu) {
         Gamer gamer = GamerManager.getGamer(player);
         String d = Donate.getPex(donate.getIcon().getType());
-        if (d != null && player.hasPermission(d)) {
+        if ((d != null && player.hasPermission(d)) || (donate.getIcon().getType().equals(Material.TNT) && gamer.hasBattlePass())) {
             gamer.sendMessage(EMessage.TRANSACTIONTWICE);
             player.closeInventory();
             return;
@@ -41,7 +41,7 @@ public class DonateMenu implements IMenus {
             if (Donate.withdrawDonateMoney(player.getName(), donate.getFinalPrice())) {
                 player.sendMessage(Utils.colored(EMessage.TRANSACTIONSUCCESS.getMessage()
                         .replace("%donate%", ChatColor.UNDERLINE + donate.getIcon().getItemMeta().getDisplayName())
-                        .replace("%money%", donate.getFinalPrice() + " ₽")));
+                        .replace("%money%", donate.getFinalPrice() + " " + MoneyType.REAL_RUBLES.getShortName())));
 
                 Donate.getDonate(donate.getIcon().getType(), gamer);
 
@@ -75,12 +75,12 @@ public class DonateMenu implements IMenus {
         privs.setClickEvent(event -> new PrivilageMenu(event.getWhoClicked()));
         menu.addButton(privs);
 
-        IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&eВаш донат-счёт пополнен на &a" + Donate.getDonateMoney(player.getName()) + " стримов")
+        IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&eБаланс: &a" + TopsBanner.FormatMoney(Donate.getDonateMoney(player.getName())) + " " + MoneyType.REAL_RUBLES.getShortName())
                 .lore(new Lore.BuilderLore().addSpace().addString("&7>> &c&nНажмите, чтобы пополнить").build()).build().item());
         dm.setClickEvent(event -> {
             Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
             event.getWhoClicked().closeInventory();
-            gamer.setChatConsumer((p, message) -> {
+            /*gamer.setChatConsumer((p, message) -> {
                 if (message.startsWith("отмена")) {
                     gamer.setChatConsumer(null);
                     gamer.sendMessage(EMessage.DONATINGSTOP);
@@ -91,7 +91,8 @@ public class DonateMenu implements IMenus {
                 } catch (Exception exception) {
                     gamer.sendMessage(EMessage.INTERROR);
                 }
-            });
+            });*/
+            gamer.sendMessage("&eСайт • &b" + Vars.getSite());
         });
         menu.addButton(dm.setSlot(39));
         menu.addButton(dm.clone().setSlot(41));

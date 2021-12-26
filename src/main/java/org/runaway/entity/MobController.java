@@ -11,14 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.MobSkill;
-import org.runaway.entity.skills.RepetitiveSkill;
 import org.runaway.enums.EConfig;
 import org.runaway.managers.GamerManager;
 import org.runaway.tasks.Cancellable;
@@ -53,6 +51,10 @@ public class MobController implements IMobController {
         setMobRandom(new Random());
         setMobTasks(new ArrayList());
         setDamageMap(new HashMap());
+        if (getLastDeathTime() == -1 || (getRespawnTimeLeft() <= 0)) {
+            setLastDeathTime(System.currentTimeMillis() / 1000L);
+            save();
+        }
         initFirstSpawn();
         if (getRespawnTime() != 0) {
             new SyncRepeatTask(() -> {
@@ -68,9 +70,10 @@ public class MobController implements IMobController {
 
     @Override
     public void spawn() {
-        if(getMobRandom().nextFloat() <= 0.2) {
+        if(!attributable.isBoss() && getMobRandom().nextFloat() < 0.2) {
             setMobRare(MobRare.RARE);
         }
+        if (!getSpawnLocation().getChunk().isLoaded()) getSpawnLocation().getChunk().load();
         net.minecraft.server.v1_12_R1.Entity entity = CustomEntity.spawnEntity(getAttributable().getMobType(), getSpawnLocation(), this);
         if (getRespawnTime() != 0) {
             if (getInfoHologram() != null) {
@@ -190,7 +193,8 @@ public class MobController implements IMobController {
     @Override
     public void die() {
         setLastDeathTime(System.currentTimeMillis() / 1000L);
-        Map<Gamer, Double> damagePercentMap = new HashMap();
+        save();
+        Map<Gamer, Double> damagePercentMap = new HashMap<>();
         if (getRespawnTime() == 0 && getUID() != null) {
             MobManager.uidMobControllerMap.remove(getUID());
             if (getSpawnTask() != null) getSpawnTask().stop();
@@ -200,11 +204,11 @@ public class MobController implements IMobController {
             if (getTotalDamage() == 0) {
                 setTotalDamage(1);
             }
-            Gamer gamer = GamerManager.getGamer(nickname);
-            if (Bukkit.getPlayerExact(nickname) == null || gamer == null) {
+            if (Bukkit.getPlayerExact(nickname) == null) {
                 this.totalDamage -= damage.getDamage();
                 return;
             }
+            Gamer gamer = GamerManager.getGamer(nickname);
             gamer.increaseQuestValue(attributable.getTechName() + "Dmg", (int) damage.getDamage());
             if (System.currentTimeMillis() - damage.getLastDamageTime() > 2 * 60 * 1000) {
                 gamer.sendMessage("&cВы нападали на моба и он был убит, но вы не получите награды, т.к. прошло более 2-ух минут с последнего удара.");
@@ -223,14 +227,13 @@ public class MobController implements IMobController {
         MobManager.mobControllerMap.remove(getBukkitEntity().getEntityId());
         setBukkitEntity(null);
         setNmsEntity(null);
-        if (getRespawnTime() != 0) {
+        if (getRespawnTime() != 0 && !Prison.isDisabling) {
             setSpawnTask(new SyncTask(this::spawn, getRespawnTime() * 20));
         }
         if (getAttributable().isBoss()) {
             createHologram();
         }
         getMobTasks().forEach(Cancellable::stop);
-        save();
     }
 
     public void save() {

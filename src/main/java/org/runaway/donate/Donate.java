@@ -6,11 +6,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.enums.*;
 import org.runaway.items.Item;
-import org.runaway.enums.BoosterType;
-import org.runaway.enums.EConfig;
-import org.runaway.enums.EStat;
-import org.runaway.enums.TypeMessage;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
@@ -45,16 +42,13 @@ public class Donate {
         this.sale = sale;
     }
 
-    public static void donate(Gamer gamer, int sum) {
-
-    }
 
     public ItemStack getIcon() {
         return new Item.Builder(icon).amount(amount).name(name + (temporary ? " &c&nВременный предмет!" : "")).lore(new Lore.BuilderLore()
                 .addString("&7Описание:")
                 .addLore(lore)
                 .addSpace()
-                .addString("&fЦена: " + (sale > 0 ? ("&b&m" + price + " &c&n" + sale) : ("&l&b&n" + price)) + " стримов")
+                .addString("&fЦена: " + (sale > 0 ? ("&b&m" + price + " &c&n" + sale) : ("&l&b&n" + price)) + " " + MoneyType.REAL_RUBLES.getShortName())
         .build()).build().item();
     }
 
@@ -189,13 +183,17 @@ public class Donate {
                 }
                 case PAPER: {
                     PermissionsEx.getUser(gamer.getGamer()).addPermission(getPex(material));
-                    gamer.getPlayer().sendMessage(Utils.colored("&aДля правильной работы купленной услуги, &eперезайдите на сервер!"));
+                    gamer.sendMessage("&aДля правильной работы купленной услуги, &eперезайдите на сервер!");
                     break;
                 }
                 case BOOK_AND_QUILL: {
                     PermissionsEx.getUser(gamer.getGamer()).addPermission(getPex(material));
-                    gamer.getPlayer().sendMessage(Utils.colored("&aДля активации купленной услуги введите &e/autosell"));
+                    gamer.sendMessage("&aДля активации купленной услуги введите &e/autosell");
                     break;
+                }
+                case TNT: {
+                    gamer.setStatistics(EStat.BATTLEPASS, true);
+                    gamer.sendMessage("&aДля правильной работы &6боевого пропуска&a, &eперезайдите на сервер!");
                 }
             }
         } catch (Exception ex) {

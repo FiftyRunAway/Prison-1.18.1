@@ -427,7 +427,7 @@ public class Gamer {
     }
 
     public boolean hasBattlePass() {
-        return getPlayer().hasPermission(bp_perm);
+        return getBooleanStatistics(EStat.BATTLEPASS);
     }
 
     public void addExperienceBP(int experience) {
@@ -928,6 +928,8 @@ public class Gamer {
     }
 
     public void sendActionbar(String msg) {
-        getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Utils.colored(msg)));
+        try {
+            getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.colored(msg)));
+        } catch (Exception e) { }
     }
 }

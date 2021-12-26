@@ -113,7 +113,7 @@ public enum Privs {
                 .name(Utils.colored(priv.name))
                 .lore(new Lore.BuilderLore().addList(list)
                         .addSpace()
-                        .addString("&fЦена: &l&b&n" + priv.getPrice() + " " + MoneyType.RUBLES.getShortName()).build())
+                        .addString("&fЦена: &l&b&n" + priv.getPrice() + " " + MoneyType.REAL_RUBLES.getShortName()).build())
                 .build().item();
     }
 

@@ -19,6 +19,8 @@ import org.runaway.mines.Mines;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /*
  * Created by _RunAway_ on 5.5.2019
  */
@@ -29,9 +31,10 @@ public class MinesMenu implements IMenus {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         Gamer gamer = GamerManager.getGamer(player);
 
+        AtomicInteger in = new AtomicInteger(36);
         Mines.icons.forEach((mines, mineIcon) -> {
             IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(mines.getPrisonIcon(gamer))
-                    .setSlot(mines.getMinLevel() - 1);
+                    .setSlot(mines.needPerm() ? in.getAndIncrement() : mines.getMinLevel() - 1);
             bt.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
                 Gamer g = GamerManager.getGamer(p);
@@ -41,6 +44,10 @@ public class MinesMenu implements IMenus {
             });
             menu.addButton(bt);
         });
+
+        /*
+
+        РАБОТЫ - потом включить!
 
         for (EJobs job : EJobs.values()) {
             Job j = job.getJob();
@@ -57,6 +64,10 @@ public class MinesMenu implements IMenus {
             });
             menu.addButton(btn);
         }
+        */
+
+        /*
+
 
         IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.NETHER_STAR).name("&6База")
                 .lore(new Lore.BuilderLore()
@@ -68,6 +79,7 @@ public class MinesMenu implements IMenus {
                 .build().item()).setSlot(4);
         base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
         menu.addButton(base);
+         */
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));

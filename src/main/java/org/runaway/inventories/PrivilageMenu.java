@@ -17,7 +17,7 @@ public class PrivilageMenu implements IMenus {
 
     private void buy(Privs priv, Player player) {
         player.closeInventory();
-        player.sendMessage(Utils.colored("&fЦена: &b&l" + priv.getPrice() + " " + MoneyType.RUBLES.getShortName()));
+        player.sendMessage(Utils.colored("&fЦена: &b&l" + priv.getPrice() + " " + MoneyType.REAL_RUBLES.getShortName()));
         player.sendMessage(Utils.colored("&7• &e&n" + Vars.getSite()));
     }
 

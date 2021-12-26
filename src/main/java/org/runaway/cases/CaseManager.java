@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CaseManager {
-    protected static Map<String, CaseRefactored> caseMap = new HashMap();
+    protected static Map<String, CaseRefactored> caseMap = new HashMap<>();
 
     public static void initAllCases() {
         SimpleCase.builder()

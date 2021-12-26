@@ -42,6 +42,7 @@ public class Mines {
     int minLevel;
     Location spawn;
     Material icon;
+    short subId;
 
     public static void loadMinesMenu() {
         try {
@@ -49,9 +50,14 @@ public class Mines {
                 for (String cRegionString : EConfig.MINES.getConfig().getKeys(false)) {
                     ConfigurationSection cRegion = EConfig.MINES.getConfig().getConfigurationSection(cRegionString);
                     if (!cRegion.contains("name")) continue;
+                    short subid = 0;
+                    Material material = Material.getMaterial(cRegion.getString("icon").toUpperCase().split(":")[0]);
+                    if (cRegion.getString("icon").split(":").length > 1) {
+                        subid = Short.parseShort(cRegion.getString("icon").split(":")[1]);
+                    }
                     ConfigurationSection cLoc = cRegion.getConfigurationSection("location");
                     Location loc = new Location(Bukkit.getWorld(cLoc.getString("world")), cLoc.getDouble("x"), cLoc.getDouble("y"), cLoc.getDouble("z"));
-                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, Material.getMaterial(cRegion.getString("icon").toUpperCase()), cRegion.getBoolean("needperm", false), cRegion.getString("permission"));
+                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, material, subid, cRegion.getBoolean("needperm", false), cRegion.getString("permission"));
                     MineIcon icon = new MineIcon.Builder(mine).build();
                     Mines.icons.put(mine, icon);
                 }
@@ -63,7 +69,7 @@ public class Mines {
         }
     }
 
-    private Mines(String id, String name, int minLevel, Location spawn, Material icon, boolean needPerm, String loc_name) {
+    private Mines(String id, String name, int minLevel, Location spawn, Material icon, short subId, boolean needPerm, String loc_name) {
         this.id = id;
         this.name = name;
         this.needPerm = needPerm;
@@ -71,6 +77,7 @@ public class Mines {
         this.minLevel = minLevel;
         this.spawn = spawn;
         this.icon = icon;
+        this.subId = subId;
         if (needPerm) {
             //org.runaway.mines.Location.locations.add(new org.runaway.mines.Location(ChatColor.stripColor(this.name), loc_name));
             PrisonItem prisonItem = PrisonItem.builder()
@@ -108,6 +115,7 @@ public class Mines {
     }
 
     public boolean canTeleport(Gamer gamer, boolean sendMsg) {
+        if (gamer.hasPermission("*")) return true;
         if(gamer.getLevel() < getMinLevel()) {
             if(sendMsg) {
                 gamer.sendMessage(Utils.colored(EMessage.MINELEVEL.getMessage().replaceAll("%level%", getMinLevel() + "")));
