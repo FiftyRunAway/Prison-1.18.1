@@ -12,7 +12,6 @@ import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.items.ItemManager;
 import org.runaway.managers.GamerManager;
-import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Vars;
 
 import java.util.Arrays;

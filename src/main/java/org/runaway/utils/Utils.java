@@ -65,10 +65,10 @@ public class Utils {
     private static ArrayList<String> players = new ArrayList<>();
 
     //Донат меню
-    public static LinkedList donate = new LinkedList();
+    public static List donate = new LinkedList();
 
     //Тренер
-    public static LinkedList<Trainer> trainer = new LinkedList<>();
+    public static List<Trainer> trainer = new LinkedList<>();
 
     //Списки, связанные с подарками
     private static HashMap<String, ItemStack> gift = new HashMap<>();

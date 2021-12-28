@@ -856,7 +856,7 @@ public class Gamer {
     }
 
     public boolean getBooleanStatistics(EStat stat) {
-        return (boolean) getStatistics(stat);
+        return Boolean.parseBoolean((String) getStatistics(stat));
     }
 
     public Object getStatistics(EStat statistic) {

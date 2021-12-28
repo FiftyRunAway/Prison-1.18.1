@@ -32,7 +32,9 @@ public class RewardIcon extends Items {
     }
 
     public ItemStack getIcon() {
-        boolean is = this.reward.getValue() > 0;
+        boolean is = false;
+        if (!reward.isStringValue())
+            is = this.reward.getValue() > 0;
         ArrayList<String> adding = new ArrayList<>();
         if (is) {
             adding.add(" ");

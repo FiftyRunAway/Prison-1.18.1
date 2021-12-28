@@ -105,7 +105,7 @@ public class BattlePassMenu implements IMenus {
                         .setSlot(i);
                 btn.setClickEvent(e -> {
                     BattlePass.unPin(mission, GamerManager.getGamer(e.getWhoClicked().getUniqueId()));
-                    new BattlePassMenu(e.getWhoClicked());
+                    BattlePassMenu.openPage(data.getOrDefault(gamer.getGamer(), 0), gamer);
                 });
                 menu.addButton(btn);
             } else {

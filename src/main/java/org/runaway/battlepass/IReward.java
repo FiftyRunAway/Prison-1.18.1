@@ -8,7 +8,8 @@ public abstract class IReward {
     private int level;
     private Object[] details;
     private boolean isFree;
-    private int value;
+    private Object value;
+    private boolean stringValue;
 
     /**
      * Starting on loading server
@@ -30,19 +31,27 @@ public abstract class IReward {
         this.isFree = free;
     }
 
+    protected boolean isStringValue() {
+        return this.stringValue;
+    }
+
+    protected void setStringValue(boolean sv) {
+        this.stringValue = sv;
+    }
+
     protected abstract String getName();
 
     protected abstract String getDescription();
 
     protected int getValue() {
-        return this.value;
+        return Integer.parseInt(this.value.toString());
     }
 
-    protected void setValue(int value) {
+    protected void setValue(Object value) {
         this.value = value;
     }
 
-    void setDetails(Object... objects) {
+    protected void setDetails(Object... objects) {
         this.details = objects;
     }
 
@@ -77,7 +86,11 @@ public abstract class IReward {
         this.level = level;
     }
 
-    public int getValue(int argument) {
-        return Integer.parseInt(this.getDetails()[argument].toString());
+    public int getIntValue(int argument) {
+        return Integer.parseInt(getStringValue(argument));
+    }
+
+    public String getStringValue(int argument) {
+        return this.getDetails()[argument].toString();
     }
 }

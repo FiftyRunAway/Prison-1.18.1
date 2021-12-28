@@ -132,6 +132,7 @@ public class Prison extends JavaPlugin {
     @Getter
     public final Properties keys = new Properties();
 
+    @Override
     public void onEnable() {
         instance = this;
         loader();
@@ -551,7 +552,6 @@ public class Prison extends JavaPlugin {
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -561,15 +561,9 @@ public class Prison extends JavaPlugin {
     private static void registerMobs() {
         try {
             MobType.registerMobs();
-//
-//            Spawner.SpawnerUtils.init();
-//            new Spawner.SpawnerUpdater().runTaskTimer(getInstance(), 20L, 600L);
-//
             new MobManager();
-            //removeEntities();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering mobs!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -584,7 +578,6 @@ public class Prison extends JavaPlugin {
             MoneyBar.setVisible(false);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with creating BossBar`s!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -602,7 +595,6 @@ public class Prison extends JavaPlugin {
             PassivePerksMenu.load();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in creating inventories!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -635,13 +627,6 @@ public class Prison extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, "TelegramBotsAPI was successfully connected");
             this.bot_username = EConfig.CONFIG.getConfig().getString("telegram.username");
             this.bot_token = EConfig.CONFIG.getConfig().getString("telegram.token");
-            /*ApiContextInitializer.init();
-            try {
-                TelegramBotsApi botsApi = new TelegramBotsApi();
-                botsApi.registerBot(new TelegramBot());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }*/
             return;
         }
         Vars.sendSystemMessage(TypeMessage.INFO, "TelegramBotsAPI Displays has not been installed yet");
@@ -689,6 +674,7 @@ public class Prison extends JavaPlugin {
 
     private int errors = 0;
 
+    //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
     //Подгрузка сообщений
     private void loadMessage() {
         try {
@@ -726,7 +712,6 @@ public class Prison extends JavaPlugin {
             if (errors != 0) Vars.sendSystemMessage(TypeMessage.INFO, errors + " NEW messages was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading messages!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -779,13 +764,13 @@ public class Prison extends JavaPlugin {
                 return;
             }
 
-            Map<String, Long> money = new HashMap<>();
-            Map<String, Long> blocks = new HashMap<>();
-            Map<String, Long> level = new HashMap<>();
-            Map<String, Long> rats = new HashMap<>();
-            Map<String, Long> rebirth = new HashMap<>();
-            Map<String, Long> keys = new HashMap<>();
-            Map<String, Long> dm = new HashMap<>();
+            Map<String, Long> money;
+            Map<String, Long> blocks;
+            Map<String, Long> level;
+            Map<String, Long> rats;
+            Map<String, Long> rebirth;
+            Map<String, Long> keys;
+            Map<String, Long> dm;
             money = getPreparedRequests().getTop(EStat.MONEY.getColumnName(), 10);
             blocks = getPreparedRequests().getTop(EStat.BLOCKS.getColumnName(), 10);
             level = getPreparedRequests().getTop(EStat.LEVEL.getColumnName(), 10);
@@ -804,7 +789,6 @@ public class Prison extends JavaPlugin {
             api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading players top!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -872,7 +856,6 @@ public class Prison extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, value_mines + " mines was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading mines!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -982,7 +965,6 @@ public class Prison extends JavaPlugin {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, value_donate + " donate items was loaded!");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading donate items!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
@@ -997,7 +979,6 @@ public class Prison extends JavaPlugin {
             });
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading trainer!");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
             Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
