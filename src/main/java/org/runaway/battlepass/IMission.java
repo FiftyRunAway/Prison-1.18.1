@@ -7,8 +7,7 @@ import org.runaway.enums.EMessage;
 import org.runaway.mines.Mine;
 import org.runaway.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public abstract class IMission {
 
@@ -60,16 +59,19 @@ public abstract class IMission {
      * @param gamer
      *      have a gamer class
      */
-    public void addValue(Gamer gamer) {
-        int result = (int)getValues().get(gamer.getGamer()) + 1;
+    public void addValue(Gamer gamer, int value) {
+        int result = (int)getValues().get(gamer.getGamer()) + value;
         getValues().put(gamer.getGamer(), result);
 
         checkLevel(gamer);
+        if (gamer.getPins().contains(this)) {
+            gamer.bpStatus(this);
+        }
     }
 
     protected void checkLevel(Gamer gamer) {
         if (isCompleted(gamer)) {
-            gamer.sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", Utils.upCurLetter(getName().toLowerCase(), 1))));
+            gamer.sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", getName())));
             gamer.addExperienceBP(getExperience());
 
             BattlePass.checkLevelUp(gamer);
@@ -84,7 +86,7 @@ public abstract class IMission {
     /**
      * @return a HashMap of values: <Player_name, Value>
      */
-    public HashMap<String, Object> getValues() {
+    public Map<String, Object> getValues() {
         return values;
     }
 
@@ -118,7 +120,7 @@ public abstract class IMission {
      * @return a Value of pinning
      */
     public boolean isPinned(Gamer gamer) {
-        ArrayList<IMission> s = BattlePass.getPinnedTasks(gamer);
+        List<IMission> s = BattlePass.getPinnedTasks(gamer);
         if (s == null) return false;
         for (IMission m : s) {
             if (String.valueOf(this.hashCode()).contains(String.valueOf(m.hashCode()))) return true;
@@ -154,16 +156,12 @@ public abstract class IMission {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
+        if (obj == null || getClass() != obj.getClass())
             return false;
         IMission other = (IMission) obj;
-        if (getName() != other.getName())
-            return false;
-        if (getValue() != other.getValue())
-            return false;
-        if (getExperience() != other.getExperience())
+        if (!Objects.equals(getName(), other.getName()) ||
+                getValue() != other.getValue() ||
+                getExperience() != other.getExperience())
             return false;
         return true;
     }
@@ -172,10 +170,8 @@ public abstract class IMission {
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;
             weeklyMission.getMissions().forEach(mission -> {
-                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                    if (!mission.isCompleted(gamer)) {
-                        mission.addValue(gamer);
-                    }
+                if (mission.getClass().isAssignableFrom(this.getClass()) && !mission.isCompleted(gamer)) {
+                    mission.addValue(gamer, 1);
                 }
             });
         });

@@ -58,7 +58,7 @@ public class AsyncChat implements Listener {
             Bukkit.getConsoleSender().sendMessage(format + message.replace("!", ""));
             if (!start) {
                 event.getRecipients().forEach(players -> {
-                    if (!outOfRange(event.getPlayer().getLocation(), player.getLocation()) || player.hasPermission("prison.spy")) {
+                    if (Boolean.TRUE.equals(inLocal(player, players))) {
                         send(GamerManager.getGamer(players.getUniqueId()), format + message);
                     }
                 });
@@ -91,13 +91,10 @@ public class AsyncChat implements Listener {
         consumer.getPlayer().sendMessage(Utils.colored(format));
     }
 
-    private Boolean outOfRange(Location l, Location ll) {
-        if (l.equals(ll)) {
-            return false;
-        }
-        if (l.getWorld() != ll.getWorld()) {
-            return true;
-        }
-        return l.distance(ll) > 100.0;
+    private Boolean inLocal(Player sender, Player receiver) {
+        return receiver.hasPermission("prison.spy") ||
+                (sender.getLocation().getWorld().equals(receiver.getLocation().getWorld()) &&
+                        (sender.getName().equals(receiver.getName()) ||
+                                sender.getLocation().distance(receiver.getLocation()) <= 100.0));
     }
 }

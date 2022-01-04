@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.battlepass.BattlePass;
+import org.runaway.commands.HideCommand;
 import org.runaway.enums.EConfig;
 import org.runaway.inventories.BattlePassMenu;
 import org.runaway.managers.GamerManager;
@@ -25,9 +26,11 @@ public class PlayerQuit implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
         Player player = event.getPlayer();
-        GamerManager.getGamer(player).savePlayer();
+        Gamer gamer = GamerManager.getGamer(player);
+        gamer.savePlayer();
         player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         removeMissions(player);
+        HideCommand.removeOnQuit(gamer);
         Utils.getPlayers().remove(player.getName());
         removeBar(player);
         if (BlockBreak.treasure_holo.containsKey(player.getName())) {

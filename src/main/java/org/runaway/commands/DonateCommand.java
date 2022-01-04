@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.donate.Donate;
 import org.runaway.enums.EMessage;
+import org.runaway.enums.MoneyType;
 import org.runaway.enums.TypeMessage;
 import org.runaway.inventories.DonateMenu;
 import org.runaway.utils.Utils;
@@ -41,7 +42,7 @@ public class DonateCommand extends CommandManager {
                 if (Utils.getPlayers().contains(name)) {
                     Player player = Bukkit.getPlayer(name);
                     player.sendMessage(Utils.colored(EMessage.DEPOSITDONATE.getMessage()
-                            .replace("%money%", add + " ₽")));
+                            .replace("%money%", add + " " + MoneyType.REAL_RUBLES)));
                     player.playSound(player.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 1);
                 }
             } else {

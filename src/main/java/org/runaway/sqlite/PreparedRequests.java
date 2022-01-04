@@ -55,7 +55,7 @@ public class PreparedRequests {
     }
     public Map<Saveable, Object> getAllValues(String key, String value, Saveable[] saveables, boolean exist) {
         try {
-            Map<Saveable, Object> allValues = new HashMap();
+            Map<Saveable, Object> allValues = new HashMap<>();
             if(!exist) {
                 Arrays.stream(saveables).forEach(eStat -> {
                     allValues.put(eStat, eStat.getDefaultValue());
@@ -91,7 +91,7 @@ public class PreparedRequests {
     }
 
     public void create(String key, String primary, Map<Saveable, Object> saveableValues) {
-        List<String> columnNames = saveableValues.keySet().stream().map(saveable -> saveable.getColumnName()).collect(Collectors.toList());
+        List<String> columnNames = saveableValues.keySet().stream().map(Saveable::getColumnName).collect(Collectors.toList());
         String allColumns = Joiner.on("','").join(columnNames);
         String allValues = Joiner.on("','").join(saveableValues.values());
         String statementString = String.format("INSERT INTO %s (%s, '%s') VALUES ('%s', '%s')", getDbName(), key, allColumns, primary.toLowerCase(), allValues);
@@ -109,7 +109,8 @@ public class PreparedRequests {
     public Object returnRequest(DoReturn doing, String player, String column) {
         if (doing.equals(DoReturn.SELECT)) {
             try {
-                PreparedStatement st = getDatabase().connection.prepareStatement(String.format("SELECT * FROM %s WHERE player = %s", getDbName(), player));
+                PreparedStatement st = getDatabase().connection.prepareStatement(
+                        String.format("SELECT * FROM %s WHERE player = '%s'", getDbName(), player));
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
                     return rs.getObject(column);

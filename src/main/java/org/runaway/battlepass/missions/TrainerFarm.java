@@ -1,5 +1,6 @@
 package org.runaway.battlepass.missions;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,7 @@ public class TrainerFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Получите любые прокачки у тренера";
+        return ChatColor.GRAY + "Получите любые прокачки у тренера";
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
-import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.MoneyType;
 import org.runaway.managers.GamerManager;
@@ -50,7 +49,8 @@ public class PayCommand extends CommandManager {
             gamer.withdrawMoney(send);
             gamer.sendMessage(EMessage.SENDMONEY);
             get.depositMoney(send);
-            pl.sendMessage(EMessage.GETMONEY.getMessage().replaceAll("%money%", send + " " + MoneyType.RUBLES.getShortName()).replaceAll("%player%", gamer.getGamer()));
+            get.sendMessage(EMessage.GETMONEY.getMessage().replace("%money%", send + " " + MoneyType.RUBLES.getShortName())
+                    .replace("%player%", gamer.getGamer()));
         } else {
             p.sendMessage(Utils.colored("&cИспользуйте: /" + cmdName + " <Игрок> <Сумма>"));
         }

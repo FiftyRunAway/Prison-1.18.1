@@ -6,7 +6,7 @@ public interface Reward {
 
     Reward setReward(Object object);
     Object getReward();
-    Class getTypes();
+    Class<?> getTypes();
     void giveReward(Player player);
     String rewardTitle();
 }

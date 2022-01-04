@@ -22,7 +22,7 @@ public enum  EMessage {
     KILLPLAYER("PlayerKill", "&cВы убили %player% и получили %money%"),
     TREASUREOPEN("OpenTreasure", "&aВ этом тайнике вы нашли %reward%"),
     NOBLOCKSFORSALE("NoBlocksForSale", "&cУ вас нет предметов для продажи!"),
-    ACTIONBARSELL("ActionBarSell", "&aВы продали &e%amount% &aпредметов на &e%money% руб! &7[&e%booster%x&7]"),
+    ACTIONBARSELL("ActionBarSell", "&aВы продали &e%amount% &aпредметов на &e%money%! &7[&e%booster%x&7]"),
     BOOSTERALREADYACTIVE("BoosterAlreadyActive", "&cЭтот вид бустера уже активен!"),
     NOBOOSTERS("NoBoosters", "&cУ вас нет ни одного бустера"),
     LEVELNEEDBLOCKS("LevelBlocksNeed", "&cПодкопайте ещё немного блоков и попробуйте снова"),
@@ -110,6 +110,7 @@ public enum  EMessage {
     BPMISSION("MissionComplete", "&aВы выполнили миссию &e%name%. &aПродолжайте в том же духе!"),
     BPREWARDGET("RewardGet", "&aВы получили следующие награды за повышение уровня боевого пропуска: %reward%"),
     BPREWARDCAN("RewardCanGet", "&aВы бы могли получить эти награды, имея боевой пропуск: %reward%"),
+    BPBUY("RewardsOnBuy", "&aВы получили следующие награды за покупку боевого пропуска: \n%reward%"),
     REBIRTHBOUGHT("BoughtRebirth", "&aВы приобрели новый навык за очки перерождения. Поздравляем!"),
     BOSSNOTIFY("BossNotify", "&bПоявился босс &c%name%&b. Скорее на него!"),
     MANYPINS("ManyPins", "&cУже слишком много заданий закреплено! Вы можете &4открепить старые."),
@@ -132,7 +133,9 @@ public enum  EMessage {
     STREAMSBUYING("StreamsBuying", "&eВведите в чат сумму, которую хотите внести на счёт. \n&eДля отмены действия напишите слово &4'отмена'"),
     INTERROR("IntError", "&cВы можете ввести &c&nтолько целое&r&c число стримов! \n&cПопробуйте ещё раз либо напишите слово &4'отмена'"),
     DONATINGSTOP("StopDonating", "&cВы отменили пополнение счёта!"),
-    SELLTIT("SellIt", "&cЛучше продайте это у главного рыбака!");
+    SELLTIT("SellIt", "&cЛучше продайте это у главного рыбака!"),
+    SHOWGAMERS("ShowGamers", "&aВы снова видите других игроков"),
+    HIDEGAMERS("HideGamers", "&cВы скрыли всех игроков", EMessageType.TITLE);
 
     private String config, defaults;
     private EMessageType eMessageType;

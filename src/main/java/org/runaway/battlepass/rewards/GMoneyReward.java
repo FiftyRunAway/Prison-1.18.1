@@ -21,7 +21,7 @@ public class GMoneyReward extends IReward {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return "&eИгровые деньги";
     }
 

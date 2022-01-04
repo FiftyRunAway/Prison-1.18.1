@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.runaway.Gamer;
 import org.runaway.battlepass.IReward;
 import org.runaway.donate.Donate;
-import org.runaway.enums.EStat;
 
 public class MoneyReward extends IReward {
 
@@ -22,7 +21,7 @@ public class MoneyReward extends IReward {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return "&eДеньги на счёт доната";
     }
 

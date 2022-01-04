@@ -15,8 +15,11 @@ import org.runaway.boosters.Booster;
 import org.runaway.donate.features.BossMoney;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
+import org.runaway.enums.EStat;
 import org.runaway.enums.TypeMessage;
 import org.runaway.managers.GamerManager;
+import org.runaway.sqlite.DoReturn;
+import org.runaway.sqlite.DoVoid;
 import org.runaway.trainer.Trainer;
 
 import java.util.*;
@@ -65,7 +68,7 @@ public class Utils {
     private static ArrayList<String> players = new ArrayList<>();
 
     //Донат меню
-    public static List donate = new LinkedList();
+    public static List donate = new LinkedList<>();
 
     //Тренер
     public static List<Trainer> trainer = new LinkedList<>();
@@ -89,6 +92,11 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static boolean depositOffline(String name, double value) {
+        EStat.MONEY.setInConfig(name, (double)EStat.MONEY.getFromConfig(name) + value);
+        return true;
     }
 
     public static String generateUID() {

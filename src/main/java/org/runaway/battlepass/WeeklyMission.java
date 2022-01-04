@@ -2,6 +2,7 @@ package org.runaway.battlepass;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class WeeklyMission {
 
@@ -19,7 +20,7 @@ public class WeeklyMission {
         return this.name;
     }
 
-    public ArrayList<IMission> getMissions() {
+    public List<IMission> getMissions() {
         return this.missions;
     }
 

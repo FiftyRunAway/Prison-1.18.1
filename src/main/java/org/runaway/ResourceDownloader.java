@@ -15,13 +15,9 @@ import org.bukkit.Bukkit;
 
 public class ResourceDownloader {
 
-    private final static String VERSIONS_LIST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-    private final static String ASSETS_URL = "http://resources.download.minecraft.net/";
+    private static final String VERSIONS_LIST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+    private static final String ASSETS_URL = "http://resources.download.minecraft.net/";
     private final Gson gson = new Gson();
-
-    public ResourceDownloader() {
-
-    }
 
     /**
      *
@@ -76,7 +72,8 @@ public class ResourceDownloader {
 
     class RemoteClient {
 
-        private String id, url;
+        private String id;
+        private String url;
 
         public String getId() {
             return id;
@@ -99,14 +96,13 @@ public class ResourceDownloader {
 
     class AssetIndex {
 
-        private final static String PATH = "minecraft/lang/%s.json";
+        private static final String PATH = "minecraft/lang/%s.json";
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         private LinkedTreeMap<String, LinkedTreeMap<String, String>> objects;
 
         String getLocaleHash(String locale) {
-            this.objects.keySet().forEach(key -> {
-                Bukkit.getConsoleSender().sendMessage("Key: " + key);
-            });
+            this.objects.keySet().forEach(key ->
+                    Bukkit.getConsoleSender().sendMessage("Key: " + key));
             LinkedTreeMap<String, String> asset
                     = this.objects.get(String.format(PATH, locale.toLowerCase()));
             if (asset == null) {

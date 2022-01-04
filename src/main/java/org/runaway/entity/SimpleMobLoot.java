@@ -30,7 +30,7 @@ public class SimpleMobLoot implements MobLoot {
     public void drop(Map<Gamer, Double> damageList, Location location, Attributable attributable) {
         ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
         double money = threadLocalRandom.nextDouble(minMoney, maxMoney);
-        double needToKill = (100 / (damageList.size() > 0 ? damageList.size() : (damageList.size() + 1))) * 0.7;
+        double needToKill = (100.0 / (damageList.size() > 0 ? damageList.size() : (damageList.size() + 1))) * 0.7;
         damageList.forEach((gamer, damagePercent) -> {
             if (money != 0) {
                 gamer.depositMoney(money * damagePercent);
@@ -42,14 +42,13 @@ public class SimpleMobLoot implements MobLoot {
                 if(attributable.isBoss()) {
                     gamer.increaseQuestValue("bossKills", 1);
                 }
-                gamer.debug("kill " + needToKill);
+                //gamer.debug("kill " + needToKill);
             }
         });
         if (lootItems != null) {
-            List<NumberedPrisonItem> numberedItems = new ArrayList();
-            Map<Gamer, List<String>> itemsString = new HashMap();
+            List<NumberedPrisonItem> numberedItems = new ArrayList<>();
+            Map<Gamer, List<String>> itemsString = new HashMap<>();
             lootItems.forEach(lootItem -> {
-                //int amount = lootItem.getMinAmount() == lootItem.getMaxAmount() ? lootItem.getMaxAmount() : threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount());
                 int amount = lootItem.getAmount() == 0 ? threadLocalRandom.nextInt(lootItem.getMinAmount(), lootItem.getMaxAmount()) : lootItem.getAmount();
                 PrisonItem prisonItem = lootItem.getPrisonItem();
                 if (threadLocalRandom.nextFloat() <= lootItem.getChance()) {
@@ -100,13 +99,13 @@ public class SimpleMobLoot implements MobLoot {
                 }
                 try {
                     gamer.getPlayer().spigot().sendMessage(bc);
-                } catch (Exception e) { }
+                } catch (Exception ignored) { }
             });
         } else {
             damageList.keySet().forEach(gamer -> {
                 try {
                     gamer.getPlayer().spigot().sendMessage(bc);
-                } catch (Exception e) { }
+                } catch (Exception ignored) { }
             });
         }
     }

@@ -19,7 +19,7 @@ public class ItemReward extends IReward {
         this.setStringValue(true);
         this.setValue(this.value);
 
-        ItemStack item = ItemManager.getPrisonItem("defaultKey").getItemStack();
+        ItemStack item = ItemManager.getPrisonItem(this.value).getItemStack();
         this.name = item.getItemMeta().getDisplayName();
         this.type = item.getType();
 
@@ -31,7 +31,7 @@ public class ItemReward extends IReward {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return "&eПредмет &7• " + name;
     }
 

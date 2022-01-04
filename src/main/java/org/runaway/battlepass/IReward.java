@@ -23,7 +23,7 @@ public abstract class IReward {
      */
     protected abstract void getReward(Gamer gamer);
 
-    boolean isFree() {
+    public boolean isFree() {
         return this.isFree;
     }
 
@@ -31,7 +31,7 @@ public abstract class IReward {
         this.isFree = free;
     }
 
-    protected boolean isStringValue() {
+    public boolean isStringValue() {
         return this.stringValue;
     }
 
@@ -39,11 +39,11 @@ public abstract class IReward {
         this.stringValue = sv;
     }
 
-    protected abstract String getName();
+    public abstract String getName();
 
     protected abstract String getDescription();
 
-    protected int getValue() {
+    public int getValue() {
         return Integer.parseInt(this.value.toString());
     }
 

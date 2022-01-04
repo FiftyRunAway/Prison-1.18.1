@@ -49,6 +49,10 @@ public class PlayerInteract implements Listener {
         if(prisonItem != null && prisonItem.getConsumerOnClick() != null) {
             prisonItem.getConsumerOnClick().accept(gamer);
         }
+        if (prisonItem != null && gamer.getLevelItem() > gamer.getLevel()) {
+            gamer.sendMessage(EMessage.MINLEVELITEM.getMessage().replace("%level%", gamer.getLevelItem(event.getItem()) + ""));
+            event.setCancelled(true);
+        }
         Block block = event.getClickedBlock();
         if (block != null) {
             if(block.getType() == Material.CHEST && ((Chest) block.getState()).getBlockInventory().getName().equals("case")) {
@@ -76,7 +80,7 @@ public class PlayerInteract implements Listener {
                 return;
             }
 
-            if (main.getType().equals(Material.FISHING_ROD)) {
+            if (main.getType().equals(Material.FISHING_ROD) && !event.isCancelled()) {
                 if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
                     if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
                         player.sendMessage(Vars.getPrefix() + Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
@@ -87,19 +91,19 @@ public class PlayerInteract implements Listener {
             }
         }
 
-            if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
-                Sign sign = (Sign)block.getState();
-                String[] lines = sign.getLines();
-                if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {
-                    if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                        sellAll(player);
-                    } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                        new BlockShopMenu(player);
-                    }
+        if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
+            Sign sign = (Sign)block.getState();
+            String[] lines = sign.getLines();
+            if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {
+                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                    sellAll(player);
+                } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                    new BlockShopMenu(player);
                 }
             }
+        }
 
-            //Сундук (сокровища)
+        //Сундук (сокровища)
             if (block.getType().equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 try {
                     if (!BlockBreak.chests.containsKey(player.getName())) return;
@@ -139,10 +143,9 @@ public class PlayerInteract implements Listener {
             return;
         }
         tod *= gamer.getBoosterMoney();
-        String ret = String.valueOf(new BigDecimal(tod).setScale(2, RoundingMode.UP).doubleValue());
-        String format = Utils.colored(EMessage.ACTIONBARSELL.getMessage()).replace("%amount%", String.valueOf(amount)).replace("%money%", ret).replace("%booster%", String.valueOf(gamer.getBoosterMoney()));
+        String ret = String.valueOf(BigDecimal.valueOf(tod).setScale(2, RoundingMode.UP).doubleValue());
+        String format = Utils.colored(EMessage.ACTIONBARSELL.getMessage()).replace("%amount%", String.valueOf(amount)).replace("%money%", ret + " " + MoneyType.RUBLES.getShortName()).replace("%booster%", String.valueOf(gamer.getBoosterMoney()));
         gamer.depositMoney(tod);
-
         Utils.sendClickableMessage(gamer, format, "boosters");
     }
 

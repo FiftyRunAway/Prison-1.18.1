@@ -109,7 +109,9 @@ public class GiftCommand extends CommandManager {
                 gamer.sendMessage(Utils.colored(EMessage.NOPLAYER.getMessage()));
                 return;
             }
-            if (p.getInventory().getItemInMainHand() == null || p.getInventory().getItemInMainHand().getAmount() == 0 || p.getInventory().getItemInMainHand() == null || p.getInventory().getItemInMainHand().getAmount() == 0 || !p.getInventory().getItemInMainHand().hasItemMeta()) {
+            if (p.getInventory().getItemInMainHand() == null ||
+                    p.getInventory().getItemInMainHand().getAmount() == 0 ||
+                    !p.getInventory().getItemInMainHand().hasItemMeta()) {
                 gamer.sendMessage(Utils.colored(EMessage.HANDSLEFT.getMessage()));
                 return;
             }

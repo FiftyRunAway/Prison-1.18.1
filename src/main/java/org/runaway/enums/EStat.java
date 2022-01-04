@@ -4,6 +4,8 @@ import org.runaway.Prison;
 import org.runaway.sqlite.DoReturn;
 import org.runaway.sqlite.DoVoid;
 
+import java.util.Locale;
+
 /*
  * Created by _RunAway_ on 16.1.2019
  */
@@ -55,12 +57,12 @@ public enum EStat implements Saveable {
     }
 
     public Object getFromConfig(String player) {
-        return Prison.getInstance().getPreparedRequests().returnRequest(DoReturn.SELECT, player, this.title);
+        return Prison.getInstance().getPreparedRequests().returnRequest(DoReturn.SELECT, player.toLowerCase(Locale.ROOT), this.title);
     }
 
     public void setInConfig(String player, Object value) {
         if (Prison.getInstance().getSaveType().equals(SaveType.SQLITE)) {
-            Prison.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player, this.title, value);
+            Prison.getInstance().getPreparedRequests().voidRequest(DoVoid.UPDATE, player.toLowerCase(Locale.ROOT), this.title, value);
         }
     }
 

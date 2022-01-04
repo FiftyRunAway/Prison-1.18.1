@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Getter @Setter
 public class PrivateHolo {
-    private static final Map<Entity, PrivateHolo> privateHolograms = new HashMap();
+    private static final Map<Entity, PrivateHolo> privateHolograms = new HashMap<>();
 
     public PrivateHolo(Player player, Location loc, StandType st, String value) {
         this(player, loc.add(0d, st.getToRemove(), 0d), String.format(st.getText(), value), 50);

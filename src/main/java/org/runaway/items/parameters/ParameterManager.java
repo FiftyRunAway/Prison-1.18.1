@@ -70,6 +70,9 @@ public class ParameterManager {
         minLevelParameter = DefaultParameter.builder()
                 .statType(StatType.INTEGER)
                 .defaultNbtFormatter(NbtFormatter.builder().nbtString("minLevel").build())
+                .defaultLoreFormatter(LoreFormatter.builder().loreString(getMinLevelString()).finalValue(0).build())
+                .priority(21)
+                .preSpace(true)
                 .build();
     }
 

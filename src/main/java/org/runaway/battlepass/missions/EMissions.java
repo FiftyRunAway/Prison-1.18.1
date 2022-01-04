@@ -12,7 +12,8 @@ public enum EMissions {
     DAMAGEFARM(DamageFarm.class),
     RATSFARM(RatsFarm.class),
     TRAINERFARM(TrainerFarm.class),
-    UPGRADESFARM(UpgradesFarm.class);
+    UPGRADESFARM(UpgradesFarm.class),
+    BOSSDAMAGEFARM(BossDamageFarm.class);
 
     private Class<? extends IMission> mission;
 

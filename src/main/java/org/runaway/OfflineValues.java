@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class OfflineValues {
-    private static final Map<UUID, OfflineValues> cooldownList = new HashMap();
+    private static final Map<UUID, OfflineValues> cooldownList = new HashMap<>();
 
     private final UUID uuid;
     private final Map<String, Long> cooldowns;
 
     public OfflineValues(UUID uuid) {
         this.uuid = uuid;
-        this.cooldowns = new HashMap();
+        this.cooldowns = new HashMap<>();
         cooldownList.put(uuid, this);
     }
 

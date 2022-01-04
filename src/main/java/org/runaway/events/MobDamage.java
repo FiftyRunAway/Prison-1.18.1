@@ -1,5 +1,6 @@
 package org.runaway.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -11,7 +12,10 @@ import org.runaway.Gamer;
 import org.runaway.entity.DamageInfo;
 import org.runaway.entity.IMobController;
 import org.runaway.entity.MobManager;
+import org.runaway.events.custom.BossDamageEvent;
 import org.runaway.managers.GamerManager;
+
+import java.math.BigDecimal;
 
 public class MobDamage implements Listener {
 
@@ -38,6 +42,7 @@ public class MobDamage implements Listener {
         mobController.getDamageMap().get(nickname).addDamage(damage);
         mobController.getDamageMap().get(nickname).setLastDamageTime(System.currentTimeMillis());
         gamer.debug("&aВы нанесли " + damage + " урона.");
+        if (mobController.getAttributable().isBoss()) Bukkit.getServer().getPluginManager().callEvent(new BossDamageEvent(gamer.getPlayer(), mobController, damage));
         mobController.setTotalDamage(mobController.getTotalDamage() + damage);
         double sum = livingEntity.getHealth() - damage;
         if (!gamer.isEndedCooldown("bossND")) {

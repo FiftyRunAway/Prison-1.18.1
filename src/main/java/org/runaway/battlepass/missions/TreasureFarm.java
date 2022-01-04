@@ -1,5 +1,6 @@
 package org.runaway.battlepass.missions;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +20,7 @@ public class TreasureFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Найдите несколько кладов в шахтах";
+        return ChatColor.GRAY + "Найдите несколько кладов в шахтах";
     }
 
     @Override

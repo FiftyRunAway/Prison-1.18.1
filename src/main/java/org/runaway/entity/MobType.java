@@ -11,6 +11,7 @@ import java.util.Arrays;
 public enum MobType {
     SILVERFISH(60, SilverfishEntity.class, null),
     ZOMBIE(54, CustomMonsterEntity.class, null),
+    SKELETON(51, SkeletonEntity.class, null),
     SPIDER(52, SpiderEntity.class, Material.WEB),
     SLIME(55, SlimeEntity.class, Material.SLIME_BALL),
     GOLEM(99, GolemEntity.class, Material.IRON_INGOT),

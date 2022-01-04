@@ -11,13 +11,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.Prison;
+import org.runaway.achievements.Achievement;
 import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.MobSkill;
 import org.runaway.enums.EConfig;
+import org.runaway.events.custom.KillRatsEvent;
 import org.runaway.managers.GamerManager;
 import org.runaway.tasks.Cancellable;
 import org.runaway.tasks.SyncRepeatTask;
@@ -49,8 +52,8 @@ public class MobController implements IMobController {
     public MobController init() {
         setMobRare(MobRare.DEFAULT);
         setMobRandom(new Random());
-        setMobTasks(new ArrayList());
-        setDamageMap(new HashMap());
+        setMobTasks(new ArrayList<>());
+        setDamageMap(new HashMap<>());
         if (getLastDeathTime() == -1 || (getRespawnTimeLeft() <= 0)) {
             setLastDeathTime(System.currentTimeMillis() / 1000L);
             save();
@@ -73,7 +76,10 @@ public class MobController implements IMobController {
         if(!attributable.isBoss() && getMobRandom().nextFloat() < 0.2) {
             setMobRare(MobRare.RARE);
         }
-        if (!getSpawnLocation().getChunk().isLoaded()) getSpawnLocation().getChunk().load();
+        try {
+            if (!getSpawnLocation().getChunk().isLoaded()) getSpawnLocation().getChunk().load();
+        } catch (Exception e) {
+        }
         net.minecraft.server.v1_12_R1.Entity entity = CustomEntity.spawnEntity(getAttributable().getMobType(), getSpawnLocation(), this);
         if (getRespawnTime() != 0) {
             if (getInfoHologram() != null) {
@@ -199,6 +205,29 @@ public class MobController implements IMobController {
             MobManager.uidMobControllerMap.remove(getUID());
             if (getSpawnTask() != null) getSpawnTask().stop();
         }
+
+        if (getBukkitEntity().getKiller() != null) {
+            Gamer killer = GamerManager.getGamer(getBukkitEntity().getKiller());
+
+            boolean isRat = getAttributable().getMobType().equals(MobType.SILVERFISH);
+            boolean isZombie = getAttributable().getMobType().equals(MobType.ZOMBIE);
+            boolean isSkeleton = getAttributable().getMobType().equals(MobType.SKELETON);
+
+            //Achievements
+            if (isRat && getMobRare().equals(MobRare.RARE))
+                Achievement.RARE_RAT.get(GamerManager.getGamer(getBukkitEntity().getKiller()).getPlayer());
+            if (isRat && killer.getMobKills().getOrDefault("rat", 0) >= 15)
+                Achievement.FIFTEEN_RATS.get(killer.getPlayer());
+            if (isZombie && killer.getMobKills().getOrDefault("zombie", 0) >= 15)
+                Achievement.FIFTEEN_ZOMBIES.get(killer.getPlayer());
+            if (isSkeleton && killer.getMobKills().getOrDefault("skeleton", 0) >= 50)
+                Achievement.FIFTY_SKELETONS.get(killer.getPlayer());
+
+            if (isRat) {
+                Bukkit.getServer().getPluginManager().callEvent(new KillRatsEvent(getBukkitEntity().getKiller(), getMobRare().equals(MobRare.RARE)));
+            }
+        }
+
         setMobRare(MobRare.DEFAULT);
         getDamageMap().forEach((nickname, damage) -> {
             if (getTotalDamage() == 0) {
@@ -216,6 +245,11 @@ public class MobController implements IMobController {
                 return;
             }
             damagePercentMap.put(gamer, damage.getDamage() / getTotalDamage());
+            if (getAttributable().getMobType().equals(MobType.SPIDER)) Achievement.SPIDER_KILL.get(gamer.getPlayer());
+            if (getAttributable().getMobType().equals(MobType.BLAZE)) Achievement.BLAZE_KILL.get(gamer.getPlayer());
+            if (getAttributable().getMobType().equals(MobType.GOLEM)) Achievement.GOLEM_KILL.get(gamer.getPlayer());
+            if (getAttributable().getMobType().equals(MobType.SLIME)) Achievement.SLIME_KILL.get(gamer.getPlayer());
+
         });
         try {
             getAttributable().getMobLoot().drop(damagePercentMap, getBukkitEntity().getLocation(), getAttributable());

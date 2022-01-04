@@ -3,7 +3,6 @@ package org.runaway.battlepass.rewards;
 import org.bukkit.Material;
 import org.runaway.Gamer;
 import org.runaway.battlepass.IReward;
-import org.runaway.boosters.Booster;
 import org.runaway.enums.BoosterType;
 import org.runaway.utils.Utils;
 
@@ -39,7 +38,9 @@ public class BoosterReward extends IReward {
                 "на " + Utils.formatTime(time);
 
         //set type
-        this.type = bt.equals(BoosterType.MONEY) ? (global ? Material.DIAMOND_BLOCK : Material.DIAMOND) : (global ? Material.GOLD_BLOCK : Material.GOLD_INGOT);
+        this.type = bt.equals(BoosterType.MONEY) ?
+                (global ? Material.DIAMOND_BLOCK : Material.DIAMOND) :
+                (global ? Material.GOLD_BLOCK : Material.GOLD_INGOT);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class BoosterReward extends IReward {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return this.name;
     }
 

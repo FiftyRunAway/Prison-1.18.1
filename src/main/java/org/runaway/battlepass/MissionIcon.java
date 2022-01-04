@@ -36,7 +36,7 @@ public class MissionIcon extends Items {
                 .name(ChatColor.GREEN + mission.getName())
                 .lore(new Lore.BuilderLore()
                         .addSpace()
-                        .addString(ChatColor.GRAY + mission.getDescription() +
+                        .addString(mission.getDescription() +
                             " • " + ChatColor.AQUA +
                                 (this.mission.isCompleted(gamer) ? mission.getValue() : mission.getValues().get(gamer.getGamer())) + ChatColor.GRAY +
                             " / " + ChatColor.AQUA + mission.getValue())

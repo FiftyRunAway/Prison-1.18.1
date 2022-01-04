@@ -65,14 +65,9 @@ public class BlockBreak implements Listener {
         if (!event.isCancelled()) {
             String name = player.getInventory().getItemInMainHand().getType().toString();
             if ((name.contains("AXE") || name.contains("SHOVEL") || name.contains("PICKAXE") || name.contains("SHEARS") || name.contains("SPADE"))) {
-                if(!gamer.isOwner()) {
-                    gamer.sendMessage("&4Это не ваш предмет!");
-                    event.setCancelled(true);
-                    return;
-                }
-                 Block block = event.getBlock();
+                Block block = event.getBlock();
                 if (name.contains("PICKAXE") && !canbreak.get(player.getInventory().getItemInMainHand().getType()).contains(block.getType())) {
-                    //event.setCancelled(true);
+                    event.setCancelled(true);
                     return;
                 }
                 if ((block.getType().equals(Material.SAND) ||
@@ -84,7 +79,7 @@ public class BlockBreak implements Listener {
                 }
                 if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                     event.setCancelled(true);
-                    player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
+                    gamer.sendMessage(EMessage.MINLEVELITEM.getMessage().replace("%level%", gamer.getLevelItem() + ""));
                     return;
                 }
                 if (block.getType().equals(Material.CHEST) && chests.containsValue(block.getLocation())) {
@@ -146,7 +141,7 @@ public class BlockBreak implements Listener {
 
             if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                 event.setCancelled(true);
-                player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
+                player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replace("%level%", gamer.getLevelItem() + ""));
                 return;
             }
             if (!player.getInventory().getItemInMainHand().getType().toString().contains("AXE")) {
@@ -156,7 +151,7 @@ public class BlockBreak implements Listener {
             }
             if (isLocation(event.getBlock().getLocation(), "forest")) {
                 AutoSell(event, false);
-                if (Math.random() < (0.005 * gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + 1) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.0025 * gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + 1) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
 
                     gamer.addItem("defaultKey");
@@ -248,12 +243,15 @@ public class BlockBreak implements Listener {
         }
         block.setType(Material.AIR);
 
-        if (gamer.getStatistics(EStat.AUTOSELL).equals(false)) {
+        if (!gamer.getBooleanStatistics(EStat.AUTOSELL)) {
             if (!gamer.isInventory()) {
                 gamer.sendMessage(EMessage.NOINVENTORY);
             }
             i.forEach(itemStack -> player.getInventory().addItem(itemStack));
         } else {
+            if (!gamer.hasPermission("autosell")) {
+                gamer.setStatistics(EStat.AUTOSELL, false);
+            }
             sell(i, gamer);
         }
     }
@@ -346,6 +344,7 @@ public class BlockBreak implements Listener {
                 list.add(Material.PACKED_ICE);
                 list.add(Material.ICE);
                 list.add(Material.STAINED_CLAY);
+                list.add(Material.CONCRETE);
                 break;
             }
             case STONE_PICKAXE: {
@@ -355,13 +354,17 @@ public class BlockBreak implements Listener {
                 list.add(Material.IRON_ORE);
                 list.add(Material.SMOOTH_BRICK);
                 list.add(Material.LAPIS_BLOCK);
+                list.add(Material.RED_NETHER_BRICK);
+                list.add(Material.MAGMA);
+                list.add(Material.QUARTZ_BLOCK);
+                list.add(Material.IRON_BLOCK);
                 break;
             }
             case IRON_PICKAXE: {
                 list = breakableByPickaxe(Material.STONE_PICKAXE);
                 list.add(Material.GOLD_ORE);
+                list.add(Material.DIAMOND_ORE);
                 list.add(Material.EMERALD_BLOCK);
-                list.add(Material.IRON_BLOCK);
                 list.add(Material.DIAMOND_BLOCK);
                 list.add(Material.GOLD_BLOCK);
                 break;

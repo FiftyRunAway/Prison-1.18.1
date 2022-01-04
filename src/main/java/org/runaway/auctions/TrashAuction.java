@@ -4,7 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TouchableLine;
-import com.mysql.fabric.xmlrpc.base.Param;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,27 +30,31 @@ import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.ExampleItems;
 import org.runaway.utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Getter
 public class TrashAuction {
 
-    private static HashMap<ItemStack, Double> items = new HashMap<>();
-    public static ArrayList<Integer> times = new ArrayList();
-    private static ArrayList<Location> locs = new ArrayList();
-    private static HashMap<ItemStack, Double> now = new HashMap<>();
-    private static ArrayList<Integer> this_times;
+    private static Map<ItemStack, Double> items = new HashMap<>();
+    public static List<Integer> times = new ArrayList<>();
+    private static List<Location> locs = new ArrayList<>();
+    private static Map<ItemStack, Double> now = new HashMap<>();
+    private static List<Integer> this_times;
 
-    public static ArrayList<Auction> auctions = new ArrayList<>();
-    private static ArrayList<Hologram> holograms = new ArrayList<>();
+    public static List<Auction> auctions = new ArrayList<>();
+    private static List<Hologram> holograms = new ArrayList<>();
 
     public static Location auction_spawn;
 
-    private static ArrayList<String> inauc = new ArrayList<>();
+    private static List<String> inauc = new ArrayList<>();
+
+    private TrashAuction() {
+        throw new IllegalStateException("Utility");
+    }
 
     public static void load() {
         ConfigurationSection section = EConfig.CONFIG.getConfig().getConfigurationSection("auction-trash");
@@ -89,19 +93,6 @@ public class TrashAuction {
             ItemMeta meta = real.getItemMeta();
             meta.setUnbreakable(false);
 
-            /*List<String> l = is.getItemMeta().getLore();
-            if (ChatColor.stripColor(l.get(0)).toLowerCase().contains("минимальный")) {
-                List<String> lore = new ArrayList<>();
-                int min = Math.round(Integer.parseInt(ChatColor.stripColor(l.get(0)).toLowerCase().replace("минимальный уровень: ", "")) / 2);
-                l.remove(l.get(0));
-                lore.add(Utils.colored("&f&7Минимальный уровень: &f" + min));
-                lore.add(Utils.colored("&8Аукционный предмет"));
-                lore.addAll(l);
-                meta.setLore(lore);
-            } else {
-                meta.setLore(is.getItemMeta().getLore());
-            }*/
-
             meta.setLore(is.getItemMeta().getLore());
             meta.setDisplayName(is.getItemMeta().getDisplayName());
             is.getItemMeta().getEnchants().forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
@@ -115,7 +106,7 @@ public class TrashAuction {
 
         HashMap<ItemStack, Double> i = new HashMap<>();
         now.forEach((itemStack, doub) -> {
-            if (locations.size() > 0) {
+            if (!locations.isEmpty()) {
                 i.put(itemStack, doub);
                 Location now_loc = locations.get(locations.size() - 1);
                 aucs.put(now_loc, i);
@@ -135,12 +126,6 @@ public class TrashAuction {
     }
 
     private static void updater() {
-         // After test - delete this
-        /*Date n = new Date();
-        times.add(n.getHours());
-        this_times.add(n.getHours());*/
-        // Under this
-
         try {
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
                 Date now = new Date();
@@ -156,7 +141,9 @@ public class TrashAuction {
                     }
                 });
             }, 0L, 1200L);
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+
+        }
     }
 
     public static class Auction {
@@ -209,8 +196,8 @@ public class TrashAuction {
             }
 
             // Fast buy item
-            IMenuButton fastbuy = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "Приобрести сейчас за " + ChatColor.YELLOW + this.fastbuy + " " + MoneyType.RUBLES.getShortName()));
-            fastbuy.setClickEvent(event -> {
+            IMenuButton fastBuy = DefaultButtons.FILLER.getButtonOfItemStack(ExampleItems.glass(5, ChatColor.GREEN + "" + ChatColor.BOLD + "Приобрести сейчас за " + ChatColor.YELLOW + this.fastbuy + " " + MoneyType.RUBLES.getShortName()));
+            fastBuy.setClickEvent(event -> {
                 Player player = event.getWhoClicked();
                 Gamer gamer = GamerManager.getGamer(player);
                 if (!gamer.isInventory()) {
@@ -234,7 +221,7 @@ public class TrashAuction {
             });
 
             for (int i = 5; i < 9; i++) {
-                this.menu.addButton(fastbuy.clone().setSlot(i));
+                this.menu.addButton(fastBuy.clone().setSlot(i));
             }
 
             this.hologram = HologramsAPI.createHologram(Prison.getInstance(), loc.clone().add(0.0, 1.5, 0.0));
@@ -303,11 +290,10 @@ public class TrashAuction {
         public void add(Player player) {
             // Avoid command spam
             Long oldCooldown = CLICK_COOLDOWNS.get(player);
-            if (oldCooldown != null) {
-                if (System.currentTimeMillis() < oldCooldown) {
-                    GamerManager.getGamer(player).sendMessage(EMessage.WAIT);
-                    return;
-                }
+            if (oldCooldown != null &&
+                    System.currentTimeMillis() < oldCooldown) {
+                GamerManager.getGamer(player).sendMessage(EMessage.WAIT);
+                return;
             }
             CLICK_COOLDOWNS.put(player, System.currentTimeMillis() + 1200); // 1.2 seconds cooldown
 

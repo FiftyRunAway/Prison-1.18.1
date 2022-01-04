@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.runaway.Gamer;
 import org.runaway.battlepass.IReward;
 import org.runaway.items.ItemManager;
-import org.runaway.utils.ExampleItems;
 
 public class KeysReward extends IReward {
 
@@ -22,7 +21,7 @@ public class KeysReward extends IReward {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return "&7Ключ для обычного сундука";
     }
 

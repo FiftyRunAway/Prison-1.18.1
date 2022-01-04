@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.commands.HideCommand;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
@@ -42,6 +43,7 @@ public class PlayerJoin implements Listener {
             Board.sendBoard(player); // Set up scoreboard to player
             gamer.setLevelBar();
             gamer.setExpProgress();
+            HideCommand.hideOnJoin(gamer);
             addBar(player); // Add boss bar with boosters
             addPaper(player); // Add menu paper item
             addToMissions(gamer); // Add to missions of battle pass

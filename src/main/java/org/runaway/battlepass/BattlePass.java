@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class BattlePass {
 
-    public static ArrayList<WeeklyMission> missions = new ArrayList<>();
+    public static List<WeeklyMission> missions = new ArrayList<>();
     private static final ArrayList<IReward> rewards = new ArrayList<>();
-    private static final HashMap<Integer, ArrayList<IReward>> level_rewards = new HashMap<>();
-    public static HashMap<IReward, Integer> slots = new HashMap<>();
-    public static ArrayList<Integer> glass_slots = new ArrayList<>();
+    public static final HashMap<Integer, ArrayList<IReward>> level_rewards = new HashMap<>();
+    public static Map<IReward, Integer> slots = new HashMap<>();
+    public static List<Integer> glass_slots = new ArrayList<>();
     public static int season;
 
     public static int level = 80000;
@@ -51,7 +51,7 @@ public class BattlePass {
         Player player = gamer.getPlayer();
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 1);
 
-        gamer.sendTitle("&bБоевой пропуск", "&eПовышен!");
+        gamer.sendTitle("&bБоевой пропуск", "&eУровень повышен!");
 
         gamer.increaseIntStatistics(EStat.BATTLEPASS_LEVEL);
         gamer.setStatistics(EStat.BATTLEPASS_SCORE, gamer.getIntStatistics(EStat.BATTLEPASS_SCORE) % level);
@@ -69,14 +69,14 @@ public class BattlePass {
         rews.forEach(reward -> {
             if (reward.isFree() || gamer.hasBattlePass()) {
                 get.append(reward.getName());
-                if (reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                if (!reward.isStringValue() && reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
                 if (reward.isFree()) get.append(" &7[&eБесплатная награда&7]");
                 get.append(", ");
                 i.incrementAndGet();
                 reward.get(gamer);
             } else {
                 can.append(reward.getName());
-                if (reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                if (!reward.isStringValue() && reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
                 can.append(", ");
                 j.incrementAndGet();
             }
@@ -203,8 +203,8 @@ public class BattlePass {
         BattlePassMenu.load();
     }
 
-    public static ArrayList<IMission> getPinnedTasks(Gamer gamer) {
-        if (getPins(gamer) == 0) return null;
+    public static List<IMission> getPinnedTasks(Gamer gamer) {
+        if (getPins(gamer) == 0) return Collections.emptyList();
         ArrayList<Integer> pins = new ArrayList<>();
         Arrays.stream(EConfig.BATTLEPASS_DATA.getConfig().getString(gamer.getGamer()).split(" "))
                 .forEach(s -> pins.add(Integer.parseInt(s)));
@@ -217,6 +217,7 @@ public class BattlePass {
 
     public static void unPin(IMission mission, Gamer g) {
         unPin(String.valueOf(mission.hashCode()), g);
+        g.getPins().remove((Object) mission);
     }
 
     public static void unPin(String hashCode, Gamer g) {
@@ -239,8 +240,8 @@ public class BattlePass {
     public static void addPin(IMission mission, Gamer g) {
         int pins = BattlePass.getPins(g);
         if (pins < 7) {
-            ArrayList<IMission> pinned = BattlePass.getPinnedTasks(g);
-            if (pinned != null && pinned.contains(mission)) {
+            List<IMission> pinned = BattlePass.getPinnedTasks(g);
+            if (!pinned.isEmpty() && pinned.contains(mission)) {
                 g.sendMessage(EMessage.ALREADYPINNED);
                 return;
             }
@@ -251,6 +252,7 @@ public class BattlePass {
             }
             EConfig.BATTLEPASS_DATA.saveConfig();
             g.sendMessage(Utils.colored(EMessage.SETPIN.getMessage().replace("%name%", mission.getName())));
+            g.getPins().add(mission);
         } else {
             g.sendMessage(EMessage.MANYPINS);
         }

@@ -13,15 +13,15 @@ import org.runaway.utils.Vars;
 public class AutoRestart {
 
     public static long getTime() {
-        return TIME_TO_RESTART;
+        return timeToRestart;
     }
 
-    private static long TIME_TO_RESTART;
+    private static long timeToRestart;
 
     private void timeUpdater() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Prison.getInstance(), () -> {
-            if (TIME_TO_RESTART > 0) {
-                TIME_TO_RESTART--;
+            if (timeToRestart > 0) {
+                timeToRestart--;
             } else {
                 Utils.DisableKick();
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
@@ -29,11 +29,11 @@ public class AutoRestart {
         }, 0L, 1200L);
     }
 
-    void loadAutoRestarter() {
+    public void loadAutoRestarter() {
         try {
-            TIME_TO_RESTART = 1440;
-            timeUpdater();
-            Prison.isAutoRestart = true;
+            timeToRestart = 1440;
+            this.timeUpdater();
+            Prison.getInstance().setAutoRestart();
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with loading auto restarter!");
             Bukkit.getPluginManager().disablePlugin(Prison.getInstance());

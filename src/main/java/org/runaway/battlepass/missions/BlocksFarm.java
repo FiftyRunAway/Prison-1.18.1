@@ -31,33 +31,26 @@ public class BlocksFarm extends IMission implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
 
+        int value = Math.toIntExact(Math.round(gamer.getBoosterBlocks()));
+
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;
             weeklyMission.getMissions().forEach(mission -> {
-                if (mission.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
-                    if (!mission.isCompleted(gamer)) {
-                        BlocksFarm bf = (BlocksFarm) mission;
-                        if (bf.block != null) {
-                            if (bf.block.getType().equals(event.getBlock().getType()) && bf.block.getType().getMaxDurability() == event.getBlock().getType().getMaxDurability()) {
-                                if (bf.mine == null || event.fromMine(bf.mine))
-                                    bf.addValue(gamer);
-                            }
-                        } else {
-                            if (bf.mine == null || event.fromMine(bf.mine))
-                                bf.addValue(gamer);
+                if (mission.getClass().isAssignableFrom(this.getClass()) && !mission.isCompleted(gamer)) {
+                    BlocksFarm bf = (BlocksFarm) mission;
+                    if (bf.block != null) {
+                        if (bf.block.getType().equals(event.getBlock().getType()) &&
+                                bf.block.getType().getMaxDurability() == event.getBlock().getType().getMaxDurability() &&
+                                (bf.mine == null || event.fromMine(bf.mine))) {
+                            bf.addValue(gamer, value);
                         }
+                    } else {
+                        if (bf.mine == null || event.fromMine(bf.mine))
+                            bf.addValue(gamer, value);
                     }
                 }
             });
         });
-    }
-
-    @Override
-    public void addValue(Gamer gamer) {
-        int result = (int)getValues().get(gamer.getGamer()) + Math.toIntExact(Math.round(gamer.getBoosterBlocks()));
-        getValues().put(gamer.getGamer(), result);
-
-        checkLevel(gamer);
     }
 
     @Override
@@ -66,7 +59,7 @@ public class BlocksFarm extends IMission implements Listener {
 
         this.block = null;
         this.mine = getMineString(this.getDescriptionDetails()[2].toString().toLowerCase());
-        if (this.mine != null) this.mine_name = ChatColor.GRAY + ChatColor.stripColor(Utils.colored(Utils.upCurLetter(this.mine.getName(), 1)));
+        if (this.mine != null) this.mine_name = Utils.colored(this.mine.getName());
 
         if (!block_string.equals("null") && !block_string.equals("none")) {
             String[] splt = block_string.split("#");
@@ -78,9 +71,9 @@ public class BlocksFarm extends IMission implements Listener {
                 Vars.sendSystemMessage(TypeMessage.ERROR, "Illegal argument for BlocksFarm mission - " + block_string);
             }
         }
-        this.preloaded_desc = "Ломайте "
-                + (this.block == null ? "любые блоки" : (ChatColor.GRAY + this.block_name)) + " на "
-                + (this.mine == null ? "любой шахте" : "шахте " + this.mine_name);
+        this.preloaded_desc = ChatColor.GRAY + "Ломайте "
+                + (this.block == null ? "любые блоки" : this.block_name) + " на "
+                + (this.mine == null ? "любой шахте" : "шахте '" + this.mine_name + ChatColor.GRAY + "'");
     }
 
     @Override

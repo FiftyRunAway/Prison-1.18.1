@@ -60,8 +60,7 @@ public class SpawnerCommand extends CommandManager {
                     .init();
 
         } else {
-            List<String> mobs = new ArrayList<>();
-            MobManager.attributableMap.keySet().forEach(m -> mobs.add(m));
+            List<String> mobs = new ArrayList<>(MobManager.attributableMap.keySet());
             p.sendMessage(Utils.colored("&cИспользование: /" + cmdName + " <debug, set> " + mobs.toString() + " [time]"));
         }
     }

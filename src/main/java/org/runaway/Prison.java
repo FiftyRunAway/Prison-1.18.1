@@ -10,6 +10,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,8 +41,6 @@ import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuListener;
-import org.runaway.menu.button.DefaultButtons;
-import org.runaway.menu.type.StandardMenu;
 import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
@@ -65,7 +64,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /*
@@ -120,7 +118,7 @@ public class Prison extends JavaPlugin {
     public static Location SPAWN;
 
     //Топы
-    public static HashMap<String, TopPlayers> tops = new HashMap<>();
+    public static Map<String, TopPlayers> tops = new HashMap<>();
 
     // кэш /tip`a
     public static ArrayList<String> THXersBlocks = new ArrayList<>();
@@ -183,9 +181,10 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.telegram")) loadTelegramBotsAPI();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
 
+        if (loader.getBoolean("loader.server_status")) loadServerStatus();
+
         if (loader.getBoolean("loader.battlepass")) BattlePass.load();
 
-        if (loader.getBoolean("loader.server_status")) loadServerStatus();
         SPAWN = Utils.getLocation("spawn");
         Arrays.stream(EFish.values()).forEach(fish -> fish_food.add(ChatColor.stripColor(fish.getFish().getName())));
         Bukkit.getServer().getWorlds().forEach(world -> world.setGameRuleValue("announceAdvancements", "false"));
@@ -250,6 +249,10 @@ public class Prison extends JavaPlugin {
         });
     }
 
+    public void setAutoRestart() {
+        isAutoRestart = true;
+    }
+
     private void downloadAndApplyLanguage(String lang) {
         File file = FileUtils.getFile(this.getDataFolder().toString(), "lang", lang + ".lang");
         if (!file.exists()) {
@@ -278,7 +281,6 @@ public class Prison extends JavaPlugin {
     }
 
     private void loadItems() {
-
         EConfig.ITEMS.getConfig().getKeys(false).forEach(s -> {
             PrisonItem.Category category = s.equals("none") ? null : PrisonItem.Category.valueOf(s.toUpperCase());
             EConfig.ITEMS.getConfig().getConfigurationSection(s).getKeys(false).forEach(item -> {
@@ -404,10 +406,12 @@ public class Prison extends JavaPlugin {
                 return null;
             }
             case "stmobs": {
-                return ParameterManager.getStattrakMobsParameter();
+                //return ParameterManager.getStattrakMobsParameter();
+                return null;
             }
             case "stplayers": {
-                return ParameterManager.getStattrakPlayerParameter();
+                return null;
+                //return ParameterManager.getStattrakPlayerParameter();
             }
             case "minlevel": {
                 return ParameterManager.getMinLevelParameter(Integer.parseInt(value.toString()));
@@ -505,8 +509,6 @@ public class Prison extends JavaPlugin {
             new Utils().RegisterEvent(new PlayerAttack());
             new Utils().RegisterEvent(new BossSpawn());
             new Utils().RegisterEvent(new PlayerFishing());
-
-            //new Utils().RegisterEvent(new TWOFA());
             new Utils().RegisterEvent(new Needs());
             new Utils().RegisterEvent(new FishCatch());
 
@@ -521,6 +523,7 @@ public class Prison extends JavaPlugin {
             new Utils().RegisterEvent(new RatsFarm());
             new Utils().RegisterEvent(new TrainerFarm());
             new Utils().RegisterEvent(new UpgradesFarm());
+            new Utils().RegisterEvent(new BossDamageFarm());
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering events!");
@@ -548,7 +551,8 @@ public class Prison extends JavaPlugin {
                     new ShopCommand(), new AchievementsCommand(), new DonateCommand(),
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
                     new BaseCommand(), new TrashCommand(), new QuestCommand(), new FisherCommand(),
-                    new JobCommand(), new MsgCommand(), new ReplyCommand(), new InvseeCommand(), new ItemCommand()).forEach(CommandManager::register);
+                    new JobCommand(), new MsgCommand(), new ReplyCommand(), new InvseeCommand(), new ItemCommand(),
+                    new HideCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
@@ -778,13 +782,13 @@ public class Prison extends JavaPlugin {
             rebirth = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
             keys = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
             dm = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
-            tops.put("money", new TopPlayers(Utils.getLocation("moneytop"), money, "&7Топ игроков по деньгам", 10,  MoneyType.RUBLES.getShortName()));
-            tops.put("blocks", new TopPlayers(Utils.getLocation("blockstop"), blocks, "&7Топ игроков по блокам", 10, "блоков"));
-            tops.put("levels", new TopPlayers(Utils.getLocation("levelstop"), level, "&7Топ игроков по уровням", 10, "уровень"));
-            tops.put("rats", new TopPlayers(Utils.getLocation("ratstop"), rats, "&7Топ игроков по крысам", 10, "крыс"));
-            tops.put("rebirths", new TopPlayers(Utils.getLocation("rebirthtop"), rebirth, "&7Топ игроков по перерождениям", 10, "перерождений"));
-            tops.put("keys", new TopPlayers(Utils.getLocation("keystop"), keys, "&7Топ игроков по ключам", 10, "ключей"));
-            tops.put("donate", new TopPlayers(Utils.getLocation("keystop"), dm, "&7Топ игроков по донату", 10, "рублей"));
+            tops.put("money", new TopPlayers(money, MoneyType.RUBLES.getShortName()));
+            tops.put("blocks", new TopPlayers(blocks,"блоков"));
+            tops.put("levels", new TopPlayers(level, "уровень"));
+            tops.put("rats", new TopPlayers(rats,"крыс"));
+            tops.put("rebirths", new TopPlayers(rebirth,"перерождений"));
+            tops.put("keys", new TopPlayers(keys, "ключей"));
+            tops.put("donate", new TopPlayers(dm, "рублей"));
             BannerBoardAPI api = BannerBoardManager.getAPI();
             api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
         } catch (Exception ex) {
@@ -990,14 +994,13 @@ public class Prison extends JavaPlugin {
             Bukkit.getWorlds().forEach((world) -> {
                 world.getEntities().stream().filter((entity) ->
                         entity.getType() != EntityType.PLAYER &&
-                                entity.getType() != EntityType.ITEM_FRAME)
+                                entity.getType() != EntityType.ITEM_FRAME &&
+                                entity.getType() != EntityType.ARMOR_STAND)
                         .forEachOrdered(Entity::remove);
             });
             Vars.sendSystemMessage(TypeMessage.INFO, "Entities removed");
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in delete entities! Please, don`t use /reload. Use /stop or /restart");
-            //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());
-            //Prison.getInstance().setStatus(ServerStatus.ERROR);
             ex.printStackTrace();
         }
     }

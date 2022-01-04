@@ -15,12 +15,16 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.achievements.Achievement;
 import org.runaway.auctions.TrashAuction;
+import org.runaway.battlepass.BattlePass;
+import org.runaway.battlepass.IMission;
+import org.runaway.battlepass.IReward;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
 import org.runaway.donate.features.FractionDiscount;
 import org.runaway.enums.*;
 import org.runaway.fishing.EFishType;
+import org.runaway.inventories.BattlePassMenu;
 import org.runaway.inventories.FractionMenu;
 import org.runaway.items.Item;
 import org.runaway.items.ItemManager;
@@ -46,6 +50,8 @@ import org.runaway.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +66,7 @@ import java.util.stream.Collectors;
 @Getter @Setter
 public class Gamer {
 
-    private static final String bp_perm = "prison.battlepass";
+    private static final String bpPerm = "prison.battlepass";
 
     public static ArrayList<UUID> tp = new ArrayList<>();
     private static final int teleportTimer = 3;
@@ -71,6 +77,8 @@ public class Gamer {
     private Player player;
     private final UUID uuid;
     private String replyPlayer;
+
+    private List<IMission> pins;
 
     private final Map<Saveable, Object> statisticsMap;
 
@@ -90,6 +98,7 @@ public class Gamer {
     private IMenu currentIMenu;
     private Map<String, Long> cooldowns;
 
+    private List<String> hiddenPlayers;
 
     public Gamer(Player player) {
         this.uuid = player.getUniqueId();
@@ -98,11 +107,14 @@ public class Gamer {
         this.gamer = this.player.getName();
         this.isOnline = true;
         this.name = player.getName();
+        this.hiddenPlayers = new ArrayList<>();
         if(!preparedRequests.isExist("player", getPlayer().getName())) {
             isExist = false;
             getPlayer().teleport(Prison.SPAWN);
             addCooldown("newPlayer", TimeUnit.HOURS.toMillis(8));
         }
+        pins = new ArrayList<>(BattlePass.getPinnedTasks(this));
+
         statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values(), isExist);
         setStatistics(EStat.UUID, getPlayer().getUniqueId());
         setStatistics(EStat.FULL_NAME, player.getName());
@@ -151,6 +163,10 @@ public class Gamer {
         sendMessage("&aВаши данные сохранены!");
     }
 
+    public boolean isHideEnabled() {
+        return !hiddenPlayers.isEmpty();
+    }
+
     public void setChatConsumer(BiConsumer<Player, String> chatConsumer) {
         this.chatConsumer = chatConsumer;
     }
@@ -187,6 +203,34 @@ public class Gamer {
         return getOfflineValues().getOrDefault(quest, "0");
     }
 
+    public void getNewBattlePass() {
+        setStatistics(EStat.BATTLEPASS, true);
+
+        //get old rewards
+        int nowBp = getIntStatistics(EStat.BATTLEPASS_LEVEL);
+        if (nowBp == 0) return;
+
+        StringBuilder get = new StringBuilder();
+        AtomicInteger s = new AtomicInteger();
+        for (int i = 1; i <= nowBp; i++) {
+            ArrayList<IReward> rews = new ArrayList<>(BattlePass.level_rewards.get(i));
+            rews.forEach(reward -> {
+                if (!reward.isFree()) {
+                    get.append(reward.getName());
+                    if (!reward.isStringValue() && reward.getValue() > 0)
+                        get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                    get.append(", ");
+                    s.getAndIncrement();
+                    reward.get(this);
+                }
+            });
+        }
+        if (s.get() == 0) return;
+        get.delete(get.length() - 2, get.length());
+        sendMessage(Utils.colored(EMessage.BPBUY.getMessage().replace("%reward%",
+                get.append('.').toString())));
+    }
+
     public void setQuestValue(String quest, String value) {
         getOfflineValues().put(quest, value);
     }
@@ -204,8 +248,16 @@ public class Gamer {
     }
 
     public void debug(String message) {
-        if(hasPermission("admin")) return;
+        if(!hasPermission("admin")) return;
         getPlayer().sendMessage(Utils.colored("&7[&aDEBUG&7] &a" + message));
+    }
+
+    public void bpStatus(IMission mission) {
+        if(!isEndedCooldown(mission.hashCode() + "bpMsgCd")) {
+            return;
+        }
+        addCooldown(mission.hashCode() + "bpMsgCd", 3000);
+        getPlayer().sendMessage(Utils.colored("&7[&6&lBattlePass&7] &e" + mission.getDescription() + " &7• &c" + mission.getValues().get(getGamer()) + " / " + mission.getValue()));
     }
 
     public void addItem(String techName) {
@@ -322,7 +374,6 @@ public class Gamer {
         return true;
     }
 
-
     private boolean isOnline() {
         return this.isOnline;
     }
@@ -415,7 +466,7 @@ public class Gamer {
     }
 
     public float rebirthSale() {
-        return (float)(getValueRebirth(ESkill.SALE) / 100);
+        return (float)(getValueRebirth(ESkill.SALE) / 100.0);
     }
 
     public int getValueRebirth(ESkill skill) {
@@ -545,10 +596,15 @@ public class Gamer {
     public int getLevelItem(ItemStack item) {
         PrisonItem prisonItem = ItemManager.getPrisonItem(item);
         if(prisonItem == null) return 0;
-        Parameter minLevelParameter = ParameterManager.getMinLevelParameter();
-        String levelString = minLevelParameter.getParameterGetter().apply(item, null).toString();
-        if(levelString.equals("")) return 0;
-        return Integer.parseInt(minLevelParameter.getParameterGetter().apply(item, null).toString());
+        String levelString;
+        try {
+            levelString = ChatColor.stripColor(item.getItemMeta().getLore().get(0).toLowerCase())
+                    .replace("➤ с ", "")
+                    .replace(" уровня", "");
+            return Integer.parseInt(levelString);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public int getDisplayLevel() {
@@ -561,7 +617,7 @@ public class Gamer {
     public void rebirth () {
         increaseIntStatistics(EStat.REBIRTH);
         increaseIntStatistics(EStat.REBIRTH_SCORE, 5);
-        Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replaceAll("%player%", getPlayer().getName()).replaceAll("%rebirth%", ChatColor.YELLOW + getDisplayRebirth()));
+        Bukkit.broadcastMessage(Utils.colored(EMessage.BROADCAST_REBITH.getMessage()).replace("%player%", getPlayer().getName()).replaceAll("%rebirth%", ChatColor.YELLOW + getDisplayRebirth()));
 
         Inventory inventory = getPlayer().getInventory();
         Inventory ec = getPlayer().getEnderChest();
@@ -630,7 +686,12 @@ public class Gamer {
         boolean money = true;
         if (isRandom) {
             while (in.equals(FactionType.DEFAULT)) {
-                int r = new Random().nextInt(FactionType.values().length);
+                int r = 0;
+                try {
+                    r = SecureRandom.getInstanceStrong().nextInt(FactionType.values().length);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
                 in = FactionType.values()[r];
             }
             money = false;
@@ -722,12 +783,12 @@ public class Gamer {
     public void depositMoney(double money) {
         if (money <= 0) return;
         if (getStatistics(EStat.MONEY) instanceof Integer) {
-            setStatistics(EStat.MONEY, new BigDecimal(money + getIntStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+            setStatistics(EStat.MONEY, BigDecimal.valueOf(money + getIntStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         } else {
-            setStatistics(EStat.MONEY, new BigDecimal(money + getDoubleStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
+            setStatistics(EStat.MONEY, BigDecimal.valueOf(money + getDoubleStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         }
         if (isOnline()) {
-            sendActionbar(Utils.colored("&a+" + new BigDecimal(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
+            sendActionbar(Utils.colored("&a+" + BigDecimal.valueOf(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
             double m = getMoney();
             if (m >= 15) Achievement.GET_15.get(getPlayer());
             if (m >= 100) Achievement.GET_100.get(getPlayer());
@@ -787,7 +848,7 @@ public class Gamer {
         if (b != null) boost += Double.parseDouble(b.toString()) - 1.0;
         if (hasPassivePerk(new BBlocksFirst())) boost += 0.1;
         if (hasPassivePerk(new BBlocksSecond())) boost += 0.2;
-        return new BigDecimal(boost).setScale(2, RoundingMode.UP).doubleValue();
+        return BigDecimal.valueOf(boost).setScale(2, RoundingMode.UP).doubleValue();
     }
 
     public double getBoosterMoney() {
@@ -798,7 +859,7 @@ public class Gamer {
         if (b != null) boost += Double.parseDouble(b.toString()) - 1.0;
         if (hasPassivePerk(new BMoneyFirst())) boost += 0.1;
         if (hasPassivePerk(new BBMoneySecond())) boost += 0.2;
-        return new BigDecimal(boost).setScale(2, RoundingMode.UP).doubleValue();
+        return BigDecimal.valueOf(boost).setScale(2, RoundingMode.UP).doubleValue();
     }
 
     public FactionType getFaction() {
@@ -856,7 +917,7 @@ public class Gamer {
     }
 
     public boolean getBooleanStatistics(EStat stat) {
-        return Boolean.parseBoolean((String) getStatistics(stat));
+        return Boolean.parseBoolean(getStatistics(stat).toString());
     }
 
     public Object getStatistics(EStat statistic) {

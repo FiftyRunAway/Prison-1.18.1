@@ -1,5 +1,6 @@
 package org.runaway.battlepass.missions;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,7 @@ public class WoodFarm extends IMission implements Listener {
 
     @Override
     public String getDescription() {
-        return "Добудьте дерева в лесу";
+        return ChatColor.GRAY + "Добудьте дерева в лесу";
     }
 
     @Override

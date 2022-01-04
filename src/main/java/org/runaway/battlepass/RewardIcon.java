@@ -36,13 +36,15 @@ public class RewardIcon extends Items {
         if (!reward.isStringValue())
             is = this.reward.getValue() > 0;
         ArrayList<String> adding = new ArrayList<>();
+        int amount = 1;
         if (is) {
             adding.add(" ");
             adding.add("&7Количество • &e" + this.reward.getValue());
+            amount = Math.min(this.reward.getValue(), 64);
         }
         return new Item.Builder(this.reward.getType())
                 .name("&bНаграда: " + ChatColor.GREEN + this.reward.getName())
-                .amount(is ? this.reward.getValue() : 1)
+                .amount(amount)
                 .lore(new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7Описание награды:")

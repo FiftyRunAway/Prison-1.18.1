@@ -7,32 +7,32 @@ import org.bukkit.event.Listener;
 import org.runaway.Gamer;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
-import org.runaway.events.custom.PlayerDamageEvent;
+import org.runaway.events.custom.BossDamageEvent;
 import org.runaway.managers.GamerManager;
 
-public class DamageFarm extends IMission implements Listener {
+public class BossDamageFarm extends IMission implements Listener {
 
     @EventHandler
-    private void onDamagePlayer(PlayerDamageEvent event) {
-        Player player = event.getPlayerDamaged();
+    public void onBossDamage(BossDamageEvent event) {
+        Player player = event.getSource();
         Gamer gamer = GamerManager.getGamer(player);
-
-        int value = (int)Math.round(gamer.getPlayer().getLastDamage());
+        int value = (int) Math.round(event.getDamage());
 
         BattlePass.missions.forEach(weeklyMission -> {
             if (!weeklyMission.isStarted()) return;
             weeklyMission.getMissions().forEach(mission -> {
                 if (mission.getClass().isAssignableFrom(this.getClass()) && !mission.isCompleted(gamer)) {
-                    DamageFarm df = (DamageFarm) mission;
-                    df.addValue(gamer, value);
+                    BossDamageFarm bdf = (BossDamageFarm) mission;
+                    bdf.addValue(gamer, value);
                 }
             });
         });
     }
 
+
     @Override
     public String getDescription() {
-        return ChatColor.GRAY + "Наносите урон игрокам";
+        return ChatColor.GRAY + "Наносите урон боссам";
     }
 
     @Override

@@ -192,8 +192,8 @@ public class Donate {
                     break;
                 }
                 case TNT: {
-                    gamer.setStatistics(EStat.BATTLEPASS, true);
                     gamer.sendMessage("&aДля правильной работы &6боевого пропуска&a, &eперезайдите на сервер!");
+                    gamer.getNewBattlePass();
                 }
             }
         } catch (Exception ex) {

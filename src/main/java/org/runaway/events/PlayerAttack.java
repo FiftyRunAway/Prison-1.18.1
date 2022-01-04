@@ -2,6 +2,7 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -9,8 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.runaway.Gamer;
-import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
@@ -25,7 +26,9 @@ public class PlayerAttack implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) return;
-        if (event.getEntity() instanceof Player && (event.getDamager() instanceof Player || (event.getDamager() instanceof Projectile && ((Projectile)event.getDamager()).getShooter() instanceof Player))) {
+        if (event.getEntity() instanceof Player && (event.getDamager() instanceof Player ||
+                (event.getDamager() instanceof Projectile && ((Projectile)event.getDamager()).getShooter() instanceof Player) ||
+                (event.getDamager() instanceof FishHook && ((FishHook)event.getDamager()).getShooter() instanceof Player))) {
             Player damager = null;
             if (event.getDamager() instanceof Player) damager = (Player) event.getDamager();
             if (event.getDamager() instanceof Projectile) damager = (Player) ((Projectile) event.getDamager()).getShooter();
@@ -42,7 +45,7 @@ public class PlayerAttack implements Listener {
             if (p.getInventory().getItemInMainHand().getType().toString().endsWith("SWORD")) {
                 if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                     event.setCancelled(true);
-                    p.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replaceAll("%level%", gamer.getLevelItem() + ""));
+                    p.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replace("%level%", gamer.getLevelItem() + ""));
                     return;
                 }
             }
@@ -56,23 +59,21 @@ public class PlayerAttack implements Listener {
     @EventHandler
     public void onPlayerFishing(PlayerFishEvent event) {
         Player player = event.getPlayer();
-        if (event.getCaught() instanceof Player) {
-            if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
-                if (!canAttack(player, (Player) event.getCaught())) {
-                    GamerManager.getGamer(player).sendMessage(EMessage.FRIENDATTACK);
-                    event.setCancelled(true);
-                }
-            }
+        if (event.isCancelled()) return;
+        if (event.getCaught() instanceof Player &&
+                player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) &&
+                !canAttack(player, (Player) event.getCaught())) {
+            GamerManager.getGamer(player).sendMessage(EMessage.FRIENDATTACK);
+            event.setCancelled(true);
         }
     }
 
     private boolean canAttack(Player attacker, Player getDamager) {
+        if (attacker == null) return true;
         Gamer at = GamerManager.getGamer(attacker.getUniqueId());
         Gamer get = GamerManager.getGamer(getDamager.getUniqueId());
         if (at.getFaction().equals(get.getFaction())) {
-            if (!at.getFaction().equals(FactionType.DEFAULT)) {
-                return false;
-            }
+            return at.getFaction().equals(FactionType.DEFAULT);
         }
         return true;
     }

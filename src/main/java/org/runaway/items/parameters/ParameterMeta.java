@@ -30,7 +30,7 @@ public class ParameterMeta {
     public ParameterMeta getAllParameters(ItemStack itemStack) {
         PrisonItem prisonItem = ItemManager.getPrisonItem(itemStack);
         List<Parameter> mutableParameters = prisonItem.getMutableParameters();
-        Map<Parameter, Object> result = new HashMap();
+        Map<Parameter, Object> result = new HashMap<>();
         mutableParameters.forEach(parameter -> {
             result.put(parameter, parameter.getParameterGetter().apply(itemStack, null));
         });

@@ -13,8 +13,6 @@ public class Requires {
 
     public Requires(Gamer gamer) {
         this.gamer = gamer;
-        //this.mode = EMode.valueOf(gamer.getStatistics(EStat.MODE).toString().toUpperCase());
-        //this.percent = mode.getPercent() / 100;
     }
 
     public double blocksNextLevel() {

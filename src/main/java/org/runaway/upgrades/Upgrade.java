@@ -19,7 +19,9 @@ import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
 
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Created by _RunAway_ on 4.5.2019
@@ -81,8 +83,8 @@ public class Upgrade {
         }
     }
 
-    static HashMap<UpgradeProperty, String> getData(Gamer gamer) {
-        HashMap<UpgradeProperty, String> map = new HashMap<>();
+    static EnumMap<UpgradeProperty, String> getData(Gamer gamer) {
+        EnumMap<UpgradeProperty, String> map = new EnumMap<>(UpgradeProperty.class);
         for (UpgradeProperty up : UpgradeProperty.values()) {
             map.put(up, getProp(up, gamer));
         }

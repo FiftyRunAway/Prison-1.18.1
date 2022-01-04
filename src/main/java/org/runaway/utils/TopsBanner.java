@@ -120,7 +120,7 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
     }
 
     //private volatile BufferedImage skinImage;
-    private volatile HashMap<String, Long> top;
+    private volatile Map<String, Long> top;
     private volatile String desc;
 
     private final Object waitLock = new Object();

@@ -14,6 +14,7 @@ import org.runaway.enums.UpgradeProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Created by _RunAway_ on 4.5.2019
@@ -112,7 +113,7 @@ public class UpgradeMisc {
             lores.add(ChatColor.GRAY + "Требования:");
             if (!menuItems) {
                 Gamer gamer = GamerManager.getGamer(player);
-                HashMap<UpgradeProperty, String> data = Upgrade.getData(gamer);
+                Map<UpgradeProperty, String> data = Upgrade.getData(gamer);
                 for (UpgradeProperty up : properties.keySet()) {
                     int dat = Integer.parseInt(data.get(up));
                     int prop = Integer.parseInt(properties.get(up));
