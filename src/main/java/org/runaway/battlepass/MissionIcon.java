@@ -31,8 +31,9 @@ public class MissionIcon extends Items {
     }
 
     public Item.Builder getIcon(Gamer gamer) {
+        short data = (short) (this.mission.isCompleted(gamer) ? 4 : (this.mission.isPinned(gamer) ? 1 : 5));
         return new Item.Builder(Material.STAINED_GLASS_PANE)
-                .data((short) (this.mission.isCompleted(gamer) ? 4 : 5))
+                .data(data)
                 .name(ChatColor.GREEN + mission.getName())
                 .lore(new Lore.BuilderLore()
                         .addSpace()

@@ -39,7 +39,7 @@ public class MoneyRequire implements Require {
     @Override
     public void doAfter(Gamer gamer) {
         if(isTakeAfter()) {
-            gamer.withdrawMoney(getAmount());
+            gamer.withdrawMoney(getAmount(), true);
         }
     }
 }

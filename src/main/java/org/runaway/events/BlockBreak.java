@@ -82,14 +82,14 @@ public class BlockBreak implements Listener {
                     gamer.sendMessage(EMessage.MINLEVELITEM.getMessage().replace("%level%", gamer.getLevelItem() + ""));
                     return;
                 }
-                if (block.getType().equals(Material.CHEST) && chests.containsValue(block.getLocation())) {
+                if (block.getType().equals(Material.CHEST) && chests.containsValue(block)) {
                     event.setCancelled(true);
                     return;
                 }
                 double boost = 1;
                 if (gamer.hasPassivePerk(new KeyFirst())) boost += 1;
                 if (gamer.hasPassivePerk(new KeySecond())) boost += 1;
-                if (Math.random() < (0.005 * (gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + boost)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.002 * (gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + boost)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     gamer.addItem("defaultKey");
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
@@ -123,7 +123,7 @@ public class BlockBreak implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         Block block = event.getBlock();
-        if (block.getType().equals(Material.LOG_2) && block.getData() == 1) {
+        if (block.getType().equals(Material.LOG_2) && block.getData() == 13) {
             if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().hasItemMeta() && !player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
                 if (!to_break.containsKey(player.getName())) to_break.put(player.getName(), 0);
                 int al = to_break.get(player.getName());
@@ -138,7 +138,6 @@ public class BlockBreak implements Listener {
                     to_break.put(player.getName(), to_break.get(player.getName()) + 1);
                 }
             }
-
             if (gamer.getIntStatistics(EStat.LEVEL) < gamer.getLevelItem()) {
                 event.setCancelled(true);
                 player.sendMessage(Utils.colored(EMessage.MINLEVELITEM.getMessage()).replace("%level%", gamer.getLevelItem() + ""));
@@ -153,19 +152,18 @@ public class BlockBreak implements Listener {
                 AutoSell(event, false);
                 if (Math.random() < (0.0025 * gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + 1) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
-
                     gamer.addItem("defaultKey");
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(player, event.getBlock()));
                     gamer.increaseIntStatistics(EStat.KEYS);
                 }
                 double add = gamer.getBoosterBlocks();
-                gamer.addCurrentBlocks("LOG_2", 0, add);
+                gamer.addCurrentBlocks("LOG_2", 1, add);
                 gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
-                block.setTypeIdAndData(Material.WOOD.getId(), (byte)1, true);
+                block.setTypeIdAndData(Material.LOG.getId(), (byte)13, true);
                 Bukkit.getServer().getPluginManager().callEvent(new BreakWoodEvent(player));
                 Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                     block.setType(Material.LOG_2);
-                    block.setData((byte) 1);
+                    block.setData((byte) 13);
                 }, 250L);
             }
         }
@@ -278,7 +276,7 @@ public class BlockBreak implements Listener {
             price *= gamer.getBoosterMoney();
             gamer.depositMoney(price);
             gamer.sendActionbar(ChatColor.translateAlternateColorCodes('&',
-                    "&eАвтопродажа: &a+" + new BigDecimal(price).setScale(2, RoundingMode.UP).doubleValue() + " руб. &7[&e" + gamer.getBoosterMoney() + "x&7]"));
+                    "&eАвто-продажа: &a+" + BigDecimal.valueOf(price).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName() + " &7[&e" + gamer.getBoosterMoney() + "x&7]"));
         }
     }
 

@@ -101,7 +101,7 @@ public class Trainer {
             if (finalCanget) {
                 String lvl = section.getStringList("levels").get(l);
                 String[] tempmas = lvl.split(" ");
-                g.withdrawMoney(Integer.parseInt(tempmas[0]));
+                g.withdrawMoney(Integer.parseInt(tempmas[0]), true);
                 g.sendMessage(EMessage.TRAINERSUCCESS);
                 g.getTrainings().put(type.name(), g.getTrainingLevel(type.name()) + 1);
                 Achievement.FIRST_TRAINER.get(p);

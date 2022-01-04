@@ -362,7 +362,7 @@ public class Prison extends JavaPlugin {
             } else if (r == UpgradeProperty.RATS) {
                 requireList.addRequire(MobsRequire.builder().mobName("rat").amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.WOOD) {
-                requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.LOG_2)).build());
+                requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.LOG_2, (short) 1)).amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.BOW_KILL) {
                 requireList.addRequire(MobsRequire.builder().mobName("zombie").amount(Integer.parseInt(s)).build());
             } else {

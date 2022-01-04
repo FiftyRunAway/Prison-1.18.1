@@ -28,7 +28,7 @@ public class PlayerQuit implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         gamer.savePlayer();
-        player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+        //player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         removeMissions(player);
         HideCommand.removeOnQuit(gamer);
         Utils.getPlayers().remove(player.getName());

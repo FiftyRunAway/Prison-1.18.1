@@ -698,7 +698,7 @@ public class Gamer {
         }
         if (money) {
             if (hasMoney(cost)) {
-                withdrawMoney(cost);
+                withdrawMoney(cost, true);
             } else {
                 sendMessage(EMessage.MONEYNEEDS);
                 return;
@@ -716,7 +716,7 @@ public class Gamer {
             if (obj != null) mon = mon * (1 - Integer.parseInt(obj.toString()) / 100);
             if (hasMoney(mon)) {
                 setStatistics(EStat.FACTION, FactionType.DEFAULT.getConfigName().toUpperCase());
-                withdrawMoney(mon);
+                withdrawMoney(mon, true);
                 sendMessage(EMessage.SUCCESSFULYLEAVE);
                 teleport(Prison.SPAWN);
             } else {
@@ -780,7 +780,7 @@ public class Gamer {
         }
     }
 
-    public void depositMoney(double money) {
+    public void depositMoney(double money, boolean sendMessage) {
         if (money <= 0) return;
         if (getStatistics(EStat.MONEY) instanceof Integer) {
             setStatistics(EStat.MONEY, BigDecimal.valueOf(money + getIntStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
@@ -788,11 +788,17 @@ public class Gamer {
             setStatistics(EStat.MONEY, BigDecimal.valueOf(money + getDoubleStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         }
         if (isOnline()) {
-            sendActionbar(Utils.colored("&a+" + BigDecimal.valueOf(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName()));
+            String mon = BigDecimal.valueOf(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName();
+            sendActionbar(Utils.colored("&a+" + mon));
+            if (sendMessage) sendMessage("&aНа счёт зачислено " + mon);
             double m = getMoney();
             if (m >= 15) Achievement.GET_15.get(getPlayer());
             if (m >= 100) Achievement.GET_100.get(getPlayer());
         }
+    }
+
+    public void depositMoney(double money) {
+        depositMoney(money, false);
     }
 
     private int getVerison() {
@@ -803,11 +809,13 @@ public class Gamer {
         return getVerison() >= 578;
     }
 
-    public void withdrawMoney(double money, int sale) {
+    public void withdrawMoney(double money, int sale, boolean sendMessage) {
         double to_withdraw = (1 - (double) sale / 100) * money;
         setStatistics(EStat.MONEY, getMoney() - to_withdraw);
         if (isOnline()) {
-            sendActionbar(Utils.colored("&c-" + money + " " + MoneyType.RUBLES.getShortName()));
+            String mon = money + " " + MoneyType.RUBLES.getShortName();
+            sendActionbar("&c-" + mon);
+            if (sendMessage) sendMessage("&cСо счёта списано " + mon);
             if (getTrainingLevel(TypeTrainings.CASHBACK.name()) > 0) {
                 Utils.trainer.forEach(trainer -> {
                     Trainer tr = (Trainer) trainer;
@@ -815,7 +823,7 @@ public class Gamer {
                     if (Math.random() < tr.getValue(getPlayer())) {
                         double cashback = Math.round(to_withdraw / 4);
                         sendMessage(Utils.colored(EMessage.CASHBACK.getMessage()).replace("%cashback%", cashback + " " + MoneyType.RUBLES.getShortName()).replace("%money%", money + " " + MoneyType.RUBLES.getShortName()));
-                        depositMoney(cashback);
+                        depositMoney(cashback, sendMessage);
                     }
                 });
             }
@@ -823,7 +831,11 @@ public class Gamer {
     }
 
     public void withdrawMoney(double money) {
-        withdrawMoney(money, 0);
+        withdrawMoney(money, 0, false);
+    }
+
+    public void withdrawMoney(double money, boolean sendMessage) {
+        withdrawMoney(money, 0, sendMessage);
     }
 
     public void addCurrentBlocks(String block, int data, double amount) {
@@ -848,7 +860,7 @@ public class Gamer {
         if (b != null) boost += Double.parseDouble(b.toString()) - 1.0;
         if (hasPassivePerk(new BBlocksFirst())) boost += 0.1;
         if (hasPassivePerk(new BBlocksSecond())) boost += 0.2;
-        return BigDecimal.valueOf(boost).setScale(2, RoundingMode.UP).doubleValue();
+        return BigDecimal.valueOf(boost).setScale(1, RoundingMode.UP).doubleValue();
     }
 
     public double getBoosterMoney() {
@@ -859,7 +871,7 @@ public class Gamer {
         if (b != null) boost += Double.parseDouble(b.toString()) - 1.0;
         if (hasPassivePerk(new BMoneyFirst())) boost += 0.1;
         if (hasPassivePerk(new BBMoneySecond())) boost += 0.2;
-        return BigDecimal.valueOf(boost).setScale(2, RoundingMode.UP).doubleValue();
+        return BigDecimal.valueOf(boost).setScale(1, RoundingMode.UP).doubleValue();
     }
 
     public FactionType getFaction() {

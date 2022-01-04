@@ -119,7 +119,7 @@ public enum Privs {
     private ItemStack getIcon(Privs priv) {
         ArrayList<String> list = new ArrayList<>();
         for (IFeature feature : priv.features) {
-            list.add("&7• &a" + feature.getName() + ": &e" + feature.getValue().toString().replaceAll("true", "есть"));
+            list.add("&7• &a" + feature.getName() + ": &e" + feature.getValue().toString().replace("true", "есть"));
         }
         return new Item.Builder(Material.INK_SACK)
                 .data((short) priv.subid)

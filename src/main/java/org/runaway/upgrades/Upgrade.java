@@ -155,27 +155,4 @@ public class Upgrade {
             }
         }
     }
-
-    private static void take(UpgradeProperty prop, int p, Player player) {
-        Gamer gamer = GamerManager.getGamer(player);
-        switch (prop) {
-            case COST: {
-                gamer.withdrawMoney(p);
-                break;
-            }
-            case BLOCKS: {
-                gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) - p);
-                break;
-            }
-        }
-    }
-
-    /*
-    Зачарования:
-    -
-    -
-    Уровень >> 5
-
-     */
-
 }

@@ -370,7 +370,7 @@ public class TrashAuction {
             this.hologram.appendItemLine(itemStack);
 
             Gamer gamer = GamerManager.getGamer(Bukkit.getPlayer(last));
-            gamer.withdrawMoney(now);
+            gamer.withdrawMoney(now, true);
             gamer.addItem(itemStack);
 
             gamer.sendMessage(EMessage.AUCTIONWIN);

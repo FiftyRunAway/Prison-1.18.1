@@ -84,7 +84,7 @@ public abstract class Job {
     public static void take(Gamer gamer, JobReq job) {
         switch (job.getRequriement()) {
             case MONEY: {
-                gamer.withdrawMoney(job.getValue());
+                gamer.withdrawMoney(job.getValue(), true);
                 break;
             }
             default: {

@@ -43,7 +43,7 @@ public class PlayerDeath implements Listener {
         boolean givenot = false;
         double money = gamer.getIntStatistics(EStat.LEVEL);
         if (gamer.getMoney() >= money) {
-            gamer.withdrawMoney(money);
+            gamer.withdrawMoney(money, true);
         } else {
             givenot = true;
             gamer.setStatistics(EStat.MONEY, 0);
@@ -63,7 +63,7 @@ public class PlayerDeath implements Listener {
 
             Bukkit.getServer().getPluginManager().callEvent(new PlayerKillEvent(player));
 
-            gamerKiller.depositMoney(money);
+            gamerKiller.depositMoney(money, true);
             gamerKiller.getPlayer().sendMessage(Utils.colored(EMessage.KILLPLAYER.getMessage()).replace("%player%", gamer.getGamer()).replace("%money%", Board.FormatMoney(money)));
             if (gamerKiller.getPlayer().hasPermission("*")) Achievement.KILL_ADMIN.get(gamerKiller.getPlayer());
         } else if (event.getEntity() instanceof Projectile && ((Projectile)event.getEntity()).getShooter() instanceof Player) {

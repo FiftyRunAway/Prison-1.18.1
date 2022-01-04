@@ -45,13 +45,13 @@ public class TipCommand extends CommandManager {
             int money = 5;
             for (String owns : owners) {
                 if (Utils.getPlayers().contains(owns)) {
-                    GamerManager.getGamer(Bukkit.getPlayer(owns).getUniqueId()).depositMoney(gamer.getIntStatistics(EStat.LEVEL) * money);
+                    GamerManager.getGamer(Bukkit.getPlayer(owns).getUniqueId()).depositMoney(gamer.getIntStatistics(EStat.LEVEL) * money, true);
                 } else {
                     EStat.MONEY.setInConfig(owns, (double)EStat.MONEY.getFromConfig(owns) + (money * (int)EStat.LEVEL.getFromConfig(owns)));
                 }
             }
-            gamer.depositMoney(money * is);
-            gamer.sendActionbar(ChatColor.GREEN + "+" + (money * is) + " " + MoneyType.RUBLES.getShortName());
+            gamer.depositMoney(money * is, true);
+            //gamer.sendActionbar(ChatColor.GREEN + "+" + (money * is) + " " + MoneyType.RUBLES.getShortName());
             gamer.sendMessage(EMessage.TIP);
         } else {
             gamer.sendMessage(EMessage.NOACTIVEBOOSTERS);

@@ -115,7 +115,7 @@ public class PlayerInteract implements Listener {
                             BlockBreak.treasure_holo.get(player.getName()).delete();
                             BlockBreak.treasure_holo.remove(player.getName());
                         }
-                        gamer.depositMoney(money);
+                        gamer.depositMoney(money, true);
                         BlockBreak.chests.remove(player.getName());
                         BlockBreak.chests_tasks.remove(player.getName());
                     }

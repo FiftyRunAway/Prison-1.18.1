@@ -83,12 +83,12 @@ public class MainMenu implements IMenus {
             menu.addButton(ah);
 
             IMenuButton rebirth = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.EYE_OF_ENDER)
-                    .name("&aМеню переождения")
+                    .name("&aМеню переождения &c[СКОРО]")
                     .lore(new Lore.BuilderLore()
                             .addSpace()
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(49);
-            rebirth.setClickEvent(event -> RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked())));
+            //rebirth.setClickEvent(event -> RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked())));
             menu.addButton(rebirth);
 
             IMenuButton donate = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND)

@@ -54,7 +54,8 @@ public class Board {
         replaceScore(objective, 6, ChatColor.WHITE + " Фракция" + getSplitter(ChatColor.RED) + ChatColor.BOLD + "" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
         replaceScore(objective, 5, "  ");
         replaceScore(objective, 4, ChatColor.YELLOW + "Сервер:");
-        replaceScore(objective, 3, ChatColor.WHITE + " Игроков" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + Utils.getPlayers().size());
+        replaceScore(objective, 3, ChatColor.WHITE + " Игроков" + getSplitter(ChatColor.GREEN) + ChatColor.BOLD + Utils.getPlayers().size() + ChatColor.RESET
+                + (gamer.isHideEnabled() ? ChatColor.GRAY + " [Скрыты]" : ""));
         replaceScore(objective, 2, "   ");
         replaceScore(objective, 1, ChatColor.WHITE + "" + ChatColor.BOLD + Vars.getSite());
 

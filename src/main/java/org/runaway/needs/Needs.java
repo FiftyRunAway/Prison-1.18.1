@@ -37,7 +37,7 @@ public class Needs implements Listener {
         if (player.hasPermission("prison.toilet") || tasks.containsKey(player.getName())) {
             return;
         }
-        int cooldown = 10;
+        int cooldown = 10; // 10 were
         Object obj = GamerManager.getGamer(player).getPrivilege().getValue(new NeedsLonger());
         if (obj != null) {
             cooldown = Integer.parseInt(obj.toString());

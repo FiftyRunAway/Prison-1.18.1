@@ -103,7 +103,7 @@ public class MinesQuestMenu implements IMenus {
                             double money = getMoney(finalAm, quest.getStepMoney());
                             g.sendTitle("&fКвест &e" + finalName.toLowerCase() + " &fвыполнен!",
                                     "&8[&a+" + money + " " + MoneyType.RUBLES.getShortName() + "&8]");
-                            g.depositMoney(money);
+                            g.depositMoney(money, true);
                         });
                         menu.addButton(btn.setSlot(in));
                     } else {

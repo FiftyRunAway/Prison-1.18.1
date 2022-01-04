@@ -47,8 +47,8 @@ public class LevelMenu implements IMenus {
             if (g.getMoney() >= price) {
                 double blocks = new Requires(g).blocksNextLevel();
                 if (g.getDoubleStatistics(EStat.BLOCKS) >= blocks) {
-                    g.sendTitle(ChatColor.YELLOW + "Поздравляем", ChatColor.YELLOW + "с повышением уровня!");
-                    g.withdrawMoney(price);
+                    g.sendTitle(ChatColor.AQUA + "Поздравляем", ChatColor.YELLOW + "с повышением уровня!");
+                    g.withdrawMoney(price, true);
                     g.increaseIntStatistics(EStat.LEVEL);
                     p.closeInventory();
                     g.setLevelBar();
