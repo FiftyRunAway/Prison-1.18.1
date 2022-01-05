@@ -34,4 +34,6 @@ public interface Attributable {
     MobLoot getMobLoot();
 
     Consumer<LivingEntity> getOnSpawnConsumer();
+
+    Armor getArmor();
 }

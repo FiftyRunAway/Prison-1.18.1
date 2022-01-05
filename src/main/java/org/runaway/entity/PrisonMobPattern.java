@@ -17,6 +17,7 @@ public class PrisonMobPattern implements Attributable {
     boolean boss;
     MobLoot mobLoot;
     MobType mobType;
+    Armor armor;
     Consumer<LivingEntity> onSpawnConsumer;
     @Setter
     List<MobSkill> mobSkills;

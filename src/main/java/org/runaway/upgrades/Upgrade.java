@@ -15,6 +15,7 @@ import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
 import org.runaway.requirements.Require;
+import org.runaway.requirements.StarsRequire;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
@@ -95,6 +96,9 @@ public class Upgrade {
         switch (prop) {
             case COST: {
                 return String.valueOf(Math.round(gamer.getMoney()));
+            }
+            case STARS: {
+                return String.valueOf(StarsRequire.getAmount(gamer.getPlayer(), ItemManager.getPrisonItem("star").getItemStack()));
             }
             case LEVEL: {
                 return String.valueOf(gamer.getStatistics(EStat.LEVEL));

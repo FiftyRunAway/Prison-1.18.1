@@ -13,6 +13,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.UpgradeProperty;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +27,11 @@ public class UpgradeMisc {
         return Material.valueOf(EConfig.UPGRADE.getConfig().getString("upgrades." + section + ".type"));
     }
 
-    public static HashMap<UpgradeProperty, String> getProperties(String section) {
+    public static Map<UpgradeProperty, String> getProperties(String section) {
         String prop = EConfig.UPGRADE.getConfig().getString("upgrades." + section + ".properties");
         prop = prop.replace("{", "").replace("}", "");
         String[] mas = prop.split(";");
-        HashMap<UpgradeProperty, String> map = new HashMap<>();
+        Map<UpgradeProperty, String> map = new EnumMap<>(UpgradeProperty.class);
         for (String str : mas) {
             String[] tempmas = str.split(":");
             map.put(UpgradeProperty.valueOf(tempmas[0].toUpperCase()), tempmas[1]);
@@ -102,7 +103,7 @@ public class UpgradeMisc {
                 meta.addEnchant(enchantment, enchantments.get(enchantment), true);
             }
         }
-        HashMap<UpgradeProperty, String> properties = getProperties(section);
+        Map<UpgradeProperty, String> properties = getProperties(section);
         ArrayList<String> lores = new ArrayList<>();
         int level = Integer.parseInt(EConfig.UPGRADE.getConfig().getString("upgrades." + section + ".lorelevel"));
         lores.add(Utils.colored("&7Минимальный уровень: &f" + EConfig.UPGRADE.getConfig().getInt("upgrades." + section + ".min_level")));

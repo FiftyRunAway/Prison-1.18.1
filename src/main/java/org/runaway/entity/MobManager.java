@@ -1,13 +1,9 @@
 package org.runaway.entity;
 
 import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.EntitySlime;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Slime;
-import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,6 +21,7 @@ import org.runaway.utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MobManager {
     public static Map<Integer, Entity> idEntityMap = new HashMap<>();
@@ -36,12 +33,109 @@ public class MobManager {
         rats();
         zombie();
         skeleton();
+        wolf();
+
         spider();
         slime();
         golem();
         blaze();
+        witherSkeleton();
+        bear();
 
         initAllControllers();
+    }
+
+    private void bear() {
+        ConfigurationSection section = getInfoSection("bear");
+        int money = section.getInt("money");
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
+                Arrays.asList(
+                        LootItem.builder().chance(0.8f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.9f).minAmount(12).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(7).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
+                .regenerationDelay(25).regenerationValue(4)
+                .name(section.getString("name")).techName("bear")
+                .mobType(MobType.BEAR)
+                .mobLoot(mobLoot)
+                .armor(Armor.builder()
+                        .boots(Utils.getColoredArmor(Material.LEATHER_BOOTS, Color.GRAY))
+                        .leggings(Utils.getColoredArmor(Material.LEATHER_LEGGINGS, Color.WHITE))
+                        .chestplate(Utils.getColoredArmor(Material.LEATHER_CHESTPLATE, Color.WHITE))
+                        .helmet(Utils.getColoredArmor(Material.LEATHER_HELMET, Color.GRAY))
+                        .itemInHand(new ItemStack(Material.STICK)).build())
+                .build();
+        List<MobSkill> skills = new ArrayList<>();
+        skills.add(new DamageSkill(((entity, player) -> {
+            if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
+                player.damage(6);
+            }
+        })));
+        skills.add(new RepetitiveSkill(entity -> {
+            LivingEntity e = (LivingEntity) entity.getBukkitEntity();
+            AtomicBoolean playersNearby = new AtomicBoolean(false);
+            entity.getBukkitEntity().getNearbyEntities(15, 15, 15).stream()
+                    .filter(entity1 -> entity1 instanceof Player)
+                    .map(entity1 -> (Player) entity1)
+                    .forEach(livingEntity -> {
+                        livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_WOLF_AMBIENT, 1f, 1f);
+                        GamerManager.getGamer(livingEntity).sendMessage("&cНу как тебе такое?");
+                        playersNearby.set(true);
+                    });
+            if (Boolean.TRUE.equals(playersNearby.get()))
+                forceSpawn("wolf", entity.getBukkitEntity().getLocation().add(entity.getBukkitEntity().getLocation().getDirection().normalize().multiply(1)), 3);
+
+        }, 20 * 35));
+        attributable.setMobSkills(skills);
+        addController(attributable);
+    }
+
+    private void witherSkeleton() {
+        ConfigurationSection section = getInfoSection("witherskeleton");
+        int money = section.getInt("money");
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
+                Arrays.asList(
+                        LootItem.builder().chance(0.75f).minAmount(1).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.9f).minAmount(8).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
+                        LootItem.builder().chance(0.65f).minAmount(10).maxAmount(20).prisonItem(ItemManager.getPrisonItem("bone")).build()
+                )).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(6).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
+                .regenerationDelay(30).regenerationValue(2)
+                .name(section.getString("name")).techName("witherskeleton")
+                .mobType(MobType.WITHERSKELETON)
+                .mobLoot(mobLoot)
+                .armor(Armor.builder()
+                        .itemInHand(new ItemStack(Material.GOLD_SWORD)).build())
+                .build();
+        List<MobSkill> skills = new ArrayList<>();
+        skills.add(new DamageSkill(((entity, player) -> {
+            if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
+                player.damage(5.5);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 1));
+            }
+        })));
+        skills.add(new RepetitiveSkill(entity -> {
+            LivingEntity e = (LivingEntity) entity.getBukkitEntity();
+            e.getWorld().playEffect(e.getLocation(), Effect.WITHER_SHOOT, 15);
+
+            entity.getBukkitEntity().getNearbyEntities(10, 10, 10).stream()
+                    .filter(entity1 -> entity1 instanceof Player)
+                    .map(entity1 -> (Player) entity1)
+                    .forEach(livingEntity -> {
+                        livingEntity.damage(12);
+                        new SyncTask(() -> {
+                            livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_WITHER_SKELETON_HURT, 1.0f, 1.0f);
+                            livingEntity.setVelocity(livingEntity.getVelocity().add(livingEntity.getLocation().getDirection()).multiply(-3.5));
+                            Gamer gamer = GamerManager.getGamer(livingEntity);
+                            if(gamer == null) return;
+                            gamer.sendMessage("&cВон отсюда!!!");
+                        }, 10);
+                    });
+        }, 20 * 20));
+        attributable.setMobSkills(skills);
+        addController(attributable);
     }
 
     private void blaze() {
@@ -49,7 +143,7 @@ public class MobManager {
         int money = section.getInt("money");
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
-                        LootItem.builder().chance(0.6f).minAmount(1).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
+                        LootItem.builder().chance(0.6f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("star")).build(),
                         LootItem.builder().chance(0.9f).minAmount(8).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
@@ -68,6 +162,11 @@ public class MobManager {
                 player.setFireTicks(105);
             }
         }));
+        skills.add(new DamageSkill(((entity, player) -> {
+            if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
+                player.damage(3);
+            }
+        })));
         skills.add(new RepetitiveSkill(entity -> {
             LivingEntity e = (LivingEntity) entity.getBukkitEntity();
             e.getWorld().playEffect(e.getLocation(), Effect.MOBSPAWNER_FLAMES, 10);
@@ -124,6 +223,11 @@ public class MobManager {
                 gamer.sendMessage("&eВы попали в капкан");
             }
         }));
+        skills.add(new DamageSkill(((entity, player) -> {
+            if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
+                player.damage(4);
+            }
+        })));
         skills.add(new RepetitiveSkill(entity -> {
             entity.getBukkitEntity().getWorld().playEffect(entity.getBukkitEntity().getLocation(), Effect.SMOKE, 10);
             entity.getBukkitEntity().setVelocity(new Vector(0, 1.05, 0).multiply(1));
@@ -167,6 +271,11 @@ public class MobManager {
             if(livingEntity.getHealth() < attributable.getHealth() * 0.2) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 220, 1));
                 player.damage(4);
+            }
+        })));
+        skills.add(new DamageSkill(((entity, player) -> {
+            if (ThreadLocalRandom.current().nextFloat() < 0.65f) {
+                player.damage(3);
             }
         })));
         skills.add(new RepetitiveSkill(entity ->
@@ -246,6 +355,18 @@ public class MobManager {
         addController(attributable);
     }
 
+    private void wolf() {
+        MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0.5).maxMoney(2.5).build();
+        Attributable attributable = PrisonMobPattern.builder()
+                .mobLevel(1).damage(3).boss(false).health(15).speed(0.01)
+                .regenerationDelay(15).regenerationValue(1)
+                .name("&aВолк").techName("wolf")
+                .mobType(MobType.WOLF)
+                .mobLoot(mobLoot)
+                .build();
+        addController(attributable);
+    }
+
     private void zombie() {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(0.8).maxMoney(1.45)
                 .lootItems(Arrays.asList(
@@ -277,8 +398,6 @@ public class MobManager {
                 .build();
         addController(attributable);
     }
-
-
 
     private static void initAllControllers() {
         if (!EConfig.MOBS.getConfig().contains("mobs")) return;
@@ -322,5 +441,33 @@ public class MobManager {
 
     public static IMobController getMobController(int entityId) {
         return mobControllerMap.get(entityId);
+    }
+
+    public static void forceSpawn(Gamer gamer, String type, Location location, int amount) {
+        Attributable attributable;
+        try {
+            attributable = MobManager.getAttributable(type);
+        } catch (Exception ex) {
+            Bukkit.getConsoleSender().sendMessage(Utils.colored("&cError: '" + type + "' is not exists."));
+            return;
+        }
+        for (int i = 0; i < amount; i++) {
+            MobController.builder()
+                    .attributable(attributable)
+                    .spawnLocation(location)
+                    .lastDeathTime((System.currentTimeMillis() / 1000) - 10)
+                    .respawnTime(1)
+                    .canRare(false)
+                    .forceSpawn(true)
+                    .UID(Utils.generateUID())
+                    .mobSkillList(attributable.getMobSkills())
+                    .build()
+                    .init();
+        }
+        if (gamer != null) gamer.sendMessage("&aВы успешно заспавнили &2" + type.toUpperCase() + " x" + amount);
+    }
+
+    public static void forceSpawn(String type, Location location, int amount) {
+        forceSpawn(null, type, location, amount);
     }
 }

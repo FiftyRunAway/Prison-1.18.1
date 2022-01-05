@@ -1,5 +1,6 @@
 package org.runaway.inventories;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -105,7 +106,6 @@ public class UpItemsMenu implements IMenus {
                 } else type += section.get("type").toString().toLowerCase();
                 if (section.getInt("lorelevel") > 0) {
                     PrisonItem pi = ItemManager.getPrisonItem(s + "_" + section.getInt("lorelevel"));
-
                     ItemStack stack = pi.getItemStack();
                     if (section.getInt("lorelevel") > 1) {
                         ItemUtils.addLore(stack, "&r", "&dТребования:");

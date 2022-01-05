@@ -48,18 +48,20 @@ public class MobController implements IMobController {
     private List<MobSkill> mobSkillList, damageSkillList;
     private List<Cancellable> mobTasks;
     private MobRare mobRare;
+    private boolean canRare;
+    private boolean forceSpawn;
 
     public MobController init() {
         setMobRare(MobRare.DEFAULT);
         setMobRandom(new Random());
         setMobTasks(new ArrayList<>());
         setDamageMap(new HashMap<>());
-        if (getLastDeathTime() == -1 || (getRespawnTimeLeft() <= 0)) {
+        if (getRespawnTimeLeft() <= 0) {
             setLastDeathTime(System.currentTimeMillis() / 1000L);
-            save();
+            if (!forceSpawn) save();
         }
         initFirstSpawn();
-        if (getRespawnTime() != 0) {
+        if (!forceSpawn && getRespawnTime() != 0) {
             new SyncRepeatTask(() -> {
                 if (getTimeTextLine() != null && getRespawnTimeLeft() > 0) {
                     getTimeTextLine().setText(Utils.colored("&a" + TimeUtils.getDuration(getRespawnTimeLeft())));
@@ -73,7 +75,7 @@ public class MobController implements IMobController {
 
     @Override
     public void spawn() {
-        if(!attributable.isBoss() && getMobRandom().nextFloat() < 0.2) {
+        if(canRare && !attributable.isBoss() && getMobRandom().nextFloat() < 0.2) {
             setMobRare(MobRare.RARE);
         }
         try {
@@ -94,6 +96,7 @@ public class MobController implements IMobController {
         if(getAttributable().getOnSpawnConsumer() != null) {
             getAttributable().getOnSpawnConsumer().accept(getBukkitEntity());
         }
+        if (getSpawnTask() != null) getSpawnTask().stop();
     }
 
     @Override
@@ -173,10 +176,10 @@ public class MobController implements IMobController {
     }
 
     public void initFirstSpawn() {
-        if (getRespawnTime() == 0) return;
+        if (!forceSpawn && getRespawnTime() == 0) return;
 
         if (this.bukkitEntity == null) {
-            if (System.currentTimeMillis() / 1000L - this.lastDeathTime >= this.respawnTime) {
+            if (forceSpawn || System.currentTimeMillis() / 1000L - this.lastDeathTime >= this.respawnTime) {
                 this.spawn();
             } else {
                 if (attributable.isBoss()) createHologram();
@@ -249,7 +252,6 @@ public class MobController implements IMobController {
             if (getAttributable().getMobType().equals(MobType.BLAZE)) Achievement.BLAZE_KILL.get(gamer.getPlayer());
             if (getAttributable().getMobType().equals(MobType.GOLEM)) Achievement.GOLEM_KILL.get(gamer.getPlayer());
             if (getAttributable().getMobType().equals(MobType.SLIME)) Achievement.SLIME_KILL.get(gamer.getPlayer());
-
         });
         try {
             getAttributable().getMobLoot().drop(damagePercentMap, getBukkitEntity().getLocation(), getAttributable());
@@ -261,7 +263,7 @@ public class MobController implements IMobController {
         MobManager.mobControllerMap.remove(getBukkitEntity().getEntityId());
         setBukkitEntity(null);
         setNmsEntity(null);
-        if (getRespawnTime() != 0 && !Prison.isDisabling) {
+        if (!forceSpawn && getRespawnTime() != 0 && !Prison.isDisabling) {
             setSpawnTask(new SyncTask(this::spawn, getRespawnTime() * 20));
         }
         if (getAttributable().isBoss()) {

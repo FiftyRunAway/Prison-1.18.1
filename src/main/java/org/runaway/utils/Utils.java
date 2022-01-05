@@ -3,11 +3,10 @@ package org.runaway.utils;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import net.minecraft.server.v1_12_R1.EnumChatFormat;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.runaway.FancyText;
 import org.runaway.Gamer;
 import org.runaway.Prison;
@@ -92,6 +91,14 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ItemStack getColoredArmor(Material leatherArmor, Color color) {
+        ItemStack armor = new ItemStack(leatherArmor);
+        LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta();
+        meta.setColor(color);
+        armor.setItemMeta(meta);
+        return armor;
     }
 
     public static boolean depositOffline(String name, double value) {

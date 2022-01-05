@@ -2,8 +2,12 @@ package org.runaway.entity.mobs;
 
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.runaway.entity.Armor;
 import org.runaway.entity.Attributable;
 import org.runaway.entity.IMobController;
 import org.runaway.entity.MobRare;
@@ -45,6 +49,15 @@ public class CustomMonsterEntity extends EntityMonster {
         this.canPickUpLoot = false;
         this.fireProof = true;
         this.persistent = true;
+
+        Armor armor = mobController.getAttributable().getArmor();
+        if (armor == null) return;
+        EntityEquipment equipment = ((LivingEntity) this.getBukkitEntity()).getEquipment();
+        if (armor.getBoots() != null) equipment.setBoots(armor.getBoots());
+        if (armor.getLeggings() != null) equipment.setLeggings(armor.getLeggings());
+        if (armor.getChestplate() != null) equipment.setChestplate(armor.getChestplate());
+        if (armor.getHelmet() != null) equipment.setHelmet(armor.getHelmet());
+        if (armor.getItemInHand() != null) equipment.setItemInMainHand(armor.getItemInHand());
     }
 
     public boolean damageEntity(DamageSource damagesource, float f) {

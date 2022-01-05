@@ -24,7 +24,8 @@ public enum UpgradeProperty {
     DIRT("Земля", false, "земли"),
     SAND("Песок", false, "песка"),
     GRAVEL("Гравий", false, "гравия"),
-    WOOL("Шерсть", false, "шерсти");
+    WOOL("Шерсть", false, "шерсти"),
+    STARS("Звёздочки", true, "звёздочек");
 
     private String name;
     private boolean isTaken;

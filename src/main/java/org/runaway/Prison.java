@@ -365,6 +365,8 @@ public class Prison extends JavaPlugin {
                 requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.LOG_2, (short) 1)).amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.BOW_KILL) {
                 requireList.addRequire(MobsRequire.builder().mobName("zombie").amount(Integer.parseInt(s)).build());
+            } else if (r == UpgradeProperty.STARS) {
+                requireList.addRequire(StarsRequire.builder().amount(Integer.parseInt(s)).build());
             } else {
                 requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.valueOf(r.name().toUpperCase()))).amount(Integer.parseInt(s)).build());
             }

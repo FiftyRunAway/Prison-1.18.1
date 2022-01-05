@@ -43,7 +43,7 @@ public class PlayerDeath implements Listener {
         boolean givenot = false;
         double money = gamer.getIntStatistics(EStat.LEVEL);
         if (gamer.getMoney() >= money) {
-            gamer.withdrawMoney(money, true);
+            gamer.withdrawMoney(money);
         } else {
             givenot = true;
             gamer.setStatistics(EStat.MONEY, 0);
