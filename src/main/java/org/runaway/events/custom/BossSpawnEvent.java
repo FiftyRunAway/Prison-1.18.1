@@ -13,7 +13,7 @@ public class BossSpawnEvent extends Event {
     private EntityMonster em;
     private boolean cancelled;
 
-    public BossSpawnEvent(String name, EntityMonster em) {
+    public BossSpawnEvent(String name) {
         this.name = Utils.colored(name);
         this.em = em;
         this.cancelled = false;

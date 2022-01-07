@@ -42,7 +42,7 @@ public class DonateCommand extends CommandManager {
                 if (Utils.getPlayers().contains(name)) {
                     Player player = Bukkit.getPlayer(name);
                     player.sendMessage(Utils.colored(EMessage.DEPOSITDONATE.getMessage()
-                            .replace("%money%", add + " " + MoneyType.REAL_RUBLES)));
+                            .replace("%money%", add + " " + MoneyType.REAL_RUBLES.getShortName())));
                     player.playSound(player.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 1);
                 }
             } else {

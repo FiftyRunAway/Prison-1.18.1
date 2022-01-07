@@ -18,10 +18,7 @@ import org.runaway.upgrades.Upgrade;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
@@ -52,18 +49,24 @@ public class Trainer {
         ItemStack stack = new ItemStack(this.icon);
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(this.name);
-        Lore.BuilderLore lore = new Lore.BuilderLore().addLore(this.lore).addSpace().addString("&dУровни прокачки:");
+        Lore.BuilderLore lore = new Lore.BuilderLore().addLore(this.lore).addSpace();
         Gamer gamer = GamerManager.getGamer(player);
         int plevel = gamer.getTrainingLevel(type.name());
         ConfigurationSection section = EConfig.TRAINER.getConfig().getConfigurationSection(type.name().toLowerCase());
         AtomicBoolean canget = new AtomicBoolean(true);
-        HashMap<UpgradeProperty, Integer> map = new HashMap<>();
+        Map<UpgradeProperty, Integer> map = new EnumMap<>(UpgradeProperty.class);
+        boolean levelsLeft = false;
         for (int i = 0; i < this.levels; i++) {
             String lvl = section.getStringList("levels").get(i);
             String[] tempmas = lvl.split(" ");
-            lore.addString(getColorLevel(plevel, (i + 1)) +
-                    "- " + tempmas[1].replaceAll("_", " ") + ".");
-            if (getColorLevel(plevel, i + 1) == ChatColor.GREEN) {
+            ChatColor c = getColorLevel(plevel, i + 1);
+            if (c.equals(ChatColor.RED)) {
+                lore.addString(getColorLevel(plevel, (i + 1)) +
+                        "- " + tempmas[1].replaceAll("_", " ") + ".");
+                levelsLeft = true;
+            } else if (c.equals(ChatColor.GREEN)) {
+                lore.addString(getColorLevel(plevel, (i + 1)) +
+                        "- " + tempmas[1].replaceAll("_", " ") + ".");
                 lore.addString(" &7Требования:");
                 if (Integer.parseInt(tempmas[0]) < gamer.getMoney()) {
                     lore.addString("&a  • Цена: " + tempmas[0] + " " + MoneyType.RUBLES.getShortName());
@@ -77,14 +80,18 @@ public class Trainer {
                     int has = Integer.parseInt(Upgrade.getProp(pr, gamer));
                     String format = (has >= need ? ChatColor.GREEN : ChatColor.RED) + "  • " + pr.getName() + ": ";
                     if (pr.name().equals("LEVEL")) {
-                        format = format.concat((has < 30 ? has : ("&e" + gamer.getDisplayRebirth() + "&a " + has % 30)) + "/" + (need < 30 ? need : ("&e" + gamer.getDisplayRebirth() + "&a " + need % 30)));
+                        format = format.concat((has <= 30 ? has : ("&a " + has % 30)) + "/" + need);
                     } else format = format.concat(has + "/" + need);
                     lore.addString(format);
                     if (has < need) canget.set(false);
                     map.put(pr, need);
                 });
+                levelsLeft = true;
             }
         }
+        if (levelsLeft) {
+            lore.addString("&dУровни прокачки:", 3);
+        } else lore.addString("&bВы уже полностью прокачали этот навык!", 3);
         meta.setLore(lore.build().getList());
         stack.setItemMeta(meta);
         IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(stack);

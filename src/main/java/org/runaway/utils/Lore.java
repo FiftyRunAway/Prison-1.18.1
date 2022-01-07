@@ -15,6 +15,11 @@ public class Lore {
             return this;
         }
 
+        public BuilderLore addString(String string, int i) {
+            ns.add(i, string);
+            return this;
+        }
+
         public BuilderLore addList(List<String> list) {
             if (list != null) ns.addAll(list);
             return this;

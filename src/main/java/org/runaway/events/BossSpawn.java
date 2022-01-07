@@ -20,11 +20,10 @@ public class BossSpawn implements Listener {
         Utils.getPlayers().forEach(s -> {
             Player player = Bukkit.getPlayer(s);
             Gamer gamer = GamerManager.getGamer(player);
-            if (Objects.equals(gamer.getPrivilege().getValue(new BossNotify()), true)) {
-                player.sendMessage(Utils.colored(EMessage.BOSSNOTIFY.getMessage()).replaceAll("%name%", event.getName()));
+            if (gamer.hasPermission("admin") ||
+                    Objects.equals(gamer.getPrivilege().getValue(new BossNotify()), true)) {
+                gamer.sendMessage(EMessage.BOSSNOTIFY.getMessage().replace("%name%", event.getName()));
             }
         });
     }
-
-
 }

@@ -2,8 +2,11 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftArrow;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,10 +26,10 @@ public class MobDamage implements Listener {
     public void event(EntityDamageByEntityEvent event) {
         if (event.getDamager() == null) return;
         org.bukkit.entity.Entity damager = event.getDamager();
-        if (!(damager instanceof Player)) {
-            return;
-        }
-        Player player = (Player) damager;
+        if (!(damager instanceof Player) && !(damager instanceof Projectile)) return;
+        Player player = null;
+        if (damager instanceof Player) player = (Player) damager;
+        if (damager instanceof Projectile) player = (Player) ((CraftArrow)damager).getShooter();
         org.bukkit.entity.Entity target = event.getEntity();
         if (!(target instanceof LivingEntity)) return;
         LivingEntity livingEntity = (LivingEntity) target;
@@ -42,7 +45,8 @@ public class MobDamage implements Listener {
         mobController.getDamageMap().get(nickname).addDamage(damage);
         mobController.getDamageMap().get(nickname).setLastDamageTime(System.currentTimeMillis());
         gamer.debug("&aВы нанесли " + damage + " урона.");
-        if (mobController.getAttributable().isBoss()) Bukkit.getServer().getPluginManager().callEvent(new BossDamageEvent(gamer.getPlayer(), mobController, damage));
+        if (mobController.getAttributable().isBoss())
+            Bukkit.getServer().getPluginManager().callEvent(new BossDamageEvent(gamer.getPlayer(), mobController, damage));
         mobController.setTotalDamage(mobController.getTotalDamage() + damage);
         double sum = livingEntity.getHealth() - damage;
         if (!gamer.isEndedCooldown("bossND")) {

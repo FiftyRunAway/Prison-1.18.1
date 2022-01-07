@@ -82,7 +82,7 @@ public abstract class RSkill {
 
     private int getLevel(String player) {
         try {
-            return Integer.parseInt(EConfig.REBIRTH_DATA.getConfig().get(player + "." + configName()).toString());
+            return 1; // TO-DO
         } catch (Exception e) {
             return 0;
         }
@@ -109,7 +109,7 @@ public abstract class RSkill {
     }
 
     private void levelUp(String player) {
-        EConfig.REBIRTH_DATA.getConfig().set(player + "." + configName(), getLevel(player) + 1);
-        EConfig.REBIRTH_DATA.saveConfig();
+        /*EConfig.REBIRTH_DATA.getConfig().set(player + "." + configName(), getLevel(player) + 1);
+        EConfig.REBIRTH_DATA.saveConfig();*/
     }
 }

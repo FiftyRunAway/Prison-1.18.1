@@ -17,11 +17,10 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
-import org.runaway.Prison;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
+import org.runaway.items.ItemManager;
 import org.runaway.managers.GamerManager;
-import org.runaway.utils.Utils;
 
 public class Cancelers implements Listener {
 
@@ -39,7 +38,8 @@ public class Cancelers implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDrop(PlayerDropItemEvent event) {
-        if (event.getItemDrop().getItemStack().getItemMeta().getLore() != null) {
+        ItemStack itemStack = event.getItemDrop().getItemStack();
+        if (!ItemManager.isDropable(itemStack)) {
             event.setCancelled(true);
         }
     }
@@ -47,14 +47,14 @@ public class Cancelers implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEquip(ArmorEquipEvent e) {
         if(e.getNewArmorPiece() != null && e.getNewArmorPiece().getType() != Material.AIR) {
-                Gamer gamer = GamerManager.getGamer(e.getPlayer().getUniqueId());
-                int lev = gamer.getLevelItem(e.getNewArmorPiece());
-                if (gamer.getIntStatistics(EStat.LEVEL) < lev) {
-                    gamer.sendMessage(EMessage.MINLEVELITEM.getMessage().replace("%level%", lev + "") + "");
-                    e.setCancelled(true);
-                }
+            Gamer gamer = GamerManager.getGamer(e.getPlayer().getUniqueId());
+            int lev = gamer.getLevelItem(e.getNewArmorPiece());
+            if (gamer.getIntStatistics(EStat.LEVEL) < lev) {
+                gamer.sendMessage(EMessage.MINLEVELITEM.getMessage().replace("%level%", lev + "") + "");
+                e.setCancelled(true);
             }
         }
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent event) {

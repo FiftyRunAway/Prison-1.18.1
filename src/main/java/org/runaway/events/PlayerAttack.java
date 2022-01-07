@@ -2,13 +2,12 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.runaway.Gamer;
@@ -23,7 +22,7 @@ import org.runaway.utils.Utils;
 
 public class PlayerAttack implements Listener {
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) return;
         if (event.getEntity() instanceof Player && (event.getDamager() instanceof Player ||

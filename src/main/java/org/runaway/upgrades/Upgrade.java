@@ -101,7 +101,7 @@ public class Upgrade {
                 return String.valueOf(StarsRequire.getAmount(gamer.getPlayer(), ItemManager.getPrisonItem("star").getItemStack()));
             }
             case LEVEL: {
-                return String.valueOf(gamer.getStatistics(EStat.LEVEL));
+                return String.valueOf(gamer.getIntStatistics(EStat.LEVEL));
             }
             case RATS: {
                 return String.valueOf(gamer.getMobKills("rat"));

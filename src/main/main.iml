@@ -26,17 +26,25 @@
         <jarDirectory url="file://$USER_HOME$/Desktop/IdeaProjects/libs" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="spigot-1.12.2" level="project" />
-    <orderEntry type="library" name="NametagEdit" level="project" />
-    <orderEntry type="library" name="ArmorEquipEvent-1.7.2" level="project" />
-    <orderEntry type="library" name="BannerBoard-1.11.2" level="project" />
+    <orderEntry type="library" name="org.projectlombok:lombok:1.18.16" level="project" />
     <orderEntry type="library" name="HolographicDisplays" level="project" />
-    <orderEntry type="library" name="Quests-3.8.2" level="project" />
-    <orderEntry type="library" name="ViaVersion-3.2.1" level="project" />
+    <orderEntry type="library" name="NametagEdit" level="project" />
     <orderEntry type="library" name="PermissionsEx-1.23.4" level="project" />
     <orderEntry type="library" name="ProtocolLib" level="project" />
+    <orderEntry type="library" name="Quests-3.8.2" level="project" />
+    <orderEntry type="library" name="ArmorEquipEvent-1.7.2" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="BannerBoard-1.11.2" level="project" />
     <orderEntry type="library" name="worldedit-bukkit-6.1.9" level="project" />
-    <orderEntry type="library" name="FastAsyncWorldEdit-1.16-540" level="project" />
-    <orderEntry type="library" name="org.projectlombok:lombok:1.18.16" level="project" />
+    <orderEntry type="library" name="FastAsyncWorldEdit-bukkit-21.03.09-a5e5590-1285-22.3.8" level="project" />
+    <orderEntry type="library" name="spigot" level="project" />
   </component>
 </module>

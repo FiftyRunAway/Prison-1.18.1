@@ -143,6 +143,11 @@ public enum Privs {
     }
 
     public Object getValue(IFeature feature) {
+
+        return null; //TODO
+
+
+        /*
         if (player != null) {
             if (current.equals(Privs.DEFAULT)) return null;
             AtomicReference<Object> object = new AtomicReference<>(null);
@@ -153,6 +158,6 @@ public enum Privs {
             });
             return object.get();
         }
-        return null;
+        return null;*/
     }
 }

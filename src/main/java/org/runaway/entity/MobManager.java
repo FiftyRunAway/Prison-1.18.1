@@ -69,7 +69,7 @@ public class MobManager {
         List<MobSkill> skills = new ArrayList<>();
         skills.add(new DamageSkill(((entity, player) -> {
             if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
-                player.damage(6);
+                player.damage(10);
             }
         })));
         skills.add(new RepetitiveSkill(entity -> {
@@ -112,7 +112,7 @@ public class MobManager {
         List<MobSkill> skills = new ArrayList<>();
         skills.add(new DamageSkill(((entity, player) -> {
             if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
-                player.damage(5.5);
+                player.damage(9);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 1));
             }
         })));
@@ -124,7 +124,7 @@ public class MobManager {
                     .filter(entity1 -> entity1 instanceof Player)
                     .map(entity1 -> (Player) entity1)
                     .forEach(livingEntity -> {
-                        livingEntity.damage(12);
+                        livingEntity.damage(18);
                         new SyncTask(() -> {
                             livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_WITHER_SKELETON_HURT, 1.0f, 1.0f);
                             livingEntity.setVelocity(livingEntity.getVelocity().add(livingEntity.getLocation().getDirection()).multiply(-3.5));
@@ -156,7 +156,7 @@ public class MobManager {
         List<MobSkill> skills = new ArrayList<>();
         skills.add(new DamageSkill((entity, player) -> {
             if (ThreadLocalRandom.current().nextFloat() < 0.15) {
-                player.damage(3);
+                player.damage(5);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 1));
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1.0f, 1.0f);
                 player.setFireTicks(105);
@@ -164,7 +164,7 @@ public class MobManager {
         }));
         skills.add(new DamageSkill(((entity, player) -> {
             if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
-                player.damage(3);
+                player.damage(5);
             }
         })));
         skills.add(new RepetitiveSkill(entity -> {
@@ -177,7 +177,7 @@ public class MobManager {
                     .filter(entity1 -> entity1 instanceof Player)
                     .map(entity1 -> (Player) entity1)
                     .forEach(livingEntity -> {
-                        livingEntity.damage(6);
+                        livingEntity.damage(9);
                         e.getWorld().playSound(e.getLocation(), Sound.ENTITY_BLAZE_HURT, 1.4f, 1f);
                         livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_BLAZE_AMBIENT, 1.0f, 1.0f);
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 120, 2));
@@ -210,13 +210,13 @@ public class MobManager {
         skills.add(new DamageSkill((entity, player) -> {
             LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
             if(livingEntity.getHealth() < attributable.getHealth() * 0.1) {
-                player.damage(6);
+                player.damage(7);
                 return;
             }
             if (ThreadLocalRandom.current().nextFloat() < 0.1) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 200, 1));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1));
-                player.damage(8);
+                player.damage(6);
                 livingEntity.getLocation().getWorld().playEffect(livingEntity.getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
                 Gamer gamer = GamerManager.getGamer(player);
                 if(gamer == null) return;
@@ -225,7 +225,7 @@ public class MobManager {
         }));
         skills.add(new DamageSkill(((entity, player) -> {
             if (ThreadLocalRandom.current().nextFloat() < 0.6f) {
-                player.damage(4);
+                player.damage(6);
             }
         })));
         skills.add(new RepetitiveSkill(entity -> {
@@ -236,7 +236,7 @@ public class MobManager {
                     .filter(entity1 -> entity1 instanceof Player)
                     .map(entity1 -> (Player) entity1)
                     .forEach(livingEntity -> {
-                        livingEntity.damage(4);
+                        livingEntity.damage(7);
                         new SyncTask(() -> {
                             livingEntity.getWorld().playSound(livingEntity.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                             livingEntity.setVelocity(livingEntity.getVelocity().add(livingEntity.getLocation().getDirection()).multiply(-1));
@@ -270,12 +270,12 @@ public class MobManager {
             LivingEntity livingEntity = (LivingEntity) entity.getBukkitEntity();
             if(livingEntity.getHealth() < attributable.getHealth() * 0.2) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 220, 1));
-                player.damage(4);
+                player.damage(6);
             }
         })));
         skills.add(new DamageSkill(((entity, player) -> {
             if (ThreadLocalRandom.current().nextFloat() < 0.65f) {
-                player.damage(3);
+                player.damage(4);
             }
         })));
         skills.add(new RepetitiveSkill(entity ->
@@ -283,7 +283,7 @@ public class MobManager {
                 .filter(entity1 -> entity1 instanceof Player)
                 .map(entity1 -> (Player) entity1)
                 .forEach(livingEntity -> {
-                    livingEntity.damage(4);
+                    livingEntity.damage(6);
                     new SyncTask(() -> {
                         Gamer gamer = GamerManager.getGamer(livingEntity);
                         if(gamer == null) return;
@@ -292,7 +292,7 @@ public class MobManager {
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 140, 2));
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 140, 2));
                     }, 25);
-                }), 20 * 55));
+                }), 20 * 40));
         attributable.setMobSkills(skills);
         addController(attributable);
     }

@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.enums.MoneyType;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.enums.BoosterType;
@@ -72,10 +73,10 @@ public enum Achievement {
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(4)) }, true),
     FIRST_UPGRADE("&aУлучшите один инструмент", "Освоение I", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(4)) }, false),
-    GET_15("&aЗаработать 15 руб.", "Копатель онлайн", new Reward[]{
+    GET_15("&aЗаработать 15 " + MoneyType.RUBLES.getShortName(), "Копатель онлайн", new Reward[]{
             new MoneyReward().setReward(2),
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(2)) }, false),
-    GET_100("&aЗаработать 100 руб.", "Повелитель мыла", new Reward[]{
+    GET_100("&aЗаработать 100 " + MoneyType.RUBLES.getShortName(), "Повелитель мыла", new Reward[]{
             new MoneyReward().setReward(10),
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(8)) }, true),
     FIRST_FISH("&aПоймать первую легендарную рыбу", "Рыболоff", new Reward[]{

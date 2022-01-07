@@ -27,7 +27,7 @@ public class MoneyReward implements IReward {
         if(getMaxAmount() != 0) {
             amount = ThreadLocalRandom.current().nextDouble(getMinAmount(), getMaxAmount());
         }
-        gamer.depositMoney(amount);
+        gamer.depositMoney(amount, true);
     }
 
     @Override

@@ -132,7 +132,7 @@ public class Board {
                                 .replace(Utils.colored(" &7| " + Prison.event), "")) + Utils.colored(" &7| " + Prison.event));
                     } else {
                         scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
-                                .replace(Utils.colored(" &7| &c" + /*BattlePass.season +*/ "ОТКРЫТИЕ"), "")) + Utils.colored(" &7| &c" + /*BattlePass.season + */"ОТКРЫТИЕ"));
+                                .replace(Utils.colored(" &7| &4" + /*BattlePass.season +*/ "ЗБТ"), "")) + Utils.colored(" &7| &4" + /*BattlePass.season + */"ЗБТ"));
                     }
                 }
             });

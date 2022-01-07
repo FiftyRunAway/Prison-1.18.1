@@ -5,7 +5,10 @@ import lombok.Getter;
 import org.runaway.Gamer;
 import org.runaway.entity.Attributable;
 import org.runaway.entity.MobManager;
+import org.runaway.entity.MobType;
 import org.runaway.enums.EStat;
+
+import java.util.Locale;
 
 @Builder
 @Getter
@@ -27,6 +30,12 @@ public class MobsRequire implements Require {
     @Override
     public String getName() {
         Attributable attributable = MobManager.getAttributable(getMobName());
+        if (getMobName().toLowerCase(Locale.ROOT).equals("rat")) {
+            return "&aТюремная крыса";
+        }
+        if (getMobName().toLowerCase(Locale.ROOT).equals("zombie")) {
+            return "&aЗомби";
+        }
         if(attributable == null) {
             return "Моба еще не существует";
         }

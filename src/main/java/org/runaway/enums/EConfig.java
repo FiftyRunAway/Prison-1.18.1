@@ -12,10 +12,6 @@ import java.io.File;
 
 public enum EConfig {
     MINES("Mines", Config.mines, Config.minesFile, false, null),
-    ACHIEVEMENTS("Achievements", Config.achievs, Config.achievsFile, true, null),
-    BOOSTERS("Boosters", Config.boosters, Config.boostersFile, true, null),
-    BOSS("Boss", Config.boss, Config.bossFile, false, null),
-    CASES("Cases", Config.cases, Config.casesFile, false, null),
     CONFIG("Config", Config.standart, Config.standartFile, false, ConfigHeaders.configHeader()),
     DONATE("Donate", Config.donate, Config.donateFile, false, null),
     LOG("Log", Config.log, Config.logFile, true, null),
@@ -23,15 +19,12 @@ public enum EConfig {
     MOBS("Mobs", Config.mobs, Config.mobsFile, false, null),
     MODULES("Modules", Config.modules, Config.modulesFile, false, null),
     SHOP("Shop", Config.shop, Config.shopFile, false, null),
-    TALANTS("Talants", Config.talants, Config.talantsFile, true, null),
     TRAINER("Trainer", Config.trainer, Config.trainerFile, false, null),
     BATTLEPASS("BattlePass", Config.bp, Config.bpFile, false, ConfigHeaders.bpHeader()),
     BATTLEPASS_DATA("BPData", Config.bpData, Config.bpDataFile, true, null),
     UPGRADE("Upgrade", Config.upgrade, Config.upgradeFile, false, null),
-    REBIRTH_DATA("RData", Config.rebirthData, Config.rebirthDataFile, true, null),
     MINE_QUESTS("MineQuests", Config.quests, Config.questsFile, false, null),
     QUESTS_DATA("QuestsData", Config.questsData, Config.questsDataFile, true, null),
-    JOBS_DATA("JobsData", Config.job, Config.jobFile, true, null),
     ITEMS("Items", Config.items, Config.itemsFile, false, ConfigHeaders.itemsHeader());
 
     private String name;

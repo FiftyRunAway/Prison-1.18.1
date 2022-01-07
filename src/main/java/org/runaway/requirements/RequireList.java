@@ -14,7 +14,7 @@ public class RequireList {
 
 
     public RequireList() {
-        this.requireList = new ArrayList();
+        this.requireList = new ArrayList<>();
     }
 
     public RequireList(Require... requires) {
@@ -27,7 +27,7 @@ public class RequireList {
 
     public RequireList addRequire(Require require) {
         if(getRequireList() == null) {
-            this.requireList = new ArrayList();
+            this.requireList = new ArrayList<>();
         }
         getRequireList().add(require);
         return this;
@@ -45,7 +45,7 @@ public class RequireList {
     }
 
     public List<String> getLore(Gamer gamer) {
-        List<String> loreList = new ArrayList();
+        List<String> loreList = new ArrayList<>();
         for (Require require : getRequireList()) {
             loreList.add(" &7• " + require.getLoreString(gamer));
             loreList.add("&r");

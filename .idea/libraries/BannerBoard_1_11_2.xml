@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="BannerBoard-1.11.2">
     <CLASSES>
-      <root url="jar://D:/Prison Recoded/plugins/BannerBoard-1.11.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../Coding/Prison Recoded/plugins/BannerBoard-1.11.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

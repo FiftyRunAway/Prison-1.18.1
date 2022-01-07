@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="NametagEdit">
     <CLASSES>
-      <root url="jar://D:/Prison Recoded/plugins/NametagEdit.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../Coding/Prison Recoded/plugins/NametagEdit.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

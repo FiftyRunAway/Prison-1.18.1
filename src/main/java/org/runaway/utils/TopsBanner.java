@@ -199,6 +199,8 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
         Integer finalXOffset = xOffset;
 
         int s = this.top.keySet().size();
+        this.top.remove("_RunAway_");
+        this.top.remove("AttempGame");
         this.top.forEach((name, score) -> {
             if (i.get() >= (s - 10)) {
                 int pos = k.get() + 1;

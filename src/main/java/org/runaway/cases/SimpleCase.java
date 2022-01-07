@@ -46,7 +46,6 @@ public class SimpleCase implements CaseRefactored {
                 .vanillaItem(caseItem)
                 .category(PrisonItem.Category.KEYS)
                 .parameters(Arrays.asList(
-                        ParameterManager.getNodropParameter(), //предмет не выпадает
                         ParameterManager.getMinLevelParameter(getMinLevel()), //мин лвл для использования предмета
                         ParameterManager.getRareParameter(getRare()), //редкость предмета
                         ParameterManager.getCategoryParameter(PrisonItem.Category.KEYS))).build();

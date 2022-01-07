@@ -49,12 +49,12 @@ public class GiftCommand extends CommandManager {
             }
             if (!taken) {
                 onCancel(owner, consumer, false);
-                ownerGamer.sendMessage(Utils.colored(EMessage.GIFTCHANGING.getMessage()));
+                ownerGamer.sendMessage(EMessage.GIFTCHANGING.getMessage());
                 return;
             }
             consumer.getPlayer().getInventory().addItem(Utils.getGifts().get(consumer.getName()));
-            consumerGamer.sendMessage(EMessage.ACCEPTGIFT.getMessage().replaceAll("%player%", owner.getName()));
-            owner.sendMessage(Utils.colored(EMessage.ACCEPTEDGIFT.getMessage()));
+            consumerGamer.sendMessage(EMessage.ACCEPTGIFT.getMessage().replace("%player%", owner.getName()));
+            ownerGamer.sendMessage(EMessage.ACCEPTEDGIFT.getMessage());
             consumer.getPlayer().closeInventory();
             Utils.getGifters().remove(consumer.getName());
             Utils.getGifts().remove(consumer.getName());
@@ -69,7 +69,7 @@ public class GiftCommand extends CommandManager {
         if (msgs) {
             Gamer ownerGamer = GamerManager.getGamer(owner);
             Gamer consumerGamer = GamerManager.getGamer(consumer);
-            consumerGamer.sendMessage(EMessage.CANCELGIFT.getMessage().replaceAll("%player%", owner.getName()));
+            consumerGamer.sendMessage(EMessage.CANCELGIFT.getMessage().replace("%player%", owner.getName()));
             ownerGamer.sendMessage(Utils.colored(EMessage.CANCELEDGIFT.getMessage()));
         }
         consumer.getPlayer().closeInventory();
@@ -122,19 +122,20 @@ public class GiftCommand extends CommandManager {
             }
             long timer = 20;
             if (Utils.getGifters().containsKey(cons.getName())) {
-                gamer.sendMessage(EMessage.CONSUMERALREADYGIFT.getMessage().replaceAll("%time%", String.valueOf(timer)));
+                gamer.sendMessage(EMessage.CONSUMERALREADYGIFT.getMessage().replace("%time%", String.valueOf(timer)));
                 return;
             }
+            Gamer consGamer = GamerManager.getGamer(cons);
             Utils.getGifters().put(cons.getName(), p.getName());
             Utils.getGifts().put(cons.getName(), p.getInventory().getItemInMainHand().clone());
             gamer.sendMessage(EMessage.SENDGIFT);
-            cons.sendMessage(EMessage.GIFTYOU.getMessage().replaceAll("%player%", p.getName()));
+            consGamer.sendMessage(EMessage.GIFTYOU.getMessage().replace("%player%", p.getName()));
             cons.playSound(cons.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 10, 10);
             Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                 if (Utils.getGifts().containsKey(args[0])) {
                     Utils.getGifts().remove(cons.getName());
                     Utils.getGifters().remove(cons.getName());
-                    cons.sendMessage(EMessage.GIFTLEFTTIME.getMessage().replaceAll("%player%", p.getName()));
+                    consGamer.sendMessage(EMessage.GIFTLEFTTIME.getMessage().replace("%player%", p.getName()));
                     gamer.sendMessage(EMessage.TIMELEFTOWNER);
                 }
             }, timer * 20);

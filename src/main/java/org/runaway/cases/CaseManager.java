@@ -21,29 +21,27 @@ public class CaseManager {
                 .rollTimes(10)
                 .stopAfter(16)
                 .rewardItems(Arrays.asList(
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("star")).minAmount(1).maxAmount(2).probability(6).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("steak")).minAmount(1).maxAmount(3).probability(74).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("apple")).minAmount(2).maxAmount(8).probability(120).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("arrow")).minAmount(2).maxAmount(6).probability(38).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("star")).minAmount(1).maxAmount(2).probability(5).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("steak")).minAmount(2).maxAmount(4).probability(90).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("apple")).minAmount(2).maxAmount(8).probability(140).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("arrow")).minAmount(1).maxAmount(3).probability(35).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("gapple")).amount(2).probability(6).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("podvalPass")).probability(3).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("ledPass")).probability(1).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("gladiatorPass")).probability(1).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wspade0_1")).probability(13).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wspade1_2")).probability(7).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wspade0_1")).probability(7).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("wspade2_3")).probability(5).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wpickaxe0_1")).probability(13).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wpickaxe1_2")).probability(7).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wpickaxe0_1")).probability(7).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("wpickaxe2_3")).probability(5).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("bow0_1")).probability(5).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("swpickaxe0_1")).probability(2).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wsword0_1")).probability(10).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("wsword0_1")).probability(5).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("lhelmet0_1")).probability(5).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("lchestplate0_1")).probability(7).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("lleggings0_1")).probability(7).build(),
-                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("lboots0_1")).probability(7).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("lchestplate0_1")).probability(6).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("lleggings0_1")).probability(6).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("lboots0_1")).probability(5).build(),
                         LootItem.builder().prisonItem(ItemManager.getPrisonItem("fishing0_1")).probability(6).build(),
-                        MoneyReward.builder().amount(2).probability(45).build()))
+                        MoneyReward.builder().minAmount(1).maxAmount(3.5).probability(120).build()))
                 .build().init();
     }
     public static CaseRefactored getCase(String techName) {

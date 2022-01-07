@@ -159,7 +159,7 @@ public class BlockBreak implements Listener {
                 double add = gamer.getBoosterBlocks();
                 gamer.addCurrentBlocks("LOG_2", 1, add);
                 gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
-                block.setTypeIdAndData(Material.LOG.getId(), (byte)13, true);
+                block.setTypeIdAndData(Material.WOOD.getId(), (byte)5, true);
                 Bukkit.getServer().getPluginManager().callEvent(new BreakWoodEvent(player));
                 Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
                     block.setType(Material.LOG_2);

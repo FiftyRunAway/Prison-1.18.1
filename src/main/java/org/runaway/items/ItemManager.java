@@ -1,6 +1,7 @@
 package org.runaway.items;
 
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -101,6 +102,14 @@ public class ItemManager {
         PrisonItem prisonItem = getPrisonItem(itemStack);
         if(prisonItem == null) return null;
         return ParameterManager.getOwnerParameter().getParameterGetter().apply(itemStack, null).toString();
+    }
+
+    public static boolean isDropable(ItemStack itemStack) {
+        PrisonItem prisonItem = getPrisonItem(itemStack);
+        if (prisonItem == null) return true;
+        String drop = ParameterManager.getNodropParameter().getParameterGetter().apply(itemStack, null).toString();
+        if (drop.length() == 0) return true;
+        return Boolean.parseBoolean(ParameterManager.getNodropParameter().getParameterGetter().apply(itemStack, null).toString());
     }
 
     public static boolean isOwner(Gamer gamer, ItemStack itemStack) {

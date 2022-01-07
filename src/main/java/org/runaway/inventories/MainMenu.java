@@ -67,7 +67,7 @@ public class MainMenu implements IMenus {
                 if (!GamerManager.getGamer(event.getWhoClicked().getUniqueId()).needRebirth()) {
                     new LevelMenu(event.getWhoClicked());
                 } else {
-                    RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked()));
+                    //RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked()));
                 }
             });
             menu.addButton(exp);
@@ -89,7 +89,7 @@ public class MainMenu implements IMenus {
                             .addString("&7>> Открыть меню").build()).build().item())
                     .setSlot(49);
             //rebirth.setClickEvent(event -> RebirthMenu.getMenu(event.getWhoClicked()).open(GamerManager.getGamer(event.getWhoClicked())));
-            menu.addButton(rebirth);
+            //menu.addButton(rebirth);
 
             IMenuButton donate = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND)
                     .name("&aПожертвования")
@@ -192,7 +192,7 @@ public class MainMenu implements IMenus {
             menu.addButton(quests);
 
             IMenuButton bp = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.TNT)
-                    .name("&eБоевой пропуск &d(НОВИНКА!)")
+                    .name("&eБоевой пропуск &c(НОВИНКА!)")
                     .lore(new Lore.BuilderLore()
                             .addSpace()
                             .addString("&7>> Открыть").build()).build().item())

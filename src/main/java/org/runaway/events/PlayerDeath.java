@@ -17,6 +17,9 @@ import org.runaway.board.Board;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.events.custom.PlayerKillEvent;
+import org.runaway.items.ItemManager;
+import org.runaway.items.PrisonItem;
+import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.tasks.SyncTask;
 import org.runaway.utils.Utils;
@@ -35,7 +38,7 @@ public class PlayerDeath implements Listener {
         event.setKeepInventory(true); event.setKeepLevel(true);
         Location loc = player.getLocation();
         event.getDrops().forEach(itemStack -> {
-            if (!itemStack.hasItemMeta()) {
+            if (ItemManager.isDropable(itemStack)) {
                 loc.getWorld().dropItemNaturally(loc, itemStack);
                 player.getInventory().remove(itemStack);
             }
@@ -56,7 +59,7 @@ public class PlayerDeath implements Listener {
         gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
         if (event.getEntity().getKiller() != null) {
             Gamer gamerKiller = GamerManager.getGamer(event.getEntity().getKiller().getUniqueId());
-            gamerKiller.increaseDoubleStatistics(EStat.KILLS);
+            gamerKiller.increaseIntStatistics(EStat.KILLS);
             if (gamerKiller.getIntStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer());
             if (gamerKiller.getIntStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer());
             if (givenot) return;
@@ -79,11 +82,11 @@ public class PlayerDeath implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         new SyncTask(() -> {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 220, 3));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 200, 3));
             gamer.getPassivePerks().forEach(passive -> {
                 if (!passive.isEffectAction()) return;
                 passive.getPerkAction(gamer);
             });
-        }, 10);
+        }, 80);
     }
 }

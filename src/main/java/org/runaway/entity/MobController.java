@@ -7,19 +7,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.v1_12_R1.DamageSource;
+import net.minecraft.server.v1_12_R1.EntityTippedArrow;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftArrow;
+import org.bukkit.entity.*;
 import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.entity.skills.DamageSkill;
 import org.runaway.entity.skills.MobSkill;
 import org.runaway.enums.EConfig;
+import org.runaway.events.custom.BossSpawnEvent;
 import org.runaway.events.custom.KillRatsEvent;
 import org.runaway.managers.GamerManager;
 import org.runaway.tasks.Cancellable;
@@ -82,6 +83,9 @@ public class MobController implements IMobController {
             if (!getSpawnLocation().getChunk().isLoaded()) getSpawnLocation().getChunk().load();
         } catch (Exception e) {
         }
+        if (attributable.isBoss())
+            Bukkit.getServer().getPluginManager().callEvent(new BossSpawnEvent(getAttributable().getName()));
+
         net.minecraft.server.v1_12_R1.Entity entity = CustomEntity.spawnEntity(getAttributable().getMobType(), getSpawnLocation(), this);
         if (getRespawnTime() != 0) {
             if (getInfoHologram() != null) {
@@ -105,12 +109,16 @@ public class MobController implements IMobController {
         if (damagerEntity == null) {
             return false;
         }
-        if (damagerEntity.getBukkitEntity() instanceof Player) {
-            Player player = (Player) damagerEntity.getBukkitEntity();
-            if(getMobSkillList() != null) {
+        if (damagerEntity.getBukkitEntity() instanceof Player ||
+                damagerEntity.getBukkitEntity() instanceof Projectile) {
+            Player player = null;
+            if (damagerEntity.getBukkitEntity() instanceof Player) player = (Player) damagerEntity.getBukkitEntity();
+            if (damagerEntity.getBukkitEntity() instanceof Projectile) player = (Player) ((CraftArrow)damagerEntity.getBukkitEntity()).getShooter();
+            if (getMobSkillList() != null) {
+                Player finalPlayer = player;
                 getMobSkillList().forEach(mobSkill -> {
-                    if(mobSkill instanceof DamageSkill) {
-                        mobSkill.getConsumer().accept(getNmsEntity(), player);
+                    if (mobSkill instanceof DamageSkill) {
+                        mobSkill.getConsumer().accept(getNmsEntity(), finalPlayer);
                     }
                 });
             }
