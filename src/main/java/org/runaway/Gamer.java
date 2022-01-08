@@ -41,6 +41,7 @@ import org.runaway.passiveperks.perks.BBlocksSecond;
 import org.runaway.passiveperks.perks.BMoneyFirst;
 import org.runaway.rebirth.ESkill;
 import org.runaway.sqlite.PreparedRequests;
+import org.runaway.tasks.Cancellable;
 import org.runaway.trainer.Trainer;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.upgrades.UpgradeMisc;
@@ -100,6 +101,8 @@ public class Gamer {
 
     private List<String> hiddenPlayers;
 
+    private List<Cancellable> updatingButtons;
+
     public Gamer(Player player) {
         this.uuid = player.getUniqueId();
         this.cooldowns = OfflineValues.getPlayerCooldown(uuid).getCooldowns();
@@ -108,6 +111,7 @@ public class Gamer {
         this.isOnline = true;
         this.name = player.getName();
         this.hiddenPlayers = new ArrayList<>();
+        this.updatingButtons = new ArrayList<>();
         if(!preparedRequests.isExist("player", getPlayer().getName())) {
             isExist = false;
             getPlayer().teleport(Prison.SPAWN);
@@ -876,7 +880,7 @@ public class Gamer {
 
     public FactionType getFaction() {
         try {
-            return FactionType.valueOf(getStatistics(EStat.FACTION).toString().toUpperCase());
+            return FactionType.valueOf(getStringStatistics(EStat.FACTION).toUpperCase());
         } catch (Exception ex) { return null; }
     }
 
@@ -894,6 +898,19 @@ public class Gamer {
         if (level >= 15 && level < 20) { return ChatColor.RED; }
         if (level >= 20) { return ChatColor.LIGHT_PURPLE; }
         return null;
+    }
+
+    public boolean chooseFactionMenu() {
+        if (!getFaction().equals(FactionType.DEFAULT)) {
+            sendMessage(EMessage.FRACTIONALREADY);
+            return false;
+        }
+        if (getLevel() < 5) {
+            sendMessage(EMessage.FRACTIONLEVEL);
+            return false;
+        }
+        new FractionMenu(getPlayer());
+        return true;
     }
 
     public Object getStatisticsFromConfig(EStat statistic, String name) {

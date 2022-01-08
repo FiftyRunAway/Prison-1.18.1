@@ -10,12 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-abstract public class IMenuButton implements Cloneable {
+public abstract class IMenuButton implements Cloneable {
 
     private ItemStack item;
     private boolean isFiller = false;
     private int slot;
     private String identifier;
+    private boolean animated;
     private Consumer<ButtonClickEvent> clickEvent;
     private Map<String, Object> itemData = new HashMap<>();
 

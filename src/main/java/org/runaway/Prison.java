@@ -162,15 +162,15 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.messages")) loadMessage();
         if (loader.getBoolean("loader.hd")) loadHolographicDisplays();
         if (loader.getBoolean("loader.bossbar")) loadBar();
-        if (loader.getBoolean("loader.mines_menu")) Mines.loadMinesMenu();
         if (loader.getBoolean("loader.tops")) loadTops();
         if (loader.getBoolean("loader.board")) new Board().loadBoard();
         if (loader.getBoolean("loader.block_list")) new BlockBreak().loadLogger();
         if (loader.getBoolean("loader.block_shop")) new PlayerInteract().loadShop();
         if (loader.getBoolean("loader.auto_restart")) new AutoRestart().loadAutoRestarter();
         if (loader.getBoolean("loader.mines")) loadMines();
-        CaseManager.initAllCases();
         if (loader.getBoolean("register.mobs")) registerMobs();
+        if (loader.getBoolean("loader.mines_menu")) Mines.loadMinesMenu();
+        CaseManager.initAllCases();
         if (loader.getBoolean("loader.shop_items")) loadShopItems();
         if (loader.getBoolean("loader.achievements")) Achievement.JOIN.load();
         if (loader.getBoolean("loader.donate_menu")) loadDonates();

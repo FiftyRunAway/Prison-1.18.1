@@ -14,6 +14,8 @@ import org.runaway.battlepass.WeeklyMission;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.SimpleItemStack;
+import org.runaway.menu.UpdateMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -62,22 +64,6 @@ public class BattlePassMenu implements IMenus {
         wm.setClickEvent(e -> openMissionsMenu(e.getWhoClicked(), missionsMenu));
         main.addButton(wm);
 
-        Lore lore_bought = new Lore.BuilderLore()
-                .addSpace()
-                .addString("&6Вы приобрели боевой пропуск " + BattlePass.season + " сезона!")
-                .build();
-        Lore lore = new Lore.BuilderLore()
-                .addSpace()
-                .addString("&aМожно всегда приобрести в &e/donate")
-                .addString("&aВсе платные награды вы сможете получить")
-                .addString("&aпосле покупки!")
-                .build();
-        IMenuButton desc = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.KNOWLEDGE_BOOK)
-                .name("&eБоевой пропуск")
-                .lore(gamer.hasBattlePass() ? lore_bought : lore)
-                .build().item()).setSlot(47);
-        main.addButton(desc);
-
         openStartPage();
     }
 
@@ -89,6 +75,30 @@ public class BattlePassMenu implements IMenus {
         }
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new ItemStack(Material.AIR)).setSlot(45));
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new ItemStack(Material.AIR)).setSlot(53));
+
+        Lore lore_bought = new Lore.BuilderLore()
+                .addSpace()
+                .addString("&6Вы приобрели боевой пропуск " + BattlePass.season + " сезона!")
+                .build();
+        Lore lor = new Lore.BuilderLore()
+                .addSpace()
+                .addString("&aМожно всегда приобрести в &e/donate")
+                .addString("&aВсе платные награды вы сможете получить")
+                .addString("&aпосле покупки!")
+                .build();
+        IMenuButton desc = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.KNOWLEDGE_BOOK)
+                .name("&eБоевой пропуск")
+                .lore(gamer.hasBattlePass() ? lore_bought : lor)
+                .build().item()).setSlot(47);
+        main.addButton(desc);
+
+        if (!gamer.hasBattlePass())
+            UpdateMenu.builder()
+                    .updateType(new SimpleItemStack[]{SimpleItemStack.builder()
+                            .material(Material.BOOK_AND_QUILL)
+                            .durability(0).build()})
+                    .gamerLive(gamer)
+                    .build().update(main, desc);
 
         List<IMenuButton> btns = new ArrayList<>(preloaded_icons.get(page));
         if (page < Math.ceil(pages - 1)) {

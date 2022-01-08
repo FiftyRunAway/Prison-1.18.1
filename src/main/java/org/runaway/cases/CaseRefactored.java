@@ -50,7 +50,7 @@ public interface CaseRefactored {
         gamer.sendMessage("&aГенерация предметов...");
         gamer.increaseQuestValue("caseOpen", 1);
         gamer.increaseQuestValue(getTechName() + "Open", 1);
-        List<IReward> rewards = new ArrayList();
+        List<IReward> rewards = new ArrayList<>();
         int stopAfter = getStopAfter();
         generateRewards(rewards, getRollTimes() + stopAfter);
         IReward finalReward = generateReward();

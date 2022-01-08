@@ -11,6 +11,7 @@ import net.minecraft.server.v1_12_R1.EntityTippedArrow;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftArrow;
 import org.bukkit.entity.*;
@@ -22,7 +23,11 @@ import org.runaway.entity.skills.MobSkill;
 import org.runaway.enums.EConfig;
 import org.runaway.events.custom.BossSpawnEvent;
 import org.runaway.events.custom.KillRatsEvent;
+import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.button.DefaultButtons;
+import org.runaway.menu.button.IMenuButton;
+import org.runaway.menu.type.StandardMenu;
 import org.runaway.tasks.Cancellable;
 import org.runaway.tasks.SyncRepeatTask;
 import org.runaway.tasks.SyncTask;
@@ -52,6 +57,8 @@ public class MobController implements IMobController {
     private boolean canRare;
     private boolean forceSpawn;
 
+    private StandardMenu adminMenu;
+
     public MobController init() {
         setMobRare(MobRare.DEFAULT);
         setMobRandom(new Random());
@@ -71,6 +78,16 @@ public class MobController implements IMobController {
         }
         MobManager.uidMobControllerMap.put(getUID(), this);
         MobManager.attributableMap.put(attributable.getTechName(), attributable);
+
+        this.adminMenu = StandardMenu.create(1, "&eАдмин-панель босса &7• &e" + this.getAttributable().getName());
+
+        IMenuButton reset = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND).name("&aЗаспавнить босса через 10 секунд").build().item()).setSlot(0);
+        reset.setClickEvent(event -> {
+            spawn();
+            event.getWhoClicked().closeInventory();
+        });
+        this.adminMenu.addButton(reset);
+
         return this;
     }
 
@@ -101,6 +118,10 @@ public class MobController implements IMobController {
             getAttributable().getOnSpawnConsumer().accept(getBukkitEntity());
         }
         if (getSpawnTask() != null) getSpawnTask().stop();
+    }
+
+    public int getRespawnTimeLeft() {
+        return (int) (getRespawnTime() - (System.currentTimeMillis() / 1000L - getLastDeathTime()));
     }
 
     @Override
@@ -196,14 +217,18 @@ public class MobController implements IMobController {
         }
     }
 
-    private int getRespawnTimeLeft() {
+    /*public int getRespawnTimeLeft() {
         return (int) (getRespawnTime() - (System.currentTimeMillis() / 1000L - getLastDeathTime()));
-    }
+    }*/
 
     private void createHologram() {
         if (getRespawnTime() == 0) return;
-        setInfoHologram(HologramsAPI.createHologram(Prison.getInstance(), this.getSpawnLocation().clone().add(0.0, 2.0, 0.0)));
-        getInfoHologram().appendTextLine(Utils.colored("&7[" + getAttributable().getMobLevel() + "&7] " + getAttributable().getName()));
+        setInfoHologram(HologramsAPI.createHologram(Prison.getInstance(), this.getSpawnLocation().clone().add(0.0, 2.5, 0.0)));
+        getInfoHologram().appendTextLine(Utils.colored("&7[" + getAttributable().getMobLevel() + "&7] " + getAttributable().getName()))
+                .setTouchHandler(player -> {
+                    if (player.isOp())
+                        this.adminMenu.open(GamerManager.getGamer(player));
+                });
         setTimeTextLine(getInfoHologram().appendTextLine(Utils.colored("&a" + TimeUtils.getDuration(getRespawnTimeLeft()))));
     }
 
@@ -281,7 +306,7 @@ public class MobController implements IMobController {
     }
 
     public void save() {
-        if (getRespawnTime() == 0) return;
+        if (getRespawnTime() == 0 || forceSpawn) return;
         EConfig.MOBS.getConfig().set("mobs." + getUID() + ".lastDeathTime", getLastDeathTime());
         EConfig.MOBS.saveConfig();
     }

@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.SimpleItemStack;
+import org.runaway.menu.UpdateMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -20,7 +22,13 @@ public class PassivePerksMenu implements IMenus {
         Gamer gamer = GamerManager.getGamer(p);
 
         for (EPassivePerk perk : EPassivePerk.values()) {
-            sm.addButton(perk.getPerk().getIcon(gamer).setSlot(perk.getPerk().getSlot()));
+            IMenuButton imb = perk.getPerk().getIcon(gamer).setSlot(perk.getPerk().getSlot());
+            sm.addButton(imb);
+
+            if (imb.getItem().getDurability() == 4) UpdateMenu.builder()
+                    .updateType(new SimpleItemStack[]{SimpleItemStack.builder()
+                            .material(Material.STAINED_GLASS_PANE).durability(1).build()})
+                    .gamerLive(gamer).build().update(sm, imb);
         }
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(53);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));

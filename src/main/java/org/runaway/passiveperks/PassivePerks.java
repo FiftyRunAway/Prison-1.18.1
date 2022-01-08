@@ -92,7 +92,7 @@ public abstract class PassivePerks {
                 return 5;
             } else {
                 if (gamer.hasPassivePerk(getAnotherPerk(getLevel()))) {
-                    return 7;
+                    return 15;
                 } else {
                     return 4;
                 }

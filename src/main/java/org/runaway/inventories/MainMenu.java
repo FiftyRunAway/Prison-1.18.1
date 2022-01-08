@@ -4,13 +4,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.runaway.Gamer;
+import org.runaway.enums.FactionType;
 import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.events.PlayerInteract;
-import org.runaway.items.ItemManager;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.SimpleItemStack;
+import org.runaway.menu.UpdateMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.events.ClickType;
@@ -20,7 +22,8 @@ import org.runaway.utils.Vars;
 
 public class MainMenu implements IMenus {
 
-    private static StandardMenu menu;
+    public static StandardMenu menu;
+    private static boolean stage;
 
     public MainMenu(Player player) {
         menu.open(GamerManager.getGamer(player));
@@ -28,7 +31,7 @@ public class MainMenu implements IMenus {
 
     public static void load() {
         try {
-            menu = StandardMenu.create(6, ChatColor.YELLOW + "Профиль");
+            menu = StandardMenu.create(6, ChatColor.YELLOW + "Главное меню");
 
             IMenuButton ups = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.WOOD_AXE)
                     .name("&aПрокачки")
@@ -152,7 +155,13 @@ public class MainMenu implements IMenus {
                             .addSpace()
                             .addString("&7>> Перемещение").build()).build().item())
                     .setSlot(8);
-            base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
+            base.setClickEvent(event -> {
+                Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
+                if (!gamer.getFaction().equals(FactionType.DEFAULT)) {
+                    gamer.teleportBase();
+                } else
+                    if (!gamer.chooseFactionMenu()) event.getWhoClicked().closeInventory();
+            });
             menu.addButton(base);
 
             IMenuButton spawn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DOUBLE_PLANT)
@@ -200,6 +209,9 @@ public class MainMenu implements IMenus {
             bp.setClickEvent(event -> new BattlePassMenu(event.getWhoClicked()));
             menu.addButton(bp);
 
+            //Animated items
+            UpdateMenu.builder().updateType(new SimpleItemStack[]{SimpleItemStack.builder().material(Material.EXPLOSIVE_MINECART).durability(0).build()})
+                    .build().update(menu, bp);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with load profile menu!");
             //Bukkit.getPluginManager().disablePlugin(Prison.getInstance());

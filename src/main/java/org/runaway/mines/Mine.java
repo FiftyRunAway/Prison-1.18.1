@@ -93,7 +93,10 @@ public class Mine {
         this.adminMenu = StandardMenu.create(1, "&eАдмин-панель шахты &7• &e" + this.name);
 
         IMenuButton reset = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.DIAMOND).name("&aОбновить шахту").build().item()).setSlot(0);
-        reset.setClickEvent(event -> forceReset(this));
+        reset.setClickEvent(event -> {
+            forceReset(this);
+            event.getWhoClicked().closeInventory();
+        });
         this.adminMenu.addButton(reset);
     }
 

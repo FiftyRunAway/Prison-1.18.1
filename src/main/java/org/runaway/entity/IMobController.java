@@ -40,4 +40,8 @@ public interface IMobController {
     void die();
 
     boolean isAlive();
+
+    long getLastDeathTime();
+
+    int getRespawnTimeLeft();
 }

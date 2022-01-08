@@ -21,15 +21,12 @@ public class BlockShopMenu implements IMenus {
 
     public BlockShopMenu(Player player) {
         if (player != null) {
-            menu.build();
             menu.open(GamerManager.getGamer(player));
         }
     }
 
     public void load() {
         menu = PagedMenu.create(getRows(), Utils.colored(getName() + " &8(&a%current%&7/&a%available%&8)"));
-        menu.addButton(DefaultButtons.NEXT_PAGE.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aСледующая страница").build().item()).setSlot(53));
-        menu.addButton(DefaultButtons.LAST_PAGE.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aПредыдущая страница").build().item()).setSlot(45));
         AtomicInteger i = new AtomicInteger();
         EConfig.SHOP.getConfig().getStringList("shop").forEach(s -> {
             String[] var = s.split(" ");
@@ -37,14 +34,18 @@ public class BlockShopMenu implements IMenus {
             double price = Double.parseDouble(var[1]);
             int data = Integer.parseInt(var[2]);
             String name = ChatColor.YELLOW + String.valueOf(var[3]);
+            if (i.get() + 1 == 47 || i.get() + 1 == 55) i.getAndIncrement();
             menu.addButton(new PagedButton(new Item.Builder(mat)
                     .data((short) data)
-                    .name(name.replaceAll("_", " "))
+                    .name(name.replace("_", " "))
                     .lore(new Lore.BuilderLore()
                             .addSpace()
                             .addString("&7Цена за 1 шт. &f• &e" + price + " " + MoneyType.RUBLES.getShortName()).build())
                     .build().item()).setSlot(i.getAndIncrement()));
         });
+        menu.addButton(DefaultButtons.NEXT_PAGE.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aСледующая страница").build().item()).setSlot(53));
+        menu.addButton(DefaultButtons.LAST_PAGE.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&aПредыдущая страница").build().item()).setSlot(45));
+        menu.build();
     }
 
     @Override

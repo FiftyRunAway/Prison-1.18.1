@@ -12,6 +12,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.UpdateMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -32,7 +33,7 @@ public class MinesMenu implements IMenus {
         Gamer gamer = GamerManager.getGamer(player);
 
         AtomicInteger in = new AtomicInteger(36);
-        Mines.icons.forEach((mines, mineIcon) -> {
+        Mines.mines.forEach(mines -> {
             IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(mines.getPrisonIcon(gamer))
                     .setSlot(mines.needPerm() ? in.getAndIncrement() : mines.getMinLevel() - 1);
             bt.setClickEvent(event -> {
@@ -40,8 +41,16 @@ public class MinesMenu implements IMenus {
                 Gamer g = GamerManager.getGamer(p);
                 if(mines.canTeleport(gamer, true)) {
                     g.teleport(mines.getSpawn());
+                    p.closeInventory();
                 }
             });
+            if (mines.hasBoss() && mines.canTeleport(gamer))
+                UpdateMenu.builder()
+                        .mineBossUpdate(mines)
+                        .gamerLive(gamer)
+                        .start(0)
+                        .build().update(menu, bt);
+
             menu.addButton(bt);
         });
 

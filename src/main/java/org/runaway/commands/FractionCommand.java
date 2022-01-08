@@ -62,15 +62,7 @@ public class FractionCommand extends CommandManager {
                 }, 300L);
             }
         } else {
-            if (!gamer.getFaction().equals(FactionType.DEFAULT)) {
-                gamer.sendMessage(EMessage.FRACTIONALREADY);
-                return;
-            }
-            if (gamer.getIntStatistics(EStat.LEVEL) < 5) {
-                gamer.sendMessage(EMessage.FRACTIONLEVEL);
-                return;
-            }
-            new FractionMenu(p);
+            gamer.chooseFactionMenu();
         }
     }
 

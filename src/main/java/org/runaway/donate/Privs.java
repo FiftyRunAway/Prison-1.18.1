@@ -55,7 +55,8 @@ public enum Privs {
             new BossMoney().setValue(25),
             new NeedsLonger().setValue(20),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
-            new StringFeature().setName("Максимум предметов на аукционе").setValue(9)
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(9),
+            new BossNotify().setValue(true)
     }, 6, 1, "&7Привилегия: &cMagma", 14, 550),
     JUNIOR("prison.junior", new IFeature[] {
             new FractionDiscount().setValue(60),
@@ -64,7 +65,8 @@ public enum Privs {
             new BossMoney().setValue(33),
             new NeedsLonger().setValue(25),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
-            new StringFeature().setName("Максимум предметов на аукционе").setValue(10)
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(10),
+            new BossNotify().setValue(true)
     }, 7, 5, "&7Привилегия: &dJunior", 15, 750),;
 
     public static Map<Privs, ItemStack> icons = new EnumMap<>(Privs.class);
@@ -143,11 +145,6 @@ public enum Privs {
     }
 
     public Object getValue(IFeature feature) {
-
-        return null; //TODO
-
-
-        /*
         if (player != null) {
             if (current.equals(Privs.DEFAULT)) return null;
             AtomicReference<Object> object = new AtomicReference<>(null);
@@ -158,6 +155,6 @@ public enum Privs {
             });
             return object.get();
         }
-        return null;*/
+        return null;
     }
 }

@@ -7,6 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
+import org.runaway.entity.IMobController;
+import org.runaway.entity.MobManager;
 import org.runaway.enums.EConfig;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.ServerStatus;
@@ -19,13 +21,11 @@ import org.runaway.requirements.LocalizedBlock;
 import org.runaway.requirements.MoneyRequire;
 import org.runaway.requirements.RequireList;
 import org.runaway.utils.ItemBuilder;
+import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /*
  * Created by _RunAway_ on 4.5.2019
@@ -33,8 +33,8 @@ import java.util.Map;
 
 public class Mines {
 
-    public static Map<String, Mines> mines = new LinkedHashMap<>();
-    public static HashMap<Mines, MineIcon> icons = new HashMap<>();
+    public static List<Mines> mines = new ArrayList<>();
+    public static Map<Mines, MineIcon> icons = new HashMap<>();
     String id;
     String name;
     boolean needPerm;
@@ -43,6 +43,9 @@ public class Mines {
     Location spawn;
     Material icon;
     short subId;
+    String uidBoss;
+    IMobController boss;
+    MineIcon mineIcon;
 
     public static void loadMinesMenu() {
         try {
@@ -55,11 +58,12 @@ public class Mines {
                     if (cRegion.getString("icon").split(":").length > 1) {
                         subid = Short.parseShort(cRegion.getString("icon").split(":")[1]);
                     }
+                    String boss = null;
+                    if (cRegion.contains("boss"))
+                        boss = cRegion.getString("boss");
                     ConfigurationSection cLoc = cRegion.getConfigurationSection("location");
                     Location loc = new Location(Bukkit.getWorld(cLoc.getString("world")), cLoc.getDouble("x"), cLoc.getDouble("y"), cLoc.getDouble("z"));
-                    Mines mine = new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, material, subid, cRegion.getBoolean("needperm", false), cRegion.getString("permission"));
-                    MineIcon icon = new MineIcon.Builder(mine).build();
-                    Mines.icons.put(mine, icon);
+                    new Mines(cRegionString, Utils.colored(cRegion.getString("name")), cRegion.getInt("min-level"), loc, material, subid, cRegion.getBoolean("needperm", false), cRegion.getString("permission"), boss);
                 }
             }
         } catch (Exception ex) {
@@ -69,7 +73,7 @@ public class Mines {
         }
     }
 
-    private Mines(String id, String name, int minLevel, Location spawn, Material icon, short subId, boolean needPerm, String loc_name) {
+    private Mines(String id, String name, int minLevel, Location spawn, Material icon, short subId, boolean needPerm, String loc_name, String uidBoss) {
         this.id = id;
         this.name = name;
         this.needPerm = needPerm;
@@ -78,6 +82,11 @@ public class Mines {
         this.spawn = spawn;
         this.icon = icon;
         this.subId = subId;
+        this.uidBoss = uidBoss;
+        this.boss = null;
+        if (this.uidBoss != null)
+            this.boss = MobManager.uidMobControllerMap.getOrDefault(this.uidBoss, null);
+        this.mineIcon = new MineIcon.Builder(this).build();
         if (needPerm) {
             //org.runaway.mines.Location.locations.add(new org.runaway.mines.Location(ChatColor.stripColor(this.name), loc_name));
             PrisonItem prisonItem = PrisonItem.builder()
@@ -111,14 +120,14 @@ public class Mines {
                     .build(); //предмет можно улучшить
             ItemManager.addPrisonItem(prisonItem); //инициализация предмета
         }
-        Mines.mines.put(id, this);
+        mines.add(this);
     }
 
     public boolean canTeleport(Gamer gamer, boolean sendMsg) {
         if (gamer.hasPermission("*")) return true;
         if(gamer.getLevel() < getMinLevel()) {
             if(sendMsg) {
-                gamer.sendMessage(Utils.colored(EMessage.MINELEVEL.getMessage().replaceAll("%level%", getMinLevel() + "")));
+                gamer.sendMessage(Utils.colored(EMessage.MINELEVEL.getMessage().replace("%level%", getMinLevel() + "")));
             }
             return false;
         }
@@ -135,7 +144,7 @@ public class Mines {
         return canTeleport(gamer, false);
     }
 
-    public static Map<String, Mines> getMines() {
+    public static List<Mines> getMines() {
         return Mines.mines;
     }
 
@@ -160,17 +169,18 @@ public class Mines {
     }
 
     public ItemStack getPrisonIcon(Gamer gamer) {
-        return icons.get(this).acessButton(gamer);
+        return this.mineIcon.acessButton(gamer);
     }
 
-    public static Mines getPrisonMine(String id) {
-        if (Mines.mines.containsKey(id)) {
-            return Mines.mines.get(id);
-        }
-        return null;
+    public Lore getLoreIcon(Gamer gamer) {
+        return new MineIcon.Builder(this).build().lore(gamer);
     }
 
-    public static boolean isPrisonRegion(String id) {
-        return Mines.mines.containsKey(id);
+    public boolean hasBoss() {
+        return boss != null;
+    }
+
+    public IMobController getBoss() {
+        return boss;
     }
 }

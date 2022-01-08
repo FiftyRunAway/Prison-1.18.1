@@ -12,6 +12,8 @@ import org.runaway.donate.Donate;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.TypeMessage;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.SimpleItemStack;
+import org.runaway.menu.UpdateMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
@@ -56,12 +58,23 @@ public class DonateMenu implements IMenus {
 
     public DonateMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
+        Gamer gamer = GamerManager.getGamer(player);
         for (int i = 0; i < Prison.value_donate; i++) {
             Donate donate = (Donate) Utils.donate.get(i);
             MenuButton mn = DefaultButtons.OPEN.getButtonOfItemStack(Donate.icons.get(donate).icon());
             mn.setSlot(donate.getSlot());
             mn.setClickEvent(event -> buy(donate, event.getWhoClicked(), menu.build()));
             menu.addButton(mn);
+
+            if (!gamer.hasBattlePass() &&
+                    mn.getItem().getType().equals(Material.TNT)) {
+                UpdateMenu.builder()
+                        .updateType(new SimpleItemStack[]{ SimpleItemStack.builder()
+                                .material(Material.EXPLOSIVE_MINECART)
+                                .durability(0).build() })
+                        .gamerLive(gamer)
+                        .build().update(menu, mn);
+            }
         }
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new Item.Builder(Material.BARRIER).name("&cВернуться").build().item()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
@@ -74,21 +87,9 @@ public class DonateMenu implements IMenus {
         IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.GOLD_BLOCK).name("&eБаланс: &a" + TopsBanner.FormatMoney(Donate.getDonateMoney(player.getName())) + " " + MoneyType.REAL_RUBLES.getShortName())
                 .lore(new Lore.BuilderLore().addSpace().addString("&7>> &c&nНажмите, чтобы пополнить").build()).build().item());
         dm.setClickEvent(event -> {
-            Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
+            Gamer g = GamerManager.getGamer(event.getWhoClicked());
             event.getWhoClicked().closeInventory();
-            /*gamer.setChatConsumer((p, message) -> {
-                if (message.startsWith("отмена")) {
-                    gamer.setChatConsumer(null);
-                    gamer.sendMessage(EMessage.DONATINGSTOP);
-                    return;
-                }
-                try {
-                    Donate.donate(gamer, Integer.parseInt(message));
-                } catch (Exception exception) {
-                    gamer.sendMessage(EMessage.INTERROR);
-                }
-            });*/
-            gamer.sendMessage("&eСайт • &b" + Vars.getSite());
+            g.sendMessage("&eСайт • &b" + Vars.getSite());
         });
         menu.addButton(dm.setSlot(39));
         menu.addButton(dm.clone().setSlot(41));

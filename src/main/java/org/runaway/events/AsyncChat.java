@@ -55,7 +55,7 @@ public class AsyncChat implements Listener {
             String local = start ? ChatColor.BLUE + "G " : ChatColor.GREEN + "L ";
 
             String format = local + level + rebirth + prefix + player.getName() + " " + faction + ChatColor.GRAY + "> " + ChatColor.GRAY;
-            Bukkit.getConsoleSender().sendMessage(format + message.replace("!", ""));
+            Bukkit.getConsoleSender().sendMessage(format + message.replaceFirst("!", ""));
             if (!start) {
                 event.getRecipients().forEach(players -> {
                     if (Boolean.TRUE.equals(inLocal(player, players))) {
@@ -64,7 +64,7 @@ public class AsyncChat implements Listener {
                 });
             } else {
                 event.getRecipients().forEach(players ->
-                        send(GamerManager.getGamer(players.getUniqueId()), format + message.replace("!", "")));
+                        send(GamerManager.getGamer(players.getUniqueId()), format + message.replaceFirst("!", "")));
             }
             return;
         }
