@@ -1,50 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="FacetManager">
-    <facet type="minecraft" name="Minecraft">
-      <configuration>
-        <autoDetectTypes>
-          <platformType>SPIGOT</platformType>
-        </autoDetectTypes>
-      </configuration>
-    </facet>
+  <component name="MavenCustomPomFilePath">
+    <option name="mavenPomFileUrl" value="file://$MODULE_DIR$/profiles.xml" />
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
-    <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="false" />
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$/src/main/java">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/src/main/resources">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+    </content>
+    <content url="file://$MODULE_DIR$/src/test/java">
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$USER_HOME$/Desktop/IdeaProjects/libs" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$USER_HOME$/Desktop/IdeaProjects/libs" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" name="org.projectlombok:lombok:1.18.16" level="project" />
-    <orderEntry type="library" name="HolographicDisplays" level="project" />
-    <orderEntry type="library" name="NametagEdit" level="project" />
-    <orderEntry type="library" name="PermissionsEx-1.23.4" level="project" />
-    <orderEntry type="library" name="ProtocolLib" level="project" />
-    <orderEntry type="library" name="Quests-3.8.2" level="project" />
-    <orderEntry type="library" name="ArmorEquipEvent-1.7.2" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" name="BannerBoard-1.11.2" level="project" />
-    <orderEntry type="library" name="worldedit-bukkit-6.1.9" level="project" />
-    <orderEntry type="library" name="FastAsyncWorldEdit-bukkit-21.03.09-a5e5590-1285-22.3.8" level="project" />
-    <orderEntry type="library" name="spigot" level="project" />
   </component>
 </module>

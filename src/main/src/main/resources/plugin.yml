@@ -1,0 +1,15 @@
+name: Prison
+main: org.runaway.Prison
+version: 3.0
+author: _RunAway_
+api-version: 1.18
+softdepend:
+- HolographicDisplays
+- PermissionsEx
+- NametagEdit
+- ViaVersion
+- TelegramBotsAPIPlugin
+- Citizens
+- ArmorEquipEvent
+- FastAsyncWorldEdit
+- BetterHud

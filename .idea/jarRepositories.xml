@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="S01 Sonatype Snapshots" />
+      <option name="name" value="S01 Sonatype Snapshots" />
+      <option name="url" value="https://s01.oss.sonatype.org/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jitpack.io" />
+      <option name="name" value="jitpack.io" />
+      <option name="url" value="https://jitpack.io" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="spigot-repo" />
+      <option name="name" value="spigot-repo" />
+      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="codemc-repo" />
+      <option name="name" value="codemc-repo" />
+      <option name="url" value="https://repo.codemc.io/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="dmulloy2-repo" />
+      <option name="name" value="dmulloy2-repo" />
+      <option name="url" value="https://repo.dmulloy2.net/repository/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="enginehub.org" />
+      <option name="name" value="enginehub.org" />
+      <option name="url" value="https://maven.enginehub.org/repo/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local-maven-repo" />
+      <option name="name" value="local-maven-repo" />
+      <option name="url" value="file:///C:\Coding\RecodedPrison 1.18\src\main/local-maven-repo" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="spigot-repo" />
+      <option name="name" value="spigot-repo" />
+      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Bukkit" />
+      <option name="name" value="Bukkit" />
+      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+  </component>
+</project>

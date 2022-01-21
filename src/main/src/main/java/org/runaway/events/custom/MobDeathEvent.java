@@ -1,0 +1,46 @@
+package org.runaway.events.custom;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.runaway.entity.IMobController;
+
+public class MobDeathEvent extends Event {
+
+    private static final HandlerList handlers = new HandlerList();
+
+    private Player player;
+    private IMobController controller;
+    private boolean cancelled;
+
+    public MobDeathEvent(Player player, IMobController iMobController) {
+        this.player = player;
+        this.controller = iMobController;
+        this.cancelled = false;
+    }
+
+    public IMobController getController() {
+        return controller;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+}
