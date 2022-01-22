@@ -1,16 +1,20 @@
 package org.runaway.runes.sword;
 
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.entity.Player;
 import org.runaway.Gamer;
 import org.runaway.runes.utils.Rune;
 import org.runaway.runes.utils.RuneManager;
 
-public class BlindnessRune implements Rune {
-
+public class NutritionRune implements Rune {
     @Override
     public boolean act(Gamer gamer) {
-        if (Math.random() < 0.12) {
-            gamer.addEffect(PotionEffectType.BLINDNESS, 100, 1);
+        if (Math.random() < 0.06) {
+            Player player = gamer.getPlayer();
+            if (player.getSaturation() + 4 <= 20) {
+                player.setSaturation(player.getSaturation() + 4);
+            } else {
+                player.setSaturation(20);
+            }
             return true;
         }
         return false;
@@ -18,22 +22,22 @@ public class BlindnessRune implements Rune {
 
     @Override
     public String getTechName() {
-        return "blindness";
+        return "nutrition";
     }
 
     @Override
     public String getName() {
-        return "Слепота";
+        return "Питание";
     }
 
     @Override
     public String getDescription() {
-        return "Даёт шанс наложить на врага слепоту";
+        return "Даёт шанс восстановить голод при атаке";
     }
 
     @Override
     public RuneManager.RuneRarity getRarity() {
-        return RuneManager.RuneRarity.RARE;
+        return RuneManager.RuneRarity.COMMON;
     }
 
     @Override

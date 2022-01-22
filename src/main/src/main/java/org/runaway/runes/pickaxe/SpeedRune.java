@@ -1,16 +1,15 @@
-package org.runaway.runes.sword;
+package org.runaway.runes.pickaxe;
 
 import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
 import org.runaway.runes.utils.Rune;
 import org.runaway.runes.utils.RuneManager;
 
-public class BlindnessRune implements Rune {
-
+public class SpeedRune implements Rune {
     @Override
     public boolean act(Gamer gamer) {
-        if (Math.random() < 0.12) {
-            gamer.addEffect(PotionEffectType.BLINDNESS, 100, 1);
+        if (Math.random() < 0.065) {
+            gamer.addEffect(PotionEffectType.FAST_DIGGING, 80, 1);
             return true;
         }
         return false;
@@ -18,26 +17,26 @@ public class BlindnessRune implements Rune {
 
     @Override
     public String getTechName() {
-        return "blindness";
+        return "digspeed";
     }
 
     @Override
     public String getName() {
-        return "Слепота";
+        return "Ускорение";
     }
 
     @Override
     public String getDescription() {
-        return "Даёт шанс наложить на врага слепоту";
+        return "Даёт шанс получить быстрое копание II";
     }
 
     @Override
     public RuneManager.RuneRarity getRarity() {
-        return RuneManager.RuneRarity.RARE;
+        return RuneManager.RuneRarity.EPIC;
     }
 
     @Override
     public RuneManager.RuneType getType() {
-        return RuneManager.RuneType.SWORD;
+        return RuneManager.RuneType.PICKAXE;
     }
 }

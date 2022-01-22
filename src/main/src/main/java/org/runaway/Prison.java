@@ -672,12 +672,14 @@ public class Prison extends JavaPlugin {
 
     //Привязка ItemsAdder
     private void loadItemsAdder() {
+        boolean usePlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+        if (!usePlaceholderAPI) return;
         useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
         if (useItemsAdder) {
-            Vars.sendSystemMessage(TypeMessage.SUCCESS, "ItemsAdder was successfully connected");
+            Vars.sendSystemMessage(TypeMessage.SUCCESS, "ItemsAdder and PlaceholderAPI were successfully connected");
             return;
         }
-        Vars.sendSystemMessage(TypeMessage.INFO, "ItemsAdder has not been installed yet");
+        Vars.sendSystemMessage(TypeMessage.INFO, "ItemsAdder and PlaceholderAPI have not been installed yet");
     }
 
     //Привязка NametagEdit

@@ -710,6 +710,7 @@ public class Gamer {
     }
 
     public void addEffect(PotionEffectType effect, int ticks, int level) {
+        if (isEffected(effect)) return;
         getPlayer().addPotionEffect(new PotionEffect(effect, ticks + 25, level, true));
     }
 

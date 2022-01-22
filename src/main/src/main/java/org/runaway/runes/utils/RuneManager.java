@@ -17,6 +17,8 @@ import org.runaway.runes.armor.boots.AntiGravityRune;
 import org.runaway.runes.armor.boots.GearsRune;
 import org.runaway.runes.armor.boots.SpringsRune;
 import org.runaway.runes.armor.helmets.GlowingRune;
+import org.runaway.runes.pickaxe.BlastRune;
+import org.runaway.runes.pickaxe.SpeedRune;
 import org.runaway.runes.sword.*;
 import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.Utils;
@@ -179,7 +181,11 @@ public class RuneManager {
                 new GlowingRune(), new BurnShieldRune(), new HulkRune(), new NinjaRune(), new ValorRune(), new SmokeBombRune(),
                 new DrunkRune(), new VoodooRune(), new RecoverRune(), new CactusRune(), new StormCallerRune(),
                 //SWORD
-                new VampireRune(), new LifeStealRune(), new DoubleDamageRune(), new SlowMoRune(), new BlindnessRune(), new ViperRune()
+                new VampireRune(), new LifeStealRune(), new DoubleDamageRune(), new SlowMoRune(), new BlindnessRune(), new ViperRune(),
+                new ConfusionRune(), new ExecutionRune(), new NutritionRune(), new ObliterateRune(), new ParalyzeRune(), new SnareRune(),
+                new TrapRune(), new WitherRune(),
+                //PICKAXE
+                new SpeedRune(), new BlastRune()
         ));
 
         for (Rune rune : runes) {

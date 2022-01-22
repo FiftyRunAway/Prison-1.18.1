@@ -4,17 +4,19 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
-import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.achievements.Achievement;
 import org.runaway.enums.*;
@@ -22,13 +24,13 @@ import org.runaway.events.custom.BreakWoodEvent;
 import org.runaway.events.custom.DropKeyEvent;
 import org.runaway.events.custom.PlayerBlockBreakEvent;
 import org.runaway.events.custom.TreasureFindEvent;
-import org.runaway.items.ItemManager;
-import org.runaway.items.PrisonItem;
-import org.runaway.items.parameters.Parameter;
-import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.passiveperks.perks.KeyFirst;
 import org.runaway.passiveperks.perks.KeySecond;
+import org.runaway.runes.pickaxe.BlastRune;
+import org.runaway.runes.pickaxe.SpeedRune;
+import org.runaway.runes.utils.Rune;
+import org.runaway.runes.utils.RuneManager;
 import org.runaway.trainer.TypeTrainings;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
@@ -57,6 +59,23 @@ public class BlockBreak implements Listener {
 
     //Что можно ломать
     private static HashMap<Material, ArrayList<Material>> canbreak;
+
+    private HashMap<Player, HashMap<Block, BlockFace>> blocks = new HashMap<>();
+
+    /*
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockClick(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        Gamer gamer = GamerManager.getGamer(player);
+        if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            Block block = e.getClickedBlock();
+            if (gamer.isActiveRune(new BlastRune(), gamer.getActiveRunes())) {
+                HashMap<Block, BlockFace> blockFace = new HashMap<>();
+                blockFace.put(block, e.getBlockFace());
+                blocks.put(player, blockFace);
+            }
+        }
+    }*/
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -97,6 +116,32 @@ public class BlockBreak implements Listener {
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
                     gamer.setStatistics(EStat.KEYS, gamer.getIntStatistics(EStat.KEYS) + 1);
                 }
+                List<Rune> activeRunes = gamer.getActiveRunes();
+                if (gamer.isActiveRune(new SpeedRune(), activeRunes)) {
+                    RuneManager.runeAction(gamer, "digspeed");
+                }/*
+                if (gamer.isActiveRune(new BlastRune(), activeRunes)) {
+                    if (blocks.containsKey(player)) {
+                        if (blocks.get(player).containsKey(block)) {
+                            BlockFace face = blocks.get(player).get(block);
+                            blocks.remove(player);
+                            List<Block> blockList = getBlocks(block.getLocation(), face, 2);
+                            Location originalBlockLocation = block.getLocation();
+                            List<BlockProcessInfo> finalBlockList = new ArrayList<>();
+                            for (Block b : blockList) {
+                                if (b.getType() != Material.AIR && (ce.getBlockList().contains(b.getType()) || b.getLocation().equals(originalBlockLocation))) {
+                                    BlockBreakEvent event = new BlockBreakEvent(b, player);
+                                    ce.addIgnoredEvent(event);
+                                    Bukkit.getPluginManager().callEvent(event);
+                                    if (!event.isCancelled()) { //This stops players from breaking blocks that might be in protected areas.
+                                        finalBlockList.add(new BlockProcessInfo(item, b));
+                                    }
+                                    ce.removeIgnoredEvent(event);
+                                }
+                            }
+                        }
+                    }
+                }*/
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
                 gamer.addCurrentBlocks(block.getType().toString(), block.getData(), add);
@@ -119,6 +164,53 @@ public class BlockBreak implements Listener {
                 event.setCancelled(true);
             }
         } else logForest(event);
+    }
+
+    private List<Block> getBlocks(Location loc, BlockFace blockFace, Integer depth) {
+        Location loc2 = loc.clone();
+        switch (blockFace) {
+            case SOUTH:
+                loc.add(-1, 1, -depth);
+                loc2.add(1, -1, 0);
+                break;
+            case WEST:
+                loc.add(depth, 1, -1);
+                loc2.add(0, -1, 1);
+                break;
+            case EAST:
+                loc.add(-depth, 1, 1);
+                loc2.add(0, -1, -1);
+                break;
+            case NORTH:
+                loc.add(1, 1, depth);
+                loc2.add(-1, -1, 0);
+                break;
+            case UP:
+                loc.add(-1, -depth, -1);
+                loc2.add(1, 0, 1);
+                break;
+            case DOWN:
+                loc.add(1, depth, 1);
+                loc2.add(-1, 0, -1);
+                break;
+            default:
+                break;
+        }
+        List<Block> blockList = new ArrayList<>();
+        int topBlockX = (Math.max(loc.getBlockX(), loc2.getBlockX()));
+        int bottomBlockX = (Math.min(loc.getBlockX(), loc2.getBlockX()));
+        int topBlockY = (Math.max(loc.getBlockY(), loc2.getBlockY()));
+        int bottomBlockY = (Math.min(loc.getBlockY(), loc2.getBlockY()));
+        int topBlockZ = (Math.max(loc.getBlockZ(), loc2.getBlockZ()));
+        int bottomBlockZ = (Math.min(loc.getBlockZ(), loc2.getBlockZ()));
+        for (int x = bottomBlockX; x <= topBlockX; x++) {
+            for (int z = bottomBlockZ; z <= topBlockZ; z++) {
+                for (int y = bottomBlockY; y <= topBlockY; y++) {
+                    blockList.add(loc.getWorld().getBlockAt(x, y, z));
+                }
+            }
+        }
+        return blockList;
     }
 
     private void logForest(BlockBreakEvent event) {

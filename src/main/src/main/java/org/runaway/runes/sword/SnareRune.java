@@ -5,12 +5,12 @@ import org.runaway.Gamer;
 import org.runaway.runes.utils.Rune;
 import org.runaway.runes.utils.RuneManager;
 
-public class BlindnessRune implements Rune {
-
+public class SnareRune implements Rune {
     @Override
     public boolean act(Gamer gamer) {
-        if (Math.random() < 0.12) {
-            gamer.addEffect(PotionEffectType.BLINDNESS, 100, 1);
+        if (Math.random() < 0.08) {
+            gamer.addEffect(PotionEffectType.SLOW, 60, 0);
+            gamer.addEffect(PotionEffectType.SLOW_DIGGING, 60, 0);
             return true;
         }
         return false;
@@ -18,17 +18,17 @@ public class BlindnessRune implements Rune {
 
     @Override
     public String getTechName() {
-        return "blindness";
+        return "snare";
     }
 
     @Override
     public String getName() {
-        return "Слепота";
+        return "Западня";
     }
 
     @Override
     public String getDescription() {
-        return "Даёт шанс наложить на врага слепоту";
+        return "Даёт шанс наложить медлительность I и усталость от добычи I";
     }
 
     @Override

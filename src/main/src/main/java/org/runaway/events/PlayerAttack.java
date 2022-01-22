@@ -2,12 +2,14 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
@@ -66,11 +68,54 @@ public class PlayerAttack implements Listener {
                 if (taker.isActiveRune(new VoodooRune(), activeRunes)) {
                     RuneManager.runeAction(source, "voodoo");
                 }
+
                 if (source.isActiveRune(new InsomniaRune(), activeRunesAttacker)) {
-                    if (Math.random() < 0.25) {
+                    if (Math.random() < 0.2) {
                         event.setDamage(event.getDamage() * 2);
                         source.sendMessage("&fПрименена руна " + RuneManager.getRuneName(new InsomniaRune()));
                     }
+                }
+                if (source.isActiveRune(new ExecutionRune(), activeRunesAttacker)) {
+                    if (taker.getPlayer().getHealth() <= 2 && Math.random() < 0.08) {
+                        source.addEffect(PotionEffectType.INCREASE_DAMAGE, 100, 3);
+                        source.sendMessage("&fПрименена руна " + RuneManager.getRuneName(new ExecutionRune()));
+                    }
+                }
+                if (source.isActiveRune(new ObliterateRune(), activeRunesAttacker)) {
+                    if (Math.random() < 0.08) {
+                        taker.getPlayer().setVelocity(damager.getLocation().getDirection().multiply(2).setY(1.25));
+                        source.sendMessage("&fПрименена руна " + RuneManager.getRuneName(new ObliterateRune()));
+                    }
+                }
+                if (source.isActiveRune(new SnareRune(), activeRunesAttacker)) {
+                    RuneManager.runeAction(taker, "snare");
+                }
+                if (source.isActiveRune(new TrapRune(), activeRunesAttacker)) {
+                    RuneManager.runeAction(taker, "trap");
+                }
+                if (source.isActiveRune(new WitherRune(), activeRunesAttacker)) {
+                    RuneManager.runeAction(taker, "wither");
+                }
+                if (source.isActiveRune(new ParalyzeRune(), activeRunesAttacker)) {
+                    if (Math.random() < 0.05) {
+                        Player player = taker.getPlayer();
+                        damager.getWorld().spigot().strikeLightningEffect(player.getLocation(), true);
+                        try {
+                            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 10f, 1);
+                        } catch (Exception ignore) { }
+                        for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 10, 10, 10)) {
+                            if (entity.getUniqueId().equals(player.getUniqueId())) {
+                                ((LivingEntity)entity).damage(5D);
+                                break;
+                            }
+                        }
+                        taker.addEffect(PotionEffectType.SLOW, 60, 2);
+                        taker.addEffect(PotionEffectType.SLOW_DIGGING, 60, 2);
+                        source.sendMessage("&fПрименена руна " + RuneManager.getRuneName(new ParalyzeRune()));
+                    }
+                }
+                if (source.isActiveRune(new NutritionRune(), activeRunesAttacker)) {
+                    RuneManager.runeAction(source, "nutrition");
                 }
                 if (source.isActiveRune(new StormCallerRune(), activeRunesAttacker)) {
                     RuneManager.runeAction(source, "stormcaller");
