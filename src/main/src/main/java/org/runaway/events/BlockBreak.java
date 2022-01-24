@@ -5,6 +5,8 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Orientable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,8 +88,7 @@ public class BlockBreak implements Listener {
             String name = player.getInventory().getItemInMainHand().getType().toString();
             if ((name.contains("AXE") || name.contains("SHOVEL") || name.contains("PICKAXE") || name.contains("SHEARS") || name.contains("SPADE"))) {
                 Block block = event.getBlock();
-                if (name.endsWith("PICKAXE") &&
-                        !canbreak.get(player.getInventory().getItemInMainHand().getType()).contains(block.getType())) {
+                if (name.contains("PICKAXE") && !canbreak.get(player.getInventory().getItemInMainHand().getType()).contains(block.getType())) {
                     event.setCancelled(true);
                     return;
                 }
@@ -119,46 +120,14 @@ public class BlockBreak implements Listener {
                 List<Rune> activeRunes = gamer.getActiveRunes();
                 if (gamer.isActiveRune(new SpeedRune(), activeRunes)) {
                     RuneManager.runeAction(gamer, "digspeed");
-                }/*
-                if (gamer.isActiveRune(new BlastRune(), activeRunes)) {
-                    if (blocks.containsKey(player)) {
-                        if (blocks.get(player).containsKey(block)) {
-                            BlockFace face = blocks.get(player).get(block);
-                            blocks.remove(player);
-                            List<Block> blockList = getBlocks(block.getLocation(), face, 2);
-                            Location originalBlockLocation = block.getLocation();
-                            List<BlockProcessInfo> finalBlockList = new ArrayList<>();
-                            for (Block b : blockList) {
-                                if (b.getType() != Material.AIR && (ce.getBlockList().contains(b.getType()) || b.getLocation().equals(originalBlockLocation))) {
-                                    BlockBreakEvent event = new BlockBreakEvent(b, player);
-                                    ce.addIgnoredEvent(event);
-                                    Bukkit.getPluginManager().callEvent(event);
-                                    if (!event.isCancelled()) { //This stops players from breaking blocks that might be in protected areas.
-                                        finalBlockList.add(new BlockProcessInfo(item, b));
-                                    }
-                                    ce.removeIgnoredEvent(event);
-                                }
-                            }
-                        }
-                    }
-                }*/
+                }
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
-                gamer.addCurrentBlocks(block.getType().toString(), block.getData(), add);
+                gamer.addCurrentBlocks(block.getType().toString(), add);
                 gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf(gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
                 AutoSell(event, FindChest(event));
 
-                /*ItemStack itemStack = player.getInventory().getItemInMainHand();
-                if(itemStack == null) return;
-                PrisonItem prisonItem = ItemManager.getPrisonItem(player.getInventory().getItemInMainHand());
-                if(prisonItem == null) return;
-                Parameter stBlocksParameter = ParameterManager.getStattrakBlocksParameter();
-                if(!prisonItem.getParameters().contains(stBlocksParameter)) return;
-
-                double oldSTBlocks = (double) stBlocksParameter.getParameterGetter().
-                        apply(itemStack, null);
-                stBlocksParameter.changeValues(itemStack, BigDecimal.valueOf(oldSTBlocks + add).setScale(1, RoundingMode.UP).doubleValue()); */
             } else {
                 gamer.sendMessage(EMessage.BREAKBYTOOLS);
                 event.setCancelled(true);
@@ -217,7 +186,7 @@ public class BlockBreak implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         Block block = event.getBlock();
-        if (block.getType().equals(Material.DARK_OAK_LOG) && block.getData() == 13) {
+        if (block.getType().equals(Material.DARK_OAK_WOOD) && block.getData() == 13) {
             player.getInventory().getItemInMainHand();
             if (player.getInventory().getItemInMainHand().hasItemMeta() &&
                     !player.getInventory().getItemInMainHand().getItemMeta().isUnbreakable()) {
@@ -253,14 +222,12 @@ public class BlockBreak implements Listener {
                     gamer.increaseIntStatistics(EStat.KEYS);
                 }
                 double add = gamer.getBoosterBlocks();
-                gamer.addCurrentBlocks("DARK_OAK_LOG", 1, add);
+                gamer.addCurrentBlocks("DARK_OAK_WOOD", add);
                 gamer.setStatistics(EStat.BLOCKS, gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks());
-                block.setType(Material.DARK_OAK_WOOD);
+                block.setType(Material.DARK_OAK_PLANKS);
                 Bukkit.getServer().getPluginManager().callEvent(new BreakWoodEvent(player));
-                Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
-                    block.setType(Material.DARK_OAK_LOG);
-                    //block.setData((byte) 13);
-                }, 250L);
+                Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () ->
+                        block.setType(Material.DARK_OAK_WOOD), 250L);
             }
         }
     }//normal random for key - 0.005
@@ -330,10 +297,11 @@ public class BlockBreak implements Listener {
         }
 
         ArrayList<ItemStack> i = new ArrayList<>();
-        if (!inventory.getItemInMainHand().getType().equals(Material.AIR) && inventory.getItemInMainHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)) {
-            i.add(new ItemStack(block.getType(), 1, block.getData()));
+        if (!inventory.getItemInMainHand().getType().equals(Material.AIR) &&
+                inventory.getItemInMainHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)) {
+            i.add(new ItemStack(block.getType(), 1));
         } else {
-            block.getDrops().forEach(itemStack -> i.add(new ItemStack(itemStack.getType(), 1, itemStack.getDurability())));
+            block.getDrops().forEach(itemStack -> i.add(new ItemStack(itemStack.getType(), 1)));
         }
         block.setType(Material.AIR);
 

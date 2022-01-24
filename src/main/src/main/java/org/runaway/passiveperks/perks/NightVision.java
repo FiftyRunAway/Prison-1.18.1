@@ -17,7 +17,7 @@ public class NightVision extends PassivePerks {
     }
 
     @Override
-    protected int getLevel() {
+    public int getLevel() {
         return 7;
     }
 

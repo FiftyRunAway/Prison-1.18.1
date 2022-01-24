@@ -30,8 +30,7 @@ public class BrockenBlocksMenu implements IMenus {
 
         AtomicInteger i = new AtomicInteger(0);
         gamer.getBlocksValues().forEach((s, amount) ->
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.valueOf(s.split("-")[0]))
-                .data(Short.parseShort(s.split("-")[1]))
+                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.valueOf(s))
                 .lore(new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7>> &e" + Math.round(amount) + " &fблоков сломано").build()).build().item()).setSlot(i.getAndIncrement())));

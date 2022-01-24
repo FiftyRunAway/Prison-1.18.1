@@ -145,9 +145,10 @@ public class RuneManager {
         }
 
         private ItemStack getItemStack() {
-            if (Prison.useItemsAdder) return getReplacer();
+            if (!Prison.useItemsAdder) return getReplacer();
             try {
-                return CustomStack.getInstance(getCutomItemStack()).getItemStack();
+                return getReplacer();
+                //return CustomStack.getInstance(getCutomItemStack()).getItemStack();
             } catch (Exception e) {
                 return getReplacer();
             }

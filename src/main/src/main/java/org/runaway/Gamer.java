@@ -20,6 +20,7 @@ import org.runaway.battlepass.BattlePass;
 import org.runaway.battlepass.IMission;
 import org.runaway.battlepass.IReward;
 import org.runaway.board.Board;
+import org.runaway.donate.DonateStat;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
@@ -55,6 +56,7 @@ import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -82,6 +84,7 @@ public class Gamer {
     private static final int teleportTimer = 3;
     public static int toRebirth = 30;
     public static PreparedRequests preparedRequests;
+    public static PreparedRequests donateRequests;
 
     private String gamer, name;
     private Player player;
@@ -89,9 +92,11 @@ public class Gamer {
     private String replyPlayer;
 
     private final Map<Saveable, Object> statisticsMap;
+    private final Map<Saveable, Object> donateMap;
 
     private BiConsumer<Player, String> chatConsumer;
     private Map<String, String> offlineValues;
+    private Map<String, String> offlineDonateValues;
     private Map<String, Double> blocksValues;
     private Map<String, Integer> mobKills;
     private List<PassivePerks> passivePerks;
@@ -105,6 +110,7 @@ public class Gamer {
 
     private boolean isOnline = false;
     private boolean isExist = true;
+    private boolean isExistDonate = true;
 
     private IMenu currentIMenu;
     private StandardMenu openedRunesMenu;
@@ -139,11 +145,19 @@ public class Gamer {
             getPlayer().teleport(Prison.SPAWN);
             addCooldown("newPlayer", TimeUnit.HOURS.toMillis(8));
         }
+        if (!donateRequests.isExist("player", getPlayer().getName())) {
+            isExistDonate = false;
+        }
 
         statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values(), isExist);
-        setStatistics(EStat.UUID, getPlayer().getUniqueId());
-        setStatistics(EStat.FULL_NAME, player.getName());
+
+        donateMap = donateRequests.getAllValues(player.getName(), DonateStat.values(), isExistDonate);
+        setStatistics(EStat.UUID, getUUID());
+        setStatistics(EStat.FULL_NAME, getGamer());
+        setStatistics(DonateStat.UUID, getUUID());
+        setStatistics(DonateStat.FULL_NAME, getGamer());
         offlineValues = Utils.fromStringToMap(getStringStatistics(EStat.OFFLINE_VALUES));
+        offlineDonateValues = Utils.fromStringToMap(getStringStatistics(DonateStat.OFFLINE_VALUES));
         blocksValues = new HashMap<>();
         Utils.fromStringToMap(getStringStatistics(EStat.BLOCKS_AMOUNT)).forEach((block, amount) -> {
             blocksValues.put(block.toString(), Double.parseDouble(amount.toString()));
@@ -194,11 +208,19 @@ public class Gamer {
         setStatistics(EStat.TRAINER, Utils.fromMapToString(trainings));
         setStatistics(EStat.MINEQUESTS, Utils.fromMapToString(mineQuests));
         setStatistics(EStat.BPDATA, Utils.fromMapToString(bpData));
+
+        setStatistics(DonateStat.OFFLINE_VALUES, Utils.fromMapToString(offlineDonateValues));
         if(isExist) {
             preparedRequests.saveAllValues("player", getPlayer().getName(), statisticsMap);
         } else {
             preparedRequests.create("player", getPlayer().getName(), statisticsMap);
             isExist = true;
+        }
+        if (isExistDonate) {
+            donateRequests.saveAllValues("player", getGamer(), donateMap);
+        } else {
+            donateRequests.create("player", getGamer(), donateMap);
+            isExistDonate = true;
         }
         sendMessage("&aВаши данные сохранены!");
     }
@@ -357,6 +379,13 @@ public class Gamer {
         return getOfflineValues().getOrDefault(quest, "0");
     }
 
+    public String getOfflineDonateValue(String donate) {
+        if (getOfflineDonateValues().isEmpty()) {
+            return "0";
+        }
+        return getOfflineDonateValues().getOrDefault(donate, "0");
+    }
+
     public void getNewBattlePass() {
         setStatistics(EStat.BATTLEPASS, true);
 
@@ -393,6 +422,14 @@ public class Gamer {
         getOfflineValues().put(quest, String.valueOf(value));
     }
 
+    public void setOfflineDonateValue(String donate, String value) {
+        getOfflineDonateValues().put(donate, value);
+    }
+
+    public void setOfflineDonateValue(String donate, int value) {
+        getOfflineDonateValues().put(donate, String.valueOf(value));
+    }
+
     public int getLevel() {
         return getIntStatistics(EStat.LEVEL);
     }
@@ -402,7 +439,7 @@ public class Gamer {
     }
 
     public void addPermission(String permission) {
-        Prison.getLuckPerms().getUserManager().getUser(getUUID()).data().add(Node.builder(permission).build());
+        PermissionsEx.getUser(getPlayer()).addPermission(permission);
     }
 
     public void debug(String message) {
@@ -550,6 +587,10 @@ public class Gamer {
 
     public Map<String, String> getOfflineValues() {
         return offlineValues;
+    }
+
+    public Map<String, String> getOfflineDonateValues() {
+        return offlineDonateValues;
     }
 
     public Map<String, Double> getBlocksValues() {
@@ -997,18 +1038,12 @@ public class Gamer {
         withdrawMoney(money, 0, sendMessage);
     }
 
-    public void addCurrentBlocks(String block, int data, double amount) {
-        String blockString = block + "-" + data;
-        blocksValues.put(blockString, getCurrentBlocks(block, data) + amount);
-    }
-
-    public int getCurrentBlocks(String block, int data) {
-        String blockString = block + "-" + data;
-        return blocksValues.getOrDefault(blockString, 0D).intValue();
+    public void addCurrentBlocks(String block, double amount) {
+        blocksValues.put(block, getCurrentBlocks(block) + amount);
     }
 
     public int getCurrentBlocks(String block) {
-        return getCurrentBlocks(block, 0);
+        return blocksValues.getOrDefault(block, 0D).intValue();
     }
 
     public double getBoosterBlocks() {
@@ -1072,6 +1107,11 @@ public class Gamer {
         return statistic.getFromConfig(name);
     }
 
+    public Object getDonateStatisticsFromConfig(DonateStat statistic, String name) {
+        return statistic.getFromFile(name);
+    }
+
+    //STATISTICS DATABASE
     public void increaseIntStatistics(EStat stat, int value) {
         setStatistics(stat, getIntStatistics(stat) + value);
     }
@@ -1104,11 +1144,52 @@ public class Gamer {
         return Boolean.parseBoolean(getStatistics(stat).toString());
     }
 
+    //DONATE DATABASE
+    public void increaseIntStatistics(DonateStat stat, int value) {
+        setStatistics(stat, getIntStatistics(stat) + value);
+    }
+
+    public void increaseIntStatistics(DonateStat stat) {
+        this.increaseIntStatistics(stat, 1);
+    }
+
+    public void increaseDoubleStatistics(DonateStat stat, double value) {
+        setStatistics(stat, getDoubleStatistics(stat) + value);
+    }
+
+    public void increaseDoubleStatistics(DonateStat stat) {
+        this.increaseDoubleStatistics(stat, 1D);
+    }
+
+    public int getIntStatistics(DonateStat stat) {
+        return (int) getStatistics(stat);
+    }
+
+    public String getStringStatistics(DonateStat stat) {
+        return (String)getStatistics(stat);
+    }
+
+    public double getDoubleStatistics(DonateStat stat) {
+        return (double) getStatistics(stat);
+    }
+
+    public boolean getBooleanStatistics(DonateStat stat) {
+        return Boolean.parseBoolean(getStatistics(stat).toString());
+    }
+
     public Object getStatistics(EStat statistic) {
         if (isOnline()) {
             return statisticsMap.get(statistic);
         } else {
             return getStatisticsFromConfig(statistic, Bukkit.getOfflinePlayer(getUUID()).getName());
+        }
+    }
+
+    public Object getStatistics(DonateStat statistic) {
+        if (isOnline()) {
+            return donateMap.get(statistic);
+        } else {
+            return getDonateStatisticsFromConfig(statistic, Bukkit.getOfflinePlayer(getUUID()).getName());
         }
     }
 
@@ -1124,6 +1205,21 @@ public class Gamer {
             statisticsMap.put(statistic, value);
         } else {
             statistic.setInConfig(Bukkit.getOfflinePlayer(getUUID()).getName(), value);
+        }
+    }
+
+    public void setStatistics(DonateStat statistic, Object value) {
+        if(statistic.getType() == StatType.DOUBLE) {
+            value = Double.parseDouble(value.toString());
+        } else if(statistic.getType() == StatType.INTEGER) {
+            value = Integer.parseInt(value.toString());
+        } else if(statistic.getType() == StatType.BOOLEAN) {
+            value = Boolean.parseBoolean(value.toString());
+        }
+        if (isOnline()) {
+            donateMap.put(statistic, value);
+        } else {
+            statistic.setInFile(Bukkit.getOfflinePlayer(getUUID()).getName(), value);
         }
     }
 

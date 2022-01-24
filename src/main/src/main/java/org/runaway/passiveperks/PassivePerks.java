@@ -19,7 +19,7 @@ public abstract class PassivePerks {
 
     protected abstract String getName();
     protected abstract String getDescription();
-    protected abstract int getLevel();
+    public abstract int getLevel();
 
     public int getSlot() {
         return 0;

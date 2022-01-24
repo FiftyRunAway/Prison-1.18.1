@@ -1,15 +1,12 @@
 package org.runaway.inventories;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.achievements.Achievement;
-import org.runaway.enums.EButtons;
 import org.runaway.enums.EMessage;
 import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
@@ -19,7 +16,6 @@ import org.runaway.menu.events.ButtonClickEvent;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Requires;
-import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.board.Board;
@@ -27,12 +23,15 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.EStat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Created by _RunAway_ on 26.1.2019
  */
 
 public class LevelMenu implements IMenus {
+
+    public static List<Integer> passiveLevels;
 
     public LevelMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
@@ -87,6 +86,9 @@ public class LevelMenu implements IMenus {
                     Achievement.TWENTY_LEVEL.get(p);
                 } else if (newLevel == 25) {
                     Achievement.TWENTYFIFTH_LEVEL.get(p);
+                }
+                if (passiveLevels.contains(newLevel)) {
+                    g.sendMessage("&4Вам доступны на выбор новые пассивные навыки!");
                 }
             } else {
                 g.sendMessage(EMessage.LEVELNEEDBLOCKS);

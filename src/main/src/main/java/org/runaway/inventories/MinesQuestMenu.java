@@ -41,7 +41,6 @@ public class MinesQuestMenu implements IMenus {
             int data = 0;
             try {
                 mat = Material.getMaterial(var[0].split(":")[0]);
-                data = Integer.parseInt(var[0].split(":")[1]);
                 name = String.valueOf(var[1]).replaceAll("_", " ");
 
                 is = new ItemStack(mat);
@@ -53,7 +52,7 @@ public class MinesQuestMenu implements IMenus {
                 e.printStackTrace();
             }
             int playerLevel = getLevel(p, mat);
-            int blocksBroken = gamer.getCurrentBlocks(mat.toString(), data);
+            int blocksBroken = gamer.getCurrentBlocks(mat.toString());
             assert is != null;
             for (int in = r * 9; in < (r + 1) * 9; in++) {
                 ItemStack itemStack = is.clone();
@@ -84,13 +83,12 @@ public class MinesQuestMenu implements IMenus {
                     if (playerLevel + 1 == am) {
                         IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(itemStack);
                         Material finalMat = mat;
-                        int finalData = data;
                         int finalAm = am;
                         String finalName = name;
                         btn.setClickEvent(event -> {
                             Player player = event.getWhoClicked();
                             Gamer g = GamerManager.getGamer(player);
-                            if (g.getCurrentBlocks(finalMat.toString(), finalData) < getBlocks(finalAm, quest.getStartBlocks())) {
+                            if (g.getCurrentBlocks(finalMat.toString()) < getBlocks(finalAm, quest.getStartBlocks())) {
                                 g.sendMessage(EMessage.LEVELNEEDBLOCKS);
                                 return;
                             }

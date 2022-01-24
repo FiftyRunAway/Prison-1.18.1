@@ -26,7 +26,7 @@ public class DonateMenu implements IMenus {
     private void buy(Donate donate, Player player) {
         Gamer gamer = GamerManager.getGamer(player);
         String d = Donate.getPex(donate.getIcon().getType());
-        if ((d != null && player.hasPermission(d)) || (donate.getIcon().getType().equals(Material.TNT) && gamer.hasBattlePass())) {
+        if ((gamer.getOfflineDonateValue(d).equals("1")) || (donate.getIcon().getType().equals(Material.TNT) && gamer.hasBattlePass())) {
             gamer.sendMessage(EMessage.TRANSACTIONTWICE);
             player.closeInventory();
             return;

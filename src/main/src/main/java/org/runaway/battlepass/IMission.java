@@ -73,6 +73,7 @@ public abstract class IMission {
         if (isCompleted(gamer)) {
             gamer.sendMessage(Utils.colored(EMessage.BPMISSION.getMessage().replace("%name%", getName())));
             gamer.addExperienceBP(getExperience());
+            gamer.increaseQuestValue("BpQuests", 1);
 
             BattlePass.checkLevelUp(gamer);
         }

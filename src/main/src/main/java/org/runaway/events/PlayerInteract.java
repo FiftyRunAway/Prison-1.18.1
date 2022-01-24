@@ -94,7 +94,7 @@ public class PlayerInteract implements Listener {
             }
         }
 
-        if (block.getType().equals(Material.OAK_SIGN)) {
+        if (block.getType().equals(Material.OAK_WALL_SIGN) || block.getType().equals(Material.OAK_SIGN)) {
             Sign sign = (Sign)block.getState();
             String[] lines = sign.getLines();
             if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {

@@ -87,6 +87,8 @@ public class BattlePassMenu implements IMenus {
         Lore lore_bought = new Lore.BuilderLore()
                 .addSpace()
                 .addString("&6Вы приобрели боевой пропуск " + BattlePass.season + " сезона!")
+                .addString("&r")
+                .addString("&eВыполнено еженедельных заданий &7• &6" + gamer.getQuestValue("BpQuests"))
                 .build();
         Lore lor = new Lore.BuilderLore()
                 .addSpace()

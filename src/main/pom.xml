@@ -121,6 +121,13 @@
             <systemPath>${project.basedir}/local-maven-repo/BetterHud-2.2.1-SNAPSHOT_5.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>ru.tehkode</groupId>
+            <artifactId>permissions</artifactId>
+            <version>1.17</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/local-maven-repo/PermissionsEx.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
             <version>2.5.5</version>

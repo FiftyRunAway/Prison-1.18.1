@@ -42,17 +42,13 @@ public class DonateCommand extends CommandManager {
             } catch (IllegalArgumentException ex) {
                 Vars.sendSystemMessage(TypeMessage.ERROR, "Use only integer");
             }
-            if (!Bukkit.getOfflinePlayer(name).isOp()) {
-                Donate.depositTotalDonateMoney(name, add);
-                Donate.depositDonateMoney(name, add, true);
-                if (Utils.getPlayers().contains(name)) {
-                    Player player = Bukkit.getPlayer(name);
-                    GamerManager.getGamer(player).sendMessage(EMessage.DEPOSITDONATE.getMessage()
-                            .replace("%money%", add + " " + MoneyType.REAL_RUBLES.getShortName()));
-                    player.playSound(player.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 1);
-                }
-            } else {
-                Donate.depositDonateMoney(name, add, true);
+            Donate.depositTotalDonateMoney(name, add);
+            Donate.depositDonateMoney(name, add, true);
+            if (Utils.getPlayers().contains(name)) {
+                Player player = Bukkit.getPlayer(name);
+                GamerManager.getGamer(player).sendMessage(EMessage.DEPOSITDONATE.getMessage()
+                        .replace("%money%", add + " " + MoneyType.REAL_RUBLES.getShortName()));
+                player.playSound(player.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 1);
             }
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Use: /donate add <Player> <Money>");

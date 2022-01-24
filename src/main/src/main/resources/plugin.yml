@@ -8,8 +8,9 @@ softdepend:
 - PermissionsEx
 - NametagEdit
 - ViaVersion
-- TelegramBotsAPIPlugin
 - Citizens
 - ArmorEquipEvent
 - FastAsyncWorldEdit
 - BetterHud
+- ItemsAdder
+- PlaceholderAPI

@@ -15,7 +15,7 @@ public class BMoneyFirst extends PassivePerks {
     }
 
     @Override
-    protected int getLevel() {
+    public int getLevel() {
         return 22;
     }
 

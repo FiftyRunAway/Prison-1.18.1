@@ -67,31 +67,30 @@ public class Donate {
         ArrayList<String> list = new ArrayList<>();
         String result = type.toString() + " > ["  + time + "] " + message;
         list.add(result);
-        ConfigurationSection sec = EConfig.DONATE.getConfig().getConfigurationSection("donate-log");
+        ConfigurationSection sec = EConfig.LOG.getConfig().getConfigurationSection("donate-log");
         if (sec != null && sec.contains(date)) {
             list.addAll(sec.getStringList(date));
             sec.set(date, list);
         } else {
-            EConfig.DONATE.getConfig().set("donate-log." + date, list);
+            EConfig.LOG.getConfig().set("donate-log." + date, list);
         }
-        EConfig.DONATE.saveConfig();
+        EConfig.LOG.saveConfig();
         Bukkit.getConsoleSender().sendMessage(type.getColor() + result);
     }
 
     public static boolean depositDonateMoney(String name, int money, boolean save) {
         try {
-            ConfigurationSection sec = EConfig.DONATE.getConfig().getConfigurationSection("statistics");
-            int set = money;
-            if (sec != null && sec.contains(name)) {
-                set += Integer.parseInt(sec.get(name).toString());
-                sec.set(name, set);
+            int balance = getDonateMoney(name);
+            Player player = Bukkit.getPlayerExact(name);
+            if(player != null) {
+                GamerManager.getGamer(player).increaseIntStatistics(DonateStat.BALANCE, money);
             } else {
-                EConfig.DONATE.getConfig().set("statistics." + name, set);
+                DonateStat.BALANCE.setInFile(name, balance + money);
             }
-            if (save) saveDonateLog(TypeMessage.SUCCESS, "Deposit money for " + name + " money: " + money + ". Total: " + set);
+            if (save) saveDonateLog(TypeMessage.SUCCESS, "Deposit money to " + name + " - " + money + ". New balance: " + (balance + money));
             return true;
         } catch (Exception ex) {
-            saveDonateLog(TypeMessage.ERROR, "Deposit money for " + name + " money: " + money);
+            saveDonateLog(TypeMessage.ERROR, "Deposit money to " + name + " - " + money);
             ex.printStackTrace();
             return false;
         }
@@ -99,38 +98,40 @@ public class Donate {
 
     public static boolean withdrawDonateMoney(String name, int money) {
         try {
-            ConfigurationSection sec = EConfig.DONATE.getConfig().getConfigurationSection("statistics");
-            if (sec == null || !sec.contains(name) || Integer.parseInt(sec.get(name).toString()) < money) return false;
-            int set = Integer.parseInt(sec.get(name).toString()) - money;
-            sec.set(name, set);
-            saveDonateLog(TypeMessage.SUCCESS, "Withdraw money for " + name + " money: " + money + ". Total: " + set);
+            int balance = getDonateMoney(name);
+            if (balance < money) return false;
+            Player player = Bukkit.getPlayerExact(name);
+            if(player != null) {
+                GamerManager.getGamer(player).increaseIntStatistics(DonateStat.BALANCE, -money);
+            } else {
+                DonateStat.BALANCE.setInFile(name, balance - money);
+            }
+            saveDonateLog(TypeMessage.SUCCESS, "Withdraw money from " + name + " money: " + money + ". New balance: " + (balance - money));
             return true;
         } catch (Exception ex) {
-            saveDonateLog(TypeMessage.ERROR, "Withdraw money for " + name + " money: " + money);
+            saveDonateLog(TypeMessage.ERROR, "Withdraw money from " + name + " money: " + money);
             ex.printStackTrace();
             return false;
         }
     }
 
     public static int getDonateMoney(String name) {
-        ConfigurationSection sec = EConfig.DONATE.getConfig().getConfigurationSection("statistics");
-        if (sec == null || !sec.contains(name)) {
-            return 0;
+        Player player = Bukkit.getPlayerExact(name);
+        if(player != null) {
+            return GamerManager.getGamer(player).getIntStatistics(DonateStat.BALANCE);
+        } else {
+            return (int)DonateStat.BALANCE.getFromFile(name);
         }
-        return Integer.parseInt(sec.get(name).toString());
     }
 
     public static boolean depositTotalDonateMoney(String name, int money) {
         try {
-            ConfigurationSection sec = EConfig.DONATE.getConfig().getConfigurationSection("total");
-            int set = money;
-            if (sec != null && sec.contains(name)) {
-                set += Integer.parseInt(sec.get(name).toString());
-                sec.set(name, set);
+            Player player = Bukkit.getPlayerExact(name);
+            if(player != null) {
+                GamerManager.getGamer(player).increaseIntStatistics(DonateStat.TOTAL_DONATED, money);
             } else {
-                EConfig.DONATE.getConfig().set("total." + name, set);
+                DonateStat.TOTAL_DONATED.setInFile(name, (int)DonateStat.TOTAL_DONATED.getFromFile(name) + money);
             }
-            EConfig.DONATE.saveConfig();
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -141,9 +142,9 @@ public class Donate {
     public static double getTotalDonateMoney(String name) {
         Player player = Bukkit.getPlayerExact(name);
         if(player != null) {
-            return GamerManager.getGamer(player).getDoubleStatistics(EStat.STREAMS);
+            return GamerManager.getGamer(player).getIntStatistics(DonateStat.TOTAL_DONATED);
         } else {
-            return (double) EStat.STREAMS.getFromConfig(name);
+            return (int) DonateStat.TOTAL_DONATED.getFromFile(name);
         }
     }
 
@@ -182,17 +183,17 @@ public class Donate {
                     break;
                 }
                 case PAPER: {
-                    gamer.addPermission(getPex(material));
+                    gamer.setOfflineDonateValue("needs", 1);
                     gamer.sendMessage("&aДля правильной работы купленной услуги, &eперезайдите на сервер!");
                     break;
                 }
                 case WRITABLE_BOOK: {
-                    gamer.addPermission(getPex(material));
+                    gamer.setOfflineDonateValue("autosell", 1);
                     gamer.sendMessage("&aДля активации купленной услуги введите &e/autosell");
                     break;
                 }
                 case TNT: {
-                    gamer.sendMessage("&aДля правильной работы &6боевого пропуска&a, &eперезайдите на сервер!");
+                    gamer.sendMessage("&aВам уже доступны все функции боевого пропуска!");
                     gamer.getNewBattlePass();
                 }
             }
@@ -203,13 +204,13 @@ public class Donate {
 
     public static String getPex(Material material) {
         switch (material) {
-            case PAPER: {
-                return "prison.toilet";
+            case PAPER -> {
+                return "needs";
             }
-            case WRITABLE_BOOK: {
-                return "prison.autosell";
+            case WRITABLE_BOOK -> {
+                return "autosell";
             }
-            default: {
+            default -> {
                 return null;
             }
         }

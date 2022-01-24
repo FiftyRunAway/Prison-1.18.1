@@ -34,7 +34,8 @@ public class Needs implements Listener {
 
     public static void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (player.hasPermission("prison.toilet") || tasks.containsKey(player.getName())) {
+        Gamer gamer = GamerManager.getGamer(player);
+        if (gamer.getOfflineDonateValue("needs").equals("1") || tasks.containsKey(player.getName())) {
             return;
         }
         int cooldown = 10; // 10 were
@@ -42,7 +43,6 @@ public class Needs implements Listener {
         if (obj != null) {
             cooldown = Integer.parseInt(obj.toString());
         }
-        Gamer gamer = GamerManager.getGamer(player);
         if (gamer.hasPassivePerk(new Vaccine())) cooldown *= 1.5;
         tasks.put(player.getName(), Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
             if(!player.hasPlayedBefore() || !gamer.isEndedCooldown("newPlayer")) {

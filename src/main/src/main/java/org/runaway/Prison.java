@@ -1,8 +1,8 @@
 package org.runaway;
 
+import com.google.gson.stream.JsonReader;
 import lombok.Getter;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
+import net.minecraft.world.level.GameRules;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -27,6 +27,7 @@ import org.runaway.commands.*;
 import org.runaway.configs.Config;
 import org.runaway.donate.Donate;
 import org.runaway.donate.DonateIcon;
+import org.runaway.donate.DonateStat;
 import org.runaway.donate.Privs;
 import org.runaway.entity.MobManager;
 import org.runaway.enums.*;
@@ -43,6 +44,7 @@ import org.runaway.menus.MenuHandler;
 import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
+import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.quests.MinesQuest;
 import org.runaway.requirements.*;
 import org.runaway.runes.utils.RuneManager;
@@ -57,14 +59,13 @@ import org.runaway.trainer.Trainer;
 import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * Created by _RunAway_ on 14.1.2019
@@ -83,8 +84,10 @@ public class Prison extends JavaPlugin {
     //SQLite
     private Map<String, Database> databases = new HashMap<>();
     public final String stat_table = "Statistics";
+    public final String donateTable = "Donate";
     private SaveType type_saving;
     private PreparedRequests preparedRequests;
+    private PreparedRequests donateRequests;
 
     private ServerStatus status = null;
 
@@ -133,12 +136,12 @@ public class Prison extends JavaPlugin {
     public final Properties keys = new Properties();
 
     @Getter
-    private static LuckPerms luckPerms;
+    public final HashMap<String, String> localization = new HashMap<>();
+
 
     @Override
     public void onEnable() {
         instance = this;
-        luckPerms = LuckPermsProvider.get();
         loader();
     }
 
@@ -198,7 +201,11 @@ public class Prison extends JavaPlugin {
 
         SPAWN = Utils.getLocation("spawn");
         Arrays.stream(EFish.values()).forEach(fish -> fish_food.add(ChatColor.stripColor(fish.getFish().getName())));
-        Bukkit.getServer().getWorlds().forEach(world -> world.setGameRuleValue("announceAdvancements", "false"));
+        Bukkit.getServer().getWorlds().forEach(world -> {
+            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+            world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+        });
+
         /*ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.MONITOR, PacketType.Play.Client.USE_ENTITY) {
             @Override
             public void onPacketReceiving(PacketEvent event) {
@@ -255,9 +262,12 @@ public class Prison extends JavaPlugin {
                             ParameterManager.getUpgradableParameter())).build(); //предмет можно улучшить
             ItemManager.addPrisonItem(prisonItem2); //инициализация предмета
         }
-        ItemManager.getPrisonItem("menu").setConsumerOnClick(gamer -> {
-            new MainMenu(gamer.getPlayer());
-        });
+        ItemManager.getPrisonItem("menu").setConsumerOnClick(gamer ->
+                new MainMenu(gamer.getPlayer()));
+
+        LevelMenu.passiveLevels = new ArrayList<>();
+        LevelMenu.passiveLevels.addAll(Stream.of(EPassivePerk.values())
+                .map(p -> p.getPerk().getLevel()).sorted().distinct().toList());
     }
 
     public void setAutoRestart() {
@@ -385,7 +395,7 @@ public class Prison extends JavaPlugin {
             } else if (r == UpgradeProperty.RATS) {
                 requireList.addRequire(MobsRequire.builder().mobName("rat").amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.WOOD) {
-                requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.DARK_OAK_LOG, (short) 1)).amount(Integer.parseInt(s)).build());
+                requireList.addRequire(BlocksRequire.builder().localizedBlock(new LocalizedBlock(Material.DARK_OAK_WOOD)).amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.BOW_KILL) {
                 requireList.addRequire(MobsRequire.builder().mobName("zombie").amount(Integer.parseInt(s)).build());
             } else if (r == UpgradeProperty.STARS) {
@@ -453,7 +463,9 @@ public class Prison extends JavaPlugin {
 
         //Statistics table
         initializeDatabase(stat_table, "player", EStat.values());
+        initializeDonateDatabase(donateTable, "player", DonateStat.values());
         Gamer.preparedRequests = getPreparedRequests();
+        Gamer.donateRequests = getDonateRequests();
     }
 
     public static Database getMainDatabase() {
@@ -463,6 +475,10 @@ public class Prison extends JavaPlugin {
 
     public PreparedRequests getPreparedRequests() {
         return preparedRequests;
+    }
+
+    public PreparedRequests getDonateRequests() {
+        return donateRequests;
     }
 
     /**
@@ -475,6 +491,13 @@ public class Prison extends JavaPlugin {
         db.load(primaryKey, saveables);
         databases.put(databaseName, db);
         this.preparedRequests = new PreparedRequests(db);
+    }
+
+    public void initializeDonateDatabase(String databaseName, String primaryKey, Saveable[] saveables) {
+        Database db = new SQLite(databaseName, Config.donateFile);
+        db.load(primaryKey, saveables);
+        databases.put(databaseName, db);
+        this.donateRequests = new PreparedRequests(db);
     }
 
     /**
@@ -674,11 +697,12 @@ public class Prison extends JavaPlugin {
     private void loadItemsAdder() {
         boolean usePlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
         if (!usePlaceholderAPI) return;
-        useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
+        /*useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
         if (useItemsAdder) {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, "ItemsAdder and PlaceholderAPI were successfully connected");
             return;
-        }
+        }*/
+        useItemsAdder = true;
         Vars.sendSystemMessage(TypeMessage.INFO, "ItemsAdder and PlaceholderAPI have not been installed yet");
     }
 

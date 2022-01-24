@@ -90,7 +90,7 @@ public class BoosterCommand extends CommandManager {
                 p.sendMessage(ChatColor.RED + "Может быть только один знак после точки множителя");
                 return;
             }
-            double maxmultiplier = 50.0;
+            double maxmultiplier = 5000D;
             if (multiplier <= maxmultiplier) {
                 if (type.equals(BoosterType.MONEY) && !Prison.gMoney.isActive()) {
                     Prison.gMoney.start(p.getName(), seconds, multiplier);

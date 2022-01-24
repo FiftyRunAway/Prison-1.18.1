@@ -27,7 +27,7 @@ public class TrainerMenu implements IMenus {
             i.incrementAndGet();
         });
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(8);
-        back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
+        back.setClickEvent(event -> event.getWhoClicked().closeInventory());
         menu.addButton(back);
         menu.open(GamerManager.getGamer(player));
     }

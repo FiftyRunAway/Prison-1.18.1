@@ -35,7 +35,7 @@ public class PrivilageMenu implements IMenus {
         });
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(26);
-        back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
+        back.setClickEvent(event -> new DonateMenu(event.getWhoClicked()));
         menu.addButton(back);
 
         menu.open(GamerManager.getGamer(player));

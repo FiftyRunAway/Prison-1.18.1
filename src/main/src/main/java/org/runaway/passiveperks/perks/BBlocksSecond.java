@@ -15,7 +15,7 @@ public class BBlocksSecond extends PassivePerks {
     }
 
     @Override
-    protected int getLevel() {
+    public int getLevel() {
         return 27;
     }
 

@@ -17,7 +17,7 @@ public class Fireproof extends PassivePerks {
     }
 
     @Override
-    protected int getLevel() {
+    public int getLevel() {
         return 12;
     }
 

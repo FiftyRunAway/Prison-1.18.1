@@ -1,5 +1,7 @@
 package org.runaway.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import dev.lone.itemsadder.api.FontImages.TexturedInventoryWrapper;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
@@ -9,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.Prison;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.PagedButton;
@@ -77,13 +80,22 @@ public abstract class IMenu implements InventoryHolder {
         return type;
     }
 
-    public void open(Gamer gamer) {
+    public void open(Gamer gamer, String texture) {
         /*if(gamer.getCurrentIMenu() != null) {
             gamer.getPlayer().closeInventory();
         }*/
         build();
         gamer.setCurrentIMenu(this);
         gamer.getPlayer().openInventory(getInventory());
+
+        if (Prison.useItemsAdder) {
+            FontImageWrapper tex = new FontImageWrapper(texture);
+            if (tex.exists()) TexturedInventoryWrapper.setPlayerInventoryTexture(gamer.getPlayer(), tex);
+        }
+    }
+
+    public void open(Gamer gamer) {
+        open(gamer, null);
     }
 
     private Consumer<ButtonClickEvent> buttonClickListener;

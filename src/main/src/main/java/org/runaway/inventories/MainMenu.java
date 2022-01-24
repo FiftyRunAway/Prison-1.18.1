@@ -1,5 +1,7 @@
 package org.runaway.inventories;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import dev.lone.itemsadder.api.FontImages.TexturedInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,12 +28,12 @@ public class MainMenu implements IMenus {
     private static boolean stage;
 
     public MainMenu(Player player) {
-        menu.open(GamerManager.getGamer(player));
+        menu.open(GamerManager.getGamer(player), "emlerbank:profile");
     }
 
     public static void load() {
         try {
-            menu = StandardMenu.create(6, ChatColor.YELLOW + "Главное меню");
+            menu = StandardMenu.create(6, " ");
 
             IMenuButton ups = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.WOODEN_AXE)
                     .name("&aПрокачки")
