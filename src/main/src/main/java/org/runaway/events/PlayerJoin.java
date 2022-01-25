@@ -20,6 +20,7 @@ import org.runaway.enums.*;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.managers.GamerManager;
+import org.runaway.nametag.Teams;
 import org.runaway.needs.Needs;
 import org.runaway.passiveperks.PassivePerks;
 import org.runaway.upgrades.UpgradeMisc;
@@ -50,10 +51,8 @@ public class PlayerJoin implements Listener {
             if (Prison.useNametagEdit) gamer.setNametag(); // Add nametag
             Needs.onJoin(event);
             PassivePerks.onJoin(gamer);
+            Teams.load(player);
 
-            //if (gamer.getGamer().equals("_RunAway_")) gamer.addItem("defaultKey");
-
-            //if (TWOFA.authlocked != null) twoFA(gamer); // Google Authenticator
             if (!player.hasPlayedBefore()) {
                 Achievement.JOIN.get(player); // Achievement
                 startKit(event.getPlayer()); // Give a start kit

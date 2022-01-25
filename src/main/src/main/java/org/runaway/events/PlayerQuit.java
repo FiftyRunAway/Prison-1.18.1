@@ -2,6 +2,7 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,14 +27,13 @@ import java.util.Arrays;
 
 public class PlayerQuit implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
-        gamer.savePlayer();
-        //player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
         quitInPvp(gamer);
+        gamer.savePlayer();
         HideCommand.removeOnQuit(gamer);
         Utils.getPlayers().remove(player.getName());
         removeBar(player);
@@ -50,18 +50,7 @@ public class PlayerQuit implements Listener {
     private static void quitInPvp(Gamer gamer) {
         if (!Gamer.isEnabledCombatRelog()) return;
         if (!Prison.isDisabling && gamer.isInPvp()) {
-            Gamer.leaveCombat(gamer);
-            gamer.getCombatLog().forEach(s -> {
-                Gamer g = GamerManager.getGamer(s);
-                if (g != null) {
-                    g.getCombatLog().remove(gamer.getGamer());
-                    g.sendMessage("&cИгрок " + gamer.getGamer() + " вышел из игры во время боя с вами и умер!");
-                    if (g.getCombatLog().isEmpty()) {
-                        Gamer.leaveCombat(g);
-                    }
-                }
-            });
-            gamer.getPlayer().damage(gamer.getPlayer().getHealth() + 5);
+            gamer.getPlayer().damage(100D);
             gamer.getPlayer().teleport(Prison.SPAWN);
         }
     }

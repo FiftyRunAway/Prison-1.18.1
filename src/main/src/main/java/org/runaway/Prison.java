@@ -40,7 +40,6 @@ import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuListener;
-import org.runaway.menus.MenuHandler;
 import org.runaway.mines.Mine;
 import org.runaway.mines.Mines;
 import org.runaway.needs.Needs;
@@ -539,7 +538,6 @@ public class Prison extends JavaPlugin {
     //Регистрация эвентов
     private static void registerEvents() {
         try {
-            new MenuHandler(getInstance());
             new Utils().RegisterEvent(new Cancelers());
             new Utils().RegisterEvent(new PlayerJoin());
             new Utils().RegisterEvent(new PlayerLogin());
@@ -852,7 +850,7 @@ public class Prison extends JavaPlugin {
             rats = getPreparedRequests().getTop(EStat.KILLS.getColumnName(), 10);
             rebirth = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
             keys = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
-            dm = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
+            dm = getDonateRequests().getTop(DonateStat.TOTAL_DONATED.getColumnName(), 10);
             tops.put("money", new TopPlayers(money, MoneyType.RUBLES.getShortName()));
             tops.put("blocks", new TopPlayers(blocks,"блоков"));
             tops.put("levels", new TopPlayers(level, "уровень"));
@@ -877,7 +875,7 @@ public class Prison extends JavaPlugin {
         Map<String, Long> rats1 = getPreparedRequests().getTop(EStat.KILLS.getColumnName(), 10);
         Map<String, Long> rebirth1 = getPreparedRequests().getTop(EStat.REBIRTH.getColumnName(), 10);
         Map<String, Long> keys1 = getPreparedRequests().getTop(EStat.KEYS.getColumnName(), 10);
-        Map<String, Long> dm1 = getPreparedRequests().getTop(EStat.STREAMS.getColumnName(), 10);
+        Map<String, Long> dm1 = getDonateRequests().getTop(DonateStat.TOTAL_DONATED.getColumnName(), 10);
         if (!Prison.tops.keySet().iterator().hasNext()) return;
         tops.keySet().forEach(s -> {
             if ("money".equals(s)) {

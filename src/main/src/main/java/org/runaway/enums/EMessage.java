@@ -136,7 +136,8 @@ public enum  EMessage {
     SELLTIT("SellIt", "&cЛучше продайте это у главного рыбака!"),
     SHOWGAMERS("ShowGamers", "&aВы снова видите других игроков"),
     HIDEGAMERS("HideGamers", "&cВы скрыли всех игроков", EMessageType.TITLE),
-    ISNOTSUITABLERUNE("NotSuitableRune", "&cЭта руна не подходит вашему предмету!");
+    ISNOTSUITABLERUNE("NotSuitableRune", "&cЭта руна не подходит вашему предмету!"),
+    COMECLOSER("ComeCloser", "&cПодойдите ближе к игроку!");
 
     private String config, defaults;
     private EMessageType eMessageType;

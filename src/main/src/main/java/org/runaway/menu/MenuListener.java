@@ -55,9 +55,12 @@ public class MenuListener implements Listener {
                 if (event.getView().getTopInventory().isEmpty()) return;
                 if (!event.getClickedInventory().getType().equals(InventoryType.PLAYER)) return;
                 if (!event.getView().getTitle().equalsIgnoreCase(Utils.colored(new RuneMenu().getName()))) {
-                    event.setCancelled(true);
+                    if (!event.getView().getTitle().equals("Chest") && (!event.getView().getTitle().equals("Ender Chest"))) {
+                        event.setCancelled(true);
+                    }
                     return;
                 }
+
                 ItemStack is = event.getCurrentItem();
                 if (is == null) return;
                 if (is.getItemMeta() == null) return;

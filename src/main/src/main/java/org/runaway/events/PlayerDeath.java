@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -30,6 +31,7 @@ import org.runaway.tasks.SyncTask;
 import org.runaway.utils.Utils;
 
 import java.util.List;
+import java.util.Objects;
 
 /*
  * Created by _RunAway_ on 27.1.2019
@@ -37,14 +39,16 @@ import java.util.List;
 
 public class PlayerDeath implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event) {
         event.setDeathMessage(null);
         Player player = event.getEntity();
         Gamer gamer = GamerManager.getGamer(player);
         event.setKeepInventory(true); event.setKeepLevel(true);
         boolean givenot = dropItems(event.getDrops(), gamer);
-        double money = gamer.getIntStatistics(EStat.LEVEL);
+        Bukkit.getConsoleSender().sendMessage("bool - " + givenot);
+        combatLog(gamer);
+        double money = gamer.getLevel();
 
         gamer.sendMessage(EMessage.DIEDPLAYER.getMessage().replace("%money%", Board.FormatMoney(money)));
         gamer.increaseIntStatistics(EStat.DEATHES);
@@ -52,7 +56,6 @@ public class PlayerDeath implements Listener {
         if (gamer.getIntStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player);
         gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
 
-        combatLog(gamer);
         if (event.getEntity().getKiller() != null) {
             Gamer gamerKiller = GamerManager.getGamer(event.getEntity().getKiller().getUniqueId());
             gamerKiller.increaseIntStatistics(EStat.KILLS);
@@ -92,22 +95,23 @@ public class PlayerDeath implements Listener {
 
     public static boolean dropItems(List<ItemStack> items, Gamer gamer) {
         Location loc = gamer.getPlayer().getLocation();
-        items.forEach(itemStack -> {
-            if (itemStack == null) return;
-            if (ItemManager.isDropable(itemStack)) {
-                loc.getWorld().dropItemNaturally(loc, itemStack);
-                gamer.getPlayer().getInventory().remove(itemStack);
-            }
-        });
-        double money = gamer.getIntStatistics(EStat.LEVEL);
+        boolean result = false;
+        double money = gamer.getLevel();
         if (gamer.getMoney() >= money) {
             gamer.withdrawMoney(money);
-            if (gamer.isInPvp()) return true;
+            if (gamer.isInPvp()) result = true;
         } else {
             gamer.setStatistics(EStat.MONEY, 0);
-            return true;
+            result = true;
         }
-        return false;
+        for (ItemStack itemStack : items) {
+            if (itemStack == null) continue;
+            if (ItemManager.isDropable(itemStack)) {
+                Objects.requireNonNull(loc.getWorld()).dropItemNaturally(loc, itemStack);
+                gamer.getPlayer().getInventory().remove(itemStack);
+            }
+        }
+        return result;
     }
 
     @EventHandler

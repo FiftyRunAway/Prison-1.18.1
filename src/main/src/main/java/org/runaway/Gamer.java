@@ -1,13 +1,12 @@
 package org.runaway;
 
-import com.google.errorprone.annotations.Var;
 import lombok.Getter;
 import lombok.Setter;
-import net.luckperms.api.node.Node;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -349,6 +348,16 @@ public class Gamer {
             return Board.getScoreBoardUpdate().get(boardState);
         }
         return Board.getScoreBoardUpdate().get(0);
+    }
+
+    public boolean isNear(Gamer gamer) {
+        for (Entity n : gamer.getPlayer().getNearbyEntities(10, 10, 10)) {
+            if (!(n instanceof Player near)) continue;
+            if (near.getUniqueId().equals(getUUID())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isEndedCooldown(String name) {

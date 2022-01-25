@@ -6,7 +6,6 @@ import java.util.List;
 
 public class TabBuilder {
     private List<Tab> tabs = new ArrayList<>();
-    private String permission;
 
     public TabBuilder addTab(Tab tab) {
         tabs.add(tab);
@@ -20,10 +19,5 @@ public class TabBuilder {
                 list.put(tab.getArg(), tab.getVariation()));
 
         return list;
-    }
-
-    public TabBuilder permission(String permission) {
-        this.permission = permission;
-        return this;
     }
 }

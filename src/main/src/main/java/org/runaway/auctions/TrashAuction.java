@@ -59,9 +59,9 @@ public class TrashAuction {
         section.getStringList("items").forEach(s -> {
             PrisonItem pi = ItemManager.getPrisonItem(s.split(" ")[0] + "_" +
                     EConfig.UPGRADE.getConfig().getInt("upgrades." + s.split(" ")[0] + ".lorelevel"));
-            List<Parameter> f = pi.getParameters();
+            /*List<Parameter> f = pi.getParameters();
             f.remove(ParameterManager.getNodropParameter());
-            pi.setParameters(f);
+            pi.setParameters(f);*/
 
             items.put(pi.getItemStack(), Double.parseDouble(s.split(" ")[1]));
         });

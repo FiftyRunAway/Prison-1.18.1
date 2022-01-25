@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
@@ -46,8 +47,10 @@ public class GiftCommand extends CommandManager {
             boolean taken = false;
             if (owner.getInventory().getContents().length > 0) {
                 for (int i = 0; i < owner.getInventory().getContents().length; i++) {
+                    if (owner.getInventory().getContents()[i] == null) continue;
                     if (owner.getInventory().getContents()[i].equals(Utils.getGifts().get(consumer.getName()))) {
-                        owner.getInventory().getItem(i).setAmount(0);
+                        owner.getInventory().getItem(i).setAmount(owner.getInventory().getItem(i).getAmount() -
+                                Utils.getGifts().get(consumer.getName()).getAmount());
                         taken = true;
                         break;
                     }
@@ -122,6 +125,11 @@ public class GiftCommand extends CommandManager {
                 return;
             }
             Player cons = Bukkit.getPlayer(String.valueOf(args[0]));
+            Gamer consGamer = GamerManager.getGamer(cons);
+            if (!gamer.isNear(consGamer)) {
+                gamer.sendMessage(EMessage.COMECLOSER);
+                return;
+            }
             if (Utils.getGifters().containsValue(p.getName())) {
                 gamer.sendMessage(Utils.colored(EMessage.SENDERALREADYGIFT.getMessage()));
                 return;
@@ -131,7 +139,6 @@ public class GiftCommand extends CommandManager {
                 gamer.sendMessage(EMessage.CONSUMERALREADYGIFT.getMessage().replace("%time%", String.valueOf(timer)));
                 return;
             }
-            Gamer consGamer = GamerManager.getGamer(cons);
             Utils.getGifters().put(cons.getName(), p.getName());
             Utils.getGifts().put(cons.getName(), p.getInventory().getItemInMainHand().clone());
             gamer.sendMessage(EMessage.SENDGIFT);

@@ -204,12 +204,12 @@ public class Mine {
                     try {
                         Location newLoc = loc.clone().subtract(mine.getDiametr() - 1, 0, mine.getDiametr() - 1);
                         CuboidRegion cuboidSelection = new CuboidRegion(BukkitAdapter.adapt(loc.getWorld()),
-                                BlockVector3.at(loc.getX(), loc.getZ(), loc.getZ()),
-                                BlockVector3.at(newLoc.getX(), newLoc.getBlockY(), newLoc.getZ()));
+                                BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()),
+                                BlockVector3.at(newLoc.getX(), newLoc.getY(), newLoc.getZ()));
                         try (EditSession editSession = WorldEdit.getInstance().newEditSession(cuboidSelection.getWorld())) {
                             Pattern blockPattern = BukkitAdapter.adapt(mine.surface.createBlockData());
-                            editSession.setBlocks((Region)cuboidSelection, blockPattern);
-                            editSession.flushSession();
+                            editSession.setBlocks((Region) cuboidSelection, blockPattern);
+                            editSession.flushQueue();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -225,7 +225,6 @@ public class Mine {
                         RandomPattern randomPattern = new RandomPattern();
                         for (String str : mine.getTypes().split(" ")) {
                             Material mat;
-                            int subid = 0;
                             if (str.contains(":")) {
                                 String[] splitter = str.split(":");
                                 mat = Material.valueOf(splitter[0].toUpperCase());
@@ -235,7 +234,7 @@ public class Mine {
                             randomPattern.add(BukkitAdapter.adapt(mat.createBlockData()), 1);
                         }
                         editSession.setBlocks((Region) cuboidSelection, randomPattern);
-                        editSession.flushSession();
+                        editSession.flushQueue();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
