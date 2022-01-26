@@ -15,6 +15,7 @@ import org.runaway.managers.GamerManager;
 import org.runaway.tasks.SyncRepeatTask;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
+import org.runaway.utils.color.ColorAPI;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -114,6 +115,8 @@ public class Board {
     }
 
     private static String updateDisplayName(String displayName) {
+        return ColorAPI.process("<RAINBOW1>Тюрьма</RAINBOW>");
+        /*
         if (displayName != null && displayName.length() >= 1) {
             int i = 0;
             while (i < ScoreBoardUpdate.size()) {
@@ -129,7 +132,7 @@ public class Board {
             }
             return ScoreBoardUpdate.get(0);
         }
-        return ScoreBoardUpdate.get(0);
+        return ScoreBoardUpdate.get(0);*/
     }
 
     private static void titleUpdate() {
@@ -143,16 +146,11 @@ public class Board {
                     scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
                             .replace(Utils.colored(" &7| " + Prison.event), "")) + Utils.colored(" &7| " + Prison.event));
                 } else {
-                    /*
-                    Bukkit.getConsoleSender().sendMessage(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName() + " - " + updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
-                            .replace(Utils.colored(" &7| &b" + BattlePass.season + " сезон"), "")) + Utils.colored(" &7| &b" + BattlePass.season + " сезон"));
-                    scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(updateDisplayName(scoreboard.getObjective(DisplaySlot.SIDEBAR).getDisplayName()
-                            .replace(Utils.colored(" &7| &b" + BattlePass.season + " сезон"), "")) + Utils.colored(" &7| &b" + BattlePass.season + " сезон"));
-                            */
-                    scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(GamerManager.getGamer(p).getBoardName());
+                    scoreboard.getObjective(DisplaySlot.SIDEBAR).setDisplayName(
+                            ColorAPI.process(GamerManager.getGamer(p).getBoardName()));
                 }
             });
-        }, 6, 40);
+        }, 4, 40);
     }
 
     public static void loadBoard() {

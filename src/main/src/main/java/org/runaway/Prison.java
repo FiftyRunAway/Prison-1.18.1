@@ -1,8 +1,6 @@
 package org.runaway;
 
-import com.google.gson.stream.JsonReader;
 import lombok.Getter;
-import net.minecraft.world.level.GameRules;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -63,7 +61,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /*
@@ -79,7 +76,7 @@ public class Prison extends JavaPlugin {
 
     public static boolean isDisabling;
     public static List<String> stats;
-    
+
     //SQLite
     private Map<String, Database> databases = new HashMap<>();
     public final String stat_table = "Statistics";

@@ -1,10 +1,9 @@
 package org.runaway.nametag;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import org.runaway.donate.Privs;
+import org.runaway.utils.color.ColorAPI;
 
 import java.util.List;
 
@@ -12,10 +11,8 @@ public class Teams {
 
     public static Scoreboard sb;
 
-    private static List<Team> privs;
-
     public static void load(Player player) {
-        Privs privs = Privs.DEFAULT.getPrivilege(player);
-        privs.getTeam().addPlayer(player);
+        player.setPlayerListHeader(ColorAPI.process("<SOLID:0275fd>Ãquantix"));
+        player.setPlayerListFooter(ColorAPI.process("<SOLID:0275fd>IP: <SOLID:85C1E9>mc.aquantix.su"));
     }
 }

@@ -1,6 +1,6 @@
 name: Prison
 main: org.runaway.Prison
-version: 3.0
+version: 2.1
 author: _RunAway_
 api-version: 1.18
 softdepend:
