@@ -3,9 +3,7 @@ package org.runaway.events;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftArrow;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,9 +21,13 @@ public class MobDamage implements Listener {
     public void event(EntityDamageByEntityEvent event) {
         org.bukkit.entity.Entity damager = event.getDamager();
         if (!(damager instanceof Player) && !(damager instanceof Projectile)) return;
+        if (damager instanceof Fireball) return;
         Player player = null;
         if (damager instanceof Player) player = (Player) damager;
-        if (damager instanceof Projectile) player = (Player) ((CraftArrow)damager).getShooter();
+        if (damager instanceof CraftArrow) player = (Player) ((CraftArrow)damager).getShooter();
+
+        if (player == null) return;
+
         org.bukkit.entity.Entity target = event.getEntity();
         if (!(target instanceof LivingEntity livingEntity)) return;
         Gamer gamer = GamerManager.getGamer(player);

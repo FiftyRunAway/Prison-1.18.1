@@ -18,7 +18,8 @@ public enum EButtons {
     PLUS("itemsadder:plastic", null, Material.IRON_BARS),
     CANCEL("mcicons:icon_cancel", "&cВыйти", Material.ARROW),
     ARROW_RIGHT("mcicons:icon_right_blue", null, Material.COMPASS),
-    SEARCH("mcicons:icon_comment", null, Material.PAPER);
+    SEARCH("mcicons:icon_comment", null, Material.PAPER),
+    SPINEL("itemsadder:spinel", null, Material.PAPER);
 
     private String path;
     private String defaultDisplayName;

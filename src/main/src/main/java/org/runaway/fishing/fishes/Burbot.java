@@ -1,5 +1,7 @@
 package org.runaway.fishing.fishes;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.runaway.fishing.EFishType;
 import org.runaway.fishing.Fish;
 
@@ -13,6 +15,11 @@ public class Burbot extends Fish {
     @Override
     public EFishType getType() {
         return EFishType.EPIC;
+    }
+
+    @Override
+    public ItemStack getMaterial() {
+        return new ItemStack(Material.SALMON);
     }
 
     @Override

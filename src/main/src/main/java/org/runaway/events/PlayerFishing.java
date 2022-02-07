@@ -40,7 +40,7 @@ public class PlayerFishing implements Listener {
         Fish f = Fish.randomFish(fish);
         if (f != null) {
             if (fish == EFishType.LEGENDARY) Job.addStatistics(GamerManager.getGamer(event.getPlayer()), JobRequriement.LEGENDARY_FISH);
-            event.getPlayer().getInventory().addItem(f.getIcon().item());
+            event.getPlayer().getInventory().addItem(f.getIcon().build());
         }
     }
 

@@ -1,6 +1,5 @@
 package org.runaway.inventories;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,13 +15,11 @@ import org.runaway.enums.ServerStatus;
 import org.runaway.enums.TypeMessage;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
-import org.runaway.items.parameters.ParameterMeta;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.button.MenuButton;
 import org.runaway.menu.type.StandardMenu;
-import org.runaway.upgrades.UpgradeMisc;
 import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Vars;
@@ -211,12 +208,12 @@ public class UpItemsMenu implements IMenus {
             MenuButton sh = DefaultButtons.OPEN.getButtonOfItemStack(new Item.Builder(Material.SHEARS).name("&aНожницы").build().item(), "&eВыберите предмет прокачки &7• &eНожницы");
             sh.setSlot(25); sh.setClickEvent(event -> shears.open(GamerManager.getGamer(event.getWhoClicked()))); menu.addButton(sh);
 
-            MenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getReplacer()).build()); back.setSlot(26);
+            MenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()); back.setSlot(26);
             spade.addButton(back); axe.addButton(back); pickaxe.addButton(back); spickaxe.addButton(back);
             sword.addButton(back); bow.addButton(back); fish_rod.addButton(back); shears.addButton(back);
             helmet.addButton(back); chestplate.addButton(back); legs.addButton(back); boots.addButton(back);
 
-            IMenuButton backs = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getReplacer()).build()).setSlot(53);
+            IMenuButton backs = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(53);
             backs.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
             menu.addButton(backs);
 

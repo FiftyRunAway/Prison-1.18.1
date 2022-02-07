@@ -86,7 +86,7 @@ public class BattlePassMenu implements IMenus {
 
         Lore lore_bought = new Lore.BuilderLore()
                 .addSpace()
-                .addString("&6Вы приобрели боевой пропуск " + BattlePass.season + " сезона!")
+                .addString("&6Вы владеете боевым пропуском " + BattlePass.season + " сезона!")
                 .addString("&r")
                 .addString("&eВыполнено еженедельных заданий &7• &6" + gamer.getQuestValue("BpQuests"))
                 .build();
@@ -96,10 +96,11 @@ public class BattlePassMenu implements IMenus {
                 .addString("&aВсе платные награды вы сможете получить")
                 .addString("&aпосле покупки!")
                 .build();
-        IMenuButton desc = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.KNOWLEDGE_BOOK)
+        IMenuButton desc = DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(Material.KNOWLEDGE_BOOK)
                 .name("&eБоевой пропуск")
-                .lore(gamer.hasBattlePass() ? lore_bought : lor)
-                .build().item()).setSlot(47);
+                .setLore(gamer.hasBattlePass() ? lore_bought.getList() : lor.getList())
+                .addGlow(gamer.hasBattlePass())
+                .build()).setSlot(47);
         desc.setClickEvent(event -> {
             Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
             if (!gamer.hasBattlePass()) {
@@ -127,13 +128,14 @@ public class BattlePassMenu implements IMenus {
                     .build()).setSlot(18));
         }
 
-        if (!gamer.hasBattlePass())
+        if (!gamer.hasBattlePass()) {
             UpdateMenu.builder()
                     .updateType(new SimpleItemStack[]{SimpleItemStack.builder()
                             .material(Material.WRITABLE_BOOK)
                             .durability(0).build()})
                     .gamerLive(gamer)
                     .build().update(main, desc);
+        }
 
         List<IMenuButton> btns = new ArrayList<>(preloaded_icons.get(page));
         if (page < Math.ceil(pages - 1)) {

@@ -1,5 +1,6 @@
 package org.runaway;
 
+import com.nametagedit.plugin.NametagEdit;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatMessageType;
@@ -55,6 +56,7 @@ import org.runaway.utils.ItemUtils;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
+import org.runaway.utils.color.ColorAPI;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.math.BigDecimal;
@@ -75,7 +77,8 @@ import java.util.stream.Collectors;
 @Getter @Setter
 public class Gamer {
 
-    private static final String bpPerm = "prison.battlepass";
+    private static final Privs bpMinPriv = Privs.AQUA;
+
     private static final int combatRelog = 15;
     private static final boolean enabledCombatRelog = true;
 
@@ -686,6 +689,7 @@ public class Gamer {
     }
 
     public boolean hasBattlePass() {
+        if (getPrivilege().getPriority() >= bpMinPriv.getPriority()) return true;
         return getBooleanStatistics(EStat.BATTLEPASS);
     }
 
@@ -724,7 +728,11 @@ public class Gamer {
     }
 
     public void setNametag() {
-        //NametagEdit.getApi().setPrefix(getPlayer(), ChatColor.YELLOW + getDisplayRebirth() + (getIntStatistics(EStat.REBIRTH) > 0 ? " " : "") + "&7[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor());
+        NametagEdit.getApi().setPrefix(getPlayer(), getPrefixNametag());
+    }
+
+    private String getPrefixNametag() {
+        return getPrivPrefix(true) + " &7• " + "[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor();
     }
 
     public void teleportBase() {
@@ -1280,10 +1288,30 @@ public class Gamer {
     public void sendActionbar(String msg) {
         try {
             getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.colored(msg)));
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
     }
 
     public static boolean isEnabledCombatRelog() {
         return enabledCombatRelog;
+    }
+
+    public String getPrivPrefix() {
+        return getPrivPrefix(false);
+    }
+
+    public String getPrivPrefix(boolean shortness) {
+        if (Prison.usePermissionsEx) {
+            if (player.isOp() ||
+                    PermissionsEx.getUser(getGamer()).inGroup("own")) {
+                return Utils.colored(ColorAPI.process("<GRADIENT:F86B5D>OWN</GRADIENT:F8B85D>"));
+            }
+            return shortness ? Utils.colored(getPrivilege().getShortPrefix()) : Utils.colored(getPrivilege().getName());
+        }
+        return "";
+    }
+
+    public Date getKitLastDate() {
+        if (getQuestValue("kit").equals("0")) return null;
+        return new Date(Long.parseLong(getQuestValue("kit")));
     }
 }

@@ -4,28 +4,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 import org.runaway.items.Item;
 import org.runaway.donate.features.*;
 import org.runaway.enums.MoneyType;
+import org.runaway.items.ItemManager;
 import org.runaway.nametag.Teams;
+import org.runaway.rewards.LootItem;
+import org.runaway.rewards.MoneyReward;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
+import org.runaway.utils.color.ColorAPI;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public enum Privs {
-    DEFAULT("prison.default", null, 1, Material.GRAY_DYE, "", 0, 0),
+    DEFAULT("prison.default", null, 1, Material.GRAY_DYE, "", null, 0, 0),
     VIP("prison.vip", new IFeature[] {
             new FractionDiscount().setValue(15),
             new BoosterBlocks().setValue(1.1),
             new BoosterMoney().setValue(1.1),
             new NeedsLonger().setValue(12),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(5)
-    }, 2, Material.ORANGE_DYE, "&aVIP", 10, 150),
+    }, 2, Material.ORANGE_DYE, "&6VIP", "&6V",10, 100),
    PREMIUM("prison.premium", new IFeature[] {
            new FractionDiscount().setValue(25),
            new BoosterBlocks().setValue(1.2),
@@ -34,7 +37,7 @@ public enum Privs {
            new NeedsLonger().setValue(14),
            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
            new StringFeature().setName("Максимум предметов на аукционе").setValue(6)
-    }, 3, Material.YELLOW_DYE, "&bPremium", 11, 200),
+    }, 3, Material.YELLOW_DYE, "&ePremium", "&eP",11, 200),
     CRYSTAL("prison.crystal", new IFeature[] {
             new FractionDiscount().setValue(35),
             new BoosterBlocks().setValue(1.3),
@@ -43,8 +46,8 @@ public enum Privs {
             new NeedsLonger().setValue(16),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(7)
-    }, 4, Material.LIGHT_BLUE_DYE, "&bCrystal", 12, 300),
-    LORD("prison.lord", new IFeature[] {
+    }, 4, Material.LIGHT_BLUE_DYE, "&bCrystal", "&bC",12, 300),
+    MAGMA("prison.magma", new IFeature[] {
             new FractionDiscount().setValue(40),
             new BoosterBlocks().setValue(1.4),
             new BoosterMoney().setValue(1.4),
@@ -52,27 +55,67 @@ public enum Privs {
             new NeedsLonger().setValue(18),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(8)
-    }, 5, Material.LIME_DYE, "&aLord", 13, 450),
-    MAGMA("prison.magma", new IFeature[] {
+    }, 5, Material.RED_DYE, "&cMagma", "&cM",13, 450),
+    JUNIOR("prison.junior", new IFeature[] {
             new FractionDiscount().setValue(45),
             new BoosterBlocks().setValue(1.5),
             new BoosterMoney().setValue(1.5),
-            new BossMoney().setValue(25),
+            new BossMoney().setValue(20),
             new NeedsLonger().setValue(20),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(9),
             new BossNotify().setValue(true)
-    }, 6, Material.RED_DYE, "&cMagma", 14, 550),
-    JUNIOR("prison.junior", new IFeature[] {
-            new FractionDiscount().setValue(60),
+    }, 6, Material.PURPLE_DYE, "&dJunior","&dJ", 14, 750),
+    KING("prison.king", new IFeature[] {
+            new FractionDiscount().setValue(50),
             new BoosterBlocks().setValue(1.6),
             new BoosterMoney().setValue(1.6),
-            new BossMoney().setValue(33),
+            new BossMoney().setValue(25),
             new NeedsLonger().setValue(25),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
-            new StringFeature().setName("Максимум предметов на аукционе").setValue(10),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(12),
             new BossNotify().setValue(true)
-    }, 7, Material.PURPLE_DYE, "&dJunior", 15, 750),;
+    }, 7, Material.BLUE_DYE, "&9King", "&9K",15, 950),
+    PLATINUM("prison.platinum", new IFeature[] {
+            new FractionDiscount().setValue(60),
+            new BoosterBlocks().setValue(1.7),
+            new BoosterMoney().setValue(1.7),
+            new BossMoney().setValue(30),
+            new NeedsLonger().setValue(30),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(14),
+            new BossNotify().setValue(true)
+    }, 8, Material.WHITE_DYE, ColorAPI.process("<SOLID:e5e4e2>Platinum"), ColorAPI.process("<SOLID:e5e4e2>P"),19, 1250),
+    HERO("prison.hero", new IFeature[] {
+            new FractionDiscount().setValue(65),
+            new BoosterBlocks().setValue(1.8),
+            new BoosterMoney().setValue(1.8),
+            new BossMoney().setValue(35),
+            new NeedsLonger().setValue(34),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(16),
+            new BossNotify().setValue(true)
+    }, 9, Material.LIME_DYE, "&aHero", "&aH",20, 1500),
+    AQUA("prison.aqua", new IFeature[] {
+            new FractionDiscount().setValue(75),
+            new BoosterBlocks().setValue(1.9),
+            new BoosterMoney().setValue(1.9),
+            new BossMoney().setValue(40),
+            new NeedsLonger().setValue(38),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(18),
+            new BossNotify().setValue(true)
+    }, 10, Material.MAGENTA_DYE, ColorAPI.process("<SOLID:0272ff>Aqua"), ColorAPI.process("<SOLID:e0a33a>A"),21, 1800),
+    SPONSOR("prison.sponsor", new IFeature[] {
+            new FractionDiscount().setValue(85),
+            new BoosterBlocks().setValue(2.0),
+            new BoosterMoney().setValue(2.0),
+            new BossMoney().setValue(45),
+            new NeedsLonger().setValue(60),
+            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
+            new StringFeature().setName("Максимум предметов на аукционе").setValue(20),
+            new BossNotify().setValue(true)
+    }, 11, Material.CAKE, ColorAPI.process("<GRADIENT:e0a33a>Sponsor</GRADIENT:cf383c>"), ColorAPI.process("<SOLID:e0a33a>S"),22, 6000);
 
     public static Map<Privs, ItemStack> icons = new EnumMap<>(Privs.class);
 
@@ -84,10 +127,11 @@ public enum Privs {
 
     private Material sack;
     private String name;
+    private String shortPrefix;
 
     private Team team;
 
-    Privs(String perm, IFeature[] features, int priority, Material sack, String name, int slot, int price) {
+    Privs(String perm, IFeature[] features, int priority, Material sack, String name, String shortPrefix, int slot, int price) {
         this.perm = perm;
         this.features = features;
         this.priority = priority;
@@ -96,11 +140,16 @@ public enum Privs {
 
         this.sack = sack;
         this.name = name;
+        this.shortPrefix = shortPrefix;
 
         ScoreboardManager sm = Bukkit.getServer().getScoreboardManager();
         Teams.sb = sm.getNewScoreboard();
         this.team = Teams.sb.registerNewTeam(name().toLowerCase(Locale.ROOT));
         this.team.setPrefix(getName());
+    }
+
+    public Material getMaterial() {
+        return sack;
     }
 
     public String getPermission() {
@@ -123,11 +172,19 @@ public enum Privs {
         return price;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
     private static Privs current;
     private static Player player;
 
     public String getName() {
         return name;
+    }
+
+    public String getShortPrefix() {
+        return shortPrefix;
     }
 
     public static void loadIcons() {
@@ -160,7 +217,7 @@ public enum Privs {
         });
         player = p;
         current = Privs.valueOf(priv.get());
-        return this;
+        return current;
     }
 
     public Object getValue(IFeature feature) {
@@ -175,5 +232,83 @@ public enum Privs {
             return object.get();
         }
         return null;
+    }
+
+    public Kit getKit() {
+        switch (this) {
+            case VIP -> {
+                return new Kit.KitBuilder().priv(VIP).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(100).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(8).build()
+                )).build();
+            }
+            case PREMIUM -> {
+                return new Kit.KitBuilder().priv(PREMIUM).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(150).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(12).build()
+                )).build();
+            }
+            case CRYSTAL -> {
+                return new Kit.KitBuilder().priv(CRYSTAL).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(200).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(16).build()
+                )).build();
+            }
+            case MAGMA -> {
+                return new Kit.KitBuilder().priv(MAGMA).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(250).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(20).build()
+                )).build();
+            }
+            case JUNIOR -> {
+                return new Kit.KitBuilder().priv(JUNIOR).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(300).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(24).build()
+                )).build();
+            }
+            case KING -> {
+                return new Kit.KitBuilder().priv(KING).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(350).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(26).build()
+                )).build();
+            }
+            case PLATINUM -> {
+                return new Kit.KitBuilder().priv(PLATINUM).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(400).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(30).build()
+                )).build();
+            }
+            case HERO -> {
+                return new Kit.KitBuilder().priv(HERO).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(450).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(33).build()
+                )).build();
+            }
+            case AQUA -> {
+                return new Kit.KitBuilder().priv(AQUA).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(500).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(36).build()
+                )).build();
+            }
+            case SPONSOR -> {
+                return new Kit.KitBuilder().priv(SPONSOR).cooldown(24 * 3600).rewards(List.of(
+                        MoneyReward.builder().dependOnLevel(true).amount(600).build(),
+                        LootItem.builder().prisonItem(ItemManager.getPrisonItem("defaultKey"))
+                                .amount(40).build()
+                )).build();
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 }

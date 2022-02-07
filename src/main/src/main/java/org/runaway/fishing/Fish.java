@@ -1,11 +1,13 @@
 package org.runaway.fishing;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.items.Item;
 import org.runaway.enums.MoneyType;
 import org.runaway.jobs.EJobs;
 import org.runaway.jobs.Job;
+import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.Lore;
 
 import java.math.BigDecimal;
@@ -18,6 +20,7 @@ public abstract class Fish {
 
     public abstract String getName();
     public abstract EFishType getType();
+    public abstract ItemStack getMaterial();
     protected abstract double getMaxWeight();
     protected abstract double getChance();
     protected abstract short getIconData();
@@ -35,33 +38,29 @@ public abstract class Fish {
         return this.weight;
     }
 
-    public Item getIcon() {
-        return new Item.Builder(Material.LEGACY_RAW_FISH)
-                .data(getIconData())
+    public ItemBuilder getIcon() {
+        return new ItemBuilder(getMaterial().getType())
                 .name(getType().getColor() + getName())
-                .lore(new Lore.BuilderLore()
+                .setLore(new Lore.BuilderLore()
                         .addString("&7Вес: &e" + getWeight() + " г.")
                         .addSpace()
                         .addString("&7Вы можете продать её у")
-                        .addString("&7&nглавного рыбака").build())
-        .build();
+                        .addString("&7&nглавного рыбака").build().getList());
     }
 
     public double getPriceLevel(Gamer gamer) {
         return BigDecimal.valueOf(getPrice() * 1000 * (((double) Job.getStatistics(gamer, EJobs.FISHERMAN.name().toLowerCase()) / 2) + 1)).setScale(2, RoundingMode.UP).doubleValue();
     }
 
-    public Item getIcon(Gamer gamer) {
+    public ItemBuilder getIcon(Gamer gamer) {
         String m = getPriceLevel(gamer) + " ";
-        return new Item.Builder(Material.LEGACY_RAW_FISH)
-                .data(getIconData())
+        return new ItemBuilder(getMaterial())
                 .name(getType().getColor() + getName())
-                .lore(new Lore.BuilderLore()
+                .setLore(new Lore.BuilderLore()
                         .addString("&7Цена за 1 кг: &e" + m + MoneyType.RUBLES.getShortName())
                         .addSpace()
                         .addString("&7Цена зависит от")
-                        .addString("&7вашего уровня работы!").build())
-                .build();
+                        .addString("&7вашего уровня работы!").build().getList());
     }
 
     private static Fish getRandomFish(EFishType type) {

@@ -30,7 +30,7 @@ public class FishSellMenu implements IMenus {
         int slot = 0;
         for (EFish fish : EFish.values()) {
             Fish fs = fish.getFish();
-            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(fs.getIcon(GamerManager.getGamer(player)).item()).setSlot(slot++);
+            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(fs.getIcon(GamerManager.getGamer(player)).build()).setSlot(slot++);
             btn.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
                 Gamer gamer = GamerManager.getGamer(p);

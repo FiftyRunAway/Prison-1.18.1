@@ -3,6 +3,8 @@ main: org.runaway.Prison
 version: 2.1
 author: _RunAway_
 api-version: 1.18
+depend:
+  - ItemsAdder
 softdepend:
 - HolographicDisplays
 - PermissionsEx

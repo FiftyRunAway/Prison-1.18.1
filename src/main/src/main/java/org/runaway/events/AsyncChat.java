@@ -13,6 +13,7 @@ import org.runaway.utils.Utils;
 import org.runaway.enums.EMessage;
 import org.runaway.enums.EStat;
 import org.runaway.enums.FactionType;
+import org.runaway.utils.color.ColorAPI;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 /*
@@ -39,11 +40,11 @@ public class AsyncChat implements Listener {
         }
         String faction = "";
         String rebirth = "";
-        String prefix = "";
+        String prefix;
         if (!gamer.getFaction().equals(FactionType.DEFAULT)) faction = Utils.colored("&7[" + gamer.getFaction().getColor() + gamer.getFaction().getName() + "&7] &f");
         if (gamer.getIntStatistics(EStat.REBIRTH) > 0) rebirth = ChatColor.YELLOW + gamer.getDisplayRebirth() + " " + ChatColor.GRAY;
         String level = Utils.colored("&7[" + gamer.getLevelColor() + "" + gamer.getDisplayLevel() + "&7] ");
-        if (Prison.usePermissionsEx) prefix = Utils.colored(PermissionsEx.getUser(player.getPlayer().getName()).getPrefix());
+        prefix = Utils.colored("&7[" + gamer.getPrivPrefix() + "&7] ");
 
         boolean start = message.startsWith("!");
         if (start || !message.startsWith("@")) {

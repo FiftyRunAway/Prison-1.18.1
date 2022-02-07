@@ -15,6 +15,7 @@ public class MoneyReward implements IReward {
     private double amount, minAmount, maxAmount;
     private float chance;
     private int probability;
+    private boolean dependOnLevel;
 
     @Override
     public ItemStack getItemStack() {
@@ -27,7 +28,7 @@ public class MoneyReward implements IReward {
         if(getMaxAmount() != 0) {
             amount = ThreadLocalRandom.current().nextDouble(getMinAmount(), getMaxAmount());
         }
-        gamer.depositMoney(amount, true);
+        gamer.depositMoney(dependOnLevel ? (amount * gamer.getLevel()) : amount, true);
     }
 
     @Override

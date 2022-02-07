@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.runaway.Gamer;
+import org.runaway.donate.Kit;
 import org.runaway.inventories.BoostersMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
@@ -31,6 +32,7 @@ public class UpdateMenu {
     private Mines mineBossUpdate;
     private boolean boostersUpdate;
     private boolean isBoosterBlocks;
+    private boolean kitsUpdate;
 
     private Gamer gamerLive;
 
@@ -58,12 +60,14 @@ public class UpdateMenu {
                 newItemStack.setType(newSimpleIs.getMaterial());
                 newItemStack.setDurability((short) newSimpleIs.getDurability());
                 ItemMeta meta = newItemStack.getItemMeta();
-                if (updateLore != null || mineBossUpdate != null || boostersUpdate) {
+                if (updateLore != null || mineBossUpdate != null || boostersUpdate || kitsUpdate) {
                     //Live updates
                     if (mineBossUpdate != null) {
                         meta.setLore(mineBossUpdate.getLoreIcon(gamerLive).getList());
                     } else if (boostersUpdate) {
                         meta.setLore(BoostersMenu.loreGlobal(isBoosterBlocks).getList());
+                    } else if (kitsUpdate) {
+                        meta.setLore(Kit.getLore(gamerLive, gamerLive.getPrivilege()));
                     } else {
                         meta.setLore(updateLore.getList());
                     }

@@ -34,7 +34,16 @@ public class PrivilageMenu implements IMenus {
             menu.addButton(btn);
         });
 
-        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(26);
+        IMenuButton kits = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.SPINEL.getItemStack())
+                        .name("&eКиты для донатеров")
+                .build()).setSlot(8);
+        kits.setClickEvent(event -> {
+            Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
+            KitsMenu.getMenu(gamer).open(gamer);
+        });
+        menu.addButton(kits);
+
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(35);
         back.setClickEvent(event -> new DonateMenu(event.getWhoClicked()));
         menu.addButton(back);
 
@@ -43,7 +52,7 @@ public class PrivilageMenu implements IMenus {
 
     @Override
     public int getRows() {
-        return 3;
+        return 4;
     }
 
     @Override

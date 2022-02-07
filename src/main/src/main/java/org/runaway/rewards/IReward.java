@@ -1,6 +1,5 @@
 package org.runaway.rewards;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 

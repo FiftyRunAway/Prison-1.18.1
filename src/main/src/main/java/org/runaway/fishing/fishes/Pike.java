@@ -1,5 +1,7 @@
 package org.runaway.fishing.fishes;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.runaway.fishing.EFishType;
 import org.runaway.fishing.Fish;
 
@@ -12,6 +14,11 @@ public class Pike extends Fish {
     @Override
     public EFishType getType() {
         return EFishType.RARE;
+    }
+
+    @Override
+    public ItemStack getMaterial() {
+        return new ItemStack(Material.COOKED_SALMON);
     }
 
     @Override

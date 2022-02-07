@@ -1,5 +1,6 @@
 package org.runaway.utils;
 
+import me.bigteddy98.bannerboard.api.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -7,18 +8,22 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.runaway.Prison;
 import org.runaway.board.Board;
 import org.runaway.enums.MoneyType;
+import org.runaway.tasks.AsyncRepeatTask;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TopsBanner /*extends BannerBoardRenderer<Void>*/ {
+public class TopsBanner extends BannerBoardRenderer<Void> {
 
-    /*public TopsBanner(List<Setting> parameters, int allowedWidth, int allowedHeight) {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm МСК");
+
+    public TopsBanner(List<Setting> parameters, int allowedWidth, int allowedHeight) {
         super(parameters, allowedWidth, allowedHeight);
 
         if (!this.hasSetting("textureSize")) {
@@ -57,7 +62,7 @@ public class TopsBanner /*extends BannerBoardRenderer<Void>*/ {
             throw new DisableBannerBoardException("Renderer PRISON_LEADERS did not have valid skinurl parameter, renderer disabled...");
         }*/
         // all font related things
-        /*String randomFont = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()[0];
+        String randomFont = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()[0];
         if (!this.hasSetting("font")) {
             parameters.add(new Setting("font", randomFont));
         }
@@ -110,15 +115,9 @@ public class TopsBanner /*extends BannerBoardRenderer<Void>*/ {
             throw new DisableBannerBoardException("Renderer PRISON_LEADERS did not have valid textOffset parameter, renderer disabled...");
         }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                updateBoard();
-            }
-        }.runTaskTimerAsynchronously(Prison.getInstance(), 250, 20 * 120);
+        new AsyncRepeatTask(this::updateBoard, 2400, 200);
     }
 
-    //private volatile BufferedImage skinImage;
     private volatile Map<String, Long> top;
     private volatile String desc;
 
@@ -151,19 +150,18 @@ public class TopsBanner /*extends BannerBoardRenderer<Void>*/ {
     @Override
     public void render(Player p, BufferedImage image, Graphics2D g) {
         synchronized (this.waitLock) {
-            try {
-                while (this.wait) {
-                    this.waitLock.wait();
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[INFO] [BannerBoard] BannerBoard had to wait a few seconds for Prison to load its data. The server is not under heavy load.");
+            while (wait) {
+                try {
+                    waitLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         if (top == null) {
             return;
         }
-        Integer xOffset = null;
+         Integer xOffset = null;
         Integer yOffset = null;
 
         if (this.hasSetting("xOffset")) {
@@ -173,29 +171,18 @@ public class TopsBanner /*extends BannerBoardRenderer<Void>*/ {
             yOffset = Integer.parseInt(this.getSetting("yOffset").getValue());
         }
 
-        //int textureSize = Integer.parseInt(this.getSetting("textureSize").getValue());
-        // fix the possible yOffset and xOffset null
-        /*if (xOffset == null) {
-            xOffset = (image.getWidth() / 2) - (textureSize / 2);
-        }
-        if (yOffset == null) {
-            yOffset = (image.getHeight() / 2) - (textureSize / 2);
-        }*/
-
-        //g.drawImage(this.skinImage, xOffset, yOffset, textureSize, textureSize, null);
-
-        /*int size = Integer.parseInt(this.getSetting("nameSize").getValue());
+        int size = Integer.parseInt(this.getSetting("nameSize").getValue());
 
         String fontName = this.getSetting("font").getValue();
-        Font font = new Font(fontName, FontStyle.valueOf(this.getSetting("style").getValue().toUpperCase()).getId(), size);
+        Font font = new Font(fontName, 1, size);
         Color textColor = this.decodeColor(this.getSetting("color").getValue());
         Color blurColor = this.decodeColor(this.getSetting("strokeColor").getValue());
         int strokeThickness = Integer.parseInt(this.getSetting("strokeThickness").getValue());
 
         AtomicInteger i = new AtomicInteger(0);
         AtomicInteger k = new AtomicInteger(0);
-        Integer finalYOffset = yOffset;
-        Integer finalXOffset = xOffset;
+        int finalYOffset = yOffset;
+        int finalXOffset = xOffset;
 
         int s = this.top.keySet().size();
         this.top.remove("_RunAway_");
@@ -218,7 +205,9 @@ public class TopsBanner /*extends BannerBoardRenderer<Void>*/ {
             }
             i.getAndIncrement();
         });
-    }*/
+        g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), "Последнее обновление: " + dateFormat.format(new Date()), font, textColor, blurColor, strokeThickness, null, null), finalXOffset / 2,
+                finalYOffset + 120, null);
+    }
 
     public static String FormatMoney(Object balance) {
         if (balance instanceof Integer) {

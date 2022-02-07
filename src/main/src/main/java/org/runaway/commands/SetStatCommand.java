@@ -47,7 +47,7 @@ public class SetStatCommand extends CommandManager {
                 type = EStat.valueOf(args[1].toUpperCase());
             } catch (Exception ex) {
                 p.sendMessage(ChatColor.RED + "Введёный вами вид статистики " + args[1] + " не существует");
-                p.sendMessage(ChatColor.RED + "Доступные: " + st.toString());
+                p.sendMessage(ChatColor.RED + "Доступные: " + st);
                 return;
             }
             if (isAllow(args[2], type, p)) {
@@ -57,7 +57,7 @@ public class SetStatCommand extends CommandManager {
                 } else {
                     addStat(args[0], type, obj, false);
                 }
-                p.sendMessage(ChatColor.WHITE + "Тип статистики " + ChatColor.YELLOW + Utils.upCurLetter(type.toString(), 1) + " (" + Utils.upCurLetter(type.getStatType().toString(), 1) + ")" + ChatColor.WHITE + " у игрока " + ChatColor.YELLOW + args[0] + ChatColor.WHITE + " был установлен на " + ChatColor.YELLOW + Utils.upCurLetter(obj.toString(), 1));
+                p.sendMessage(ChatColor.WHITE + "Тип статистики " + ChatColor.YELLOW + Utils.upCurLetter(type.toString(), 1) + " (" + Utils.upCurLetter(type.getStatType().toString(), 1) + ")" + ChatColor.WHITE + " у игрока " + ChatColor.YELLOW + args[0] + (isOnline ? "" : " (Оффлайн)") + ChatColor.WHITE + " был установлен на " + ChatColor.YELLOW + Utils.upCurLetter(obj.toString(), 1));
             }
         }
     }
@@ -93,7 +93,7 @@ public class SetStatCommand extends CommandManager {
         ArrayList<String> st = new ArrayList<>();
         Arrays.stream(EStat.values()).forEach(stats -> st.add(stats.name().toLowerCase()));
         if (args.length != 3) {
-            cs.sendMessage(ChatColor.RED + "Use: /" + cmdName + " <player> " + st.toString() + " <value>");
+            cs.sendMessage(ChatColor.RED + "Use: /" + cmdName + " <player> " + st + " <value>");
             return;
         }
         boolean isOnline = true;
@@ -106,7 +106,7 @@ public class SetStatCommand extends CommandManager {
             type = EStat.valueOf(args[1].toUpperCase());
         } catch (Exception ex) {
             cs.sendMessage(ChatColor.RED + "Typed " + Utils.upCurLetter(args[1], 1) + " isn`t real");
-            cs.sendMessage(ChatColor.RED + "Available: " + st.toString());
+            cs.sendMessage(ChatColor.RED + "Available: " + st);
             return;
         }
         if (isAllow(args[2], type, cs)) {
@@ -116,7 +116,7 @@ public class SetStatCommand extends CommandManager {
             } else {
                 addStat(args[0], type, obj, false);
             }
-            cs.sendMessage(ChatColor.WHITE + "Type of stat " + Utils.upCurLetter(type.toString(), 1) + " for player " + args[0] + " was set on " + obj.toString());
+            cs.sendMessage(ChatColor.WHITE + "Type of stat " + Utils.upCurLetter(type.toString(), 1) + " for player " + args[0] + (isOnline ? "" : " (Offline)") + " was set on " + obj.toString());
         }
     }
 

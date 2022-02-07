@@ -1,6 +1,5 @@
 package org.runaway.inventories;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -33,10 +32,16 @@ public class RuneMenu implements IMenus {
             menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(glass).setSlot(i));
         }
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(is)
-                        .name("&eИнформация:")
+                        .name("&eИнформация")
                         .addLoreLine("&r")
                         .addLoreLine("&7Выберите предмет из вашего инвентаря,")
                         .addLoreLine("&7чтобы работать с рунами!")
+                        .addLoreLine("&r")
+                        .addLoreLine("&7Обращайте внимание на то, что у каждого")
+                        .addLoreLine("&7предмета есть определённое количество")
+                        .addLoreLine("&eслотов &7под руны. В первый слот вы")
+                        .addLoreLine("&7можете вставить только &fобычную &7руну")
+                        .addLoreLine("&7во второй - &eредкую &7и т.д.")
                 .build()).setSlot(8));
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).name("&cСохранить и выйти").build()).setSlot(26);
         back.setClickEvent(event -> event.getWhoClicked().closeInventory());

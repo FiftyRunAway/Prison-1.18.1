@@ -1,6 +1,8 @@
 package org.runaway;
 
 import lombok.Getter;
+import me.bigteddy98.bannerboard.api.BannerBoardAPI;
+import me.bigteddy98.bannerboard.api.BannerBoardManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -601,7 +603,7 @@ public class Prison extends JavaPlugin {
                     new SpawnerCommand(), new ScrollsCommand(), new ProfileCommand(), new PayCommand(),
                     new BaseCommand(), new TrashCommand(), new QuestCommand(), new FisherCommand(),
                     new JobCommand(), new MsgCommand(), new ReplyCommand(), new InvseeCommand(), new ItemCommand(),
-                    new HideCommand(), new RuneCommand()).forEach(CommandManager::register);
+                    new HideCommand(), new RuneCommand(), new KitCommand()).forEach(CommandManager::register);
 
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error with registering commands!");
@@ -692,12 +694,11 @@ public class Prison extends JavaPlugin {
     private void loadItemsAdder() {
         boolean usePlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
         if (!usePlaceholderAPI) return;
-        /*useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
+        useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
         if (useItemsAdder) {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, "ItemsAdder and PlaceholderAPI were successfully connected");
             return;
-        }*/
-        useItemsAdder = true;
+        }
         Vars.sendSystemMessage(TypeMessage.INFO, "ItemsAdder and PlaceholderAPI have not been installed yet");
     }
 
@@ -712,7 +713,7 @@ public class Prison extends JavaPlugin {
                 public void run() {
                     Utils.getPlayers().forEach(s -> GamerManager.getGamer(Bukkit.getPlayer(s)).setNametag());
                 }
-            }.runTaskTimer(instance, 20L, 1200L);
+            }.runTaskTimer(instance, 20L, 400L);
         } else {
             Vars.sendSystemMessage(TypeMessage.INFO, "NametagEdit has not been installed yet");
         }
@@ -855,8 +856,8 @@ public class Prison extends JavaPlugin {
             tops.put("rebirths", new TopPlayers(rebirth,"перерождений"));
             tops.put("keys", new TopPlayers(keys, "ключей"));
             tops.put("donate", new TopPlayers(dm, "рублей"));
-            //BannerBoardAPI api = BannerBoardManager.getAPI();
-            //api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
+            BannerBoardAPI api = BannerBoardManager.getAPI();
+            api.registerCustomRenderer("prison_leaders", this, false, TopsBanner.class);
         } catch (Exception ex) {
             Vars.sendSystemMessage(TypeMessage.ERROR, "Error in loading players top!");
             Prison.getInstance().setStatus(ServerStatus.ERROR);
