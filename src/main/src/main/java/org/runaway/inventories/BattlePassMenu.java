@@ -6,6 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.donate.Donate;
+import org.runaway.donate.DonateStat;
 import org.runaway.enums.EButtons;
 import org.runaway.items.Item;
 import org.runaway.Prison;
@@ -55,6 +57,8 @@ public class BattlePassMenu implements IMenus {
                         .addString("           &7Опыт:")
                         .addString(progresBarLevel(gamer))
                         .addString("&70                    " + BattlePass.level)
+                        .addString("&r")
+                        .addString("&7Очки боевого пропуска (ОБП) • &e" + gamer.getIntStatistics(DonateStat.BPOINT))
                         .build())
                 .build().item()).setSlot(49);
         getMain().addButton(exp);
@@ -104,7 +108,15 @@ public class BattlePassMenu implements IMenus {
         desc.setClickEvent(event -> {
             Gamer gamer = GamerManager.getGamer(event.getWhoClicked());
             if (!gamer.hasBattlePass()) {
-                new DonateMenu(event.getWhoClicked());
+                Donate bp = null;
+                for (Donate donate : Donate.icons.keySet()) {
+                    if (donate.getIcon().getType().equals(Material.TNT)) {
+                        bp = donate;
+                        break;
+                    }
+                }
+                if (bp == null) return;
+                new BuyBattlePassMenu(event.getWhoClicked(), bp);
             }
         });
         main.addButton(desc);

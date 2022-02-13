@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.enums.*;
+import org.runaway.inventories.BuyBattlePassMenu;
 import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Lore;
@@ -47,8 +48,13 @@ public class Donate {
                 .addString("&7Описание:")
                 .addLore(lore)
                 .addSpace()
-                .addString("&fЦена: " + (sale > 0 ? ("&b&m" + price + " &c&n" + sale) : ("&l&b&n" + price)) + " " + MoneyType.REAL_RUBLES.getShortName())
+                .addString("&fЦена: " + (sale > 0 ? ("&b&m" + price + " &c&n" + sale) : ("&l&b&n" + price)) + " " + MoneyType.REAL_RUBLES.getShortName() +
+                        (icon.equals(Material.TNT) ? "&7 или &b&n&l" + BuyBattlePassMenu.bpoints + " ОБП" : ""))
         .build()).build().item();
+    }
+
+    public Material getMaterial() {
+        return this.icon;
     }
 
     public int getSlot() { return slot; }
@@ -60,6 +66,7 @@ public class Donate {
     public int getFinalPrice() {
         return this.sale > 0 ? sale : price;
     }
+
 
     public static void saveDonateLog(TypeMessage type, String message) {
         String date = new SimpleDateFormat("dd/MM/yyyy").format(new Date());

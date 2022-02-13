@@ -24,27 +24,27 @@ public enum Achievement {
             new ItemReward().setReward(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").build().item()) }, true),
     TEN_LEVEL("&aПолучить 10 уровень","Опытный зэк", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(12)),
-            new BoosterReward().setReward(BoosterType.MONEY, 1.4, 1200, false),
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.4, 1200, false)}, true),
+            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 1200, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 1200, false)}, true),
     FIFTEEN_LEVEL("&aПолучить 15 уровень","Зэк-ветеран", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(24)),
-            new BoosterReward().setReward(BoosterType.MONEY, 1.4, 1800, false),
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.4, 1800, false)}, true),
+            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 1800, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 1800, false)}, true),
     TWENTY_LEVEL("&aПолучить 20 уровень","Надёжный зэк", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(48)),
-            new BoosterReward().setReward(BoosterType.MONEY, 1.4, 3600, false),
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.4, 3600, false)}, true),
+            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 3600, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 3600, false)}, true),
     TWENTYFIFTH_LEVEL("&aПолучить 25 уровень","Зэк магистр", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(64)),
-            new BoosterReward().setReward(BoosterType.MONEY, 1.4, 3600, false),
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.4, 3600, false)}, true),
+            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 3600, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 3600, false)}, true),
     REBIRTH("&aПереродитесь впервые","Иисус", new Reward[]{
             new BoosterReward().setReward(BoosterType.MONEY, 1.2, 10800, true),
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 10800, true)}, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2 , 10800, true)}, false),
     FIRST_TREASURE("&aНайти свой первый клад","Сыщик I", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(4)) }, false),
     SPIDER_KILL("&aВы добили матку впервые", "Ведьмак", new Reward[]{
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 900, false),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.1, 900, false),
             new MoneyReward().setReward(50) }, false),
     BLAZE_KILL("&aВы добили огненного стража", "Ведьмак II", new Reward[]{
             new MoneyReward().setReward(75) }, true),
@@ -92,13 +92,13 @@ public enum Achievement {
     TIME_30("&aСыграть 30 минут", "Это только начало пути", new Reward[]{
             new MoneyReward().setReward(10) }, false),
     TIME_90("&aСыграть полтора часа", "Уже что-то)", new Reward[]{
-            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 900, false) }, false),
+            new BoosterReward().setReward(BoosterType.MONEY, 1.1, 900, false) }, false),
     TIME_4H("&aСыграть 4 часа", "Практически ветеран", new Reward[]{
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 1200, true) }, true),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.1, 1200, true) }, true),
     TIME_10H("&aСыграть 10 часов", "Кажется, уже ветеран", new Reward[]{
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.3, 1800, true) }, true),
+            new BoosterReward().setReward(BoosterType.BLOCKS, 1.1, 1800, true) }, true),
     KILL_ARROW("&aУбить себя из лука", "Хмм.. Молодец)", new Reward[]{
-            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 600, false),
+            new BoosterReward().setReward(BoosterType.MONEY, 1.1, 600, false),
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(12)) }, true),
     FIRST_LOCATION("&aОткрыть новую локацию", "Крупно повезло", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(12)) }, false);

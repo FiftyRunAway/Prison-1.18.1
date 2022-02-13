@@ -3,7 +3,6 @@ package org.runaway.inventories;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.runaway.Gamer;
 import org.runaway.enums.EButtons;
 import org.runaway.enums.MoneyType;
@@ -31,11 +30,20 @@ public class DonateMenu implements IMenus {
             player.closeInventory();
             return;
         }
+        if (donate.getIcon().getType().equals(Material.TNT)) {
+            new BuyBattlePassMenu(player, donate);
+            return;
+        }
         if (Donate.getDonateMoney(player.getName()) < donate.getFinalPrice()) {
             player.closeInventory();
             gamer.sendMessage(EMessage.TRANSACTIONFAILED);
             return;
         }
+        process(player, donate);
+    }
+
+    public static void process(Player player, Donate donate) {
+        Gamer gamer = GamerManager.getGamer(player);
         new Confirmation(player, () -> {
             if (Donate.withdrawDonateMoney(player.getName(), donate.getFinalPrice())) {
                 player.sendMessage(Utils.colored(EMessage.TRANSACTIONSUCCESS.getMessage()

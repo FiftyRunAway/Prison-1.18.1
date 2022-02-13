@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.runaway.Gamer;
 import org.runaway.battlepass.IReward;
 import org.runaway.donate.Donate;
+import org.runaway.donate.DonateStat;
 
 public class MoneyReward extends IReward {
 
@@ -17,12 +18,12 @@ public class MoneyReward extends IReward {
 
     @Override
     protected void getReward(Gamer gamer) {
-        Donate.depositDonateMoney(gamer.getName(), this.value, false);
+        gamer.increaseIntStatistics(DonateStat.BPOINT, this.value);
     }
 
     @Override
     public String getName() {
-        return "&eДеньги на счёт доната";
+        return "&eОчки Боевого пропуска";
     }
 
     @Override

@@ -18,6 +18,7 @@ public enum DonateStat implements Saveable {
     TOTAL_DONATED("totalDonated", 0, StatType.INTEGER),
     SPENT("spent", 0, StatType.INTEGER),
     BUYINGS("amountPurchases", 0, StatType.INTEGER),
+    BPOINT("bpPoints", 0, StatType.INTEGER),
 
     OFFLINE_VALUES("offline_values", "", StatType.STRING);
 
