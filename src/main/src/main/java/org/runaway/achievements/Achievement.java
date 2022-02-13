@@ -38,9 +38,6 @@ public enum Achievement {
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(64)),
             new BoosterReward().setReward(BoosterType.MONEY, 1.2, 3600, false),
             new BoosterReward().setReward(BoosterType.BLOCKS, 1.2, 3600, false)}, true),
-    REBIRTH("&aПереродитесь впервые","Иисус", new Reward[]{
-            new BoosterReward().setReward(BoosterType.MONEY, 1.2, 10800, true),
-            new BoosterReward().setReward(BoosterType.BLOCKS, 1.2 , 10800, true)}, false),
     FIRST_TREASURE("&aНайти свой первый клад","Сыщик I", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(4)) }, false),
     SPIDER_KILL("&aВы добили матку впервые", "Ведьмак", new Reward[]{

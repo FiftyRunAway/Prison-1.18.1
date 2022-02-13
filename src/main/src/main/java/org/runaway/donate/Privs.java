@@ -104,7 +104,8 @@ public enum Privs {
             new NeedsLonger().setValue(38),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(18),
-            new BossNotify().setValue(true)
+            new BossNotify().setValue(true),
+            new StringFeature().setName("&6Боевой пропуск").setValue(true)
     }, 10, Material.MAGENTA_DYE, ColorAPI.process("<SOLID:0272ff>Aqua"), ColorAPI.process("<SOLID:e0a33a>A"),21, 1800),
     SPONSOR("prison.sponsor", new IFeature[] {
             new FractionDiscount().setValue(85),
@@ -114,7 +115,8 @@ public enum Privs {
             new NeedsLonger().setValue(60),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(20),
-            new BossNotify().setValue(true)
+            new BossNotify().setValue(true),
+            new StringFeature().setName("&6Боевой пропуск").setValue(true)
     }, 11, Material.CAKE, ColorAPI.process("<GRADIENT:e0a33a>Sponsor</GRADIENT:cf383c>"), ColorAPI.process("<SOLID:e0a33a>S"),22, 6000);
 
     public static Map<Privs, ItemStack> icons = new EnumMap<>(Privs.class);
@@ -198,7 +200,7 @@ public enum Privs {
     private ItemStack getIcon(Privs priv) {
         ArrayList<String> list = new ArrayList<>();
         for (IFeature feature : priv.features) {
-            list.add("&7• &a" + feature.getName() + ": &e" + feature.getValue().toString().replace("true", "есть"));
+            list.add("  &a" + feature.getName() + " &7• &e" + feature.getValue().toString().replace("true", "есть"));
         }
         return new Item.Builder(priv.sack)
                 .name(Utils.colored("&7Привилегия • " + priv.name))

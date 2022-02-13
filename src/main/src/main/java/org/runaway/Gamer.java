@@ -852,7 +852,7 @@ public class Gamer {
         getPlayer().setLevel(0);
 
         Achievement.JOIN.get(player);
-        Achievement.REBIRTH.get(player);
+        //Achievement.REBIRTH.get(player);
 
         if(getAmount(ItemManager.getPrisonItem("menu")) == 0) {
             addItem("menu");
