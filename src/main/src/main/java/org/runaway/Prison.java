@@ -71,6 +71,8 @@ import java.util.stream.Stream;
 
 public class Prison extends JavaPlugin {
 
+    public final boolean ranksImages = true;
+
     private static Prison instance;
     public static Prison getInstance() {
         return instance;

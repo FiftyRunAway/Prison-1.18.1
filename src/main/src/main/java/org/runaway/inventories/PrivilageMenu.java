@@ -3,7 +3,9 @@ package org.runaway.inventories;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
+import org.runaway.Prison;
 import org.runaway.enums.EButtons;
 import org.runaway.items.Item;
 import org.runaway.donate.Privs;
@@ -29,7 +31,14 @@ public class PrivilageMenu implements IMenus {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
 
         Privs.icons.forEach((privs, itemStack) -> {
-            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(itemStack).setSlot(privs.getSlot());
+            ItemStack res = null;
+            if (Prison.useItemsAdder) {
+                res = new ItemBuilder(itemStack)
+                        .name(privs.getGuiName())
+                        .build();
+            }
+
+            IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(res == null ? itemStack : res).setSlot(privs.getSlot());
             btn.setClickEvent(e -> buy(privs, e.getWhoClicked()));
             menu.addButton(btn);
         });

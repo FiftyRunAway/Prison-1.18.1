@@ -11,7 +11,7 @@ public class Vaccine extends PassivePerks {
 
     @Override
     protected String getDescription() {
-        return "Нужды в 1.5 раза реже";
+        return "Нужды в 1.3 раза реже";
     }
 
     @Override

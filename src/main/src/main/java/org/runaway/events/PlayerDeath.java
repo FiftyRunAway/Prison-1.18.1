@@ -24,6 +24,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
+import org.runaway.needs.Need;
 import org.runaway.runes.armor.RecoverRune;
 import org.runaway.runes.utils.Rune;
 import org.runaway.runes.utils.RuneManager;
@@ -120,7 +121,6 @@ public class PlayerDeath implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         new SyncTask(() -> {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 400, 3));
             gamer.getPassivePerks().forEach(passive -> {
                 if (!passive.isEffectAction()) return;
                 passive.getPerkAction(gamer);
@@ -128,22 +128,26 @@ public class PlayerDeath implements Listener {
         }, 80);
 
         //RUNES
-        if (player.getEquipment() == null) return;
-        for (ItemStack armor : player.getEquipment().getArmorContents()) {
-            if (armor == null) continue;
-            List<Rune> runes = RuneManager.getRunes(armor);
-            for (Rune rune : runes) {
-                if (rune == null) continue;
-                if (rune.constantEffects().isEmpty()) continue;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for (PotionEffect effect : rune.constantEffects()) {
-                            player.addPotionEffect(effect);
+        if (player.getEquipment() != null) {
+            for (ItemStack armor : player.getEquipment().getArmorContents()) {
+                if (armor == null) continue;
+                List<Rune> runes = RuneManager.getRunes(armor);
+                for (Rune rune : runes) {
+                    if (rune == null) continue;
+                    if (rune.constantEffects().isEmpty()) continue;
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            for (PotionEffect effect : rune.constantEffects()) {
+                                player.addPotionEffect(effect);
+                            }
                         }
-                    }
-                }.runTask(Prison.getInstance());
+                    }.runTask(Prison.getInstance());
+                }
             }
+        }
+        for (Need need : gamer.getNeeds()) {
+            if (need.isActive()) need.addPotion();
         }
     }
 }

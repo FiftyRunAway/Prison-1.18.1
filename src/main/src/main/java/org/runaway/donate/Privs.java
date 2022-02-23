@@ -1,11 +1,13 @@
 package org.runaway.donate;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+import org.runaway.Prison;
 import org.runaway.items.Item;
 import org.runaway.donate.features.*;
 import org.runaway.enums.MoneyType;
@@ -26,7 +28,8 @@ public enum Privs {
             new FractionDiscount().setValue(15),
             new BoosterBlocks().setValue(1.1),
             new BoosterMoney().setValue(1.1),
-            new NeedsLonger().setValue(12),
+            new NeedSleep().setValue(64),
+            new NeedWash().setValue(17),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(5)
     }, 2, Material.ORANGE_DYE, "&6VIP", "&6V",10, 100),
    PREMIUM("prison.premium", new IFeature[] {
@@ -34,7 +37,8 @@ public enum Privs {
            new BoosterBlocks().setValue(1.2),
            new BoosterMoney().setValue(1.2),
            new BossMoney().setValue(10),
-           new NeedsLonger().setValue(14),
+           new NeedSleep().setValue(68),
+           new NeedWash().setValue(20),
            new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
            new StringFeature().setName("Максимум предметов на аукционе").setValue(6)
     }, 3, Material.YELLOW_DYE, "&ePremium", "&eP",11, 200),
@@ -43,7 +47,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.3),
             new BoosterMoney().setValue(1.3),
             new BossMoney().setValue(15),
-            new NeedsLonger().setValue(16),
+            new NeedSleep().setValue(72),
+            new NeedWash().setValue(23),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(7)
     }, 4, Material.LIGHT_BLUE_DYE, "&bCrystal", "&bC",12, 300),
@@ -52,7 +57,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.4),
             new BoosterMoney().setValue(1.4),
             new BossMoney().setValue(20),
-            new NeedsLonger().setValue(18),
+            new NeedSleep().setValue(76),
+            new NeedWash().setValue(26),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(8)
     }, 5, Material.RED_DYE, "&cMagma", "&cM",13, 450),
@@ -61,7 +67,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.5),
             new BoosterMoney().setValue(1.5),
             new BossMoney().setValue(20),
-            new NeedsLonger().setValue(20),
+            new NeedSleep().setValue(80),
+            new NeedWash().setValue(29),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(9),
             new BossNotify().setValue(true)
@@ -71,7 +78,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.6),
             new BoosterMoney().setValue(1.6),
             new BossMoney().setValue(25),
-            new NeedsLonger().setValue(25),
+            new NeedSleep().setValue(84),
+            new NeedWash().setValue(32),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(12),
             new BossNotify().setValue(true)
@@ -81,7 +89,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.7),
             new BoosterMoney().setValue(1.7),
             new BossMoney().setValue(30),
-            new NeedsLonger().setValue(30),
+            new NeedSleep().setValue(88),
+            new NeedWash().setValue(35),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(14),
             new BossNotify().setValue(true)
@@ -91,7 +100,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.8),
             new BoosterMoney().setValue(1.8),
             new BossMoney().setValue(35),
-            new NeedsLonger().setValue(34),
+            new NeedSleep().setValue(92),
+            new NeedWash().setValue(38),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(16),
             new BossNotify().setValue(true)
@@ -101,7 +111,8 @@ public enum Privs {
             new BoosterBlocks().setValue(1.9),
             new BoosterMoney().setValue(1.9),
             new BossMoney().setValue(40),
-            new NeedsLonger().setValue(38),
+            new NeedSleep().setValue(92),
+            new NeedWash().setValue(41),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(18),
             new BossNotify().setValue(true),
@@ -112,7 +123,8 @@ public enum Privs {
             new BoosterBlocks().setValue(2.0),
             new BoosterMoney().setValue(2.0),
             new BossMoney().setValue(45),
-            new NeedsLonger().setValue(60),
+            new NeedSleep().setValue(100),
+            new NeedWash().setValue(45),
             new StringFeature().setName("Авто-продажа блоков").setValue("есть"),
             new StringFeature().setName("Максимум предметов на аукционе").setValue(20),
             new BossNotify().setValue(true),
@@ -203,11 +215,23 @@ public enum Privs {
             list.add("  &a" + feature.getName() + " &7• &e" + feature.getValue().toString().replace("true", "есть"));
         }
         return new Item.Builder(priv.sack)
-                .name(Utils.colored("&7Привилегия • " + priv.name))
+                .name(getGuiName())
                 .lore(new Lore.BuilderLore().addList(list)
                         .addSpace()
                         .addString("&fЦена: &l&b&n" + priv.getPrice() + " " + MoneyType.REAL_RUBLES.getShortName()).build())
                 .build().item();
+    }
+
+    public String getGuiName() {
+        return Utils.colored("&7Привилегия • " + (Prison.useItemsAdder ? getImageName() : getName()));
+    }
+
+    public String getImageName() {
+        try {
+            return new FontImageWrapper("moreranks:" + name().toLowerCase(Locale.ROOT)).getString();
+        } catch (Exception e) {
+            return getName();
+        }
     }
 
     public Privs getPrivilege(Player p) {

@@ -10,6 +10,7 @@ import org.runaway.enums.*;
 import org.runaway.inventories.BuyBattlePassMenu;
 import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
+import org.runaway.needs.Needs;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 
@@ -191,6 +192,7 @@ public class Donate {
                 }
                 case PAPER: {
                     gamer.setOfflineDonateValue("needs", 1);
+                    Needs.turnOff(gamer);
                     gamer.sendMessage("&aДля правильной работы купленной услуги, &eперезайдите на сервер!");
                     break;
                 }

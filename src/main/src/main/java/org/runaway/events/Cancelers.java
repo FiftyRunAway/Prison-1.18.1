@@ -90,6 +90,7 @@ public class Cancelers implements Listener {
                                 @Override
                                 public void run() {
                                     for (PotionEffect effect : rune.constantEffects()) {
+                                        if (player.getActivePotionEffects().stream().anyMatch(potionEffect -> potionEffect.getType().equals(effect.getType()) && potionEffect.getAmplifier() == 6)) continue;
                                         player.removePotionEffect(effect.getType());
                                     }
                                 }
@@ -107,7 +108,13 @@ public class Cancelers implements Listener {
                                 @Override
                                 public void run() {
                                     for (PotionEffect effect : rune.constantEffects()) {
-                                        player.addPotionEffect(effect);
+                                        boolean skip = false;
+                                        for (PotionEffect active : player.getActivePotionEffects()) {
+                                            if (active.getType().equals(effect.getType()) && active.getAmplifier() == 6) {
+                                                skip = true;
+                                            }
+                                        }
+                                        if (!skip) player.addPotionEffect(effect);
                                     }
                                 }
                             }.runTask(Prison.getInstance());

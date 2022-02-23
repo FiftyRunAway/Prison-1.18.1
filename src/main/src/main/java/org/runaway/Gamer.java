@@ -1,6 +1,7 @@
 package org.runaway;
 
 import com.nametagedit.plugin.NametagEdit;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatMessageType;
@@ -25,6 +26,7 @@ import org.runaway.donate.Privs;
 import org.runaway.donate.features.BoosterBlocks;
 import org.runaway.donate.features.BoosterMoney;
 import org.runaway.donate.features.FractionDiscount;
+import org.runaway.donate.features.NeedsLonger;
 import org.runaway.enums.*;
 import org.runaway.fishing.EFishType;
 import org.runaway.inventories.BattlePassMenu;
@@ -37,12 +39,11 @@ import org.runaway.items.parameters.ParameterManager;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.IMenu;
 import org.runaway.menu.type.StandardMenu;
+import org.runaway.needs.Need;
+import org.runaway.needs.NeedsType;
 import org.runaway.passiveperks.EPassivePerk;
 import org.runaway.passiveperks.PassivePerks;
-import org.runaway.passiveperks.perks.BBMoneySecond;
-import org.runaway.passiveperks.perks.BBlocksFirst;
-import org.runaway.passiveperks.perks.BBlocksSecond;
-import org.runaway.passiveperks.perks.BMoneyFirst;
+import org.runaway.passiveperks.perks.*;
 import org.runaway.rebirth.ESkill;
 import org.runaway.runes.utils.Rune;
 import org.runaway.runes.utils.RuneManager;
@@ -121,6 +122,9 @@ public class Gamer {
     private List<Cancellable> updatingButtons;
     private int boardState;
 
+    //Needs
+    private List<Need> needs;
+
     //CombatRelog
     private List<String> combatLog;
     private int inPvpLeft;
@@ -150,6 +154,7 @@ public class Gamer {
         if (!donateRequests.isExist("player", getPlayer().getName())) {
             isExistDonate = false;
         }
+        needs = new ArrayList<>();
 
         statisticsMap = preparedRequests.getAllValues(player.getName(), EStat.values(), isExist);
 
@@ -238,6 +243,17 @@ public class Gamer {
         ItemStack main = getPlayer().getInventory().getItemInMainHand();
         runes.addAll(RuneManager.getRunes(main));
         return runes;
+    }
+
+    public int getNeedCooldown(NeedsType type) {
+        int cooldown = NeedsType.getCooldown(type); // default parameter
+        Object obj = getPrivilege().getValue(NeedsType.getFeature(type));
+        if (obj != null) {
+            cooldown = Integer.parseInt(obj.toString());
+        }
+        if (hasPassivePerk(new Vaccine())) cooldown *= 1.3;
+
+        return cooldown;
     }
 
     public boolean isActiveRune(Rune rune, List<Rune> activeRunes) {
@@ -732,7 +748,7 @@ public class Gamer {
     }
 
     private String getPrefixNametag() {
-        return getPrivPrefix(true) + " &7• " + "[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor();
+        return getPrivPrefix(true, false) + " &7• " + "[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor();
     }
 
     public void teleportBase() {
@@ -1296,15 +1312,20 @@ public class Gamer {
     }
 
     public String getPrivPrefix() {
-        return getPrivPrefix(false);
+        return getPrivPrefix(false, false);
     }
 
-    public String getPrivPrefix(boolean shortness) {
+    public String getImagePrefix() {
+        return getPrivPrefix(false, true);
+    }
+
+    public String getPrivPrefix(boolean shortness, boolean image) {
         if (Prison.usePermissionsEx) {
             if (player.isOp() ||
                     PermissionsEx.getUser(getGamer()).inGroup("own")) {
                 return Utils.colored(ColorAPI.process("<GRADIENT:F86B5D>OWN</GRADIENT:F8B85D>"));
             }
+            if (image) return getPrivilege().getImageName();
             return shortness ? Utils.colored(getPrivilege().getShortPrefix()) : Utils.colored(getPrivilege().getName());
         }
         return "";

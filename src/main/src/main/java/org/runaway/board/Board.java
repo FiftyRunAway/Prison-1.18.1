@@ -1,6 +1,8 @@
 package org.runaway.board;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -50,26 +52,30 @@ public class Board {
         if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null) oldname = sb.getObjective(DisplaySlot.SIDEBAR).getDisplayName();
         objective.setDisplayName(oldname);
         Gamer gamer = GamerManager.getGamer(player);
-        replaceScore(objective, 15, ChatColor.GRAY + date());
-        replaceScore(objective, 14, " ");
-        replaceScore(objective, 13, "&eСтатистика:");
-        replaceScore(objective, 12, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_mc_experience_bottle%") : "&f Уровень") + getSplitter() + "&a&l" + gamer.getDisplayLevel());
-        replaceScore(objective, 11, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_money%") : "&f Баланс") + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
-        replaceScore(objective, 10, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_mc_iron_shovel%") : "&f Блоков ") + getSplitter() + "&6&l" + FormatBlocks(gamer));
-        replaceScore(objective, 9,  (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_mc_diamond_sword%") : "&f Убийств") + getSplitter() + "&c&l" +
+        replaceScore(objective, 15, invise(player) + ChatColor.GRAY + date());
+        replaceScore(objective, 14, invise(player) + " ");
+        replaceScore(objective, 13, invise(player) + "&eСтатистика:");
+        replaceScore(objective, 12, invise(player) + "&f Уровень" + getSplitter() + "&a&l" + gamer.getDisplayLevel());
+        replaceScore(objective, 11, invise(player) + "&f Баланс" + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
+        replaceScore(objective, 10, invise(player) + "&f Блоков " + getSplitter() + "&6&l" + FormatBlocks(gamer));
+        replaceScore(objective, 9,  invise(player) + "&f Убийств" + getSplitter() + "&c&l" +
                 gamer.getStatistics(EStat.KILLS) + Utils.colored(gamer.isInPvp() ? " &7[&c" + gamer.getInPvpLeft() + " сек&7]" : ""));
-        replaceScore(objective, 8, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_pig%") : "&f Крыс убито") + getSplitter() + "&c&l" + gamer.getMobKills("rat"));
-        replaceScore(objective, 7, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_mc_ghast_tear%") : "&f Ключей добыто") + getSplitter() + "&c&l" + gamer.getStatistics(EStat.KEYS));
-        replaceScore(objective, 6, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_mc_nether_star%") : "&f Фракция") + getSplitter() + "&c&l" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
-        replaceScore(objective, 5, "  ");
-        replaceScore(objective, 4, "&eСервер:");
-        replaceScore(objective, 3, (emojisEnabled ? PlaceholderAPI.setPlaceholders(player, "%img_facemask%") : "&f Игроков") + getSplitter() + "&a&l" + Utils.getPlayers().size()
+        replaceScore(objective, 8, invise(player) + "&f Крыс убито" + getSplitter() + "&c&l" + gamer.getMobKills("rat"));
+        replaceScore(objective, 7, invise(player) + "&f Ключей" + getSplitter() + "&c&l" + gamer.getStatistics(EStat.KEYS));
+        replaceScore(objective, 6, invise(player) + "&f Фракция" + getSplitter() + "&c&l" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
+        replaceScore(objective, 5, invise(player) + "  ");
+        replaceScore(objective, 4, invise(player) + "&eСервер:");
+        replaceScore(objective, 3, invise(player) + "&f Игроков" + getSplitter() + "&a&l" + Utils.getPlayers().size()
                 + (gamer.isHideEnabled() ? " &7[Скрыты]" : ""));
-        replaceScore(objective, 2, "   ");
-        replaceScore(objective, 1, "&f&l" + Vars.getSite());
+        replaceScore(objective, 2, invise(player) + "   ");
+        replaceScore(objective, 1, invise(player) + "&f&l" + Vars.getSite());
 
         if(objective.getDisplaySlot() != DisplaySlot.SIDEBAR) objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(score);
+    }
+
+    private static String invise(Player player) {
+        return emojisEnabled ? new FontImageWrapper("%img_offset_-500%").getString() : "";
     }
 
     private static String getSplitter() {

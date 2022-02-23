@@ -30,7 +30,7 @@ public class Kit {
         if (privs.getKit() == null) return new ItemStack(Material.AIR);
         Privs gamerPriv = gamer.getPrivilege();
         return new ItemBuilder(privs.getMaterial())
-                .name("&aНабор &7• " + privs.getName())
+                .name(getPriv().getGuiName())
                 .addGlow(gamerPriv.equals(privs))
                 .setLore(getLore(gamer, privs))
                 .build();

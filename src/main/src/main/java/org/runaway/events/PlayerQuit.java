@@ -16,6 +16,7 @@ import org.runaway.enums.EConfig;
 import org.runaway.enums.ServerStatus;
 import org.runaway.inventories.BattlePassMenu;
 import org.runaway.managers.GamerManager;
+import org.runaway.needs.Need;
 import org.runaway.needs.Needs;
 import org.runaway.utils.Utils;
 
@@ -33,6 +34,7 @@ public class PlayerQuit implements Listener {
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
         quitInPvp(gamer);
+        Need.stopAll(gamer);
         gamer.savePlayer();
         HideCommand.removeOnQuit(gamer);
         Utils.getPlayers().remove(player.getName());
