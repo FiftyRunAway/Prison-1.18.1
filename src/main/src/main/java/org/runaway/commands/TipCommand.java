@@ -42,23 +42,26 @@ public class TipCommand extends CommandManager {
             owners.add(Prison.gMoney.getOwner());
         }
         if (is > 0) {
-            int money = 5;
             for (String owns : owners) {
                 if (Utils.getPlayers().contains(owns)) {
-                    GamerManager.getGamer(owns).depositMoney(gamer.getLevel() * money, true);
+                    Gamer g = GamerManager.getGamer(owns);
+                    g.depositMoney(depositForTip(g.getMoney()), true);
                 } else {
-                    EStat.MONEY.setInConfig(owns, (double)EStat.MONEY.getFromConfig(owns) + (money * (int)EStat.LEVEL.getFromConfig(owns)));
+                    EStat.MONEY.setInConfig(owns, (double)EStat.MONEY.getFromConfig(owns) + depositForTip((double)EStat.MONEY.getFromConfig(owns)));
                 }
             }
-            gamer.depositMoney((money - 1) * is * gamer.getLevel(), true);
+            gamer.depositMoney(depositForTip(gamer.getMoney()), true);
             gamer.sendMessage(EMessage.TIP);
         } else {
             gamer.sendMessage(EMessage.NOACTIVEBOOSTERS);
         }
     }
 
-    @Override
-    public void runConsoleCommand(CommandSender cs, String[] args, String cmdName) {
-
+    private static double depositForTip(double money) {
+        double result = money * 0.07;
+        return result < 10 ? 1 : result;
     }
+
+    @Override
+    public void runConsoleCommand(CommandSender cs, String[] args, String cmdName) { }
 }

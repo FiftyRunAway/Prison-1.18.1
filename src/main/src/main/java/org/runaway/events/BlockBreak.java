@@ -394,10 +394,8 @@ public class BlockBreak implements Listener {
         switch (item) {
             case WOODEN_PICKAXE: {
                 list.add(Material.STONE);
-                list.add(Material.LEGACY_SMOOTH_BRICK);
                 list.add(Material.COAL_ORE);
                 list.add(Material.PRISMARINE);
-                list.add(Material.LEGACY_STAINED_GLASS);
                 list.add(Material.NETHERRACK);
                 list.add(Material.BRICK);
                 list.add(Material.SANDSTONE);
@@ -405,8 +403,11 @@ public class BlockBreak implements Listener {
                 list.add(Material.NETHER_QUARTZ_ORE);
                 list.add(Material.PACKED_ICE);
                 list.add(Material.ICE);
-                list.add(Material.LEGACY_STAINED_CLAY);
-                list.add(Material.LEGACY_CONCRETE);
+                list.add(Material.WHITE_CONCRETE);
+                list.add(Material.GRAY_CONCRETE);
+                list.add(Material.WHITE_TERRACOTTA);
+                list.add(Material.LIGHT_GRAY_TERRACOTTA);
+                list.add(Material.BROWN_TERRACOTTA);
                 break;
             }
             case STONE_PICKAXE: {

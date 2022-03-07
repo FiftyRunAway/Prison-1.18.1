@@ -3,16 +3,12 @@ package org.runaway.needs;
 import dev.lone.itemsadder.api.FontImages.PlayerHudsHolderWrapper;
 import dev.lone.itemsadder.api.FontImages.PlayerQuantityHudWrapper;
 import lombok.Getter;
-import me.bigteddy98.bannerboard.api.BannerBoardManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.runaway.Gamer;
 import org.runaway.tasks.SyncRepeatTask;
 import org.runaway.tasks.SyncTask;
-import org.runaway.utils.Utils;
 
 import java.util.List;
 import java.util.Locale;
@@ -64,8 +60,6 @@ public class Need {
             setHudValue(gamer, type, 0);
         }, unpause == 0 ? 1200 * cd : (int) TimeUnit.MILLISECONDS.toMinutes(unpause) * 1200);
 
-        Bukkit.getConsoleSender().sendMessage("secs - " + TimeUnit.MILLISECONDS.toSeconds(unpause));
-
         if (rejoin) return;
 
         this.hudTimer = new SyncRepeatTask(() -> {
@@ -83,7 +77,6 @@ public class Need {
     public static void stopAll(Gamer gamer) {
         for (Need need : gamer.getNeeds()) {
             need.cancelAllTasks();
-
             save(gamer, need);
         }
         gamer.getNeeds().clear();
@@ -95,7 +88,6 @@ public class Need {
             if (need.getType().equals(type)) {
                 need.cancelAllTasks();
                 toDelete.set(need);
-
                 save(gamer, need);
             }
         });
@@ -178,6 +170,6 @@ public class Need {
     }
 
     public void addPotion() {
-        this.gamer.addEffect(NeedsType.getEffect(this.type), Integer.MAX_VALUE, 6);
+        this.getGamer().getPlayer().addPotionEffect(new PotionEffect(NeedsType.getEffect(type), Integer.MAX_VALUE, 6));
     }
 }

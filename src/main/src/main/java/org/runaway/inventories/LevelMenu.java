@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.achievements.Achievement;
+import org.runaway.enums.EButtons;
 import org.runaway.enums.EMessage;
 import org.runaway.items.Item;
 import org.runaway.managers.GamerManager;
@@ -16,6 +17,7 @@ import org.runaway.menu.events.ButtonClickEvent;
 import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Requires;
+import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
 import org.runaway.board.Board;
@@ -35,11 +37,10 @@ public class LevelMenu implements IMenus {
 
     public LevelMenu(Player player) {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
-        menu.setType(InventoryType.WORKBENCH);
         Gamer gamer = GamerManager.getGamer(player);
         IMenuButton lvl = DefaultButtons.FILLER.getButtonOfItemStack(
                 new Item.Builder(Material.EXPERIENCE_BOTTLE).name("&eПовысить уровень:").lore(new Lore.BuilderLore().addList(lore(gamer)).build()).build().item());
-        menu.addButton(lvl.setSlot(0));
+        menu.addButton(lvl.setSlot(24));
         ItemStack btn;
         if (hasAccessToNextLevel(gamer)) {
             btn = ExampleItems.glass(Material.LIME_STAINED_GLASS_PANE, "&a&lНажмите, чтобы повысить");
@@ -54,9 +55,21 @@ public class LevelMenu implements IMenus {
             }
             event.getWhoClicked().closeInventory();
         });
-        for (int i = 1; i < 10; i++) {
-            menu.addButton(bt.clone().setSlot(i));
+        for (int i = 10; i < 13; i++) {
+            for (int b = 0; b < 3; b++) {
+                menu.addButton(bt.clone().setSlot(i + (b * 9)));
+            }
         }
+        bt = DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build());
+        for (int i = 14; i < 17; i++) {
+            for (int b = 0; b < 3; b++) {
+                menu.addButton(bt.clone().setSlot(i + (b * 9)));
+            }
+        }
+
+        IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(44);
+        back.setClickEvent(event -> event.getWhoClicked().closeInventory());
+        menu.addButton(back);
 
         menu.open(GamerManager.getGamer(player));
     }
@@ -163,7 +176,7 @@ public class LevelMenu implements IMenus {
 
     @Override
     public int getRows() {
-        return 1;
+        return 5;
     }
 
     @Override

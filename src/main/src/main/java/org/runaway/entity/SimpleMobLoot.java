@@ -33,7 +33,7 @@ public class SimpleMobLoot implements MobLoot {
         double needToKill = (100.0 / (damageList.size() > 0 ? damageList.size() : (damageList.size() + 1))) * 0.7;
         damageList.forEach((gamer, damagePercent) -> {
             if (money != 0) {
-                gamer.depositMoney(money * damagePercent);
+                gamer.depositMoney(money * damagePercent, true);
             }
             new PrivateHolo(gamer.getPlayer(), location, PrivateHolo.StandType.MONEY, money * damagePercent);
             if (damagePercent * 100 > needToKill) {

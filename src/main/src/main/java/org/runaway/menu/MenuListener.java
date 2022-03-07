@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.runaway.commands.TrashCommand;
 import org.runaway.enums.EMessage;
 import org.runaway.inventories.RuneMenu;
 import org.runaway.items.ItemManager;
@@ -55,7 +56,8 @@ public class MenuListener implements Listener {
                 if (event.getView().getTopInventory().isEmpty()) return;
                 if (!event.getClickedInventory().getType().equals(InventoryType.PLAYER)) return;
                 if (!event.getView().getTitle().equalsIgnoreCase(Utils.colored(new RuneMenu().getName()))) {
-                    if (!event.getView().getTitle().equals("Chest") && (!event.getView().getTitle().equals("Ender Chest"))) {
+                    if (!event.getView().getTitle().equals("Chest") && (!event.getView().getTitle().equals("Ender Chest")) &&
+                    !event.getView().getTitle().equals(TrashCommand.getInventoryName())) {
                         event.setCancelled(true);
                     }
                     return;

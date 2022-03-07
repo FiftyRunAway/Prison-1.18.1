@@ -1,7 +1,6 @@
 package org.runaway.needs;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,20 +11,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
 import org.runaway.Gamer;
 import org.runaway.Prison;
-import org.runaway.donate.features.NeedsLonger;
 import org.runaway.enums.EMessage;
 import org.runaway.managers.GamerManager;
-import org.runaway.passiveperks.perks.Vaccine;
-import org.runaway.tasks.SyncRepeatTask;
-import org.runaway.tasks.SyncTask;
-import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Needs implements Listener {

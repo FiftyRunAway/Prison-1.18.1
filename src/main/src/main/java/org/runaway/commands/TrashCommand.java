@@ -1,5 +1,6 @@
 package org.runaway.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,6 +28,10 @@ public class TrashCommand extends CommandManager {
         menu.build();
         menu.setCancelClickEvent(false);
         menu.open(GamerManager.getGamer(p));
+    }
+
+    public static final String getInventoryName() {
+        return ChatColor.YELLOW + "Мусорка";
     }
 
     private IMenuButton closeButton() {

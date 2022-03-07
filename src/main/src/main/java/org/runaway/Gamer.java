@@ -748,7 +748,8 @@ public class Gamer {
     }
 
     private String getPrefixNametag() {
-        return getPrivPrefix(true, false) + " &7• " + "[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor();
+        String pref = getPrivPrefix(true, false);
+        return pref + (pref.equals("") ? "" : " &7• ") + "&7[" + getLevelColor() + getDisplayLevel() + "&7] " + getFaction().getColor();
     }
 
     public void teleportBase() {
@@ -772,7 +773,7 @@ public class Gamer {
                     times.append(integer);
                     if (TrashAuction.times.size() != i.getAndIncrement() + 1) times.append(", ");
                 });
-                sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replaceAll("%time%", times.toString() + " часов по МСК")));
+                sendMessage(Utils.colored(EMessage.AUCTIONTIMES.getMessage().replace("%time%", times.toString() + " часов по МСК")));
             }
         } else {
             sendTitle("&cТолько", "&41.15.2+");

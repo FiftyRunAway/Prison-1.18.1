@@ -186,7 +186,7 @@ public class Utils {
 
     public static void sendClickableMessage(Gamer gamer, String message, String command, String hover) {
         Text.send(new Text.TextBuilder().message(message)
-                .suffix("&8[&7ПКМ&8]")
+                .suffix("&8[&7ЛКМ&8]")
                 .hover(hover)
                 .action(ClickEvent.Action.RUN_COMMAND)
                 .eventValue(command).build(), gamer);

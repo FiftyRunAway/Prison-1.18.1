@@ -695,8 +695,7 @@ public class Prison extends JavaPlugin {
     //Привязка ItemsAdder
     private void loadItemsAdder() {
         boolean usePlaceholderAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
-        if (!usePlaceholderAPI) return;
-        useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
+        useItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder") && usePlaceholderAPI;
         if (useItemsAdder) {
             Vars.sendSystemMessage(TypeMessage.SUCCESS, "ItemsAdder and PlaceholderAPI were successfully connected");
             return;
