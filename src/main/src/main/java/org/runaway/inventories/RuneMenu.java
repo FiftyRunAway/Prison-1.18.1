@@ -134,17 +134,18 @@ public class RuneMenu implements IMenus {
                 .addLoreLine("&7в вашем инвентаре!")
                 .build();
         int s = 1;
+        for (int i = 0; i < runes.size(); i++) {
+            menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(filler.clone()).setSlot(10 + i));
+        }
         for (Rune rune : runes) {
             ItemStack pane = ExampleItems.glass(getPane(s), getRarity(s).getName() + " руна");
             menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(pane.clone()).setSlot(s));
             menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(pane.clone()).setSlot(s + 18));
 
-            ++s;
-            if (rune == null) {
-                menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(filler.clone()).setSlot(s + 8));
-                continue;
+            s++;
+            if (rune != null) {
+                menu.addButton(getRuneBtn(rune, clicked, true));
             }
-            menu.addButton(getRuneBtn(rune, clicked, true));
         }
         g.setOpenedRunesMenu(menu);
     }

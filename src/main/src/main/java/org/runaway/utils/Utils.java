@@ -22,6 +22,8 @@ import org.runaway.managers.GamerManager;
 import org.runaway.trainer.Trainer;
 
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -275,6 +277,21 @@ public class Utils {
             }
         }
         return time + " сек";
+    }
+
+    public static String FormatMoney(Object balance) {
+        if (balance instanceof Integer) {
+            return balance + "";
+        } else if (balance instanceof String) {
+            return "&cСЛОМАЛОСЬ:(";
+        } else {
+            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+            decimalFormatSymbols.setDecimalSeparator('.');
+            decimalFormatSymbols.setGroupingSeparator(' ');
+            DecimalFormat decimalFormat = new DecimalFormat("#,##0", decimalFormatSymbols);
+            String r = decimalFormat.format(balance);
+            return r;
+        }
     }
 
     public static String combine(List<String> args, int firstIndex) {

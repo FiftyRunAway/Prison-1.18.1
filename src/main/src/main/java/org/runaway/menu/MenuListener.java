@@ -53,30 +53,24 @@ public class MenuListener implements Listener {
 
             if (!(holder instanceof IMenu)) {
                 //For RunesMenu
-                if (event.getView().getTopInventory().isEmpty()) return;
-                if (!event.getClickedInventory().getType().equals(InventoryType.PLAYER)) return;
-                if (!event.getView().getTitle().equalsIgnoreCase(Utils.colored(new RuneMenu().getName()))) {
-                    if (!event.getView().getTitle().equals("Chest") && (!event.getView().getTitle().equals("Ender Chest")) &&
-                    !event.getView().getTitle().equals(TrashCommand.getInventoryName())) {
-                        event.setCancelled(true);
+                if (!event.getView().getTopInventory().isEmpty() &&
+                        event.getClickedInventory().getType().equals(InventoryType.PLAYER) &&
+                        event.getView().getTitle().equalsIgnoreCase(Utils.colored(new RuneMenu().getName()))) {
+                    ItemStack is = event.getCurrentItem();
+                    if (is == null) return;
+                    if (is.getItemMeta() == null) return;
+                    PrisonItem pi = ItemManager.getPrisonItem(is);
+                    if (pi == null) return;
+                    if (pi.getTechName().endsWith("Rune")) {
+                        RuneMenu.onRuneClick(event);
+                    } else {
+                        if (pi.getMutableParameters() == null) return;
+                        if (!RuneManager.getRunes(is).isEmpty()) {
+                            RuneMenu.onClick(event);
+                        }
                     }
-                    return;
+                    event.setCancelled(true);
                 }
-
-                ItemStack is = event.getCurrentItem();
-                if (is == null) return;
-                if (is.getItemMeta() == null) return;
-                PrisonItem pi = ItemManager.getPrisonItem(is);
-                if (pi == null) return;
-                if (pi.getTechName().endsWith("Rune")) {
-                    RuneMenu.onRuneClick(event);
-                } else {
-                    if (pi.getMutableParameters() == null) return;
-                    if (!RuneManager.getRunes(is).isEmpty()) {
-                        RuneMenu.onClick(event);
-                    }
-                }
-                event.setCancelled(true);
                 return;
             }
 

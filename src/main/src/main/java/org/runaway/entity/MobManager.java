@@ -51,7 +51,8 @@ public class MobManager {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.8f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.9f).minAmount(12).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                        LootItem.builder().chance(0.9f).minAmount(12).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
+                        LootItem.builder().chance(0.1f).amount(1).prisonItem(ItemManager.getPrisonItem("legendaryKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(7).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -98,7 +99,8 @@ public class MobManager {
                 Arrays.asList(
                         LootItem.builder().chance(0.75f).minAmount(1).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
                         LootItem.builder().chance(0.9f).minAmount(8).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
-                        LootItem.builder().chance(0.65f).minAmount(10).maxAmount(20).prisonItem(ItemManager.getPrisonItem("bone")).build()
+                        LootItem.builder().chance(0.65f).minAmount(10).maxAmount(20).prisonItem(ItemManager.getPrisonItem("bone")).build(),
+                        LootItem.builder().chance(0.08f).amount(1).prisonItem(ItemManager.getPrisonItem("legendaryKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(6).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -144,7 +146,8 @@ public class MobManager {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.6f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.9f).minAmount(8).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                        LootItem.builder().chance(0.9f).minAmount(8).maxAmount(16).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
+                        LootItem.builder().chance(0.03f).amount(1).prisonItem(ItemManager.getPrisonItem("legendaryKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(4).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -197,7 +200,8 @@ public class MobManager {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.55f).minAmount(1).maxAmount(3).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.8f).minAmount(10).maxAmount(18).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                        LootItem.builder().chance(0.8f).minAmount(10).maxAmount(18).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
+                        LootItem.builder().chance(0.04f).amount(1).prisonItem(ItemManager.getPrisonItem("legendaryKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(5).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -256,7 +260,8 @@ public class MobManager {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.6f).minAmount(1).maxAmount(2).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.8f).minAmount(8).maxAmount(14).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                        LootItem.builder().chance(0.8f).minAmount(8).maxAmount(14).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
+                        LootItem.builder().chance(0.03f).amount(1).prisonItem(ItemManager.getPrisonItem("legendaryKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(3).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))
@@ -303,7 +308,8 @@ public class MobManager {
         MobLoot mobLoot = SimpleMobLoot.builder().minMoney(getMinMoney(money)).maxMoney(money).lootItems(
                 Arrays.asList(
                         LootItem.builder().chance(0.6f).amount(1).prisonItem(ItemManager.getPrisonItem("star")).build(),
-                        LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("defaultKey")).build()
+                        LootItem.builder().chance(0.8f).minAmount(4).maxAmount(10).prisonItem(ItemManager.getPrisonItem("defaultKey")).build(),
+                        LootItem.builder().chance(0.01f).amount(1).prisonItem(ItemManager.getPrisonItem("legendaryKey")).build()
                 )).build();
         Attributable attributable = PrisonMobPattern.builder()
                 .mobLevel(2).damage(section.getInt("damage")).boss(true).health(section.getInt("health")).speed(section.getDouble("speed"))

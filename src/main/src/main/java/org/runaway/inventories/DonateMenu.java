@@ -93,7 +93,7 @@ public class DonateMenu implements IMenus {
         privs.setClickEvent(event -> new PrivilageMenu(event.getWhoClicked()));
         menu.addButton(privs);
 
-        IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(EButtons.SACK_OF_MONEY.getItemStack()).name("&eБаланс: &a" + TopsBanner.FormatMoney(Donate.getDonateMoney(player.getName())) + " " + MoneyType.REAL_RUBLES.getShortName())
+        IMenuButton dm = DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(EButtons.SACK_OF_MONEY.getItemStack()).name("&eБаланс: &a" + Utils.FormatMoney(Donate.getDonateMoney(player.getName())) + " " + MoneyType.REAL_RUBLES.getShortName())
                 .setLore(new Lore.BuilderLore().addSpace().addString("&7>> &c&nНажмите, чтобы пополнить").build().getList()).build());
         dm.setClickEvent(event -> {
             Gamer g = GamerManager.getGamer(event.getWhoClicked());

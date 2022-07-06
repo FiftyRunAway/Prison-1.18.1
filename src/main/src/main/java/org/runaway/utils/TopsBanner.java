@@ -194,9 +194,9 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
                 if (this.desc.equalsIgnoreCase("блоков")) {
                     score_string = Board.FormatBlocks(score.toString()) + " " + desc;
                 } else if (this.desc.equalsIgnoreCase(MoneyType.RUBLES.getShortName())) {
-                    score_string = FormatMoney(score) + " " + MoneyType.RUBLES.getShortName();
+                    score_string = Utils.FormatMoney(score) + " " + MoneyType.RUBLES.getShortName();
                 } else if (this.desc.equalsIgnoreCase("рублей")) {
-                    score_string = FormatMoney(score) + " рублей";
+                    score_string = Utils.FormatMoney(score) + " рублей";
                 }
                 g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), pos + ". " + name, font, textColor, blurColor, strokeThickness, null, null), finalXOffset - 110,
                         finalYOffset + (k.get() * 27) - 200 + (k.get() * 2), null);
@@ -207,20 +207,5 @@ public class TopsBanner extends BannerBoardRenderer<Void> {
         });
         g.drawImage(BannerBoardManager.getAPI().drawFancyText(image.getWidth(), image.getHeight(), "Последнее обновление: " + dateFormat.format(new Date()), font, textColor, blurColor, strokeThickness, null, null), finalXOffset / 2,
                 finalYOffset + 120, null);
-    }
-
-    public static String FormatMoney(Object balance) {
-        if (balance instanceof Integer) {
-            return balance + "";
-        } else if (balance instanceof String) {
-            return "&cСЛОМАЛОСЬ:(";
-        } else {
-            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-            decimalFormatSymbols.setDecimalSeparator('.');
-            decimalFormatSymbols.setGroupingSeparator(' ');
-            DecimalFormat decimalFormat = new DecimalFormat("#,##0", decimalFormatSymbols);
-            String r = decimalFormat.format(balance);
-            return r;
-        }
     }
 }
