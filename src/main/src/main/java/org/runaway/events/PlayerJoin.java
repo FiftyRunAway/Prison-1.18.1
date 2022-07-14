@@ -54,11 +54,11 @@ public class PlayerJoin implements Listener {
             Teams.load(player);
 
             if (!player.hasPlayedBefore()) {
-                Achievement.JOIN.get(player); // Achievement
-                startKit(event.getPlayer()); // Give a start kit
-                gamer.teleport(Prison.SPAWN); // Teleport to spawn
+                Achievement.JOIN.get(player);
+                startKit(event.getPlayer());
+                player.teleport(Prison.SPAWN);
             } else {
-                if (Utils.getPlayers().size() == 1) Achievement.EMPTY_SERVER.get(player); // Achievement
+                if (Utils.getPlayers().size() == 1) Achievement.EMPTY_SERVER.get(player);
             }
         }
     }

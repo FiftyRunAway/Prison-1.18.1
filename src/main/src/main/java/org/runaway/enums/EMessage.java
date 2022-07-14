@@ -137,7 +137,9 @@ public enum  EMessage {
     SHOWGAMERS("ShowGamers", "&aВы снова видите других игроков"),
     HIDEGAMERS("HideGamers", "&cВы скрыли всех игроков", EMessageType.TITLE),
     ISNOTSUITABLERUNE("NotSuitableRune", "&cЭта руна не подходит вашему предмету!"),
-    COMECLOSER("ComeCloser", "&cПодойдите ближе к игроку!");
+    COMECLOSER("ComeCloser", "&cПодойдите ближе к игроку!"),
+    TAKEBOXAWAY("TakeTheBoxAway", "&cСначала отнесите ящик!"),
+    PLACEBOX("PlaceBox", "&cНеобходимо поставить этот ящик на складе");
 
     private String config, defaults;
     private EMessageType eMessageType;

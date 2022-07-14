@@ -38,6 +38,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
+import org.runaway.jobs.job.Mover;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuListener;
 import org.runaway.mines.Mine;
@@ -153,6 +154,7 @@ public class Prison extends JavaPlugin {
         new Config().unloadConfigs();
         TrashAuction.closeAll();
         saveBoosters();
+        Mover.saveBoxLocations();
         Vars.sendSystemMessage(TypeMessage.SUCCESS, "Plugin was successfully disabled!");
     }
 
@@ -220,6 +222,7 @@ public class Prison extends JavaPlugin {
             GamerManager.gamers.values().forEach(Gamer::savePlayer);
         }, 20 * 60 * 20, 20 * 60 * 20);
         loadBoosters();
+        Mover.loadBoxLocations();
 
         if(false) {
             //EXAMPLE
@@ -559,6 +562,7 @@ public class Prison extends JavaPlugin {
             new Utils().RegisterEvent(new PlayerFishing());
             new Utils().RegisterEvent(new Needs());
             new Utils().RegisterEvent(new FishCatch());
+            new Utils().RegisterEvent(new BlockPlace());
 
             // Missions events
             new Utils().RegisterEvent(new KeyFarm());

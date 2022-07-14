@@ -20,6 +20,7 @@ public abstract class Job {
     public abstract Material getMaterial();
     public abstract ArrayList<JobReq[]> getLevels();
     public abstract String getConfigName();
+    public abstract JobRequriement getMainRequriement();
 
     public int getMaxLevel() {
         return getLevels().size();
@@ -33,7 +34,7 @@ public abstract class Job {
         ArrayList<String> reqs = new ArrayList<>();
         boolean access = gamer.getIntStatistics(EStat.LEVEL) >= getLevel();
         reqs.add("&7• " + (access ? ChatColor.GREEN : ChatColor.RED) + "Минимальный уровень • " + getLevel());
-        return new Item.Builder(getMaterial()).name("&7Работа: &r" + getName()).lore(
+        return new Item.Builder(getMaterial()).name("&7Работа • &c" + getName()).lore(
                 new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7Требования к доступу:")

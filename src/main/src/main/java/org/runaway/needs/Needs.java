@@ -79,7 +79,7 @@ public class Needs implements Listener {
                 Gamer gamer = GamerManager.getGamer(player);
                 gamer.sendMessage(EMessage.STARTSLEEPING);
                 Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () -> {
-                    if (ThreadLocalRandom.current().nextFloat() > 0.6) {
+                    if (ThreadLocalRandom.current().nextFloat() > 0.45) {
                         Need.rerun(gamer, NeedsType.SLEEP);
                         gamer.sendMessage("&aХорошо выспались, а теперь пора в шахту!");
                     } else {

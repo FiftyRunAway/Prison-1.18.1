@@ -39,13 +39,14 @@ public class LevelMenu implements IMenus {
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         Gamer gamer = GamerManager.getGamer(player);
         IMenuButton lvl = DefaultButtons.FILLER.getButtonOfItemStack(
-                new Item.Builder(Material.EXPERIENCE_BOTTLE).name("&eПовысить уровень:").lore(new Lore.BuilderLore().addList(lore(gamer)).build()).build().item());
+                new Item.Builder(Material.EXPERIENCE_BOTTLE).name("&eПовысить уровень:").lore(new Lore.BuilderLore()
+                        .addList(lore(gamer)).build()).build().item());
         menu.addButton(lvl.setSlot(24));
         ItemStack btn;
         if (hasAccessToNextLevel(gamer)) {
             btn = ExampleItems.glass(Material.LIME_STAINED_GLASS_PANE, "&a&lНажмите, чтобы повысить");
         } else {
-            btn = ExampleItems.glass(Material.RED_STAINED_GLASS_PANE, "&cВыйти");
+            btn = ExampleItems.glass(Material.RED_STAINED_GLASS_PANE, "&cПопробовать позже");
         }
         IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(btn);
         bt.setClickEvent(event -> {
@@ -56,12 +57,6 @@ public class LevelMenu implements IMenus {
             event.getWhoClicked().closeInventory();
         });
         for (int i = 10; i < 13; i++) {
-            for (int b = 0; b < 3; b++) {
-                menu.addButton(bt.clone().setSlot(i + (b * 9)));
-            }
-        }
-        bt = DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build());
-        for (int i = 14; i < 17; i++) {
             for (int b = 0; b < 3; b++) {
                 menu.addButton(bt.clone().setSlot(i + (b * 9)));
             }

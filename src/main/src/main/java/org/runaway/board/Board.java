@@ -13,6 +13,9 @@ import org.runaway.Gamer;
 import org.runaway.Prison;
 import org.runaway.battlepass.BattlePass;
 import org.runaway.enums.*;
+import org.runaway.jobs.EJobs;
+import org.runaway.jobs.Job;
+import org.runaway.jobs.JobRequriement;
 import org.runaway.managers.GamerManager;
 import org.runaway.tasks.SyncRepeatTask;
 import org.runaway.utils.Utils;
@@ -52,29 +55,45 @@ public class Board {
         if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null) oldname = sb.getObjective(DisplaySlot.SIDEBAR).getDisplayName();
         objective.setDisplayName(oldname);
         Gamer gamer = GamerManager.getGamer(player);
-        replaceScore(objective, 15, invise(player) + ChatColor.GRAY + date());
-        replaceScore(objective, 14, invise(player) + " ");
-        replaceScore(objective, 13, invise(player) + "&eСтатистика:");
-        replaceScore(objective, 12, invise(player) + "&f Уровень" + getSplitter() + "&a&l" + gamer.getDisplayLevel());
-        replaceScore(objective, 11, invise(player) + "&f Баланс" + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
-        replaceScore(objective, 10, invise(player) + "&f Блоков " + getSplitter() + "&6&l" + FormatBlocks(gamer));
-        replaceScore(objective, 9,  invise(player) + "&f Убийств" + getSplitter() + "&c&l" +
-                gamer.getStatistics(EStat.KILLS) + Utils.colored(gamer.isInPvp() ? " &7[&c" + gamer.getInPvpLeft() + " сек&7]" : ""));
-        replaceScore(objective, 8, invise(player) + "&f Крыс убито" + getSplitter() + "&c&l" + gamer.getMobKills("rat"));
-        replaceScore(objective, 7, invise(player) + "&f Ключей" + getSplitter() + "&c&l" + gamer.getStatistics(EStat.KEYS));
-        replaceScore(objective, 6, invise(player) + "&f Фракция" + getSplitter() + "&c&l" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
-        replaceScore(objective, 5, invise(player) + "  ");
-        replaceScore(objective, 4, invise(player) + "&eСервер:");
-        replaceScore(objective, 3, invise(player) + "&f Игроков" + getSplitter() + "&a&l" + Utils.getPlayers().size()
-                + (gamer.isHideEnabled() ? " &7[Скрыты]" : ""));
-        replaceScore(objective, 2, invise(player) + "   ");
-        replaceScore(objective, 1, invise(player) + "&f&l" + Vars.getSite());
+        replaceScore(objective, 15, invise() + ChatColor.GRAY + date());
+        replaceScore(objective, 14, invise() + " ");
+        if (gamer.getCurrentJob() != null) {
+            Job job = gamer.getCurrentJob().getJob();
+            replaceScore(objective, 13, invise() + "&7Работа • &c" + job.getName());
+            replaceScore(objective, 12, invise() + "&f " + job.getMainRequriement().getName() + getSplitter() + "&a&l" + Job.getStatistics(gamer, JobRequriement.BOXES));
+            replaceScore(objective, 11, invise() + "&f Уровень работы " + getSplitter() + "&6&l" + Job.getLevel(gamer, job));
+            replaceScore(objective, 10, invise() + "&f Баланс" + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
+
+            replaceScore(objective, 9, invise() + "  ");
+            replaceScore(objective, 8, invise() + "&eСервер:");
+            replaceScore(objective, 7, invise() + "&f Игроков" + getSplitter() + "&a&l" + Utils.getPlayers().size()
+                    + (gamer.isHideEnabled() ? " &7[Скрыты]" : ""));
+            replaceScore(objective, 6, invise() + "   ");
+            replaceScore(objective, 5, invise() + "&f&l" + Vars.getSite());
+        } else if (gamer.getCurrentJob() == null) {
+            replaceScore(objective, 13, invise() + "&eСтатистика:");
+            replaceScore(objective, 12, invise() + "&f Уровень" + getSplitter() + "&a&l" + gamer.getDisplayLevel());
+            replaceScore(objective, 11, invise() + "&f Баланс" + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
+            replaceScore(objective, 10, invise() + "&f Блоков " + getSplitter() + "&6&l" + FormatBlocks(gamer));
+            replaceScore(objective, 9,  invise() + "&f Убийств" + getSplitter() + "&c&l" +
+                    gamer.getStatistics(EStat.KILLS) + Utils.colored(gamer.isInPvp() ? " &7[&c" + gamer.getInPvpLeft() + " сек&7]" : ""));
+            replaceScore(objective, 8, invise() + "&f Крыс убито" + getSplitter() + "&c&l" + gamer.getMobKills("rat"));
+            replaceScore(objective, 7, invise() + "&f Ключей" + getSplitter() + "&c&l" + gamer.getStatistics(EStat.KEYS));
+            replaceScore(objective, 6, invise() + "&f Фракция" + getSplitter() + "&c&l" + (gamer.getFaction().getColor() + gamer.getFaction().getName()));
+
+            replaceScore(objective, 5, invise() + "  ");
+            replaceScore(objective, 4, invise() + "&eСервер:");
+            replaceScore(objective, 3, invise() + "&f Игроков" + getSplitter() + "&a&l" + Utils.getPlayers().size()
+                    + (gamer.isHideEnabled() ? " &7[Скрыты]" : ""));
+            replaceScore(objective, 2, invise() + "   ");
+            replaceScore(objective, 1, invise() + "&f&l" + Vars.getSite());
+        }
 
         if(objective.getDisplaySlot() != DisplaySlot.SIDEBAR) objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(score);
     }
 
-    private static String invise(Player player) {
+    private static String invise() {
         return emojisEnabled ? new FontImageWrapper("%img_offset_-500%").getString() : "";
     }
 

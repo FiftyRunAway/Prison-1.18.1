@@ -46,4 +46,9 @@ public class Fisherman extends Job {
     public String getConfigName() {
         return "fisherman";
     }
+
+    @Override
+    public JobRequriement getMainRequriement() {
+        return JobRequriement.LEGENDARY_FISH;
+    }
 }

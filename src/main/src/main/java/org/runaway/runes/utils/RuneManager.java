@@ -1,6 +1,5 @@
 package org.runaway.runes.utils;
 
-import dev.lone.itemsadder.api.CustomStack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,7 +35,7 @@ public class RuneManager {
         if (rune == null) return;
         if (getRune(techname).act(gamer)) {
             gamer.sendMessage("&fПрименена руна " + getRuneName(rune));
-        };
+        }
     }
 
     public static Rune getRune(String techName) {

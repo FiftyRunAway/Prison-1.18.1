@@ -55,12 +55,6 @@ public class UpgradeMenu implements IMenus {
         ItemUtils.addLore(nextItem, "&r", "&dТребования:");
 
         menu.addButton(DefaultButtons.FILLER.getButtonOfItemStack(ItemUtils.addLore(nextItem, upgradeLore)).setSlot(24));
-        IMenuButton bt = DefaultButtons.FILLER.getButtonOfItemStack(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name("").build());
-        for (int i = 14; i < 17; i++) {
-            for (int b = 0; b < 3; b++) {
-                menu.addButton(bt.clone().setSlot(i + (b * 9)));
-            }
-        }
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(44);
         back.setClickEvent(event -> event.getWhoClicked().closeInventory());

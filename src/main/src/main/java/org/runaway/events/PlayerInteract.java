@@ -3,6 +3,7 @@ package org.runaway.events;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
@@ -24,6 +25,7 @@ import org.runaway.inventories.MainMenu;
 import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.jobs.EJobs;
+import org.runaway.jobs.job.Mover;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
@@ -47,7 +49,8 @@ public class PlayerInteract implements Listener {
 
         ItemStack main = player.getInventory().getItemInMainHand();
         PrisonItem prisonItem = ItemManager.getPrisonItem(main);
-        if(prisonItem != null && prisonItem.getConsumerOnClick() != null) {
+        if(prisonItem != null && prisonItem.getConsumerOnClick() != null &&
+                (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
             prisonItem.getConsumerOnClick().accept(gamer);
         }
         if (prisonItem != null && !main.getType().toString().endsWith("SWORD") &&
@@ -75,38 +78,67 @@ public class PlayerInteract implements Listener {
                     caseRefactored.getChancesMenu(gamer).open(gamer);
                 }
             }
-
-        if (main != null && main.hasItemMeta()) {
-            if (Prison.getInstance().fish_food.contains(ChatColor.stripColor(main.getItemMeta().getDisplayName()))) {
-                gamer.sendMessage(EMessage.SELLTIT);
+            if (block.getType().equals(Mover.boxMaterial)) {
+                if(!gamer.isEndedCooldown("boxCd")) {
+                    return;
+                }
+                gamer.addCooldown("boxCd", 300);
+                //Admin edit mode
+                if (player.isOp() && main.getType().equals(Material.STICK)) {
+                    if (Mover.getBoxes().contains(block.getLocation())) {
+                        Mover.getBoxes().remove(block.getLocation());
+                        gamer.debug("&cУбран ящик для работы с локации " + block.getLocation().getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
+                    } else {
+                        Mover.getBoxes().add(block.getLocation());
+                        gamer.debug("&aДобавлен ящик для работы в локации " + block.getLocation().getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
+                    }
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f);
+                    return;
+                } else if (player.isOp() && main.getType().equals(Material.BLAZE_ROD)) {
+                    if (Mover.getDestinations().contains(block.getLocation())) {
+                        Mover.getDestinations().remove(block.getLocation());
+                        gamer.debug("&cУбрана точка доставки с локации " + block.getLocation().getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
+                    } else {
+                        Mover.getDestinations().add(block.getLocation());
+                        gamer.debug("&aДобавлена точка доставки в локации " + block.getLocation().getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
+                    }
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f);
+                    return;
+                }
+                Mover.takeBoxListener(event);
                 event.setCancelled(true);
                 return;
             }
+            if (main != null && main.hasItemMeta()) {
+                if (Prison.getInstance().fish_food.contains(ChatColor.stripColor(main.getItemMeta().getDisplayName()))) {
+                    gamer.sendMessage(EMessage.SELLTIT);
+                    event.setCancelled(true);
+                    return;
+                }
 
-            if (main.getType().equals(Material.FISHING_ROD) && !event.isCancelled()) {
-                if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
-                    if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
-                        player.sendMessage(Vars.getPrefix() + Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
-                        event.setCancelled(true);
-                        return;
+                if (main.getType().equals(Material.FISHING_ROD) && !event.isCancelled()) {
+                    if (BlockBreak.isLocation(player.getLocation(), "fisherman")) {
+                        if (gamer.getIntStatistics(EStat.LEVEL) < EJobs.FISHERMAN.getJob().getLevel()) {
+                            player.sendMessage(Vars.getPrefix() + Utils.colored(EMessage.JOBLEVEL.getMessage().replace("%level%", EJobs.FISHERMAN.getJob().getLevel() + "")));
+                            event.setCancelled(true);
+                            return;
+                        }
                     }
                 }
             }
-        }
 
-        if (block.getType().equals(Material.OAK_WALL_SIGN) || block.getType().equals(Material.OAK_SIGN)) {
-            Sign sign = (Sign)block.getState();
-            String[] lines = sign.getLines();
-            if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {
-                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                    sellAll(player);
-                } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                    new BlockShopMenu(player);
+            if (block.getType().equals(Material.OAK_WALL_SIGN) || block.getType().equals(Material.OAK_SIGN)) {
+                Sign sign = (Sign)block.getState();
+                String[] lines = sign.getLines();
+                if (lines.length == 4 && ChatColor.stripColor(lines[1]).equalsIgnoreCase("Нажми, чтобы") && ChatColor.stripColor(lines[2]).equalsIgnoreCase("всё продать")) {
+                    if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                        sellAll(player);
+                    } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                        new BlockShopMenu(player);
+                    }
                 }
             }
-        }
-
-        //Сундук (сокровища)
+            //Сундук (сокровища)
             if (block.getType().equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 try {
                     if (!BlockBreak.chests.containsKey(player.getName())) return;

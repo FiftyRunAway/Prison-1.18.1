@@ -36,6 +36,7 @@ import org.runaway.items.ItemManager;
 import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
+import org.runaway.jobs.EJobs;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.IMenu;
 import org.runaway.menu.type.StandardMenu;
@@ -114,6 +115,8 @@ public class Gamer {
     private boolean isOnline = false;
     private boolean isExist = true;
     private boolean isExistDonate = true;
+    private EJobs inJob;
+    private boolean withBox = false;
 
     private IMenu currentIMenu;
     private StandardMenu openedRunesMenu;
@@ -145,6 +148,7 @@ public class Gamer {
         this.boardState = 0;
         this.combatLog = new ArrayList<>();
         this.upgradeConfirmation = new HashMap<>();
+        this.inJob = null;
 
         if(!preparedRequests.isExist("player", getPlayer().getName())) {
             isExist = false;
@@ -203,6 +207,14 @@ public class Gamer {
         });
     }
 
+    public void refreshActiveRunes() {
+        if (getActiveRunes() == null || getActiveRunes().isEmpty()) return;
+        getActiveRunes().forEach(rune -> {
+            if (rune != null)
+                rune.constantEffects().forEach(potionEffect -> player.addPotionEffect(potionEffect));
+        });
+    }
+
     public void savePlayer() {
         setStatistics(EStat.BLOCKS_AMOUNT, Utils.fromMapToString(blocksValues));
         setStatistics(EStat.OFFLINE_VALUES, Utils.fromMapToString(offlineValues));
@@ -230,6 +242,14 @@ public class Gamer {
             isExistDonate = true;
         }
         sendMessage("&aВаши данные сохранены!");
+    }
+
+    public EJobs getCurrentJob() {
+        return inJob;
+    }
+
+    public void setCurrentJob(EJobs job) {
+        this.inJob = job;
     }
 
     public List<Rune> getActiveRunes() {
@@ -262,51 +282,6 @@ public class Gamer {
             if (r.getTechName().equals(rune.getTechName())) return true;
         }
         return false;
-        /*if (rune.getFinalTypes().contains(RuneManager.RuneType.ARMOR)) {
-            if (getPlayer().getEquipment() == null) return false;
-            for (ItemStack armor : getPlayer().getEquipment().getArmorContents()) {
-                if (armor == null) continue;
-                if (RuneManager.hasRune(armor, rune)) return true;
-            }
-        }
-        ItemStack main = getPlayer().getInventory().getItemInMainHand();
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.SWORD)) {
-            if (!main.getType().toString().endsWith("SWORD")) return false;
-            if (RuneManager.hasRune(main, rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.BOW)) {
-            if (!main.getType().toString().endsWith("BOW")) return false;
-            if (RuneManager.hasRune(main, rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.HELMET)) {
-            if (getPlayer().getEquipment() == null) return false;
-            if (getPlayer().getEquipment().getHelmet() == null) return false;
-            if (RuneManager.hasRune(getPlayer().getEquipment().getHelmet(), rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.CHESTPLATE)) {
-            if (getPlayer().getEquipment() == null) return false;
-            if (getPlayer().getEquipment().getChestplate() == null) return false;
-            if (RuneManager.hasRune(getPlayer().getEquipment().getChestplate(), rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.LEGGINGS)) {
-            if (getPlayer().getEquipment() == null) return false;
-            if (getPlayer().getEquipment().getLeggings() == null) return false;
-            if (RuneManager.hasRune(getPlayer().getEquipment().getLeggings(), rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.BOOTS)) {
-            if (getPlayer().getEquipment() == null) return false;
-            if (getPlayer().getEquipment().getBoots() == null) return false;
-            if (RuneManager.hasRune(getPlayer().getEquipment().getBoots(), rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.PICKAXE)) {
-            if (!main.getType().toString().endsWith("PICKAXE")) return false;
-            if (RuneManager.hasRune(main, rune)) return true;
-        }
-        if (rune.getFinalTypes().contains(RuneManager.RuneType.AXE)) {
-            if (!main.getType().toString().endsWith("AXE")) return false;
-            if (RuneManager.hasRune(main, rune)) return true;
-        }
-        return false;*/
     }
 
     public void inPvpWith(Gamer gamer) {
@@ -982,9 +957,14 @@ public class Gamer {
     }
 
     public void teleport(Location location) {
+        setCurrentJob(null);
         if (getPlayer().hasPermission("prison.admin")) {
             sendTitle(ChatColor.GREEN + "Телепортация...");
             getPlayer().teleport(location);
+            return;
+        }
+        if (isWithBox()) {
+            sendTitle("&4*ошибка*", "&cотнесите ящик");
             return;
         }
         if (!tp.contains(uuid)) {
@@ -998,6 +978,8 @@ public class Gamer {
                         if (lef.get() == 0) {
                             sendTitle(ChatColor.GREEN + "Телепортация...");
                             getPlayer().teleport(location);
+                            refreshActiveRunes();
+
                             tp.remove(uuid);
                             cancel();
                             return;

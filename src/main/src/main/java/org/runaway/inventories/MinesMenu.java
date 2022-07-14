@@ -56,18 +56,19 @@ public class MinesMenu implements IMenus {
             menu.addButton(bt);
         });
 
-        /*
-
-        РАБОТЫ - потом включить!
-
         for (EJobs job : EJobs.values()) {
             Job j = job.getJob();
             IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(j.getButton(gamer).item()).setSlot(j.getLevel() - 1);
             btn.setClickEvent(event -> {
                 Player p = event.getWhoClicked();
                 Gamer g = GamerManager.getGamer(p);
+                if (!g.hasPermission("prison.job.test") && !p.isOp()) {
+                    g.sendMessage("Пока только для отдельных игроков");
+                    return;
+                }
                 if (g.getIntStatistics(EStat.LEVEL) >= j.getLevel()) {
                     g.teleport(j.getLocation(j));
+                    g.setCurrentJob(job);
                     p.closeInventory();
                 } else {
                     gamer.sendMessage(Utils.colored(EMessage.JOBLEVEL.getMessage().replaceAll("%level%", j.getLevel() + "")));
@@ -75,12 +76,8 @@ public class MinesMenu implements IMenus {
             });
             menu.addButton(btn);
         }
-        */
 
-        /*
-
-
-        IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.NETHER_STAR).name("&6База")
+        /*IMenuButton base = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.NETHER_STAR).name("&6База")
                 .lore(new Lore.BuilderLore()
                         .addSpace()
                         .addString("&7Требования к доступу:")
@@ -89,8 +86,8 @@ public class MinesMenu implements IMenus {
                         .build())
                 .build().item()).setSlot(4);
         base.setClickEvent(event -> GamerManager.getGamer(event.getWhoClicked()).teleportBase());
-        menu.addButton(base);
-         */
+        menu.addButton(base);*/
+
 
         IMenuButton back = DefaultButtons.RETURN.getButtonOfItemStack(new ItemBuilder(EButtons.CANCEL.getItemStack()).build()).setSlot(44);
         back.setClickEvent(event -> new MainMenu(event.getWhoClicked()));
