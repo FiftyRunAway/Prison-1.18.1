@@ -17,6 +17,7 @@ import org.runaway.menu.type.StandardMenu;
 import org.runaway.utils.ItemBuilder;
 import org.runaway.utils.Lore;
 import org.runaway.utils.Utils;
+import org.runaway.utils.Vars;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,7 @@ public class JobUpgradeMenu implements IMenus {
                 }
             }
             Job.addStatistics(g, job.getClass().getSimpleName().toLowerCase());
-            player.sendMessage(Utils.colored(EMessage.JOBUPGRADE.getMessage().replace("%job%", job.getName())));
+            gamer.sendMessage(Utils.colored(EMessage.JOBUPGRADE.getMessage().replace("%job%", job.getName())));
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_FALL, 10, 10);
             g.sendTitle("&b" + job.getName(), "&eповышен уровень работы!");
             player.closeInventory();

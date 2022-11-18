@@ -1,6 +1,7 @@
 package org.runaway.commands.completers;
 
 import lombok.Getter;
+import org.runaway.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,11 @@ public class Tab {
     }
     public Tab addVariants(List<String> var) {
         variation.addAll(var);
+        return this;
+    }
+
+    public Tab addPlayerList() {
+        variation.addAll(Utils.getPlayers());
         return this;
     }
 

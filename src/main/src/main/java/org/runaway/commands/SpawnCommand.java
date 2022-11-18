@@ -22,7 +22,7 @@ public class SpawnCommand extends CommandManager {
     @Override
     public void runCommand(Player p, String[] args, String cmdName) {
         Gamer gamer = GamerManager.getGamer(p);
-        gamer.teleport(Prison.SPAWN);
+        gamer.teleport(Prison.SPAWN.add(0, 1, 0));
     }
 
     @Override

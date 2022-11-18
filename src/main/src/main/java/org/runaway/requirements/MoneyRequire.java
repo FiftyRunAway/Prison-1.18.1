@@ -22,7 +22,7 @@ public class MoneyRequire implements Require {
 
     @Override
     public String getName() {
-        return (isTakeAfter() ? "Заплатите" : "Накопите") + " " + getAmount() + " " + MoneyType.RUBLES.getShortName();
+        return (isTakeAfter() ? "Заплатите" : "Накопите") + " " + MoneyType.RUBLES.getShortName() + (int)getAmount();
     }
 
     @Override
@@ -33,13 +33,13 @@ public class MoneyRequire implements Require {
     @Override
     public String getLoreString(Gamer gamer) {
         RequireResult requireResult = canAccess(gamer, false);
-        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + getAmount() + (requireResult.isAccess() ? "" : "&4✘");
+        return (requireResult.isAccess() ? "&a" : "&c") + getName() + " ► " + requireResult.getAmount() + "/" + (int)getAmount() + (requireResult.isAccess() ? "" : "&4✘");
     }
 
     @Override
     public void doAfter(Gamer gamer) {
         if(isTakeAfter()) {
-            gamer.withdrawMoney(getAmount(), true);
+            gamer.withdrawMoney(getAmount(), true, true);
         }
     }
 }

@@ -29,7 +29,7 @@ public class CustomHUD {
                 List<Placeholder> placeholders = new ArrayList<>();
 
                 placeholders.add(placeholder("blocks",
-                        Board.FormatBlocks(gamer)));
+                        Board.FormatBlocks(gamer, EStat.BLOCKS)));
                 placeholders.add(placeholder("money",
                         Board.FormatMoney(gamer.getStatistics(EStat.MONEY))));
 

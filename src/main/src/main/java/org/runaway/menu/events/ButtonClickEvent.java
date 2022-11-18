@@ -1,10 +1,7 @@
 package org.runaway.menu.events;
 
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.runaway.menu.IMenu;
 import org.runaway.menu.button.IMenuButton;
 

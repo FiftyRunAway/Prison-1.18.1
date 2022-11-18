@@ -79,7 +79,6 @@ public class PlayerJoin implements Listener {
         Gamer gamer = GamerManager.getGamer(player);
 
         gamer.addItem("waxe0_1");
-
         gamer.addItem("steak", 8);
     }
 

@@ -11,6 +11,8 @@ import org.runaway.Prison;
 import org.runaway.donate.Privs;
 import org.runaway.donate.features.FractionDiscount;
 import org.runaway.managers.GamerManager;
+import org.runaway.menu.SimpleItemStack;
+import org.runaway.menu.UpdateMenu;
 import org.runaway.menu.button.DefaultButtons;
 import org.runaway.menu.button.IMenuButton;
 import org.runaway.menu.type.StandardMenu;
@@ -30,10 +32,17 @@ public class FractionMenu implements IMenus {
         Gamer gamer = GamerManager.getGamer(player);
         StandardMenu menu = StandardMenu.create(getRows(), getName());
         menu.setType(InventoryType.WORKBENCH);
-        IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.SUNFLOWER).name("&fФракция • Рандомная").lore(new Lore.BuilderLore()
+        IMenuButton btn = DefaultButtons.FILLER.getButtonOfItemStack(new Item.Builder(Material.IRON_SWORD).name("&fФракция • &bСлучайная").lore(new Lore.BuilderLore()
                 .addSpace()
                 .addString("&fЦена &7• &aБесплатно")
                 .build()).build().item()).setSlot(0);
+        UpdateMenu.builder().updateType(new SimpleItemStack[]{SimpleItemStack.builder()
+                        .material(Material.STONE_SWORD)
+                        .durability(0).build(),
+                        SimpleItemStack.builder()
+                                .material(Material.GOLDEN_SWORD)
+                                .durability(0).build()})
+                .build().update(menu, btn);
         btn.setClickEvent(event ->
                 new Confirmation(event.getWhoClicked(), () ->
                     GamerManager.getGamer(event.getWhoClicked()).inFraction(FactionType.DEFAULT, true, 0)));

@@ -27,7 +27,7 @@ public class EnlightenedRune implements Rune {
 
     @Override
     public String getDescription() {
-        return "Даёт шанс на восстановление здоровья, когда вас атакуют";
+        return "Даёт шанс на восстановление здоровья, когда вас атакуют игроки";
     }
 
     @Override

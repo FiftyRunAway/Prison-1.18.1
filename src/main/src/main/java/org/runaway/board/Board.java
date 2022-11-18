@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -24,11 +25,9 @@ import org.runaway.utils.color.ColorAPI;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 /*
@@ -59,7 +58,7 @@ public class Board {
         replaceScore(objective, 14, invise() + " ");
         if (gamer.getCurrentJob() != null) {
             Job job = gamer.getCurrentJob().getJob();
-            replaceScore(objective, 13, invise() + "&7Работа • &c" + job.getName());
+            replaceScore(objective, 13, invise() + "&eРабота &7• &b" + job.getName());
             replaceScore(objective, 12, invise() + "&f " + job.getMainRequriement().getName() + getSplitter() + "&a&l" + Job.getStatistics(gamer, JobRequriement.BOXES));
             replaceScore(objective, 11, invise() + "&f Уровень работы " + getSplitter() + "&6&l" + Job.getLevel(gamer, job));
             replaceScore(objective, 10, invise() + "&f Баланс" + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
@@ -70,11 +69,11 @@ public class Board {
                     + (gamer.isHideEnabled() ? " &7[Скрыты]" : ""));
             replaceScore(objective, 6, invise() + "   ");
             replaceScore(objective, 5, invise() + "&f&l" + Vars.getSite());
-        } else if (gamer.getCurrentJob() == null) {
+        } else {
             replaceScore(objective, 13, invise() + "&eСтатистика:");
             replaceScore(objective, 12, invise() + "&f Уровень" + getSplitter() + "&a&l" + gamer.getDisplayLevel());
             replaceScore(objective, 11, invise() + "&f Баланс" + getSplitter() + "&a&l" + FormatMoney(gamer.getStatistics(EStat.MONEY)));
-            replaceScore(objective, 10, invise() + "&f Блоков " + getSplitter() + "&6&l" + FormatBlocks(gamer));
+            replaceScore(objective, 10, invise() + "&f Блоков " + getSplitter() + "&6&l" + FormatBlocks(gamer, EStat.BLOCKS) + " &7[" + FormatBlocks(gamer, EStat.REAL_BLOCKS) + "]");
             replaceScore(objective, 9,  invise() + "&f Убийств" + getSplitter() + "&c&l" +
                     gamer.getStatistics(EStat.KILLS) + Utils.colored(gamer.isInPvp() ? " &7[&c" + gamer.getInPvpLeft() + " сек&7]" : ""));
             replaceScore(objective, 8, invise() + "&f Крыс убито" + getSplitter() + "&c&l" + gamer.getMobKills("rat"));
@@ -105,15 +104,15 @@ public class Board {
         return ScoreBoardUpdate;
     }
 
-    public static String FormatBlocks(Gamer gamer) {
-        double blocks = gamer.getDoubleStatistics(EStat.BLOCKS);
-        if (blocks >= 1000.0 && blocks < 1000000) {
+    public static String FormatBlocks(Gamer gamer, EStat stat) {
+        double blocks = gamer.getDoubleStatistics(stat);
+        if (blocks >= 1000 && blocks < 1000000) {
             return Math.round(blocks / 1000.0 * 100.0) / 100.0 + "K";
         }
         if (blocks >= 1000000) {
             return Math.round(blocks / 1000000.0 * 100.0) / 100.0 + "M";
         }
-        return String.valueOf(Math.round(gamer.getDoubleStatistics(EStat.BLOCKS)));
+        return String.valueOf(Math.round(gamer.getDoubleStatistics(stat)));
     }
 
     public static String FormatBlocks(String blks) {
@@ -133,9 +132,7 @@ public class Board {
         } else if (balance instanceof String) {
             return "&cСЛОМАЛОСЬ:(";
         } else {
-            DecimalFormat decimalFormat = new DecimalFormat("#,##0.0", decimalFormatSymbols);
-            String r = decimalFormat.format(balance);
-            return r + " " + MoneyType.RUBLES.getShortName();
+            return NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(balance);
         }
     }
 

@@ -34,6 +34,7 @@ import org.runaway.runes.pickaxe.SpeedRune;
 import org.runaway.runes.utils.Rune;
 import org.runaway.runes.utils.RuneManager;
 import org.runaway.trainer.TypeTrainings;
+import org.runaway.utils.BlockProcessInfo;
 import org.runaway.utils.Utils;
 import org.runaway.utils.Vars;
 
@@ -64,7 +65,7 @@ public class BlockBreak implements Listener {
 
     private HashMap<Player, HashMap<Block, BlockFace>> blocks = new HashMap<>();
 
-    /*
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockClick(PlayerInteractEvent e) {
         Player player = e.getPlayer();
@@ -77,7 +78,7 @@ public class BlockBreak implements Listener {
                 blocks.put(player, blockFace);
             }
         }
-    }*/
+    }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -111,7 +112,7 @@ public class BlockBreak implements Listener {
                 double boost = 1;
                 if (gamer.hasPassivePerk(new KeyFirst())) boost += 1;
                 if (gamer.hasPassivePerk(new KeySecond())) boost += 1;
-                if (Math.random() < (0.002 * (gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + boost)) && !block.getType().isTransparent()) {
+                if (Math.random() < (0.001 * (gamer.getTrainingLevel(TypeTrainings.LUCK.name()) + boost)) && !block.getType().isTransparent()) {
                     gamer.sendTitle(Utils.colored(EMessage.FOUNDKEY.getMessage()));
                     gamer.addItem("defaultKey");
                     Bukkit.getServer().getPluginManager().callEvent(new DropKeyEvent(event.getPlayer(), event.getBlock()));
@@ -124,6 +125,7 @@ public class BlockBreak implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerBlockBreakEvent(player, block));
                 double add = gamer.getBoosterBlocks();
                 gamer.addCurrentBlocks(block.getType().toString(), add);
+                gamer.increaseIntStatistics(EStat.REAL_BLOCKS);
                 gamer.setStatistics(EStat.BLOCKS, BigDecimal.valueOf(gamer.getDoubleStatistics(EStat.BLOCKS) + gamer.getBoosterBlocks()).setScale(2, RoundingMode.UP).doubleValue());
                 gamer.setExpProgress();
                 AutoSell(event, FindChest(event));
@@ -237,7 +239,7 @@ public class BlockBreak implements Listener {
         Block block = event.getBlock();
         Player player = event.getPlayer();
         Gamer gamer = GamerManager.getGamer(player);
-        if (Math.random() < 0.00015 && !block.getType().isTransparent()) { // 0.00015
+        if (Math.random() < 0.00018 && !block.getType().isTransparent()) { // 0.00015
             if (chests.containsKey(player.getName())) {
                 chests.get(player.getName()).setType(Material.AIR);
                 chests.remove(player.getName());
@@ -245,7 +247,7 @@ public class BlockBreak implements Listener {
                 treasure_holo.get(player.getName()).delete();
                 gamer.sendMessage(EMessage.DELETECHEST);
             }
-            gamer.sendTitle (ChatColor.RED + "Да ты везунчик!", ChatColor.RED + "Вы откопали клад (" + LeftChest + " сек)");
+            gamer.sendTitle (ChatColor.RED + "Везунчик", ChatColor.RED + "Вы откопали клад (" + LeftChest + " сек)");
             chests.put(player.getName(), block);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 20, 20);
             Bukkit.getServer().getPluginManager().callEvent(new TreasureFindEvent(player));
@@ -396,9 +398,13 @@ public class BlockBreak implements Listener {
                 list.add(Material.STONE);
                 list.add(Material.COAL_ORE);
                 list.add(Material.PRISMARINE);
+                list.add(Material.PRISMARINE_BRICKS);
+                list.add(Material.DARK_PRISMARINE);
                 list.add(Material.NETHERRACK);
                 list.add(Material.BRICK);
                 list.add(Material.SANDSTONE);
+                list.add(Material.CHISELED_SANDSTONE);
+                list.add(Material.CUT_SANDSTONE);
                 list.add(Material.COAL_BLOCK);
                 list.add(Material.NETHER_QUARTZ_ORE);
                 list.add(Material.PACKED_ICE);

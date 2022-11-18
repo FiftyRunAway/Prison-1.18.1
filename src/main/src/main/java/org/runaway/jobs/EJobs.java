@@ -4,8 +4,8 @@ import org.runaway.jobs.job.Fisherman;
 import org.runaway.jobs.job.Mover;
 
 public enum EJobs {
-    FISHERMAN(new Fisherman()),
-    MOVER(new Mover());
+    MOVER(new Mover()),
+    FISHERMAN(new Fisherman());
 
     private Job job;
 

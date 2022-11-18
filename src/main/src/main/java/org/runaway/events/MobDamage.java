@@ -2,7 +2,6 @@ package org.runaway.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftArrow;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,7 +23,7 @@ public class MobDamage implements Listener {
         if (damager instanceof Fireball) return;
         Player player = null;
         if (damager instanceof Player) player = (Player) damager;
-        if (damager instanceof CraftArrow) player = (Player) ((CraftArrow)damager).getShooter();
+        if (damager instanceof Arrow) player = (Player) ((Arrow)damager).getShooter();
 
         if (player == null) return;
 

@@ -139,7 +139,8 @@ public enum  EMessage {
     ISNOTSUITABLERUNE("NotSuitableRune", "&cЭта руна не подходит вашему предмету!"),
     COMECLOSER("ComeCloser", "&cПодойдите ближе к игроку!"),
     TAKEBOXAWAY("TakeTheBoxAway", "&cСначала отнесите ящик!"),
-    PLACEBOX("PlaceBox", "&cНеобходимо поставить этот ящик на складе");
+    PLACEBOX("PlaceBox", "&cНеобходимо поставить этот ящик на складе"),
+    PROHIBITEDITEM("ProhibitedItem", "&c%item% &cзапрещено передавать другим игрокам");
 
     private String config, defaults;
     private EMessageType eMessageType;

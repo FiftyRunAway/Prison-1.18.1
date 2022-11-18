@@ -71,7 +71,7 @@ public class ShopMenu implements IMenus {
                     return;
                 }
                 gamer.addItem(menubtn);
-                gamer.withdrawMoney(cost, true);
+                gamer.withdrawMoney(cost, true, true);
                 gamer.sendMessage(EMessage.SUCCESSFULBUY);
             });
             menu.addButton(btn.setSlot(i.getAndIncrement()));

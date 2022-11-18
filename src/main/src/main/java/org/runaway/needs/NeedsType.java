@@ -1,5 +1,6 @@
 package org.runaway.needs;
 
+import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectType;
 import org.runaway.donate.features.IFeature;
 import org.runaway.donate.features.NeedSleep;
@@ -74,7 +75,7 @@ public enum NeedsType {
         switch (type) {
             case WASH:
                 list.add("Душ");
-                list.add("Срочно идите в душ!%/spawn и налево");
+                list.add("Срочно идите в душ!%/spawn и назад");
                 list.add("&cСрочно помойтесь.");
                 break;
             /*case TOILET:

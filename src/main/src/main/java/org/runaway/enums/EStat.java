@@ -18,6 +18,7 @@ public enum EStat implements Saveable {
     STREAMS("streams", 0.0, StatType.DOUBLE),
     MONEY("balance", 0.0, StatType.DOUBLE),
     BLOCKS("blocks", 0.0, StatType.DOUBLE),
+    REAL_BLOCKS("real_blocks", 0.0, StatType.DOUBLE),
     MOB_KILLS("mob_kills", "", StatType.STRING),
     BLOCKS_AMOUNT("blocks_amount", "", StatType.STRING),
     PERKS("perks", "", StatType.STRING),

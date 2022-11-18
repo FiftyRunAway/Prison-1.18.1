@@ -8,8 +8,8 @@ import org.runaway.runes.utils.RuneManager;
 public class SpeedRune implements Rune {
     @Override
     public boolean act(Gamer gamer) {
-        if (Math.random() < 0.065) {
-            gamer.addEffect(PotionEffectType.FAST_DIGGING, 80, 1);
+        if (Math.random() < 0.135) {
+            gamer.addEffect(PotionEffectType.FAST_DIGGING, 80, 0);
             return true;
         }
         return false;
@@ -27,12 +27,12 @@ public class SpeedRune implements Rune {
 
     @Override
     public String getDescription() {
-        return "Даёт шанс получить быстрое копание II";
+        return "Даёт высокий шанс получить быстрое копание I";
     }
 
     @Override
     public RuneManager.RuneRarity getRarity() {
-        return RuneManager.RuneRarity.EPIC;
+        return RuneManager.RuneRarity.RARE;
     }
 
     @Override

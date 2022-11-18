@@ -1,6 +1,6 @@
 package org.runaway.events.custom;
 
-import net.minecraft.world.entity.monster.Monster;
+import org.bukkit.entity.Monster;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.runaway.utils.Utils;

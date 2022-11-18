@@ -1,12 +1,10 @@
 package org.runaway.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.runaway.Gamer;
 import org.runaway.enums.MoneyType;
-import org.runaway.items.Item;
 import org.runaway.Prison;
 import org.runaway.enums.BoosterType;
 import org.runaway.enums.ServerStatus;
@@ -21,7 +19,7 @@ public enum Achievement {
     JOIN("&cВы попали в тюрьму", "Приговор вынесен", new Reward[]{
             new MoneyReward().setReward(1) }, false),
     FIVE_LEVEL("&aПолучить 5 уровень","Начинающий зэк", new Reward[]{
-            new ItemReward().setReward(new Item.Builder(Material.COOKED_BEEF).name("&dВкуснейший стейк").build().item()) }, true),
+            new ItemReward().setReward(ItemManager.getPrisonItem("steak").getItemStack(8)) }, true),
     TEN_LEVEL("&aПолучить 10 уровень","Опытный зэк", new Reward[]{
             new ItemReward().setReward(ItemManager.getPrisonItem(Achievement.key).getItemStack(12)),
             new BoosterReward().setReward(BoosterType.MONEY, 1.2, 1200, false),

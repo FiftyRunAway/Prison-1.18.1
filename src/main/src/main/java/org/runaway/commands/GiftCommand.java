@@ -1,5 +1,6 @@
 package org.runaway.commands;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,6 +13,8 @@ import org.runaway.Gamer;
 import org.runaway.commands.completers.Tab;
 import org.runaway.commands.completers.TabBuilder;
 import org.runaway.commands.completers.TabCompletion;
+import org.runaway.items.ItemManager;
+import org.runaway.jobs.job.Mover;
 import org.runaway.managers.GamerManager;
 import org.runaway.utils.ExampleItems;
 import org.runaway.Prison;
@@ -29,6 +32,9 @@ public class GiftCommand extends CommandManager {
     public GiftCommand() {
         super("gift", "prison.commands", Collections.singletonList("подарок"), false);
     }
+
+    @Getter
+    private static final List<ItemStack> prohibitedItems = new ArrayList<>();
 
     private void accept(boolean is, Player consumer) {
         Gamer consumerGamer = GamerManager.getGamer(consumer);
@@ -111,17 +117,21 @@ public class GiftCommand extends CommandManager {
             gamer.sendMessage(ChatColor.RED + "Использование: /" + cmdName + " [получатель]");
         } else if (args.length == 1) {
             if (p.getName().equals(args[0])) {
-                gamer.sendMessage(Utils.colored(EMessage.SELFGIFT.getMessage()));
+                gamer.sendMessage(EMessage.SELFGIFT);
                 return;
             }
             if (!Utils.getPlayers().contains(args[0])) {
-                gamer.sendMessage(Utils.colored(EMessage.NOPLAYER.getMessage()));
+                gamer.sendMessage(EMessage.NOPLAYER);
                 return;
             }
-            if (p.getInventory().getItemInMainHand() == null ||
-                    p.getInventory().getItemInMainHand().getAmount() == 0 ||
+            if (p.getInventory().getItemInMainHand().getAmount() == 0 ||
                     !p.getInventory().getItemInMainHand().hasItemMeta()) {
-                gamer.sendMessage(Utils.colored(EMessage.HANDSLEFT.getMessage()));
+                gamer.sendMessage(EMessage.HANDSLEFT);
+                return;
+            }
+            if (getProhibitedItems().contains(p.getInventory().getItemInMainHand())) {
+                String itemName = p.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
+                p.sendMessage(Utils.colored(EMessage.PROHIBITEDITEM.getMessage()).replace("%item%", ChatColor.RESET + itemName));
                 return;
             }
             Player cons = Bukkit.getPlayer(String.valueOf(args[0]));
@@ -164,6 +174,11 @@ public class GiftCommand extends CommandManager {
         }
     }
 
+    public static void loadProhibitedItems() {
+        getProhibitedItems().add(ItemManager.getPrisonItem("menu").getItemStack());
+        getProhibitedItems().add(ItemManager.getPrisonItem(Mover.getBoxName()).getItemStack());
+    }
+
     @Override
     public void runConsoleCommand(CommandSender cs, String[] args, String cmdName) {
     }
@@ -177,7 +192,7 @@ public class GiftCommand extends CommandManager {
 
         public GiftTab() {
             super("gift", new TabBuilder()
-                    .addTab(new Tab().arg(1).addVariants(Utils.getPlayers()))
+                    .addTab(new Tab().arg(1).addPlayerList())
                     .getResult());
         }
     }

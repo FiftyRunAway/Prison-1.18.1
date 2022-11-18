@@ -39,6 +39,7 @@ import org.runaway.items.PrisonItem;
 import org.runaway.items.parameters.Parameter;
 import org.runaway.items.parameters.ParameterManager;
 import org.runaway.jobs.job.Mover;
+import org.runaway.levels.GamerLevel;
 import org.runaway.managers.GamerManager;
 import org.runaway.menu.MenuListener;
 import org.runaway.mines.Mine;
@@ -86,6 +87,7 @@ public class Prison extends JavaPlugin {
     private Map<String, Database> databases = new HashMap<>();
     public final String stat_table = "Statistics";
     public final String donateTable = "Donate";
+    public final String daysTop = "EverydayTop";
     private SaveType type_saving;
     private PreparedRequests preparedRequests;
     private PreparedRequests donateRequests;
@@ -194,6 +196,7 @@ public class Prison extends JavaPlugin {
         if (loader.getBoolean("loader.telegram")) loadTelegramBotsAPI();
         if (loader.getBoolean("loader.viaversion")) loadViaVersion();
         loadItemsAdder();
+        GamerLevel.loadRequirements();
 
         if (loader.getBoolean("loader.server_status")) loadServerStatus();
 
@@ -388,6 +391,7 @@ public class Prison extends JavaPlugin {
         FileConfiguration loader = EConfig.MODULES.getConfig();
         if (loader.getBoolean("loader.inventories")) loadInventories();
         if (loader.getBoolean("loader.trash_auction")) TrashAuction.load();
+        GiftCommand.loadProhibitedItems();
     }
 
     private RequireList getUpProperties(String cfg) {
@@ -467,6 +471,7 @@ public class Prison extends JavaPlugin {
         //Statistics table
         initializeDatabase(stat_table, "player", EStat.values());
         initializeDonateDatabase(donateTable, "player", DonateStat.values());
+
         Gamer.preparedRequests = getPreparedRequests();
         Gamer.donateRequests = getDonateRequests();
     }

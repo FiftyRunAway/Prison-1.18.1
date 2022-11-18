@@ -47,7 +47,6 @@ public class PlayerDeath implements Listener {
         Gamer gamer = GamerManager.getGamer(player);
         event.setKeepInventory(true); event.setKeepLevel(true);
         boolean givenot = dropItems(event.getDrops(), gamer);
-        Bukkit.getConsoleSender().sendMessage("bool - " + givenot);
         combatLog(gamer);
         double money = gamer.getLevel();
 
@@ -55,16 +54,15 @@ public class PlayerDeath implements Listener {
         gamer.increaseIntStatistics(EStat.DEATHES);
         if (gamer.getIntStatistics(EStat.DEATHES) >= 5) Achievement.DEAD_5.get(player);
         if (gamer.getIntStatistics(EStat.DEATHES) >= 100) Achievement.DEAD_100.get(player);
-        gamer.addEffect(PotionEffectType.WEAKNESS, 400, 1);
 
         if (event.getEntity().getKiller() != null) {
             Gamer gamerKiller = GamerManager.getGamer(event.getEntity().getKiller().getUniqueId());
             gamerKiller.increaseIntStatistics(EStat.KILLS);
-            if (gamerKiller.getIntStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamer.getPlayer());
-            if (gamerKiller.getIntStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamer.getPlayer());
+            if (gamerKiller.getIntStatistics(EStat.KILLS) >= 5) Achievement.KILL_5.get(gamerKiller.getPlayer());
+            if (gamerKiller.getIntStatistics(EStat.KILLS) >= 100) Achievement.KILL_100.get(gamerKiller.getPlayer());
             if (givenot) return;
 
-            Bukkit.getServer().getPluginManager().callEvent(new PlayerKillEvent(player));
+            Bukkit.getServer().getPluginManager().callEvent(new PlayerKillEvent(gamerKiller.getPlayer()));
 
             gamerKiller.depositMoney(money);
             gamerKiller.sendMessage(EMessage.KILLPLAYER.getMessage().replace("%player%", gamer.getGamer()).replace("%money%", Board.FormatMoney(money)));
@@ -74,7 +72,6 @@ public class PlayerDeath implements Listener {
             if (gamerKiller.isActiveRune(new RecoverRune(), runes)) {
                 RuneManager.runeAction(gamerKiller, "recover");
             }
-
             if (gamerKiller.getPlayer().hasPermission("*")) Achievement.KILL_ADMIN.get(gamerKiller.getPlayer());
         } else if (event.getEntity() instanceof Projectile && ((Projectile)event.getEntity()).getShooter() instanceof Player) {
             if (event.getEntity().getKiller().getName().equals(event.getEntity().getName())) Achievement.KILL_ARROW.get(player);
@@ -146,8 +143,10 @@ public class PlayerDeath implements Listener {
                 }
             }
         }
-        for (Need need : gamer.getNeeds()) {
-            if (need.isActive()) need.addPotion();
-        }
+        new SyncTask(() -> {
+            for (Need need : gamer.getNeeds()) {
+                if (need.isActive()) need.addPotion();
+            }
+        }, 80);
     }
 }

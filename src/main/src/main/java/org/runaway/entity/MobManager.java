@@ -413,6 +413,7 @@ public class MobManager {
             if(attributable == null) return;
             MobController.builder()
                     .attributable(attributable) //тут паттерн моба
+                    .canRare(!attributable.isBoss())
                     .spawnLocation(Utils.unserializeLocation(section.getString("location")))
                     .respawnTime(section.getInt("respawnTime")) //sec
                     .lastDeathTime(section.getLong("lastDeathTime"))

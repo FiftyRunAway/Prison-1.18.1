@@ -8,6 +8,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -760,7 +761,11 @@ public class Gamer {
     }
 
     public void addEffect(PotionEffectType effect, int ticks, int level) {
-        if (isEffected(effect)) return;
+        if (isEffected(effect)) {
+            if (effect.equals(PotionEffectType.FAST_DIGGING)) {
+                getPlayer().removePotionEffect(effect);
+            } else return;
+        }
         getPlayer().addPotionEffect(new PotionEffect(effect, ticks + 25, level, true));
     }
 
@@ -945,14 +950,22 @@ public class Gamer {
     }
 
     public void setLevelBar() {
-        getPlayer().setLevel(getIntStatistics(EStat.LEVEL) % 30);
+        getPlayer().setLevel(getLevel());
     }
 
     public void setExpProgress() {
-        /*int needblocks = EConfig.CONFIG.getConfig().getInt("levels." + (getIntStatistics(EStat.LEVEL) + 1) + ".blocks");
-        float toSet = (float)(getDoubleStatistics(EStat.BLOCKS) / needblocks);
-        if (toSet > 1) toSet = 1;
-        if (Math.round(getDoubleStatistics(EStat.BLOCKS)) <= needblocks) getPlayer().setExp(toSet);*/
+        /*ConfigurationSection section = EConfig.CONFIG.getConfig().getConfigurationSection("levels." + (getLevel() + 1));
+        float blocksPercent = 0, moneyPercent = 0;
+        if (section != null) {
+            int nextBlocks = section.getInt("blocks");
+            blocksPercent = (float)(getDoubleStatistics(EStat.BLOCKS) / nextBlocks);
+            if (blocksPercent > 1) blocksPercent = 1;
+
+            int nextMoney = section.getInt("money");
+            moneyPercent = (float)(getMoney() / nextMoney);
+            if (moneyPercent > 1) moneyPercent = 1;
+        }
+        if (blocksPercent + moneyPercent > 0) getPlayer().setExp(blocksPercent + moneyPercent - 1);*/
         getPlayer().setExp(0);
     }
 
@@ -961,6 +974,10 @@ public class Gamer {
         if (getPlayer().hasPermission("prison.admin")) {
             sendTitle(ChatColor.GREEN + "Телепортация...");
             getPlayer().teleport(location);
+            return;
+        }
+        if (isInPvp()) {
+            sendTitle("&4*ошибка*", "&cвы в бою");
             return;
         }
         if (isWithBox()) {
@@ -1004,7 +1021,7 @@ public class Gamer {
             setStatistics(EStat.MONEY, BigDecimal.valueOf(money + getDoubleStatistics(EStat.MONEY)).setScale(2, RoundingMode.UP).doubleValue());
         }
         if (isOnline()) {
-            String mon = BigDecimal.valueOf(money).setScale(2, RoundingMode.UP).doubleValue() + " " + MoneyType.RUBLES.getShortName();
+            String mon = MoneyType.RUBLES.getShortName() + BigDecimal.valueOf(money).setScale(2, RoundingMode.UP).doubleValue();
             sendActionbar(Utils.colored("&a+" + mon));
             if (sendMessage) sendMessage("&aНа счёт зачислено " + mon);
             double m = getMoney();
@@ -1025,14 +1042,14 @@ public class Gamer {
         return getVerison() >= 578;
     }
 
-    public void withdrawMoney(double money, int sale, boolean sendMessage) {
+    public void withdrawMoney(double money, int sale, boolean sendMessage, boolean cb) {
         double to_withdraw = (1 - (double) sale / 100) * money;
         setStatistics(EStat.MONEY, getMoney() - to_withdraw);
         if (isOnline()) {
-            String mon = money + " " + MoneyType.RUBLES.getShortName();
+            String mon = MoneyType.RUBLES.getShortName() + money;
             sendActionbar("&c-" + mon);
             if (sendMessage) sendMessage("&cСо счёта списано " + mon);
-            if (getTrainingLevel(TypeTrainings.CASHBACK.name()) > 0) {
+            if (cb && getTrainingLevel(TypeTrainings.CASHBACK.name()) > 0) {
                 Utils.trainer.forEach(trainer -> {
                     Trainer tr = (Trainer) trainer;
                     if (tr.getType() != TypeTrainings.CASHBACK) return;
@@ -1047,11 +1064,15 @@ public class Gamer {
     }
 
     public void withdrawMoney(double money) {
-        withdrawMoney(money, 0, false);
+        withdrawMoney(money, 0, false, false);
     }
 
     public void withdrawMoney(double money, boolean sendMessage) {
-        withdrawMoney(money, 0, sendMessage);
+        withdrawMoney(money, 0, sendMessage, false);
+    }
+
+    public void withdrawMoney(double money, boolean sendMessage, boolean cashback) {
+        withdrawMoney(money, 0, sendMessage, cashback);
     }
 
     public void addCurrentBlocks(String block, double amount) {

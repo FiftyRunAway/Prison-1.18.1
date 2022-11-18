@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.PlayerHudsHolderWrapper;
 import dev.lone.itemsadder.api.FontImages.PlayerQuantityHudWrapper;
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.runaway.Gamer;
@@ -145,12 +146,14 @@ public class Need {
                     effect.getAmplifier() == 6) {
                 gamer.getPlayer().removePotionEffect(effect.getType());
 
+                if (gamer.getActiveRunes() == null || gamer.getActiveRunes().isEmpty()) continue;
                 gamer.getActiveRunes().forEach(rune -> {
-                    for (PotionEffect potionEffect : rune.constantEffects()) {
-                        if (potionEffect.getType().equals(effect.getType())) {
-                            gamer.getPlayer().addPotionEffect(potionEffect);
+                    if (rune != null)
+                        for (PotionEffect potionEffect : rune.constantEffects()) {
+                            if (potionEffect.getType().equals(effect.getType())) {
+                                gamer.getPlayer().addPotionEffect(potionEffect);
+                            }
                         }
-                    }
                 });
             }
         }

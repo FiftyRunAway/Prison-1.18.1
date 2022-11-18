@@ -34,6 +34,7 @@ public class Mover extends Job {
     public static final Material boxMaterial = Material.NOTE_BLOCK;
     protected static final List<Location> boxes = new ArrayList<>();
     protected static final List<Location> destinations = new ArrayList<>();
+    protected static final String boxName = "boxItem";
 
     private static void onSuccesfulDelivery(Gamer gamer) {
         gamer.setWithBox(false);
@@ -62,7 +63,7 @@ public class Mover extends Job {
             Bukkit.getScheduler().runTaskLater(Prison.getInstance(), () ->
                     block.setType(Material.NOTE_BLOCK), 450L);
             gamer.addEffect(PotionEffectType.SLOW, 999999, 5);
-            gamer.addItem("boxItem");
+            gamer.addItem(boxName);
             gamer.setWithBox(true);
         }
     }
@@ -94,6 +95,18 @@ public class Mover extends Job {
         EConfig.CONFIG.saveConfig();
     }
 
+    public static void onQuit(Gamer gamer) {
+        if (gamer.getCurrentJob() == null || !gamer.getCurrentJob().equals(EJobs.MOVER)) return;
+        gamer.getPlayer().teleport(Prison.SPAWN);
+        if (gamer.isEffected(PotionEffectType.SLOW)) {
+            gamer.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+        }
+        Arrays.stream(gamer.getPlayer().getInventory().getContents()).forEach(itemStack -> {
+            if (itemStack != null && itemStack.equals(ItemManager.getPrisonItem(boxName).getItemStack()))
+                gamer.getPlayer().getInventory().remove(itemStack);
+        });
+    }
+
     public static void loadBoxLocations() {
         List<String> locs = EConfig.CONFIG.getConfig().getStringList("moverBoxes");
         List<String> destins = EConfig.CONFIG.getConfig().getStringList("moverDestinations");
@@ -106,7 +119,7 @@ public class Mover extends Job {
 
         ItemStack boxItem = new ItemBuilder(Material.NOTE_BLOCK).name("&aЯщик").build();
         PrisonItem prisonItem = PrisonItem.builder()
-                .vanillaName("boxItem")
+                .vanillaName(boxName)
                 .vanillaItem(boxItem)
                 .category(PrisonItem.Category.OTHER)
                 .parameters(Arrays.asList(
@@ -124,6 +137,10 @@ public class Mover extends Job {
 
     public static List<Location> getDestinations() {
         return destinations;
+    }
+
+    public static String getBoxName() {
+        return boxName;
     }
 
     @Override

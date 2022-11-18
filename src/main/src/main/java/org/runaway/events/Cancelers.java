@@ -129,7 +129,8 @@ public class Cancelers implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
         Material t = event.getClickedBlock().getType();
-        if (t.equals(Material.ANVIL) || t.equals(Material.HOPPER) || t.equals(Material.FURNACE)) event.setCancelled(true);
+        if (t.equals(Material.ANVIL) || t.equals(Material.HOPPER) || t.equals(Material.FURNACE) || t.equals(Material.ENCHANTING_TABLE) ||
+        t.equals(Material.DISPENSER) || t.equals(Material.CRAFTING_TABLE) || t.equals(Material.NOTE_BLOCK)) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

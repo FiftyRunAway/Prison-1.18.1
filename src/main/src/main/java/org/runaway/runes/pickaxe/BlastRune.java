@@ -7,6 +7,9 @@ import org.runaway.runes.utils.RuneManager;
 public class BlastRune implements Rune {
     @Override
     public boolean act(Gamer gamer) {
+        if (Math.random() < 0.05) {
+            return true;
+        }
         return false;
     }
 

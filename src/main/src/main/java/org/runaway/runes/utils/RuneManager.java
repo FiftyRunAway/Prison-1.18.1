@@ -34,7 +34,7 @@ public class RuneManager {
         Rune rune = getRune(techname);
         if (rune == null) return;
         if (getRune(techname).act(gamer)) {
-            gamer.sendMessage("&fПрименена руна " + getRuneName(rune));
+            gamer.sendActionbar("&fПрименена руна " + getRuneName(rune));
         }
     }
 
@@ -101,7 +101,6 @@ public class RuneManager {
     public static ItemStack removeRune(ItemStack itemStack, Rune rune) {
         List<Rune> runes = getRunes(itemStack);
         if (runes.isEmpty()) return null;
-        Bukkit.getConsoleSender().sendMessage(rune.getTechName());
         return ItemManager.setValue(itemStack, "rune" + rune.getRarity().getSlot(),
                 Utils.colored(ParameterManager.getRuneInfoString()
                         .replace("%d", String.valueOf(rune.getRarity().getSlot()))
@@ -185,7 +184,7 @@ public class RuneManager {
                 new ConfusionRune(), new ExecutionRune(), new NutritionRune(), new ObliterateRune(), new ParalyzeRune(), new SnareRune(),
                 new TrapRune(), new WitherRune(),
                 //PICKAXE
-                new SpeedRune(), new BlastRune()
+                new SpeedRune() //new BlastRune()
         ));
 
         for (Rune rune : runes) {

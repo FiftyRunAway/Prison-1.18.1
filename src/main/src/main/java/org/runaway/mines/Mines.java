@@ -168,12 +168,12 @@ public class Mines {
         return this.spawn;
     }
 
-    public ItemStack getPrisonIcon(Gamer gamer) {
-        return this.mineIcon.acessButton(gamer);
+    public ItemStack getPrisonIcon(Gamer gamer, boolean showBoss) {
+        return this.mineIcon.acessButton(gamer, showBoss);
     }
 
     public Lore getLoreIcon(Gamer gamer) {
-        return new MineIcon.Builder(this).build().lore(gamer);
+        return new MineIcon.Builder(this).build().lore(gamer, true);
     }
 
     public boolean hasBoss() {

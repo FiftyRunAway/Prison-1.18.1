@@ -1,7 +1,5 @@
 package org.runaway.inventories;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import dev.lone.itemsadder.api.FontImages.TexturedInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

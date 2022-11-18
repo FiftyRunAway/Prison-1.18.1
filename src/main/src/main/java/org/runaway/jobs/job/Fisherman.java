@@ -16,7 +16,7 @@ public class Fisherman extends Job {
 
     @Override
     public String getName() {
-        return "Рыболовство";
+        return "Рыбалка";
     }
 
     @Override

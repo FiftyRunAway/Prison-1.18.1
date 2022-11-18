@@ -78,7 +78,8 @@ public class PlayerInteract implements Listener {
                     caseRefactored.getChancesMenu(gamer).open(gamer);
                 }
             }
-            if (block.getType().equals(Mover.boxMaterial)) {
+            if (block.getType().equals(Mover.boxMaterial) &&
+                    event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 if(!gamer.isEndedCooldown("boxCd")) {
                     return;
                 }

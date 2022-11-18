@@ -43,7 +43,7 @@ public class PayCommand extends CommandManager {
                 gamer.sendMessage(EMessage.VALUEINT);
                 return;
             }
-            if (send <= 0) {
+            if (send < 1) {
                 gamer.sendMessage(EMessage.VALUEBAD);
                 return;
             }

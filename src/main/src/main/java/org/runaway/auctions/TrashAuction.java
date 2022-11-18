@@ -59,9 +59,6 @@ public class TrashAuction {
         section.getStringList("items").forEach(s -> {
             PrisonItem pi = ItemManager.getPrisonItem(s.split(" ")[0] + "_" +
                     EConfig.UPGRADE.getConfig().getInt("upgrades." + s.split(" ")[0] + ".lorelevel"));
-            /*List<Parameter> f = pi.getParameters();
-            f.remove(ParameterManager.getNodropParameter());
-            pi.setParameters(f);*/
 
             items.put(pi.getItemStack(), Double.parseDouble(s.split(" ")[1]));
         });
@@ -90,7 +87,12 @@ public class TrashAuction {
             ItemMeta meta = real.getItemMeta();
             meta.setUnbreakable(false);
 
-            meta.setLore(is.getItemMeta().getLore());
+            List<String> l = is.getItemMeta().getLore();
+            for (int s = 0; s < 5; s++) {
+                l.remove(s);
+            }
+
+            meta.setLore(l);
             meta.setDisplayName(is.getItemMeta().getDisplayName());
             is.getItemMeta().getEnchants().forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
             real.setItemMeta(meta);
@@ -367,7 +369,7 @@ public class TrashAuction {
             this.hologram.appendItemLine(itemStack);
 
             Gamer gamer = GamerManager.getGamer(Bukkit.getPlayer(last));
-            gamer.withdrawMoney(now, true);
+            gamer.withdrawMoney(now, true, true);
             gamer.addItem(itemStack);
 
             gamer.sendMessage(EMessage.AUCTIONWIN);

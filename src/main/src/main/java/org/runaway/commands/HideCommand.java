@@ -52,10 +52,12 @@ public class HideCommand extends CommandManager {
 
     public static void removeOnQuit(Gamer gamer) {
         Utils.getPlayers().forEach(player -> {
-            Gamer g = GamerManager.getGamer(player);
-            if (g.isHideEnabled()) {
-                showPlayer(g.getPlayer(), gamer.getPlayer());
-                g.getHiddenPlayers().remove(gamer.getName());
+            if (player != null) {
+                Gamer g = GamerManager.getGamer(player);
+                if (g.isHideEnabled()) {
+                    showPlayer(g.getPlayer(), gamer.getPlayer());
+                    g.getHiddenPlayers().remove(gamer.getName());
+                }
             }
         });
     }

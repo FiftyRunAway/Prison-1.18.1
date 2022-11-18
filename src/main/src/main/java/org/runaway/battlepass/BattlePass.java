@@ -81,7 +81,7 @@ public class BattlePass {
                 reward.get(gamer);
             } else {
                 can.append(reward.getName());
-                if (!reward.isStringValue() && reward.getValue() > 0) get.append(" &7(&bx").append(reward.getValue()).append("&7)");
+                if (!reward.isStringValue() && reward.getValue() > 0) can.append(" &7(&bx").append(reward.getValue()).append("&7)");
                 can.append(", ");
                 j.incrementAndGet();
             }

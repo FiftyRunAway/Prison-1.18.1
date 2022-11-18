@@ -31,14 +31,19 @@ public abstract class Job {
     }
 
     public Item getButton(Gamer gamer) {
-        ArrayList<String> reqs = new ArrayList<>();
-        boolean access = gamer.getIntStatistics(EStat.LEVEL) >= getLevel();
-        reqs.add("&7• " + (access ? ChatColor.GREEN : ChatColor.RED) + "Минимальный уровень • " + getLevel());
-        return new Item.Builder(getMaterial()).name("&7Работа • &c" + getName()).lore(
+        boolean access = gamer.getIntStatistics(EStat.LEVEL) >= getLevel() || gamer.hasPermission("*");
+        if (!access) {
+            return new Item.Builder(Material.RED_STAINED_GLASS_PANE).name("&cНедоступно").lore(
+                    new Lore.BuilderLore()
+                            .addSpace()
+                            .addString("&7Требования к доступу:")
+                            .addString("&7• &cМинимальный уровень • " + getLevel())
+                            .build()).build();
+        }
+        return new Item.Builder(getMaterial()).name("&b" + getName()).lore(
                 new Lore.BuilderLore()
                         .addSpace()
-                        .addString("&7Требования к доступу:")
-                        .addList(reqs)
+                        .addString("&f Уровень &7• &e" + getLevel())
                         .build()).build();
     }
 

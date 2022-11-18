@@ -15,8 +15,8 @@ public class BlockPlace implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Gamer gamer = GamerManager.getGamer(event.getPlayer());
 
-        ItemStack main = event.getItemInHand();
-        if (main.equals(ItemManager.getPrisonItem("boxItem").getItemStack())) {
+        ItemStack main = event.getPlayer().getInventory().getItemInMainHand();
+        if (main.equals(ItemManager.getPrisonItem(Mover.getBoxName()).getItemStack())) {
             if(!gamer.isEndedCooldown("boxCd")) {
                 return;
             }
